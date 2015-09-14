@@ -22,12 +22,56 @@ use XML::Atom::Client;
 use XML::Atom::Entry;
 use XML::Atom::Person;
 
-my $wiki = 'http://localhost/cgi-bin/wiki.pl';
+sub random_port {
+  use Errno  qw( EADDRINUSE );
+  use Socket qw( PF_INET SOCK_STREAM INADDR_ANY sockaddr_in );
+  
+  my $family = PF_INET;
+  my $type   = SOCK_STREAM;
+  my $proto  = getprotobyname('tcp')  or die "getprotobyname: $!";
+  my $host   = INADDR_ANY;  # Use inet_aton for a specific interface
+
+  for my $i (1..3) {
+    my $port   = 1024 + int(rand(65535 - 1024));
+    socket(my $sock, $family, $type, $proto) or die "socket: $!";
+    my $name = sockaddr_in($port, $host)     or die "sockaddr_in: $!";
+    setsockopt($sock, SOL_SOCKET, SO_REUSEADDR, 1);
+    bind($sock, $name)
+	and close($sock)
+	and return $port;
+    die "bind: $!" if $! != EADDRINUSE;
+    print "Port $port in use, retrying...\n";
+  }
+  die "Tried 3 random ports and failed.\n"
+}
+
+my $port = random_port();
+$ScriptName = "http://localhost:$port";
+
+AppendStringToFile($ConfigFile, "\$ScriptName = $ScriptName;\n");
+
+add_module('atom.pl');
+
+# Fork a test server with the new config file and the module
+my $pid = fork();
+if (!defined $pid) {
+  die "Cannot fork: $!";
+} elsif ($pid == 0) {
+  use Config;
+  my $secure_perl_path = $Config{perlpath};
+  exec($secure_perl_path, "stuff/server.pl", "wiki.pl", $port) or die "Cannot exec: $!";
+}
+
+# Give the child time to start
+sleep 1; 
+
+# Check whether the child is up and running
 my $ua = LWP::UserAgent->new;
-my $response = $ua->get("$wiki?action=version");
-ok($response->is_success, "There is a wiki running at $wiki");
+my $response = $ua->get("$ScriptName?action=version");
+ok($response->is_success, "There is a wiki running at $ScriptName");
 like($response->content, qr/\batom\.pl/, "The  has the atom extension installed");
 
+# Testing the Atom API
 my $api = XML::Atom::Client->new;
 my $entry = XML::Atom::Entry->new;
 my $title = 'New Post';
@@ -40,7 +84,7 @@ ok($entry->content($content), 'set post content');
 my $author = XML::Atom::Person->new;
 ok($author->name($username), 'set author name');
 ok($entry->author($author), 'set entry author');
-my $PostURI = "$wiki/atom";
+my $PostURI = "$ScriptName/atom";
 my $MemberURI = $api->createEntry($PostURI, $entry);
 ok($MemberURI, "posting entry returns member URI $MemberURI")
     or diag($api->errstr);
@@ -92,7 +136,7 @@ ok($result->summary eq "Renamed to $new_title", 'verify summary');
 ok($result->content->body eq 'DeletedPage', 'verify deleted page');
 ok($result->author->name eq $username, 'verify author');
 
-my $FeedURI = "$wiki/atom/feed";
+my $FeedURI = "$ScriptName/atom/feed";
 my $feed = $api->getFeed($FeedURI);
 ok($feed, 'checking feed');
 my @entries = $feed->entries;
@@ -111,7 +155,7 @@ ok($result->summary eq $summary, 'verify summary');
 ok(!$result->content, 'no content in the default feed');
 ok($result->author->name eq $username, 'verify author');
 
-$FeedURI = "$wiki/atom/full/feed?rsslimit=2";
+$FeedURI = "$ScriptName/atom/full/feed?rsslimit=2";
 my $feed = $api->getFeed($FeedURI);
 ok($feed, 'checking full feed');
 my @entries = $feed->entries;
@@ -135,3 +179,8 @@ sub trim {
 }
 ok(trim($result->content->body) eq ("<p>" . trim($content) . '</p>'), 'verify content');
 ok($result->author->name eq $username, 'verify author');
+
+END {
+  # kill server
+  kill 'KILL', $pid;
+}
