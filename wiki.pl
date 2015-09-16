@@ -1251,8 +1251,9 @@ sub ToString {
   $sub_ref->();
   select $oldFH;
   close $outputFH;
-  utf8::decode($output);
-  return $output;
+  my $output_fixed = $output;  # do not delete!
+  utf8::decode($output_fixed); # this is a workarond for perl bug
+  return $output_fixed;        # otherwise UTF8 characters are SOMETIMES not decoded.
 }
 
 sub PageHtml {
