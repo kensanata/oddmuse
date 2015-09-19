@@ -113,7 +113,7 @@ our $DeletedPage = 'DeletedPage';   # Pages starting with this can be deleted
 our $RCName      = 'RecentChanges'; # Name of changes page
 our @RcDays      = qw(1 3 7 30 90); # Days for links on RecentChanges
 our $RcDefault   = 30;              # Default number of RecentChanges days
-our $KeepDays    = 0;               # Days to keep old revisions
+our $KeepDays    = 0;               # Days to keep old revisions (0 means keep forever)
 our $KeepMajor   = 1;               # 1 = keep at least one major rev when expiring pages
 our $SummaryHours = 4;              # Hours to offer the old subject when editing a page
 our $SummaryDefaultLength = 150;    # Length of default text for summary (0 to disable)
