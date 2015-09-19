@@ -1371,10 +1371,12 @@ sub BrowseResolvedPage {
   }
 }
 
-sub NewText {
+sub NewText { # only if no revision is available
   my $id = shift;
   if ($CommentsPrefix and $id =~ /^($CommentsPrefix)/) {
     return T('There are no comments, yet. Be the first to leave a comment!');
+  } elsif ($id eq $HomePage) {
+    return T('Welcome!');
   } else {
     return Ts('This page does not exist, but you can %s.',
               '[' . ScriptUrl('action=edit;id=' . UrlEncode($id)) . ' '
@@ -2704,7 +2706,6 @@ sub OpenPage {      # Sets global variables
     %Page = ();
     $Page{ts} = $Now;
     $Page{revision} = 0;
-    $Page{text} = T('Welcome!') if $id eq $HomePage;
   }
   $OpenPageName = $id;
 }
