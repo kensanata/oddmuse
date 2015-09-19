@@ -18,32 +18,35 @@ use v5.10;
 
 AddModuleDescription('load-lang.pl', 'Language Browser Preferences');
 
-our ($q, %CookieParameters, $ConfigFile, $DataDir, $NamespaceCurrent, @MyInitVariables);
-our ($CurrentLanguage, $LoadLanguageDir);
+our ($q, %CookieParameters, $ConfigFile, $DataDir, $ModuleDir, $NamespaceCurrent, @MyInitVariables);
+our $CurrentLanguage;
+
+our $LoadLanguageDir = "$ModuleDir/translations"; # by default same as in git
 
 $CookieParameters{interface} = '';
 
-my %library= ('bg' => 'bulgarian-utf8.pl',
-	      'de' => 'german-utf8.pl',
-	      'es' => 'spanish-utf8.pl',
-	      'fr' => 'french-utf8.pl',
-	      'fi' => 'finnish-utf8.pl',
-	      'gr' => 'greek-utf8.pl',
-	      'he' => 'hebrew-utf8.pl',
-	      'it' => 'italian-utf8.pl',
-	      'ja' => 'japanese-utf8.pl',
-	      'ko' => 'korean-utf8.pl',
-	      'nl' => 'dutch-utf8.pl',
-	      'pl' => 'polish-utf8.pl',
-	      'pt' => 'portuguese-utf8.pl',
-	      'ro' => 'romanian-utf8.pl',
-	      'ru' => 'russian-utf8.pl',
-	      'se' => 'swedish-utf8.pl',
-	      'sr' => 'serbian-utf8.pl',
-	      'zh' => 'chinese-utf8.pl',
-	      'zh-cn' => 'chinese_cn-utf8.pl',
-	      'zh-tw' => 'chinese-utf8.pl',
-	     );
+our %TranslationsLibrary = (
+  'bg' => 'bulgarian-utf8.pl',
+  'de' => 'german-utf8.pl',
+  'es' => 'spanish-utf8.pl',
+  'fi' => 'finnish-utf8.pl',
+  'fr' => 'french-utf8.pl',
+  'gr' => 'greek-utf8.pl',
+  'he' => 'hebrew-utf8.pl',
+  'it' => 'italian-utf8.pl',
+  'ja' => 'japanese-utf8.pl',
+  'ko' => 'korean-utf8.pl',
+  'nl' => 'dutch-utf8.pl',
+  'pl' => 'polish-utf8.pl',
+  'pt' => 'portuguese-utf8.pl',
+  'ro' => 'romanian-utf8.pl',
+  'ru' => 'russian-utf8.pl',
+  'se' => 'swedish-utf8.pl',
+  'sr' => 'serbian-utf8.pl',
+  'zh' => 'chinese-utf8.pl',
+  'zh-cn' => 'chinese_cn-utf8.pl',
+  'zh-tw' => 'chinese-utf8.pl',
+    );
 
 sub LoadLanguage {
   # my $requested_language = "da, en-gb;q=0.8, en;q=0.7";
@@ -65,7 +68,7 @@ sub LoadLanguage {
   #      . $q->end_html) && exit if GetParam('debug', '');
   foreach (@prefs) {
     last if $Lang{$_} eq 'en'; # the default
-    my $file = $library{$Lang{$_}};
+    my $file = $TranslationsLibrary{$Lang{$_}};
     $file = "$LoadLanguageDir/$file" if defined $LoadLanguageDir;
     if (-r $file) {
       do $file;
