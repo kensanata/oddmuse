@@ -19,7 +19,7 @@ test_page(update_page($CrossbarPageName, 'mu', @update_crossbar_page_options),
 test_page(get_page('HomePage'), '<div class="crossbar"><p>mu</p></div>');
 
 # Verify that raw pages are not mangled
-$page = get_page('action=browse raw=1 id=HomePage');
+$page = get_page('action=browse raw=1 id=SomePage');
 test_page($page, 'This page does not exist');
 test_page_negative($page, 'mu');
 
