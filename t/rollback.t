@@ -193,6 +193,7 @@ test_page(get_page('action=rc raw=1 rollback=1 all=1'),
 
 # Making sure no extra [[rollback]] entries show up
 clear_pages();
+$KeepDays = 14;
 AppendStringToFile($ConfigFile, "\$KeepDays = 14;\n");
 update_page('Test', 'Hallo');
 $ts = $Now - $KeepDays * 86400 + 100;
