@@ -17,6 +17,8 @@ package OddMuse;
 use Test::More tests => 69;
 use utf8; # tests contain UTF-8 characters and it matters
 
+AppendStringToFile($ConfigFile, "\$KeepDays = 14;\n");
+
 # reproduce a particular bug from emacswiki.org
 update_page('SiteMap', 'initial entry');
 sleep(1);
@@ -37,6 +39,7 @@ is($Page{text}, "last good entry was a minor edit\n", 'Rollback successful');
 
 # new set of tests
 clear_pages();
+AppendStringToFile($ConfigFile, "\$KeepDays = 7;\n");
 WriteStringToFile($RcFile, "1FirstPage1\n");
 AppendStringToFile($RcFile, "2SecondPage1\n");
 
@@ -190,6 +193,7 @@ test_page(get_page('action=rc raw=1 rollback=1 all=1'),
 
 # Making sure no extra [[rollback]] entries show up
 clear_pages();
+AppendStringToFile($ConfigFile, "\$KeepDays = 14;\n");
 update_page('Test', 'Hallo');
 $ts = $Now - $KeepDays * 86400 + 100;
 get_page("action=rollback to=$ts username=Alex pwd=foo");
