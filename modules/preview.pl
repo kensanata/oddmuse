@@ -33,7 +33,7 @@ extension.
 
 =cut
     
-our ($q, %Action, $UseCache);
+our ($q, %Action, $UseCache, @MyAdminCode);
 
 AddModuleDescription('preview.pl', 'Preview Extension');
 
@@ -55,4 +55,11 @@ sub DoPreview {
   }
   print $q->end_p(), $q->end_div();
   PrintFooter();
+}
+
+push(@MyAdminCode, \&PreviewMenu);
+
+sub PreviewMenu {
+  my ($id, $menuref, $restref) = @_;
+  push(@$menuref, ScriptLink('action=preview', T('Preview changes in HTML output'), 'preview'));
 }

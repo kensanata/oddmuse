@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 5;
+use Test::More tests => 6;
 use utf8;
 
 # This is a page whose HTML will change when we install the Markup Extension.
@@ -30,8 +30,11 @@ test_page(get_page('Test'), '\*bold\*');
 # We can get the new HTML using cache=0.
 test_page(get_page('Test?cache=0'), '<b>bold</b>');
 
-# Install Preview Extension and see whether Test is listed and Boring is not.
+# Install Preview Extension.
 add_module('preview.pl');
+test_page(get_page('action=admin'), 'action=preview');
+
+# See whether Test is listed and Boring is not.
 $page = get_page('action=preview');
 test_page($page, 'Test');
 test_page_negative($page, 'Boring');
