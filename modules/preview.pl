@@ -32,7 +32,7 @@ the new HTML, feel free to clear the HTML cache. That's the point of this
 extension.
 
 =cut
-    
+
 our ($q, %Action, $UseCache, @MyAdminCode);
 
 AddModuleDescription('preview.pl', 'Preview Extension');
