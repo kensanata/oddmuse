@@ -40,6 +40,7 @@ $Page{ts} = 1;
 $Page{revision} = 1;
 $Page{text} = $DeletedPage;
 SavePage();
+AppendStringToFile($ConfigFile, "\$KeepDays = 14;\n");
 ok(-f GetPageFile($OpenPageName), GetPageFile($OpenPageName)
    . " exists");
 xpath_test(get_page('action=maintain pwd=foo'),
