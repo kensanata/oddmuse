@@ -49,7 +49,7 @@ sub DoPreview {
     my $html = ToString(\&PrintPageHtml);
     if ($cache ne $html) {
       print GetPageLink($id), ' ',
-      ScriptLink('action=browse;id=$id;cache=0', T('Preview')),
+      ScriptLink("action=browse;id=$id;cache=0", T('Preview')),
       $q->br();
     }
   }
