@@ -20,6 +20,9 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 37;
 
+# Make sure we can "Mark this page for deletion".
+AppendStringToFile($ConfigFile, "\$KeepDays = 14;\n");
+
 $page = get_page('action=history id=hist');
 test_page($page,
 	  'No other revisions available',
