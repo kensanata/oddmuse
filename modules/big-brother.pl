@@ -60,7 +60,6 @@ sub AddRecentVisitor {
   my $url = ScriptUrl(join(';', "action=$action;id=" . UrlEncode($id),
 			   map { $_ . '=' . UrlEncode(GetParam($_)) }
 			   keys %params));
-  my $url = $q->url(-path_info=>1,-query=>1);
   my $download = GetParam('action', 'browse') eq 'download'
     || GetParam('download', 0)
     || $q->path_info() =~ m/\/download\//;
