@@ -197,7 +197,7 @@ update_page('ConflictTest', $lao_file_1);
 sleep(2);
 $ENV{'REMOTE_ADDR'} = 'megabombus';
 # We remove diff3 by setting the PATH environment variable to ''.
-diag('Warnings saying that diff and diff3 cannot be found is expected because PATH has been unset.');
+diag('Warnings saying that diff and diff3 cannot be found are expected because PATH has been unset.');
 AppendStringToFile($ConfigFile, "\$ENV{'PATH'} = '';\n");
 test_page(update_page('ConflictTest', $lao_file_2,
 		      '', '', '', "oldtime=$oldtime"),
