@@ -1228,7 +1228,7 @@ sub PrintCache {    # Use after OpenPage!
 
 sub PrintPageHtml {   # print an open page
   return unless GetParam('page', 1);
-  if ($Page{blocks} and $Page{flags} and GetParam('cache', $UseCache) > 0) {
+  if ($Page{blocks} and defined $Page{flags} and GetParam('cache', $UseCache) > 0) {
     PrintCache();
   } else {
     PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
