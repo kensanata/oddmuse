@@ -21,7 +21,7 @@ use Crypt::Random::Seed;
 
 AddModuleDescription('private-wiki.pl', 'Private Wiki Extension');
 
-our ($q, $FS, @IndexList, %IndexHash, $IndexFile, $TempDir, $KeepDir);
+our ($q, $FS, @IndexList, %IndexHash, $IndexFile, $TempDir, $KeepDir, %LockCleaners);
 
 my ($cipher, $random);
 my $PrivateWikiInitialized = '';
