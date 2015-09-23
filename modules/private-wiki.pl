@@ -216,6 +216,7 @@ sub DoDiff {      # Actualy call the diff program
   my $oldName = "$TempDir/old";
   my $newName = "$TempDir/new";
   RequestLockDir('diff') or return '';
+  $LockCleaners{'diff'} = sub { unlink $oldName if -f $oldName; unlink $newName if -f $newName; };
   OldPrivateWikiWriteStringToFile($oldName, $_[0]); # CHANGED Here we use the old sub!
   OldPrivateWikiWriteStringToFile($newName, $_[1]); # CHANGED
   my $diff_out = `diff -- \Q$oldName\E \Q$newName\E`;
@@ -235,6 +236,9 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
   my ($name1, $name2, $name3) = ("$TempDir/file1", "$TempDir/file2", "$TempDir/file3");
   CreateDir($TempDir);
   RequestLockDir('merge') or return T('Could not get a lock to merge!');
+  $LockCleaners{'merge'} = sub { # CHANGED
+    unlink $name1 if -f $name1; unlink $name2 if -f $name2; unlink $name3 if -f $name3;
+  };
   OldPrivateWikiWriteStringToFile($name1, $file1); # CHANGED
   OldPrivateWikiWriteStringToFile($name2, $file2); # CHANGED
   OldPrivateWikiWriteStringToFile($name3, $file3); # CHANGED

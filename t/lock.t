@@ -1,3 +1,4 @@
+# Copyright (C) 2015  Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
 # Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,7 +19,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 17;
+use Test::More tests => 20;
 
 test_page(get_page('action=editlock'), 'operation is restricted');
 test_page(get_page('action=editlock pwd=foo'), 'Edit lock created');
@@ -36,3 +37,32 @@ test_page(update_page('TestLock', 'mu!'), 'This page does not exist');
 test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
 	  'Could not get main lock', 'File exists',
 	  'The lock was created \d+ seconds ago');
+
+# Lock cleaners
+
+AppendToConfig(<<'END');
+$Action{'jobinterrupted'} = sub {
+  print GetHeader();
+  RequestLockDir('importantjob');
+  WriteStringToFile("$DataDir/deletemewhenfinished", 'bla-bla');
+  print 'Ok, doing some lengthy job... ';
+  sleep 15;
+  print 'Done!';
+  unlink "$DataDir/deletemewhenfinished"; # WHOOPS!
+  ReleaseLockDir('importantjob');
+  PrintFooter();
+};
+END
+RunAndTerminate('perl', 'wiki.pl', 'action=jobinterrupted');
+# first let's test that the action works (otherwise next test will give false "ok")
+ok(-f "$DataDir/deletemewhenfinished", 'deletemewhenfinished file was created but not deleted');
+
+ok(! -d "$TempDir/lockimportantjob", 'lock was deleted automatically');
+
+AppendToConfig(<<'END');
+$LockCleaners{'importantjob'} = sub {
+  unlink "$DataDir/deletemewhenfinished" if -f "$DataDir/deletemewhenfinished";
+};
+END
+RunAndTerminate('perl', 'wiki.pl', 'action=jobinterrupted');
+ok(! -f "${LockDir}deletemewhenfinished", 'Custom lock cleaning code works');

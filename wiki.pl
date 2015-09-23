@@ -35,6 +35,7 @@ use utf8; # in case anybody ever addes UTF8 characters to the source
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
+use sigtrap 'handler' => \&HandleSignals, 'normal-signals', 'error-signals';
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
 # Options:
@@ -163,6 +164,7 @@ our %Languages = ();
 our @KnownLocks = qw(main diff index merge visitors); # locks to remove
 our $LockExpiration = 60; # How long before expirable locks are expired
 our %LockExpires = (diff=>1, index=>1, merge=>1, visitors=>1); # locks to expire after some time
+our %LockCleaners = (); # What to do if a job under a lock gets a signal like SIGINT. e.g. 'diff' => \&CleanDiff
 our %CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'', lang=>'', embed=>$EmbedWiki,
 		     toplinkbar=>$TopLinkBar, topsearchform=>$TopSearchForm, matchingpages=>$MatchingPages, );
 our %Action = (rc => \&BrowseRc,               rollback => \&DoRollback,
@@ -2896,7 +2898,7 @@ sub RequestLockDir {
   while (mkdir($lock, 0555) == 0) {
     if ($n++ >= $tries) {
       my $ts = (stat($lock))[9];
-      if ($Now - $ts > $LockExpiration and $LockExpires{$name} and not $retried) {
+      if ($Now - $ts > $LockExpiration and $LockExpires{$name} and not $retried) { # XXX should we remove this now?
 	ReleaseLockDir($name); # try to expire lock (no checking)
 	return 1 if RequestLockDir($name, undef, undef, undef, 1);
       }
@@ -2913,6 +2915,18 @@ sub RequestLockDir {
   }
   $Locks{$name} = 1;
   return 1;
+}
+
+sub HandleSignals {
+  my ($signal) = @_; # TODO should we pass it to CleanLock?
+  CleanLock($_) foreach keys %Locks;
+  exit; # let's count it as graceful exit
+}
+
+sub CleanLock {
+  my ($name) = @_;
+  $LockCleaners{$name}->() if exists $LockCleaners{$name};
+  ReleaseLockDir($name); # TODO should we log this?
 }
 
 sub ReleaseLockDir {
@@ -2935,7 +2949,7 @@ sub ForceReleaseLock {
   foreach my $name (bsd_glob $pattern) {
     # First try to obtain lock (in case of normal edit lock)
     $forced = 1 unless RequestLockDir($name, 5, 3, 0);
-    ReleaseLockDir($name); # Release the lock, even if we didn't get it.
+    ReleaseLockDir($name); # Release the lock, even if we didn't get it. This should not happen.
   }
   return $forced;
 }

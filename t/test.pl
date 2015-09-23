@@ -1,4 +1,5 @@
 # Copyright (C) 2004–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2015       Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -347,6 +348,26 @@ sub clear_pages {
     add_module('mac.pl');
   }
   write_config_file();
+}
+
+sub RunAndTerminate { # runs a command for 1 second and then sends SIGTERM
+  my $pid = fork();
+  if (not $pid) { # child
+    open(STDOUT, '>', '/dev/null'); # we don't want to see the output
+    open(STDERR, '>', '/dev/null');
+    exec(@_) or die "Cannot start a new process: $!";
+  }
+  # parent
+  sleep 1;
+  kill 'TERM', $pid;
+  wait; # let it finish
+}
+
+sub AppendToConfig {
+  my @data = @_; # one or more strings
+  open(my $fh, '>>', "$DataDir/config") or die "Could not append to config file: $!";
+  print $fh join("\n", @data);
+  close $fh;
 }
 
 1;
