@@ -96,17 +96,3 @@ test_page(get_page("action=rollback to=$ts id=CriminalPage username=Alex"),
 test_page(get_page("action=rollback to=$ts id=CriminalPage pwd=foo"),
 	  'Rolling back changes',
 	  'CriminalPage</a> rolled back');
-
-
-
-## test strange-spam.pl
-
-add_module('strange-spam.pl');
-
-update_page('StrangeBannedContent', "<?pom ?poko>? # 2007-01-14 tanuki power",
-	    '', 0, 1);
-test_page(update_page('TanukiPage', 'I was here!! <pompoko>'),
-	  'This page does not exist');
-test_page($redirect, 'Reason: tanuki power',
-	  'See .*StrangeBannedContent.* for more information',
-	  'Rule "&lt;\?pom \?poko&gt;\?" matched "&lt;pompoko&gt;" on this page');
