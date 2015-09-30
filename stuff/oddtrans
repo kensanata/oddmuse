@@ -2,9 +2,12 @@
 # Based on umtrans.pl version 1.0 (April 8, 2001) by Clifford Adams.
 # Extracts translation strings from wiki script and extensions.
 
+use strict;
+use warnings;
+
 binmode(STDOUT, ":encoding(UTF-8)");
 
-$help = q{
+my $help = q{
 NAME
        oddtrans - complement translation tables for Oddmuse
 
@@ -26,17 +29,18 @@ EXAMPLES
 
 };
 
-%Translate = ();
+our %Translate = ();
 
-$arg = shift;
+my $arg = shift;
 while ($arg =~ /^-l/) {
-  $file = substr($arg, 3);
+  my $file;
+  $file = substr($arg, 3) if length($arg) > 2;
   $file = shift unless $file;
   die $help unless -f $file;
-  %backup = %Translate;
-  &header_info_extract($file); # keep the header information of the translation files
+  my %backup = %Translate;
+  header_info_extract($file); # keep the header information of the translation files
   do $file or die "Cannot do $file";
-  foreach $key (keys %Translate) {
+  foreach my $key (keys %Translate) {
     $backup{$key} = $Translate{$key};
   }
   %Translate = %backup;
@@ -44,7 +48,7 @@ while ($arg =~ /^-l/) {
 }
 unshift(@ARGV,$arg); # shove the last one back because it is not -l!
 
-print "our \%Translate = split(/\\n/,<<'END_OF_TRANSLATION');\n";
+print "our \%Translate = grep(!/^#/, split(/\\n/,<<'END_OF_TRANSLATION'));\n";
 undef $/; # slurp
 foreach my $file (@ARGV) {
   open(my $fh, "<:encoding(UTF-8)", $file) or die "Cannot open $file: $!";
@@ -53,30 +57,40 @@ foreach my $file (@ARGV) {
   s/'\s*\.\s*'//g;
   s/"\s*\.\s*"//g;
   # extract calls to T, Ts and Tss
-  while(/Ts?s?\(\'([^']+)/g) { trans($1); }
-  while(/Ts?s?\(\"([^"]+)/g) { trans($1); }
+  while(/Ts?s?\(\'([^']+)/g) { trans($file, $1); }
+  while(/Ts?s?\(\"([^"]+)/g) { trans($file, $1); }
 }
 
 print "END_OF_TRANSLATION\n";
 
 my %seen = ();
+my %read = ();
 
 sub trans {
-  my ($string) = @_;
+  my ($file, $string) = @_;
   my ($result);
   $result = '';
   $result = $Translate{$string}  if (defined($Translate{$string}));
   return ' '  if ($seen{$string});
+  marker($file) unless $read{$file};
   $seen{$string} = 1;
   print $string . "\n" . $result . "\n";
   return ' ';
 }
 
+sub marker {
+  my $file = shift;
+  $read{$file} = 1;
+  # place marker
+  print "#" x 80, "\n";
+  print "# $file\n";
+  print "#" x 80, "\n";
+}
 my $header = 0;
 
 sub header_info_extract{
   return if $header++;
-  $file = shift;
+  my $file = shift;
   open(FILE, "<:encoding(utf8)", $file) or die "Can't open $file because: $!";
   foreach (<FILE>) {
     last if (/^our %Translate = /);

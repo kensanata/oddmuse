@@ -38,10 +38,15 @@ build/month-names-%.pl: modules/translations/month-names-%.pl
 build/%.pl: modules/%.pl
 	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, undef, '$(VERSION_NO)')/; print" < $< > $@
 
+modules/translations/new-utf8.pl: wiki.pl $(MODULES)
+	cp $@ $@-old
+	perl stuff/oddtrans -l $@-old wiki.pl $(MODULES) > $@
+	rm -f $@-old
+
 translations: $(TRANSLATIONS)
 	for f in $^; do \
 	  echo updating $$f...; \
-	  perl oddtrans -l $$f wiki.pl $(MODULES) > $$f-new && mv $$f-new $$f; \
+	  perl stuff/oddtrans -l $$f wiki.pl $(MODULES) > $$f-new && mv $$f-new $$f; \
 	done
 
 test:
