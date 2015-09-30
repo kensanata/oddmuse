@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 27;
+use Test::More tests => 23;
 
 $localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;
