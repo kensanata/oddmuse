@@ -31,7 +31,7 @@
 
 package OddMuse;
 use strict;
-use utf8; # in case anybody ever addes UTF8 characters to the source
+use utf8; # in case anybody ever adds UTF8 characters to the source
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
@@ -39,9 +39,8 @@ use sigtrap 'handler' => \&HandleSignals, 'normal-signals', 'error-signals';
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
 # Options:
-our ($ScriptName, $FullUrl, $ModuleDir, $PageDir, $TempDir, $LockDir, $KeepDir, $RssDir,
-     $ConfigFile, $RcFile, $RcOldFile, $IndexFile, $NoEditFile, $VisitorFile, $DeleteFile,
-     $RssLicense,
+our ($ScriptName, $FullUrl, $PageDir, $TempDir, $LockDir, $KeepDir, $RssDir,
+     $RcFile, $RcOldFile, $IndexFile, $NoEditFile, $VisitorFile, $DeleteFile, $RssLicense,
      $FreeLinkPattern, $LinkPattern, $FreeInterLinkPattern, $InterLinkPattern,
      $UrlPattern, $FullUrlPattern, $InterSitePattern,
      $UrlProtocols, $ImageExtensions, $LastUpdate,
@@ -64,9 +63,15 @@ our $UseConfig //= 1;
 
 # Main wiki directory
 our $DataDir;
-$DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir;
-$DataDir   ||= '/tmp/oddmuse'; # FIXME: /var/opt/oddmuse/wiki ?
-our $ConfigPage ||= ''; # config page
+$DataDir    ||= $ENV{WikiDataDir} if $UseConfig;
+$DataDir    ||= '/tmp/oddmuse'; # FIXME: /var/opt/oddmuse/wiki ?
+
+our $ConfigFile;
+$ConfigFile ||= $ENV{WikiConfigFile} if $UseConfig;
+our $ModuleDir;
+$ModuleDir  ||= $ENV{WikiModuleDir} if $UseConfig;
+
+our $ConfigPage ||= '';
 
 # 1 = Run script as CGI instead of loading as module
 our $RunCGI    //= 1;
