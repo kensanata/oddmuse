@@ -31,6 +31,9 @@
 
 package OddMuse;
 use strict;
+use warnings;
+no warnings 'numeric';
+no warnings 'uninitialized';
 use utf8; # in case anybody ever adds UTF8 characters to the source
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
@@ -45,7 +48,7 @@ our ($ScriptName, $FullUrl, $PageDir, $TempDir, $LockDir, $KeepDir, $RssDir,
      $UrlPattern, $FullUrlPattern, $InterSitePattern,
      $UrlProtocols, $ImageExtensions, $LastUpdate,
      %LockOnCreation, %PlainTextPages, %AdminPages,
-     @MyAdminCode, @MyFooters, @MyFormChanges, @MyInitVariables, @MyMacros, @MyMaintenance,
+     @MyAdminCode, @MyFormChanges, @MyInitVariables, @MyMacros, @MyMaintenance,
      $DocumentHeader, %HtmlEnvironmentContainers, $FS, $Counter, @Debugging);
 
 # Internal variables:
@@ -1497,10 +1500,12 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
   my %following = ();
   my @result = ();
+  my $ts;
   # check the first timestamp in the default file, maybe read old log file
-  open(my $F, '<:encoding(UTF-8)', $RcFile);
-  my $line = <$F>;
-  my ($ts) = split(/$FS/, $line); # the first timestamp in the regular rc file
+  if (open(my $F, '<:encoding(UTF-8)', $RcFile)) {
+    my $line = <$F>;
+    ($ts) = split(/$FS/, $line); # the first timestamp in the regular rc file
+  }
   if (not $ts or $ts > $starttime) { # we need to read the old rc file, too
     push(@result, GetRcLinesFor($RcOldFile, $starttime, \%match, \%following));
   }
@@ -3408,7 +3413,7 @@ sub DoSearch {
       print $q->start_div({-class=>'content replacement'});
       @results = ReplaceAndSave($re, UnquoteHtml($replacement));
       foreach (@results) {
-	PrintSearchResult($_, $replacement || $re);
+	PrintSearchResult($_, quotemeta($replacement || $re)); # the replacement is not a valid regex
       }
     }
   } else {

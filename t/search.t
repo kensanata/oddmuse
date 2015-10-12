@@ -131,7 +131,7 @@ test_page(get_page('SearchAndReplace'), 'xfuu and \[xa\]bar.');
 test_page(get_page('search=xfuu replace=/fuu/ pwd=foo'), '1 pages found'); # not two ab!
 test_page(get_page('SearchAndReplace'), '/fuu/ and \[xa\]bar.');
 test_page(get_page('search=/fuu/ replace={{fuu}} pwd=foo'), '1 pages found');
-test_page(get_page('SearchAndReplace'), '{{fuu}} and \[xa\]bar.');
+test_page(get_page('SearchAndReplace'), '\{\{fuu\}\} and \[xa\]bar.');
 
 # Check headers especially the quoting of non-ASCII characters.
 
