@@ -46,12 +46,9 @@ for (2 .. $SurgeProtectionViews - 1) {
   test_page(get_page('action=browse id=HomePage username=Alex'),
 	    'Status: 404 NOT FOUND');
 }
-if (time - $ts >= $SurgeProtectionTime) {
-  ok(1, "Not testing for surge protection because we're late");
-} else {
-  test_page(get_page('action=browse id=OneExtraPage username=Alex'),
-	    'Status: 503 SERVICE UNAVAILABLE');
-}
+my $load = 0;
+test_page(get_page('action=browse id=OneExtraPage username=Alex'),
+	  'Status: 503 SERVICE UNAVAILABLE');
 
 my ($status, $data) = ReadFile($VisitorFile);
 ok($status, "Read $VisitorFile");
@@ -62,7 +59,8 @@ foreach (split(/\n/,$data)) {
 }
 my  %entries = %{$BigBrotherData{Alex}};
 my @times = sort keys %entries;
-ok(@times == $SurgeProtectionViews, "$SurgeProtectionViews entries in the log file");
+# Under heavy load, we might have less...
+ok(@times <= $SurgeProtectionViews, "$SurgeProtectionViews entries in the log file, or less");
 
 # Since the latest entry into the log gets a +1 added whenever there is
 # a duplicate entry, we might have entries in the list that are a few
