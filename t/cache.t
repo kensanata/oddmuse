@@ -31,28 +31,28 @@ update_page('CacheTest', 'something');
 OpenPage('CacheTest');
 my $ts1 = $Page{ts};
 my $ts2 = get_etag(get_page('CacheTest'));
-ok(abs($ts1 - $ts2) <= 1, "Latest edit of this page: $ts1 and $ts2 are close");
+ok(abs($ts1 - $ts2) <= 2, "Latest edit of this page: $ts1 and $ts2 are close");
 
 # When updating another page, that page's ts is the new Etag for all of them
 update_page('OtherPage', 'something');
 OpenPage('OtherPage');
 $ts1 = $Page{ts};
 $ts2 = get_etag(get_page('OtherPage'));
-ok(abs($ts1 - $ts2) <= 1, "Latest edit of other page: $ts1 and $ts2 are close");
+ok(abs($ts1 - $ts2) <= 2, "Latest edit of other page: $ts1 and $ts2 are close");
 
 # Getting it raw should use the original timestamp
 OpenPage('CacheTest');
 $ts1 = $Page{ts};
 $page = get_page('/raw/CacheTest?');
 $ts2 = get_etag($page);
-ok(abs($ts1 - $ts2) <= 1, "Latest edit of raw page: $ts1 and $ts2 based on etag are close");
+ok(abs($ts1 - $ts2) <= 2, "Latest edit of raw page: $ts1 and $ts2 based on etag are close");
 
 SKIP: {
   eval { require Date::Parse };
   skip ("Date::Parse not installed", 1) if $@;
 
   $ts2 = Date::Parse::str2time(get_last_modified($page));
-  ok(abs($ts1 - $ts2) <= 1, "Latest edit of raw page: $ts1 and $ts2 based on last-modified timestamp are close");
+  ok(abs($ts1 - $ts2) <= 2, "Latest edit of raw page: $ts1 and $ts2 based on last-modified timestamp are close");
 }
 
 $str = 'This is a WikiLink.';
