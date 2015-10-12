@@ -19,6 +19,7 @@ use Test::More tests => 28;
 
 add_module('big-brother.pl');
 
+my $ts = time;
 $VisitorTime = 10;
 
 AppendStringToFile($ConfigFile,
@@ -40,13 +41,17 @@ like($item, qr/Berta was here (just now|\d seconds? ago) and read some action/,
 unlike($item, qr/pwd/, 'Link does not contain password');
 
 # check surge protection still works (taking into account the previous
-# get_page calls)
-for (3..$SurgeProtectionViews) {
+# get_page call for username=Alex
+for (2 .. $SurgeProtectionViews - 1) {
   test_page(get_page('action=browse id=HomePage username=Alex'),
 	    'Status: 404 NOT FOUND');
 }
-test_page(get_page('action=browse id=OneExtraPage username=Alex'),
-	  'Status: 503 SERVICE UNAVAILABLE');
+if (time - $ts >= $SurgeProtectionTime) {
+  ok(1, "Not testing for surge protection because we're late");
+} else {
+  test_page(get_page('action=browse id=OneExtraPage username=Alex'),
+	    'Status: 503 SERVICE UNAVAILABLE');
+}
 
 my ($status, $data) = ReadFile($VisitorFile);
 ok($status, "Read $VisitorFile");
