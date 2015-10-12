@@ -31,6 +31,9 @@ $raw = 0;       # capture utf8 is the default
 $RunCGI = 0;    # don't print HTML on stdout
 $UseConfig = 0; # don't read module files
 $DataDir = 'test-data';
+while (not mkdir($DataDir)) {
+  $DataDir = sprintf("test-data-%03d", int(rand(1000)));
+}
 $ENV{WikiDataDir} = $DataDir;
 require 'wiki.pl';
 
