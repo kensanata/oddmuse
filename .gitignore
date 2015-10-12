@@ -1,7 +1,7 @@
 *~
 /build/
 \#*\#
-/test-data
+/test-data*
 /Mac/pkg/
 *.dmg
 *.pkg

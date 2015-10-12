@@ -49,5 +49,9 @@ translations: $(TRANSLATIONS)
 	  perl stuff/oddtrans -l $$f wiki.pl $(MODULES) > $$f-new && mv $$f-new $$f; \
 	done
 
+# Running four jobs in parallel, but clean up data directories without
+# race conditions!
+
 test:
-	prove t
+	prove t/setup.pl
+	prove --jobs=4 t
