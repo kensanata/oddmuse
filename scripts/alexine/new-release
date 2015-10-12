@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 set -e
 
-RELEASE_LOCK='../releaselock'
-ODDMUSE_LOCATION='../oddmuse-for-releases/'
-WIKIPUT='../oddmuse/scripts/cli/wikiput'
+RELEASE_LOCK='../data/releaselock'
+ODDMUSE_LOCATION='../data/oddmuse-for-releases/'
+WIKIPUT='../data/oddmuse/scripts/cli/wikiput'
 WIKI_LOCATION='https://oddmuse.org/wiki/'
 USER_NAME='Alexine'
 

@@ -15,13 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 set -e
 
-TEST_LOCK='../testlock'
-TEST_LOG='../log'
-ODDMUSE_TEST_LOCATION='../oddmuse-for-tests/'
-LAST_COMMIT_FILE='../last_commit'
+TEST_LOCK='../data/testlock'
+TEST_LOG='../data/log'
+ODDMUSE_TEST_LOCATION='../data/oddmuse-for-tests/'
+LAST_COMMIT_FILE='../data/last_commit'
 FIRST_TESTABLE_COMMIT='1c0801bd6ca23de71c7c360a18a648c2b953f1da'
-RESULT_FILE='../output'
-WIKIPUT='../oddmuse/scripts/cli/wikiput'
+RESULT_FILE='../data/output'
+WIKIPUT='../data/oddmuse/scripts/cli/wikiput'
 STATUS_PAGE='Test Status'
 OUT_PAGE='https://github.com/AlexDaniel/oddmuse-alexine/blob/master/output'
 WIKI_LOCATION='https://oddmuse.org/wiki/'
