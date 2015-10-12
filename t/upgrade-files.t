@@ -18,8 +18,8 @@ $_ = 'nocgi';
 require 't/usemod-1.0.4.pl';
 
 # wipe /tmp/mywikidb!
-use File::Path;
-rmtree([$UseModWiki::DataDir]);
+use File::Path qw(remove_tree);
+remove_tree($UseModWiki::DataDir) if -d $UseModWiki::DataDir;
 
 package UseModWiki;
 
