@@ -17,41 +17,33 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 7;
 use utf8; # test data is UTF-8 and it matters
+use Captcha::reCAPTCHA;
 
-SKIP: {
+$ENV{'REMOTE_ADDR'}='127.0.0.1';
+add_module('recaptcha.pl');
 
-  eval {
-    require Captcha::reCAPTCHA;
-  };
+# The recaptcha module used to corrupt UTF-8 encoding and HTML
+# escaping.
 
-  skip "Captcha::reCAPTCHA not installed", 5 if $@;
+# non-existing page and no permission
+test_page(get_page('title=SandBox text="<b>K%C3%BChlschrank</b>"'),
+	  'Status: 403',
+	  '&lt;b&gt;Kühlschrank&lt;/b&gt;');
 
-  $ENV{'REMOTE_ADDR'}='127.0.0.1';
-  add_module('recaptcha.pl');
+# update it as an admin
+test_page(update_page('SandBox', '<b>Kühlschrank</b>', undef, undef, 1),
+	  '&lt;b&gt;Kühlschrank&lt;/b&gt;');
 
-  # The recaptcha module used to corrupt UTF-8 encoding and HTML
-  # escaping.
+# existing page and no permission
+$page = get_page('title=SandBox text="<b>K%C3%BChlschrank-test</b>"');
+test_page($page,
+	  'Status: 403',
+	  '&lt;b&gt;Kühlschrank-test&lt;/b&gt;');
 
-  # non-existing page and no permission
-  test_page(get_page('title=SandBox text="<b>K%C3%BChlschrank</b>"'),
-	    'Status: 403',
-	    '&lt;b&gt;Kühlschrank&lt;/b&gt;');
+# edit form is modified by recaptcha
+test_page($page, 'var RecaptchaOptions');
 
-  # update it as an admin
-  test_page(update_page('SandBox', '<b>Kühlschrank</b>', undef, undef, 1),
-	    '&lt;b&gt;Kühlschrank&lt;/b&gt;');
-
-  # existing page and no permission
-  $page = get_page('title=SandBox text="<b>K%C3%BChlschrank-test</b>"');
-  test_page($page,
-	    'Status: 403',
-	    '&lt;b&gt;Kühlschrank-test&lt;/b&gt;');
-
-  # edit form is modified by recaptcha
-  test_page($page, 'var RecaptchaOptions');
-
-  # comment form is modified by recaptcha
-  AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
-  test_page(get_page('Comments_on_SandBox'),
-	    'var RecaptchaOptions');
-}
+# comment form is modified by recaptcha
+AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
+test_page(get_page('Comments_on_SandBox'),
+	  'var RecaptchaOptions');
