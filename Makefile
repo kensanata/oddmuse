@@ -52,6 +52,7 @@ translations: $(TRANSLATIONS)
 # Running four jobs in parallel, but clean up data directories without
 # race conditions!
 
+jobs ?= 4
 test:
 	prove t/setup.pl
-	prove --jobs=4 t
+	prove --jobs=$(jobs) t
