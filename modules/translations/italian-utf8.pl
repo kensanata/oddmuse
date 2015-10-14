@@ -227,8 +227,6 @@ rediretto da %s
 
 Click to search for references to this page
 Clicca per cercare riferimenti a questa pagina
-Cookie: 
-
 Edit this page
 Modifica questa pagina
 Preview:

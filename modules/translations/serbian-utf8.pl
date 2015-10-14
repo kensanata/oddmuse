@@ -229,8 +229,6 @@ redirected from %s
 [Кућа]
 Click to search for references to this page
 
-Cookie: 
-Колачић: 
 Edit this page
 Уреди текст ове странице
 Preview:

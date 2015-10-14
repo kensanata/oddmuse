@@ -225,8 +225,6 @@ Umgeleitet von %s
 [Erste Seite]
 Click to search for references to this page
 Klicken um nach Verweisen auf diese Seite zu suchen
-Cookie: 
-Cookie: 
 Edit this page
 Diese Seite bearbeiten
 Preview:

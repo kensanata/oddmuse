@@ -229,8 +229,6 @@ przekierowano z %s
 [Dom]
 Click to search for references to this page
 Kliknij, aby szukać odniesień do tej strony
-Cookie: 
-Ciasteczko:
 Edit this page
 Edytuj tę stronę
 Preview:

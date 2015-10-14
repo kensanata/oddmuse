@@ -232,8 +232,6 @@ redireccionado de %s
 [Entrada]
 Click to search for references to this page
 Clique para procurar referências a esta página
-Cookie: 
-Cookie:
 Edit this page
 Edite esta página
 Preview:

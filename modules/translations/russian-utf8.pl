@@ -233,8 +233,6 @@ redirected from %s
 [Домой]
 Click to search for references to this page
 Щелкните для поиска ссылок на эту страницу
-Cookie: 
-Куки:
 Edit this page
 Редактировать
 Preview:

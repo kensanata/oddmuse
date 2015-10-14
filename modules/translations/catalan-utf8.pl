@@ -229,8 +229,6 @@ redirigit des de %s
 [Inicia]
 Click to search for references to this page
 Clic per cercar referències a aquesta pàgina
-Cookie: 
-
 Edit this page
 Editar aquesta pàgina
 Preview:

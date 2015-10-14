@@ -230,8 +230,6 @@ redirected from %s
 [首頁]
 Click to search for references to this page
 按下即可以搜尋參考至本頁的資料
-Cookie: 
-Cookie:
 Edit this page
 編輯本頁
 Preview:

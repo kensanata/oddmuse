@@ -227,8 +227,6 @@ redirected from %s
 [Перша сторінка]
 Click to search for references to this page
 Натисніть для пошуку посилань на цю сторінку
-Cookie: 
-Кукі:
 Edit this page
 Редагувати цю сторінку
 Preview:

@@ -230,8 +230,6 @@ redirigido desde %s
 [Inicio]
 Click to search for references to this page
 Clic para buscar Referer a esta página
-Cookie: 
-Cookie: 
 Edit this page
 Editar esta página
 Preview:

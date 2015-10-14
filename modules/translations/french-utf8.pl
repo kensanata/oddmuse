@@ -233,8 +233,6 @@ redirigé(e) à partir de %s
 [Accueil]
 Click to search for references to this page
 Cliquer pour chercher des références vers cette page
-Cookie: 
-Cookie : 
 Edit this page
 Modifier cette page
 Preview:

@@ -231,8 +231,6 @@ omdirigerad från %s
 [Startsida]
 Click to search for references to this page
 Klicka för att söka efter referenser till den här sidan
-Cookie: 
-
 Edit this page
 Redigera sidan
 Preview:
