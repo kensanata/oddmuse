@@ -311,8 +311,8 @@ sub DoMailSubscriptionList {
     if ($raw) {
       print join(' ', $key, @values) . "\n";
     } else {
-        print $q->li(Ts('%s: ', MailLink($key, @values)),
-		     join(' ', map { MailLink($_, $key) } @values));
+        print $q->li(Ts('%s:', MailLink($key, @values)) . ' '
+		     . join(' ', map { MailLink($_, $key) } @values));
     }
   }
   print '</ul></div>' unless $raw;

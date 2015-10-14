@@ -223,7 +223,7 @@ from %s
 des de %s
 redirected from %s
 redirigit des de %s
-%s: 
+%s:
 
 [Home]
 [Inicia]

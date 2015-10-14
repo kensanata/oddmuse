@@ -227,7 +227,7 @@ from %s
 depuis %s
 redirected from %s
 redirigé(e) à partir de %s
-%s: 
+%s:
 %s : 
 [Home]
 [Accueil]

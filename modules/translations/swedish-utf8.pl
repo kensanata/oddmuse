@@ -225,7 +225,7 @@ from %s
 från %s
 redirected from %s
 omdirigerad från %s
-%s: 
+%s:
 
 [Home]
 [Startsida]

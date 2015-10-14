@@ -221,7 +221,7 @@ from %s
 від %s
 redirected from %s
 перенаправлено з %s
-%s: 
+%s:
 
 [Home]
 [Перша сторінка]

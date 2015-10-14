@@ -224,7 +224,7 @@ from %s
 desde %s
 redirected from %s
 redirigido desde %s
-%s: 
+%s:
 
 [Home]
 [Inicio]

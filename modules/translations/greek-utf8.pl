@@ -221,7 +221,7 @@ from %s
 από %s
 redirected from %s
 προώθηση από το %s
-%s: 
+%s:
 
 [Home]
 [Αρχική Σελίδα]

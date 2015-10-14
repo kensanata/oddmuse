@@ -221,7 +221,7 @@ from %s
 %s:stä
 redirected from %s
 uudelleenohjattu sivulta %s
-%s: 
+%s:
 
 [Home]
 [Etusivu]

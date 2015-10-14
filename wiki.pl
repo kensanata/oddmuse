@@ -2238,7 +2238,7 @@ sub GetHeader {
   if ($oldId) {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
   }
-  $result .= GetHtmlHeader(Ts('%s: ', $SiteName) . UnWiki($title), $id);
+  $result .= GetHtmlHeader(Ts('%s:', $SiteName) . ' ' . UnWiki($title), $id);
   if ($embed) {
     $result .= $q->div({-class=>'header'}, $q->div({-class=>'message'}, $Message)) if $Message;
     return $result;

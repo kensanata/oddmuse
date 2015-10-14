@@ -240,7 +240,7 @@ from %s
 自 %s
 redirected from %s
 自%s重定向 
-%s: 
+%s:
 %s：
 [Home]
 [首页]

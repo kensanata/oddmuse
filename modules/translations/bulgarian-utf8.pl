@@ -224,7 +224,7 @@ from %s
 от %s
 redirected from %s
 Препратка от %s
-%s: 
+%s:
 
 [Home]
 [Начална страница]

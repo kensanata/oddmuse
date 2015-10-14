@@ -223,7 +223,7 @@ from %s
 מ %s
 redirected from %s
 הוכוון מחדש מ %s
-%s: 
+%s:
 
 [Home]
 [דף בית]
