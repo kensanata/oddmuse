@@ -379,7 +379,7 @@ Replace this file with text
 이 파일을 텍스트로 바꿈
 Replace this text with a file
 이 텍스트를 파일로 바꿈
-File to upload: 
+File to upload:
 업로드할 파일:
 Files of type %s are not allowed.
 %s (이)란 파일 유형은 허용되지 않습니다.

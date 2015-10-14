@@ -382,8 +382,8 @@ Replace this file with text
 Замени този файл с текст
 Replace this text with a file
 Замени този текст с файл
-File to upload: 
-Файл за качване: 
+File to upload:
+Файл за качване:
 Files of type %s are not allowed.
 Файлове тип %s не са разрешени.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.

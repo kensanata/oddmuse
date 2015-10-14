@@ -379,7 +379,7 @@ Replace this file with text
 Замінити цей файл текстом
 Replace this text with a file
 Замінити цей текст файлом
-File to upload: 
+File to upload:
 Файл для завантаження:
 Files of type %s are not allowed.
 Файли типу %s не дозволені.

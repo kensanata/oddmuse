@@ -385,8 +385,8 @@ Replace this file with text
 Remplacer ce fichier par un texte
 Replace this text with a file
 Remplacer ce texte par un fichier
-File to upload: 
-Fichier à téléverser : 
+File to upload:
+Fichier à téléverser :
 Files of type %s are not allowed.
 Les fichiers de type %s ne sont pas autorisés.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.

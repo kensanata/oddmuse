@@ -384,7 +384,7 @@ Replace this file with text
 
 Replace this text with a file
 
-File to upload: 
+File to upload:
 
 Files of type %s are not allowed.
 

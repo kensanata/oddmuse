@@ -3131,7 +3131,7 @@ sub GetTextArea {
 }
 
 sub GetUpload {
-  return T('File to upload: ') . $q->filefield(-name=>'file', -size=>50, -maxlength=>100);
+  return T('File to upload:') . ' ' . $q->filefield(-name=>'file', -size=>50, -maxlength=>100);
 }
 
 sub DoDownload {

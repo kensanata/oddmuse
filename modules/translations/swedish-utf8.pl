@@ -383,8 +383,8 @@ Replace this file with text
 Skriv text istället för den här filen
 Replace this text with a file
 Använd en fil i stället för den här texten
-File to upload: 
-Fil att ladda upp: 
+File to upload:
+Fil att ladda upp:
 Files of type %s are not allowed.
 Filer av typen %s är inte tillåtna.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.

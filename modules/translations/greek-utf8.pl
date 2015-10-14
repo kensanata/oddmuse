@@ -379,8 +379,8 @@ Replace this file with text
 Αντικατάσταση αυτού του αρχείου με κείμενο.
 Replace this text with a file
 Αντικατάσταση αυτού του κειμένου από κάποιο αρχείο
-File to upload: 
-Αρχείο προς μεταφόρτωση: 
+File to upload:
+Αρχείο προς μεταφόρτωση:
 Files of type %s are not allowed.
 Δεν επιτρέπονται αρχεία τύπου %s.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
