@@ -329,7 +329,7 @@ Cannot save a nameless page.
 Kan inte spara en namnlös sida.
 Cannot save a page without revision.
 Kan inte spara en sida utan ändringar.
-not deleted: 
+not deleted:
 ej borttagen:
 deleted
 borttagen

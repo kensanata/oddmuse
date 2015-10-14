@@ -328,8 +328,8 @@ Cannot save a nameless page.
 No puede guardarse una página sin nombre.
 Cannot save a page without revision.
 No puede guardarse una página sin revisión.
-not deleted: 
-no borrado: 
+not deleted:
+no borrado:
 deleted
 borrado
 Cannot open %s

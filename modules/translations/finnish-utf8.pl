@@ -325,8 +325,8 @@ Cannot save a nameless page.
 Sivua ei voi tallentaa ilman nimeä.
 Cannot save a page without revision.
 Sivua ei voi tallentaa ilman versiota.
-not deleted: 
-ei poistettu: 
+not deleted:
+ei poistettu:
 deleted
 poistettu
 Cannot open %s

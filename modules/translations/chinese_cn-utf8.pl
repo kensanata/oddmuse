@@ -344,7 +344,7 @@ Cannot save a nameless page.
 无法保存没有名称的页面。
 Cannot save a page without revision.
 无法保存没有版本信息的页面。
-not deleted: 
+not deleted:
 未删除：
 deleted
 已删除

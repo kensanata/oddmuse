@@ -325,7 +325,7 @@ Cannot save a nameless page.
 Не можна зберегти безіменну сторінку.
 Cannot save a page without revision.
 Не можна зберегти сторінку без версії.
-not deleted: 
+not deleted:
 
 deleted
 видалено

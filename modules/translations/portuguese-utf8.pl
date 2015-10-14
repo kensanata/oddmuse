@@ -330,8 +330,8 @@ Cannot save a nameless page.
 Não se pode salvar uma página sem nome.
 Cannot save a page without revision.
 Não se pode salvar uma página sem revisão.
-not deleted: 
-não apagado: 
+not deleted:
+não apagado:
 deleted
 apagado
 Cannot open %s

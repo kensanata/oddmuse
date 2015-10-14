@@ -327,7 +327,7 @@ Cannot save a nameless page.
 Не могу да снимим безимену страну.
 Cannot save a page without revision.
 
-not deleted: 
+not deleted:
 
 deleted
 обрисано
