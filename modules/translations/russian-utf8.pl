@@ -227,7 +227,7 @@ from %s
 с %s
 redirected from %s
 перенаправлено с %s
-%s: 
+%s:
 
 [Home]
 [Домой]

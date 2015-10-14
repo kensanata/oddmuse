@@ -223,7 +223,7 @@ from %s
 z %s
 redirected from %s
 przekierowano z %s
-%s: 
+%s:
 
 [Home]
 [Dom]

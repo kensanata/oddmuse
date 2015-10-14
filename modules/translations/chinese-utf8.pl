@@ -224,7 +224,7 @@ from %s
 自 %s
 redirected from %s
 由 %s 轉址 
-%s: 
+%s:
 
 [Home]
 [首頁]

@@ -221,8 +221,8 @@ from %s
 %s より
 redirected from %s
 %s からリダイレクト
-%s: 
-%s: 
+%s:
+%s:
 [Home]
 [ホーム]
 Click to search for references to this page

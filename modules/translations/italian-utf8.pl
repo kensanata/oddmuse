@@ -221,7 +221,7 @@ from %s
 da %s
 redirected from %s
 rediretto da %s
-%s: 
+%s:
 
 [Home]
 

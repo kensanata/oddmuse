@@ -221,7 +221,7 @@ from %s
 de la %s
 redirected from %s
 redirecţionat de la %s
-%s: 
+%s:
 
 [Home]
 [Acasă]

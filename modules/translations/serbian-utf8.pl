@@ -223,7 +223,7 @@ from %s
 од %s
 redirected from %s
 преусмерено са %s
-%s: 
+%s:
 
 [Home]
 [Кућа]

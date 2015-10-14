@@ -230,7 +230,7 @@ from %s
 vanaf %s
 redirected from %s
 doorverwezen vanaf %s
-%s: 
+%s:
 
 [Home]
 [Start]

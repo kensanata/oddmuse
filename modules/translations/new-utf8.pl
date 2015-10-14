@@ -226,7 +226,7 @@ from %s
 
 redirected from %s
 
-%s: 
+%s:
 
 [Home]
 

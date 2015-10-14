@@ -221,7 +221,7 @@ from %s
 %s 로 부터
 redirected from %s
 %s 에서 재전송됨
-%s: 
+%s:
 
 [Home]
 [홈]

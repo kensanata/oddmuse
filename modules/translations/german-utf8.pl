@@ -219,8 +219,8 @@ from %s
 von %s
 redirected from %s
 Umgeleitet von %s
-%s: 
-%s: 
+%s:
+%s:
 [Home]
 [Erste Seite]
 Click to search for references to this page
