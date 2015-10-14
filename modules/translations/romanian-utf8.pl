@@ -399,7 +399,7 @@ Your password does not match any of the administrator or editor passwords.
 Parola dumneavoastră nu corespunde nici unei parole de administrator sau editor.
 Password:
 Parola:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Această operaţie este permisă numai editorilor...

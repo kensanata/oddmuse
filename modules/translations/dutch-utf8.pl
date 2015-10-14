@@ -408,7 +408,7 @@ Your password does not match any of the administrator or editor passwords.
 Uw wachtwoord komt niet overeen met een beheerders- of redacteurswachtwoord.
 Password:
 Wachtwoord:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Deze taak mag alleen uitgevoerd worden door redacteuren...

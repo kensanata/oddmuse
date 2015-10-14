@@ -399,7 +399,7 @@ Your password does not match any of the administrator or editor passwords.
 사용자의 암호가 관리자 또는 편집자의 암호와 일치하지 않습니다.
 Password:
 암호:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 이 동작은 사이트 편집자만 할 수 있습니다...

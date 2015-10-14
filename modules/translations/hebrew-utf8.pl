@@ -401,7 +401,7 @@ Your password does not match any of the administrator or editor passwords.
 הססמה שלך לא מתאימה ללסמאות של המנהל או העורך.
 Password:
 ססמה:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 פעולה זו מוגבלת לעורכים בלבד...

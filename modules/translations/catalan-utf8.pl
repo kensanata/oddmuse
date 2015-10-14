@@ -401,7 +401,7 @@ Your password does not match any of the administrator or editor passwords.
 
 Password:
 Mot de pas:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Aquesta operació es restringeix a només editors del lloc ...

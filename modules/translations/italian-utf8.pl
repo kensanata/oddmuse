@@ -399,7 +399,7 @@ Your password does not match any of the administrator or editor passwords.
 La vostra password non coincide con nessuna di quelle degli amministratori o degli editor.
 Password:
 
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Questa operazione è consentita ai soli editor...

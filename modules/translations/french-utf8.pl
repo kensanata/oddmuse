@@ -405,7 +405,7 @@ Your password does not match any of the administrator or editor passwords.
 Vote mot de passe ne correspond ni au mot de passe administrateur ni au mot de passe éditeur.
 Password:
 Mot de passe :
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Cette opération est réservée aux éditeurs du site seulement...

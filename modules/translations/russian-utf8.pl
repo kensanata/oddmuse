@@ -405,8 +405,8 @@ Your password does not match any of the administrator or editor passwords.
 Ваш пароль не совпадает с паролями администратора или редактора.
 Password:
 Пароль:
-Return to 
-Вернуться на 
+Return to %s
+Вернуться на %s
 This operation is restricted to site editors only...
 Эта операция доступна только для редакторов сайта...
 This operation is restricted to administrators only...
