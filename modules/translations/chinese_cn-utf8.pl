@@ -418,7 +418,7 @@ Your password does not match any of the administrator or editor passwords.
 您的密码和任何管理员或编辑者的密码都不匹配。
 Password:
 密码：
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 这个动作限定只允许编辑者使用…

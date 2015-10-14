@@ -403,7 +403,7 @@ Your password does not match any of the administrator or editor passwords.
 Ditt lösenord motsvarar inget av admininistratörs- eller redaktörslösenorden.
 Password:
 Lösenord:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Den här funktionen kan bara utföras av redaktörer...

@@ -404,7 +404,7 @@ Your password does not match any of the administrator or editor passwords.
 A sua senha não coincide com nenhuma dos administradores ou editores.
 Password:
 Senha:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Esta operação é destinada apenas aos editores do sítio...

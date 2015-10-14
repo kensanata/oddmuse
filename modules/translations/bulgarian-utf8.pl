@@ -402,7 +402,7 @@ Your password does not match any of the administrator or editor passwords.
 Твоята парола не съвпада нито с администраторската, нито с редакторската парола.
 Password:
 Парола:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Тази операция може да се извършва само от редактори.

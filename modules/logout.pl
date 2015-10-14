@@ -118,7 +118,7 @@ sub DoLogout {
 
   print
     GetHeader('', Ts('Logged out of %s', $SiteName), '') .
-    $q->div({-class=> 'content'}, $q->p(T('You are now logged out.'), $id ? $q->p(ScriptLink('action=browse;id=' . UrlEncode($id) . '&time=' . time, T('Return to ' . NormalToFree($id)))) : ''));
+    $q->div({-class=> 'content'}, $q->p(T('You are now logged out.'), $id ? $q->p(ScriptLink('action=browse;id=' . UrlEncode($id) . '&time=' . time, Ts('Return to %s', NormalToFree($id)))) : ''));
   PrintFooter();
 }
 

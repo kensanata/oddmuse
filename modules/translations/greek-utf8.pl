@@ -399,7 +399,7 @@ Your password does not match any of the administrator or editor passwords.
 Ο κωδικός σας δεν ταιριάζει με κανένα κωδικό από τους διαχειριστές ή τους εκδότες.
 Password:
 Κωδικός:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Αυτή η ενέργεια είναι διαθέσιμη μόνο στους εκδότες του ιστότοπου...

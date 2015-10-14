@@ -3184,7 +3184,7 @@ sub DoPassword {
   }
   if ($id) {
     print $q->p(ScriptLink('action=browse;id=' . UrlEncode($id) . ';time=' . time,
-			   T('Return to ' . NormalToFree($id))));
+			   Ts('Return to %s', NormalToFree($id))));
   }
   print $q->end_div();
   PrintFooter();

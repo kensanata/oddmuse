@@ -402,7 +402,7 @@ Your password does not match any of the administrator or editor passwords.
 你的密碼不符合任何管理者或編輯者的密碼。
 Password:
 密碼：
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 這個動作限定只允許編輯者使用…

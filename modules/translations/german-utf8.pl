@@ -397,8 +397,8 @@ Your password does not match any of the administrator or editor passwords.
 Ihr Passwort stimmt nicht mit einem Administrator- oder Redaktor-Passwort überein.
 Password:
 Passwort:
-Return to 
-Zurück zu 
+Return to %s
+Zurück zu %s
 This operation is restricted to site editors only...
 Diese Aktion darf nur von Redaktoren durchgeführt werden...
 This operation is restricted to administrators only...

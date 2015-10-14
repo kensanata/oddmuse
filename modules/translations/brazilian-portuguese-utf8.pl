@@ -402,7 +402,7 @@ Your password does not match any of the administrator or editor passwords.
 Sua senha não confere com nenhuma dos administradores ou editores.
 Password:
 Senha:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Essa operação é restrita aos editores do site...

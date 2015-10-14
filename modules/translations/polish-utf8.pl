@@ -401,7 +401,7 @@ Your password does not match any of the administrator or editor passwords.
 Twoje hasło nie pasuje do żadnego z haseł edytora ani administratora.
 Password:
 Hasło:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Ta operacja jest dozwolona tylko dla redaktorów strony.,,

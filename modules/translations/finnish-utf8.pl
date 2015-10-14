@@ -244,7 +244,7 @@ Viimeksi muokattu
 Edited
 Muokattu
 by %s
- %s
+
 (diff)
 (diff)
 a
@@ -399,7 +399,7 @@ Your password does not match any of the administrator or editor passwords.
 Salasanasi ei ole yksikään ylläpidon tai toimittajien salasanoista.
 Password:
 Salasana:
-Return to 
+Return to %s
 
 This operation is restricted to site editors only...
 Tämä toiminto on rajoitettu sivuston toimittajille...
