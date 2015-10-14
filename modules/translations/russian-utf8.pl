@@ -385,8 +385,8 @@ Replace this file with text
 Заменить этот файл текстом
 Replace this text with a file
 Заменить этот текст файлом
-File to upload: 
-Файл для загрузки: 
+File to upload:
+Файл для загрузки:
 Files of type %s are not allowed.
 Загрузка файлов типа "%s" не разрешена.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.

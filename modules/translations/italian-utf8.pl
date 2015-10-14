@@ -379,7 +379,7 @@ Replace this file with text
 Rimpiazza questo file con un testo
 Replace this text with a file
 Rimpiazza questo testo con un file
-File to upload: 
+File to upload:
 File da inviare:
 Files of type %s are not allowed.
 I file di tipo %s non sono consentiti.

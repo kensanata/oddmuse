@@ -377,8 +377,8 @@ Replace this file with text
 Diese Datei durch Text ersetzen
 Replace this text with a file
 Datei hochladen und den Text durch diese Datei ersetzen
-File to upload: 
-Hochzuladende Datei: 
+File to upload:
+Hochzuladende Datei:
 Files of type %s are not allowed.
 Der Dateityp %s ist nicht erlaubt.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.

@@ -398,7 +398,7 @@ Replace this file with text
 用文字来取代本档
 Replace this text with a file
 用文件来取代本文
-File to upload: 
+File to upload:
 要上传的文件：
 Files of type %s are not allowed.
 不允许%s类型的文件。

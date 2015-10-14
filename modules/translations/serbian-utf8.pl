@@ -381,8 +381,8 @@ Replace this file with text
 Замени ову датотеку текстом
 Replace this text with a file
 Замени овај текст датотеком
-File to upload: 
-Датотека коју треба окачити: 
+File to upload:
+Датотека коју треба окачити:
 Files of type %s are not allowed.
 Датотеке типа %s нису дозвољене.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.

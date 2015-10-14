@@ -382,7 +382,7 @@ Replace this file with text
 用文字來取代本檔
 Replace this text with a file
 用檔案來取代本文
-File to upload: 
+File to upload:
 要上傳的檔案：
 Files of type %s are not allowed.
 不允許 %s 型態的檔案。

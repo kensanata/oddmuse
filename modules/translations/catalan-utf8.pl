@@ -381,7 +381,7 @@ Replace this file with text
 Reemplaçar aquest arxiu amb text
 Replace this text with a file
 Reemplaçar aquest text amb un arxiu
-File to upload: 
+File to upload:
 
 Files of type %s are not allowed.
 Arxius de tipus %s no es permeten.

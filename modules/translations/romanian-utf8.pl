@@ -379,7 +379,7 @@ Replace this file with text
 Înlocuieşte acest fişier cu text
 Replace this text with a file
 Înlocuieşte acest text cu un fişier
-File to upload: 
+File to upload:
 Fişier pentru adăugare.
 Files of type %s are not allowed.
 Fişierele de tipul %s nu sunt permise.

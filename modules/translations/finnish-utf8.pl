@@ -379,8 +379,8 @@ Replace this file with text
 Korvaa tämä tiedosto tekstillä
 Replace this text with a file
 Korvaa tämä teksti tiedostolla
-File to upload: 
-Tallennettava tiedosto: 
+File to upload:
+Tallennettava tiedosto:
 Files of type %s are not allowed.
 Tyyppiä %s olevat tiedostot eivät ole sallittuja.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.

@@ -381,7 +381,7 @@ Replace this file with text
 Zastąp ten plik tekstem
 Replace this text with a file
 Zastąp ten tekst plikiem
-File to upload: 
+File to upload:
 Plik do wgrania:
 Files of type %s are not allowed.
 Pliki typu %s są niedozwolone.

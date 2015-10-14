@@ -388,8 +388,8 @@ Replace this file with text
 Vervang dit bestand door tekst
 Replace this text with a file
 Vervang deze tekst door een bestand
-File to upload: 
-Te publiceren bestand: 
+File to upload:
+Te publiceren bestand:
 Files of type %s are not allowed.
 Bestanden van het type %s zijn niet toegestaan.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.

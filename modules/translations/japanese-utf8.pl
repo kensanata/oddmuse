@@ -379,8 +379,8 @@ Replace this file with text
 このファイルをテキストと入れ替える
 Replace this text with a file
 このテキストをファイルと入れ替える
-File to upload: 
-アップロードするファイル: 
+File to upload:
+アップロードするファイル:
 Files of type %s are not allowed.
 形式 %s のファイルは許可されません。
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.

@@ -382,8 +382,8 @@ Replace this file with text
 Substituir esse arquivo por texto
 Replace this text with a file
 Substituir esse texto por arquivo
-File to upload: 
-Arquivo a enviar: 
+File to upload:
+Arquivo a enviar:
 Files of type %s are not allowed.
 Arquivos do tipo %s não são permitidos.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
