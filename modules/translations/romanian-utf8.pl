@@ -325,7 +325,7 @@ Cannot save a nameless page.
 
 Cannot save a page without revision.
 
-not deleted: 
+not deleted:
 
 deleted
 şters

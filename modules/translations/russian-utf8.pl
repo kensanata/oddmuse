@@ -331,8 +331,8 @@ Cannot save a nameless page.
 Не могу сохранить страницу без названия.
 Cannot save a page without revision.
 Не могу сохранить страницу без версии.
-not deleted: 
-не удалена: 
+not deleted:
+не удалена:
 deleted
 удалена
 Cannot open %s

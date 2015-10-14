@@ -36,7 +36,7 @@ sub AdminPowerDelete {
   OpenPage($id);
   my $status = DeletePage($id);
   if ($status) {
-    print $q->p(GetPageLink($id) . ' ' . T('not deleted: ')) . $status;
+    print $q->p(GetPageLink($id) . ' ' . T('not deleted:') . ' ' . $status);
   } else {
     print $q->p(GetPageLink($id) . ' ' . T('deleted'));
     WriteRcLog($id, Ts('Deleted %s', $id), 0, $Page{revision},

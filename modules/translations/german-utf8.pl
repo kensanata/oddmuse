@@ -323,8 +323,8 @@ Cannot save a nameless page.
 Eine Seite ohne Namen kann nicht gespeichert werden.
 Cannot save a page without revision.
 Ohne Version kann die Seite nicht gespeichert werden.
-not deleted: 
-konnte nicht gelöscht werden: 
+not deleted:
+konnte nicht gelöscht werden:
 deleted
 Datei gelöscht
 Cannot open %s

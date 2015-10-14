@@ -2827,7 +2827,7 @@ sub ExpireAllKeepFiles {
     my $delete = PageDeletable();
     if ($delete) {
       my $status = DeletePage($OpenPageName);
-      print ' ', ($status ? T('not deleted: ') . $status : T('deleted'));
+      print ' ', ($status ? T('not deleted:') . ' ' . $status : T('deleted'));
     } else {
       ExpireKeepFiles();
     }

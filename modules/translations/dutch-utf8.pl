@@ -334,8 +334,8 @@ Cannot save a nameless page.
 Kan een pagina zonder naam niet opslaan.
 Cannot save a page without revision.
 
-not deleted: 
-niet verwijderd: 
+not deleted:
+niet verwijderd:
 deleted
 verwijderd
 Cannot open %s

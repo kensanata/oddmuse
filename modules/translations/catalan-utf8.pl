@@ -327,7 +327,7 @@ Cannot save a nameless page.
 No es pot guardar una pàgina sense nom.
 Cannot save a page without revision.
 No es pot guardar una pàgina sense revisió.
-not deleted: 
+not deleted:
 
 deleted
 esborrat

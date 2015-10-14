@@ -328,7 +328,7 @@ Cannot save a nameless page.
 無法儲存沒有名稱的頁面。
 Cannot save a page without revision.
 無法儲存沒有版本資訊的頁面。
-not deleted: 
+not deleted:
 未刪除：
 deleted
 已刪除

@@ -328,7 +328,7 @@ Cannot save a nameless page.
 Не може да се направи запис на безименна страница.
 Cannot save a page without revision.
 
-not deleted: 
+not deleted:
 
 deleted
 Файлът бе изтрит

@@ -327,7 +327,7 @@ Cannot save a nameless page.
 Nie można zapisać strony bez nazwy.
 Cannot save a page without revision.
 Nie można zapisać strony bez wersji.
-not deleted: 
+not deleted:
 nie skasowane:
 deleted
 skasowane

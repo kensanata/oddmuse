@@ -325,7 +325,7 @@ Cannot save a nameless page.
 이름없는 페이지는 저장할 수 없습니다.
 Cannot save a page without revision.
 리비젼 없는 페이지는 저장할 수 없습니다.
-not deleted: 
+not deleted:
 삭제되지 않음:
 deleted
 삭제됨

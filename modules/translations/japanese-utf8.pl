@@ -325,8 +325,8 @@ Cannot save a nameless page.
 名前のないページは保存できません。
 Cannot save a page without revision.
 リビジョンのないページは保存できません。
-not deleted: 
-削除されませんでした: 
+not deleted:
+削除されませんでした:
 deleted
 削除されました
 Cannot open %s

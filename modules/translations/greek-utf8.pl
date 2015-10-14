@@ -325,8 +325,8 @@ Cannot save a nameless page.
 Δε μπορεί να αποθηκευθεί μια σελίδα χωρίς όνομα.
 Cannot save a page without revision.
 Δε μπορεί να αποθηκευθεί μια σελίδα χωρίς έκδοση.
-not deleted: 
-δε διαγράφηκε: 
+not deleted:
+δε διαγράφηκε:
 deleted
 διαγράφηκε
 Cannot open %s

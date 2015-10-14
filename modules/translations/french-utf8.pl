@@ -331,7 +331,7 @@ Cannot save a nameless page.
 Impossible de sauvegarder une page sans nom.
 Cannot save a page without revision.
 Impossible de sauvegarder une page sans version.
-not deleted: 
+not deleted:
 non supprimé(e) :
 deleted
 supprimé(e)
