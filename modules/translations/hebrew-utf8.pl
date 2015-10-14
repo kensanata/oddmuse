@@ -229,8 +229,6 @@ redirected from %s
 [דף בית]
 Click to search for references to this page
 
-Cookie: 
-
 Edit this page
 ערוך את הטקסט של דף זה.
 Preview:

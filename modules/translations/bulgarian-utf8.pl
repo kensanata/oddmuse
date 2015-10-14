@@ -230,8 +230,6 @@ redirected from %s
 [Начална страница]
 Click to search for references to this page
 Търси споменавания на това заглавие
-Cookie: 
-Курабийка (Cookie): 
 Edit this page
 Редакция на тази страница
 Preview:

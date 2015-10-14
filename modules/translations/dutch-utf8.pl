@@ -236,8 +236,6 @@ doorverwezen vanaf %s
 [Start]
 Click to search for references to this page
 Klik hier om te zoeken naar verwijzingen naar deze pagina
-Cookie: 
-Cookie: 
 Edit this page
 Wijzig de tekst op deze pagina
 Preview:

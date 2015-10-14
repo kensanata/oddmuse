@@ -227,8 +227,6 @@ redirected from %s
 [Αρχική Σελίδα]
 Click to search for references to this page
 Πατήστε για αναζήτηση αναφορών σε αυτή τη σελίδα
-Cookie: 
-Cookie: 
 Edit this page
 Επεξεργασία αυτής της σελίδας
 Preview:

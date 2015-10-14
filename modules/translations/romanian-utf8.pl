@@ -227,8 +227,6 @@ redirecţionat de la %s
 [Acasă]
 Click to search for references to this page
 Caută referinţe la această pagină
-Cookie: 
-
 Edit this page
 Editează această pagină
 Preview:

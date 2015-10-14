@@ -227,8 +227,6 @@ uudelleenohjattu sivulta %s
 [Etusivu]
 Click to search for references to this page
 Klikkaa hakeaksesi viittauksia tälle sivulle
-Cookie: 
-
 Edit this page
 Muokkaa tätä sivua
 Preview:

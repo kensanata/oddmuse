@@ -227,8 +227,6 @@ redirected from %s
 [ホーム]
 Click to search for references to this page
 クリックするとこのページへの参照を検索する
-Cookie: 
-クッキー: 
 Edit this page
 このページを編集
 Preview:
