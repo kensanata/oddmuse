@@ -1319,7 +1319,7 @@ Please indicate a page name for the translation of %s.
 
 More help may be available here: %s.
 
-Translated page: 
+Translated page:
 
 Please provide a different page name for the translation.
 
