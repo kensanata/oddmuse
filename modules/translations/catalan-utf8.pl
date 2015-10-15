@@ -651,9 +651,9 @@ Pages without a Cluster
 Pàgines sense Cluster
 Comments:
 
-Comments on 
+Comments on
 
-Comment on 
+Comment on
 
 Compilation for %s
 Compilació per %s

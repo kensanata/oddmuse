@@ -649,9 +649,9 @@ Pages without a Cluster
 
 Comments:
 
-Comments on 
+Comments on
 Commenti su
-Comment on 
+Comment on
 Commento su
 Compilation for %s
 Compilazione per %s

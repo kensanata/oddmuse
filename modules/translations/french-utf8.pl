@@ -655,9 +655,9 @@ Pages without a Cluster
 Pages sans Faisceau
 Comments:
 Commentaires :
-Comments on 
+Comments on
 Commentaires sur
-Comment on 
+Comment on
 Commentaire sur
 Compilation for %s
 Compilation pour %s

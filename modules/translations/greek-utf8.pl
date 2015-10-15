@@ -649,10 +649,10 @@ Pages without a Cluster
 Σελίδες που δεν ανήκουν σε κάποιο Cluster
 Comments:
 
-Comments on 
-Σχόλια για το 
-Comment on 
-Σχόλιο για το 
+Comments on
+Σχόλια για το
+Comment on
+Σχόλιο για το
 Compilation for %s
 Συλλογή για το  %s
 Compilation tag is missing a regular expression.

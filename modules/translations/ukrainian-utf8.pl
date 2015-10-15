@@ -649,9 +649,9 @@ Pages without a Cluster
 
 Comments:
 
-Comments on 
+Comments on
 Коментарі до
-Comment on 
+Comment on
 Коментувати
 Compilation for %s
 Компіляція для %s

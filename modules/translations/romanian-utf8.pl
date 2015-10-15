@@ -649,9 +649,9 @@ Pages without a Cluster
 
 Comments:
 
-Comments on 
+Comments on
 Comentarii la
-Comment on 
+Comment on
 Comentariu la
 Compilation for %s
 

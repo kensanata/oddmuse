@@ -649,9 +649,9 @@ Pages without a Cluster
 클러스터 없는 페이지들
 Comments:
 
-Comments on 
+Comments on
 
-Comment on 
+Comment on
 
 Compilation for %s
 
