@@ -223,7 +223,7 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 from %s
 自 %s
 redirected from %s
-由 %s 轉址 
+由 %s 轉址
 %s:
 
 [Home]
