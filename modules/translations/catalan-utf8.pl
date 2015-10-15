@@ -76,11 +76,11 @@ No items found in %s.
  . . . . 
 
 Click to edit this page
-Clic per a editar aquesta pàgina 
+Clic per a editar aquesta pàgina
 CGI Internal error: %s
 Error intern de CGI: %s
 Invalid action parameter %s
-Paràmetre d'acció %s no vàlid 
+Paràmetre d'acció %s no vàlid
 Page name is missing
 Nom de pàgina perdut
 Page name is too long: %s

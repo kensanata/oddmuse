@@ -582,7 +582,7 @@ Regular expression:
 These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Consider banning the IP number as well:
-Также вы можете забанить IP адрес: 
+Также вы можете забанить IP адрес:
 Regular expression "%1" matched "%2" on this page.
 
 Regular expression "%s" matched on this page.

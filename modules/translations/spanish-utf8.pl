@@ -157,7 +157,7 @@ rollback
 new
 nuevo
 All changes for %s
-Todos los cambios para 
+Todos los cambios para %s
 This page is too big to send over RSS.
 Esta página es demasiado grande para enviar a RSS
 History of %s
@@ -191,7 +191,7 @@ Rollback of %s would restore banned content.
 Rollback to %s
 Rollback a %s
 %s rolled back
-Rollback hecho para %s 
+Rollback hecho para %s
 to %s
 a %s
 Index of all pages
@@ -517,7 +517,7 @@ Demasiadas conexiones por %s
 Please do not fetch more than %1 pages in %2 seconds.
 Por favor, no visites más de %1 páginas en %2 segundos.
 Check whether the web server can create the directory %s and whether it can create files in it.
-Comprueba si el servidor web puede crear el directorio %s y si puede crear archivos en él. 
+Comprueba si el servidor web puede crear el directorio %s y si puede crear archivos en él.
 , see
 
 The two revisions are the same.
@@ -525,7 +525,7 @@ Las dos revisiones son iguales.
 Deleting %s
 Borrando %s
 Deleted %s
-Borrando 
+Borrando %s
 Renaming %1 to %2.
 Renombrando %1 a %2.
 The page %s does not exist

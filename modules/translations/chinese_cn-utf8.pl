@@ -697,7 +697,7 @@ Spammed pages
 Cannot find revision %s.
 无法获得版本%s。
 Revert to revision %1: %2
-恢复至版本 %1: %2 
+恢复至版本 %1: %2
 Marked as %s.
 标记为%s。
 Cannot find unspammed revision.

@@ -102,7 +102,7 @@ Modifiche da %s
 up to %s
 
 Updates in the last %s days
-Modifiche negli ultimi %s giorni 
+Modifiche negli ultimi %s giorni
 Updates in the last day
 Modifiche nell'ultimo giorno
 for %s only
