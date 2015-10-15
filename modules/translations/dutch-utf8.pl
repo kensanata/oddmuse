@@ -1180,8 +1180,8 @@ You have banned your own IP.
 
 Orphan List
 Lijst met Wezen
-Trail: 
-Spoor: 
+Trail:
+Spoor:
 None
 Geen
 Type

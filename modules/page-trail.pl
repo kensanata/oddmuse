@@ -54,7 +54,7 @@ sub UpdatePageTrail {
 
 sub NewPageTrailGetGotoBar {
   my $bar = OldPageTrailGetGotoBar(@_);
-  $bar .= $q->span({-class=>'trail'}, $q->br(), T('Trail: '),
+  $bar .= $q->span({-class=>'trail'}, $q->br(), T('Trail:') . ' ',
 		   map { GetPageLink($_) } reverse(@PageTrail))
     if @PageTrail;
   return $bar;

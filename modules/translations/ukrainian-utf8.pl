@@ -1171,7 +1171,7 @@ You have banned your own IP.
 Ви заборонили власний IP.
 Orphan List
 
-Trail: 
+Trail:
 Слід:
 None
 Немає

@@ -1173,8 +1173,8 @@ You have banned your own IP.
 Sie haben ihre eigene IP Nummer verbannt.
 Orphan List
 Liste der Waisen
-Trail: 
-Weg: 
+Trail:
+Weg:
 None
 Keiner
 Type

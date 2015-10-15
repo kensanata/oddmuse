@@ -1173,7 +1173,7 @@ You have banned your own IP.
 Zablokowałeś własny numer ip.
 Orphan List
 Lista Sierot
-Trail: 
+Trail:
 Ślad:
 None
 Żaden

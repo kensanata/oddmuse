@@ -1177,7 +1177,7 @@ You have banned your own IP.
 Vous avez banni votre propre IP.
 Orphan List
 Liste Orpheline
-Trail: 
+Trail:
 Trace :
 None
 Aucune

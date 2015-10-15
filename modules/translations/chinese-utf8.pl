@@ -1174,7 +1174,7 @@ You have banned your own IP.
 您禁止了自已的 IP Address
 Orphan List
 孤立頁面列表
-Trail: 
+Trail:
 行經頁面:
 None
 不指定
