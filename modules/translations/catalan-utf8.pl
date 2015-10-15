@@ -1369,6 +1369,6 @@ Edit %s.
 Editar %s.
 Title: 
 
-Tags: 
+Tags:
 
 END_OF_TRANSLATION

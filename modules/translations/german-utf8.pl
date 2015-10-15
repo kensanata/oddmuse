@@ -1369,6 +1369,6 @@ Edit %s.
 %s bearbeiten.
 Title: 
 Titel: 
-Tags: 
-Tags: 
+Tags:
+Tags:
 END_OF_TRANSLATION

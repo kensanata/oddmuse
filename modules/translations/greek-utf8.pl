@@ -1367,6 +1367,6 @@ Edit %s.
 Επεξεργασία του %s.
 Title: 
 Τίτλος: 
-Tags: 
-Ετικέτες: 
+Tags:
+Ετικέτες:
 END_OF_TRANSLATION
