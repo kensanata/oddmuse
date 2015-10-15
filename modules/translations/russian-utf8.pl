@@ -1101,7 +1101,7 @@ Please note that this module does not handle situations when your problem is cau
 
 Good luck fixing your problem! ;)
 Удачи в решении вашей проблемы! ;)
-Module count (only testable modules): 
+Module count (only testable modules):
 Количество модулей (только тестируемые модули):
 Current module statuses:
 

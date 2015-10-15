@@ -102,7 +102,7 @@ sub BisectProcess {
     print $q->end_form();
     return;
   }
-  print T('Module count (only testable modules): '), $q->strong(scalar @files), $q->br();
+  print T('Module count (only testable modules):'), ' ', $q->strong(scalar @files), $q->br();
   print $q->br(), T('Current module statuses:'), $q->br();
   my $halfsize = ($end - $start + 1) / 2.0; # + 1 because it is count
   $end -= int($halfsize) unless $isGood;

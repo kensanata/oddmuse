@@ -1097,7 +1097,7 @@ Please note that this module does not handle situations when your problem is cau
 Bitte beachten Sie, dass dieses Module das Problem nicht isolieren kann, wenn es durch das gemeinsame Installieren mehrerer Module auftaucht.
 Good luck fixing your problem! ;)
 Viel Glück beim Beheben des Problems! ;)
-Module count (only testable modules): 
+Module count (only testable modules):
 Anzahl Module, die getestet werden können:
 Current module statuses:
 Aktueller Status der Module:
