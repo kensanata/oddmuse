@@ -943,8 +943,8 @@ URL:
 URL:
 Define Local Names
 Lokalen Namen definieren
-Define external redirect: 
-Umleitung auf eine externe Seite definieren: 
+Define external redirect:
+Umleitung auf eine externe Seite definieren:
  -- defined on %s
  -- definiert auf der Seite %s
 Local names defined on %1: %2
