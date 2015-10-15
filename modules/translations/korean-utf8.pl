@@ -216,7 +216,7 @@ Actions:
 Important pages:
 중요한 페이지들:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-특정 페이지를 삭제 요청페이지로 하려면, <strong>%s</strong> 를 첫줄에 입력하세요. 
+특정 페이지를 삭제 요청페이지로 하려면, <strong>%s</strong> 를 첫줄에 입력하세요.
 from %s
 %s 로 부터
 redirected from %s

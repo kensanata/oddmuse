@@ -366,7 +366,7 @@ przed chwilką
 Only administrators can upload files.
 Tylko administrator może wgrywać pliki.
 Editing revision %s of
-Edytowanie wersji %s strony 
+Edytowanie wersji %s strony
 Editing %s
 Edytowanie %s
 Editing old revision %s.

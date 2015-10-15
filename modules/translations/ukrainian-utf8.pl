@@ -66,7 +66,7 @@ diff
 history
 історія
 %s returned no data, or LWP::UserAgent is not available.
-%s повернув порожню відповідь, або LWP::UserAgent не доступний. 
+%s повернув порожню відповідь, або LWP::UserAgent не доступний.
 RSS parsing failed for %s
 Не вдалось проаналізувати RSS для %s
 No items found in %s.

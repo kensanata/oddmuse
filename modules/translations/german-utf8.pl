@@ -578,7 +578,7 @@ Regulärer Ausdruck:
 These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 Diese URLs wurden rückgängig gemacht. Vielleicht wollen Sie einen passenden regulären Ausdruck zu %s hinzufügen?
 Consider banning the IP number as well:
-Überlegen Sie sich, ob Sie die IP Nummer ebenfalls sperren wollen: 
+Überlegen Sie sich, ob Sie die IP Nummer ebenfalls sperren wollen:
 Regular expression "%1" matched "%2" on this page.
 Regulärer Ausdruck "%1" passt zu "%2" auf dieser Seite.
 Regular expression "%s" matched on this page.

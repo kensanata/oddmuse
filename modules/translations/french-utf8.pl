@@ -74,7 +74,7 @@ historique
 %s returned no data, or LWP::UserAgent is not available.
 %s n’a pas retourné de données, ou LWP::UserAgent n’est pas disponible.
 RSS parsing failed for %s
-L’analyse du RSS de %s a échoué 
+L’analyse du RSS de %s a échoué
 No items found in %s.
 Pas d’objets trouvés dans %s.
  . . . . 
@@ -228,7 +228,7 @@ depuis %s
 redirected from %s
 redirigé(e) à partir de %s
 %s:
-%s : 
+%s :
 [Home]
 [Accueil]
 Click to search for references to this page
@@ -648,7 +648,7 @@ décembre
 set %s
 paramétrer %s
 unset %s
-dé-paramétrer %s 
+dé-paramétrer %s
 Clustermap
 Carte du Faisceau
 Pages without a Cluster
@@ -1118,7 +1118,7 @@ Module Updater
 Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
-Vous avez créé plus de %s liens vers le même domaine. Il semble que seuls les spammeurs font cela. Votre édition est donc refusée. 
+Vous avez créé plus de %s liens vers le même domaine. Il semble que seuls les spammeurs font cela. Votre édition est donc refusée.
 %s is not a legal name for a namespace
 %s n’est pas un nom valide pour un espace de noms
 Namespaces
@@ -1128,7 +1128,7 @@ Récupération du fichier d'index de %s.
 Near links:
 Liens de proximité :
 Search sites on the %s as well
-Rechercher aussi les sites présents sur %s 
+Rechercher aussi les sites présents sur %s
 Fetching results from %s:
 Récupération des résultats à partir de %s :
 Near pages:

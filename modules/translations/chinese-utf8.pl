@@ -681,7 +681,7 @@ SPAM 廣告頁面
 Cannot find revision %s.
 無法取得版本 %s 。
 Revert to revision %1: %2
-回滾至版本 %1: %2 
+回滾至版本 %1: %2
 Marked as %s.
 標記為 %s 。
 Cannot find unspammed revision.
