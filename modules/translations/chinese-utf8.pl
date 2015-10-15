@@ -518,7 +518,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 請不要在 %2 秒內抓取超過 %1 頁的資料。
 Check whether the web server can create the directory %s and whether it can create files in it.
 請確認網站伺服器是否可建立 %s 目錄，並且在其中建立檔案。
-, see 
+, see
 
 The two revisions are the same.
 二個版本相同

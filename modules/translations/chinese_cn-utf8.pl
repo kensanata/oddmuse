@@ -534,7 +534,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 请不要在 %2 秒内下载超过 %1 页的数据。
 Check whether the web server can create the directory %s and whether it can create files in it.
 请确认网站服务器是否可建立%s目录，并且在其中建立文件。
-, see 
+, see
 
 The two revisions are the same.
 两个版本相同

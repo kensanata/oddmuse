@@ -515,7 +515,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 %s 초 이내에 %1 페이지 이상을 덧붙이지 마세요.
 Check whether the web server can create the directory %s and whether it can create files in it.
 웹서버가 디렉토리 %s 를 생성하고 그 안에 파일을 생성할 수 있는지 확인하여 주세요.
-, see 
+, see
 
 The two revisions are the same.
 이 두개의 리비젼은 동일합니다.

@@ -515,7 +515,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 Будь ласка, не зчитуйте більше ніж %1 сторінок за %2 секунд.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Перевірте, чи може веб сервер створити директорію %s і чи може він створювати в ній файли.
-, see 
+, see
 
 The two revisions are the same.
 Дві версії однакові.

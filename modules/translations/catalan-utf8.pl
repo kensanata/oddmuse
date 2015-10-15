@@ -517,7 +517,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 Si us plau, no visitis més de %1 pàgines en %s segons.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Comprova si el servidor web pot crear el directori %s i si pot crear arxius dins d'ell.
-, see 
+, see
 
 The two revisions are the same.
 Les dues revisions són iguals.

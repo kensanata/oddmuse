@@ -519,7 +519,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 Vänligen hämta inte mer än %1 sidor på %2 sekunder.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Kontrollera att webservern kan skapa biblioteket %s och att den kan skapa filer i det.
-, see 
+, see
 
 The two revisions are the same.
 De två versionerna är identiska.

@@ -515,7 +515,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 Vă rugăm să nu accesaţi mai mult de %1 pagini în %2 secunde.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-, see 
+, see
 
 The two revisions are the same.
 

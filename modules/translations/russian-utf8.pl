@@ -521,8 +521,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 Пожалйуста, не запрашивайте более %1 страниц в течение %2 секунд.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-, see 
-, смотрите 
+, see
+, смотрите
 The two revisions are the same.
 Заданы одинаковые версии страницы
 Deleting %s
