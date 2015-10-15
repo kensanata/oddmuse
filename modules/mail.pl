@@ -106,7 +106,7 @@ sub MailFormAddition {
       . ScriptLink("action=subscribe;pages=$id", T('subscribe'), 'subscribe');
   }
   $addition = $q->span({-class=>'mail'},
-	       $q->label({-for=>'mail'}, T('Email: '))
+	       $q->label({-for=>'mail'}, T('Email:') . ' ')
 	       . ' ' . $q->textfield(-name=>'mail', -id=>'mail',
 				     -default=>GetParam('mail', ''))
 		       . $addition);

@@ -767,8 +767,8 @@ All Pages +1
 
 This page lists the twenty last diary entries and their +1 buttons.
 
-Email: 
-E-mail : 
+Email:
+E-mail :
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
 Only Editors are allowed to see this hidden page.

@@ -761,7 +761,7 @@ All Pages +1
 
 This page lists the twenty last diary entries and their +1 buttons.
 
-Email: 
+Email:
 
 Could not find %1.html template in %2
 Не вдалось знайти шаблон %1.html в %2
