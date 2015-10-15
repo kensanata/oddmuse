@@ -1370,6 +1370,6 @@ Edit %s.
 編輯 %s
 Title: 
 標題:
-Tags: 
+Tags:
 標籤:
 END_OF_TRANSLATION

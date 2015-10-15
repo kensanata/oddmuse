@@ -1370,6 +1370,6 @@ Edit %s.
 Editar %s.
 Title: 
 Título:
-Tags: 
-Etiquetas: 
+Tags:
+Etiquetas:
 END_OF_TRANSLATION

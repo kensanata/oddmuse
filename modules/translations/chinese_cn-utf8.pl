@@ -1386,6 +1386,6 @@ Edit %s.
 编辑%s。
 Title: 
 标题：
-Tags: 
+Tags:
 标签：
 END_OF_TRANSLATION

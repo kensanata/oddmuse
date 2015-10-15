@@ -1373,6 +1373,6 @@ Edit %s.
 Éditer %s.
 Title: 
 Titre :
-Tags: 
+Tags:
 Tags :
 END_OF_TRANSLATION

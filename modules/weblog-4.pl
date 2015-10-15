@@ -67,8 +67,8 @@ sub DoNewPage {
     print $q->p(T('Title: '),
 		qq{<input type="text" name="id" value="$today" tabindex="1" />},
 		GetHiddenValue('action', 'new'));
-    print $q->p(T('Tags: '),
-		qq{<input type="text" name="tags" tabindex="2" />});
+    print $q->p(T('Tags:') . ' '
+		. qq{<input type="text" name="tags" tabindex="2" />});
     print $q->p(qq{<input type="submit" value="$go" tabindex="3" />});
     print $q->end_form, $q->end_div();
     PrintFooter();

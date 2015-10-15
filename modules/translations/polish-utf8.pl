@@ -1369,6 +1369,6 @@ Edit %s.
 Edycja %s.
 Title: 
 Tytuł:
-Tags: 
+Tags:
 Znaczniki:
 END_OF_TRANSLATION
