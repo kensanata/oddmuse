@@ -520,7 +520,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-, see 
+, see
 
 The two revisions are the same.
 

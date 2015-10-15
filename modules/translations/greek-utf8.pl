@@ -515,7 +515,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 Παρακαλώ μη φορτώνετε πάνω από %s σελίδες σε λιγότερο από %2 δευτερόλεπτα.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Επιβεβαιώστε ότι ο εξυπηρετητής web μπορεί να δημιουργήσει τον κατάλογο %s και να δημιουργήσει αρχεία σε αυτόν.
-, see 
+, see
 
 The two revisions are the same.
 Οι δύο εκδόσεις είναι πανομοιότυπες.

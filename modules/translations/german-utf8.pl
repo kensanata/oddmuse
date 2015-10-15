@@ -513,8 +513,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Vielleicht kann der Webserver das Verzeichnis %s nicht anlegen oder es wurde schon angelegt, aber der Webserver kann darin keine neuen Dateien anlegen.
-, see 
-, siehe 
+, see
+, siehe
 The two revisions are the same.
 Es gibt keinen Unterschied zwischen den beiden Versionen.
 Deleting %s

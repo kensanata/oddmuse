@@ -524,7 +524,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 Haal a.u.b. niet meer dan %s pagina's op in %2 seconden.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-, see 
+, see
 
 The two revisions are the same.
 

@@ -515,7 +515,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 %2 秒間に %1 ページより多く取得しないでください。
 Check whether the web server can create the directory %s and whether it can create files in it.
 ウェブサーバが %s ディレクトリを作れるかどうかを、またウェブサーバがそのディレクトリの中にファイルを作れるかどうかを、確認してください。
-, see 
+, see
 
 The two revisions are the same.
 2つのリビジョンは同じです。

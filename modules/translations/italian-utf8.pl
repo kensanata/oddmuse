@@ -515,7 +515,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 Prego non richiedere più di %1 pagine in %2 secondi.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Verificare se il server web può creare la directory %s e se può crearvi file dentro.
-, see 
+, see
 
 The two revisions are the same.
 

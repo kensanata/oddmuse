@@ -515,7 +515,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 älä avaa yli %1 sivua %2 sekunnin aikana.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Tarkista voiko www-palvelin luoda hakemiston %s ja voiko se luoda sivuja tähän hakemistoon.
-, see 
+, see
 
 The two revisions are the same.
 

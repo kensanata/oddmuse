@@ -4067,7 +4067,7 @@ sub AddModuleDescription { # cannot use $q here because this is module init time
   my $src = "http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/$dir" . UrlEncode($filename) . ($tag ? '?' . $tag : '');
   my $doc = 'http://www.oddmuse.org/cgi-bin/oddmuse/' . UrlEncode(FreeToNormal($page));
   $ModulesDescription .= "<p><a href=\"$src\">" . QuoteHtml($filename) . "</a>" . ($tag ? " ($tag)" : '');
-  $ModulesDescription .= T(', see ') . "<a href=\"$doc\">" . QuoteHtml($page) . "</a>" if $page;
+  $ModulesDescription .= T(', see') . " <a href=\"$doc\">" . QuoteHtml($page) . "</a>" if $page;
   $ModulesDescription .= "</p>";
 }
 

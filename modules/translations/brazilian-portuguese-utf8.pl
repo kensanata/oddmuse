@@ -518,8 +518,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 Por favor, abra mais do que %1 páginas em %2 segundos.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Verifique se o servidor web pode criar o diretório %s e se pode criar arquivos nele.
-, see 
-, veja 
+, see
+, veja
 The two revisions are the same.
 As duas versões são idênticas.
 Deleting %s
