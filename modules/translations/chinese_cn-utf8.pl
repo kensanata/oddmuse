@@ -954,9 +954,9 @@ Template without parameters
 未指定 template 参数
 The template %s is either empty or does not exist.
 模板%s可能为空或不存在。
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

@@ -935,9 +935,9 @@ Template without parameters
 Шаблон без параметрів
 The template %s is either empty or does not exist.
 Шаблон %s або порожній, або не існує.
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

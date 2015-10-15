@@ -935,9 +935,9 @@ Template without parameters
 파라메터 없는 템플릿
 The template %s is either empty or does not exist.
 템플릿 %s (이)가 비어있거나 존재하지 않습니다.
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

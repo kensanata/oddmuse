@@ -939,9 +939,9 @@ Template without parameters
 Mall utan parametrar
 The template %s is either empty or does not exist.
 Mallen %s är antingen tom eller saknas.
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

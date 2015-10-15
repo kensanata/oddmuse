@@ -937,9 +937,9 @@ Template without parameters
 Szablon bez parametrów
 The template %s is either empty or does not exist.
 Szablon %s albo jest pusty, albo nie istnieje.
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

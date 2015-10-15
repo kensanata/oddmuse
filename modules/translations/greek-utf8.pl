@@ -935,9 +935,9 @@ Template without parameters
 Template χωρίς παραμέτρους
 The template %s is either empty or does not exist.
 Το template %s είναι άδειο ή δεν υπάρχει.
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

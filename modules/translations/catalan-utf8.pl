@@ -937,9 +937,9 @@ Template without parameters
 Plantilla sense paràmetres
 The template %s is either empty or does not exist.
 La plantilla %s està buida o bé no existeix.
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

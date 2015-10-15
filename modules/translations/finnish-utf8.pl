@@ -935,9 +935,9 @@ Template without parameters
 Pohja ilman parametrejä
 The template %s is either empty or does not exist.
 Pohja %s on joko tyhjä tai ei ole olemassa.
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 
