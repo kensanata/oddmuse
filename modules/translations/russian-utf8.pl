@@ -561,8 +561,8 @@ Archive:
 Архив:
 Rebuild BackLink database
 
-Internal Page: 
-Внутренняя страница:
+Internal Page: %s
+Внутренняя страница: %s
 Pages that link to this page
 Страницы ссылающиеся на эту страницу
 The search parameter is missing.

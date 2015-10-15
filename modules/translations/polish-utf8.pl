@@ -557,8 +557,8 @@ Archive:
 Archiwum:
 Rebuild BackLink database
 Przebuduj spis linkujących
-Internal Page: 
-Strona Wewnętrzna: 
+Internal Page: %s
+Strona Wewnętrzna: %s
 Pages that link to this page
 Strony linkujące do tej strony
 The search parameter is missing.

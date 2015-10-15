@@ -557,8 +557,8 @@ Archive:
 Archiv:
 Rebuild BackLink database
 Liste der Rückverweise neu erstellen
-Internal Page: 
-Interne Seite: 
+Internal Page: %s
+Interne Seite: %s
 Pages that link to this page
 Seiten, die auf diese Seite verweisen
 The search parameter is missing.

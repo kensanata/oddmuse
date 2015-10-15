@@ -117,7 +117,7 @@ sub GetBackLink {
     foreach my $backlink (@backlinks) {
             my ($class, $resolved, $title, $exists) = ResolveId($backlink);
             if (($resolved ne $id) && ($resolved !~ /^($BacklinkBanned)$/)) {
-                push(@unpopped, ScriptLink(UrlEncode($resolved), $resolved, $class . ' backlink', undef, T('Internal Page: ' . $resolved)));
+                push(@unpopped, ScriptLink(UrlEncode($resolved), $resolved, $class . ' backlink', undef, Ts('Internal Page: %s', $resolved)));
             }
     }
 

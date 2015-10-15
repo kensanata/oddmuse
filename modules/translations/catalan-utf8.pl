@@ -557,7 +557,7 @@ Archive:
 Arxiu:
 Rebuild BackLink database
 Reconstruir base de dades de Retroenllaços
-Internal Page: 
+Internal Page: %s
 
 Pages that link to this page
 Pàgines que enllacen a aquesta pàgina

@@ -561,8 +561,8 @@ Archive:
 Archive :
 Rebuild BackLink database
 Rebâtir les liens de la base de données
-Internal Page: 
-Page Interne :
+Internal Page: %s
+Page Interne : %s
 Pages that link to this page
 Pages liées à cette page
 The search parameter is missing.

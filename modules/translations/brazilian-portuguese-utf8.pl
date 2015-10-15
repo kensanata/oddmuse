@@ -558,8 +558,8 @@ Archive:
 Arquivar:
 Rebuild BackLink database
 Recriar banco de dados LinkRetorno
-Internal Page: 
-Página interna:
+Internal Page: %s
+Página interna: %s
 Pages that link to this page
 Páginas que possuem links para essa página
 The search parameter is missing.

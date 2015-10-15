@@ -578,7 +578,7 @@ Archive:
 ################################################################################
 Rebuild BackLink database
 
-Internal Page: 
+Internal Page: %s
 
 Pages that link to this page
 

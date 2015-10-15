@@ -558,8 +558,8 @@ Archive:
 檔案:
 Rebuild BackLink database
 重建 BackLink 資料庫
-Internal Page: 
-內部頁面:
+Internal Page: %s
+內部頁面: %s
 Pages that link to this page
 連結此頁面
 The search parameter is missing.
