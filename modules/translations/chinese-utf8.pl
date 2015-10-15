@@ -938,9 +938,9 @@ Template without parameters
 未指定 template 參數
 The template %s is either empty or does not exist.
 範本 %s 可能為空或不存在。
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

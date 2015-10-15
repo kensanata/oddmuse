@@ -937,10 +937,10 @@ Template without parameters
 Vorlage ohne Parameter
 The template %s is either empty or does not exist.
 Die %s Vorlage ist entweder leer oder existiert gar nicht.
-Name: 
-Name: 
-URL: 
-URL: 
+Name:
+Name:
+URL:
+URL:
 Define Local Names
 Lokalen Namen definieren
 Define external redirect: 

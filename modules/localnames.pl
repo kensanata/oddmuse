@@ -396,10 +396,10 @@ sub DoDefine {
       $q->start_div({-class=>'content define'}),
 	GetFormStart(undef, 'get', 'def');
     my $go = T('Go!');
-    print $q->p($q->label({-for=>"defined"}, T('Name: ')),
+    print $q->p($q->label({-for=>"defined"}, T('Name:') . ' '),
 		$q->textfield(-name=>"name", -id=>"defined",
 			      -tabindex=>"1", -size=>20));
-    print $q->p($q->label({-for=>"definition"}, T('URL: ')),
+    print $q->p($q->label({-for=>"definition"}, T('URL:') . ' '),
 		$q->textfield(-name=>"link", -id=>"definition",
 			      -tabindex=>"2", -size=>20));
     print $q->p($q->submit(-label=>$go, -tabindex=>"3"),

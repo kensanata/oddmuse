@@ -938,9 +938,9 @@ Template without parameters
 
 The template %s is either empty or does not exist.
 
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

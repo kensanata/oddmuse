@@ -940,9 +940,9 @@ Template without parameters
 <i>Template</i> sem parâmetros
 The template %s is either empty or does not exist.
 O <i>template</i> está em branco ou não existe.
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

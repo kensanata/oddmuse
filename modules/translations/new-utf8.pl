@@ -1077,9 +1077,9 @@ The template %s is either empty or does not exist.
 ################################################################################
 # modules/localnames.pl
 ################################################################################
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 

@@ -941,9 +941,9 @@ Template without parameters
 Modèle sans paramètres
 The template %s is either empty or does not exist.
 Le modèle %s est soit vide soit n'existe pas.
-Name: 
+Name:
 
-URL: 
+URL:
 
 Define Local Names
 
