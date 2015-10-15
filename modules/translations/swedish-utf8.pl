@@ -1175,8 +1175,8 @@ You have banned your own IP.
 
 Orphan List
 Lista över övergivna sidor
-Trail: 
-Senast: 
+Trail:
+Senast:
 None
 Inga
 Type

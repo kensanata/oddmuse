@@ -1171,7 +1171,7 @@ You have banned your own IP.
 
 Orphan List
 Lista degli orfani
-Trail: 
+Trail:
 Finale:
 None
 Nessuno

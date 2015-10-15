@@ -1174,8 +1174,8 @@ You have banned your own IP.
 Você baniu seu próprio IP.
 Orphan List
 Lista de Órfãs
-Trail: 
-Rastro: 
+Trail:
+Rastro:
 None
 Nenhum
 Type

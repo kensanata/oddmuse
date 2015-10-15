@@ -1173,7 +1173,7 @@ You have banned your own IP.
 Has banejat la teva pròpia IP.
 Orphan List
 Llistat de òrfanes
-Trail: 
+Trail:
 
 None
 Cap

@@ -1171,8 +1171,8 @@ You have banned your own IP.
 
 Orphan List
 Orpojen sivujen lista
-Trail: 
-Historia: 
+Trail:
+Historia:
 None
 Ei yhtään
 Type

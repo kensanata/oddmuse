@@ -1171,8 +1171,8 @@ You have banned your own IP.
 Έχετε αποκλείσει την ίδια σας τη διεύθυνση IP.
 Orphan List
 Λίστα Ορφανών Σελίδων
-Trail: 
-Μονοπάτι: 
+Trail:
+Μονοπάτι:
 None
 Κανένα
 Type

@@ -1171,8 +1171,8 @@ You have banned your own IP.
 
 Orphan List
 
-Trail: 
-Pagini recente: 
+Trail:
+Pagini recente:
 None
 
 Type

@@ -1190,7 +1190,7 @@ You have banned your own IP.
 您已经禁止了自己的IP地址。
 Orphan List
 孤立页面列表
-Trail: 
+Trail:
 行经页面:
 None
 不指定
