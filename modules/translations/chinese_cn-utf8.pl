@@ -1338,7 +1338,7 @@ Translated page:
 已翻译页面：
 Please provide a different page name for the translation.
 
-This page is a translation of %s. 
+This page is a translation of %s.
 本页是页面%s的翻译。
 The translation is up to date.
 本页翻译符合最新的内容。

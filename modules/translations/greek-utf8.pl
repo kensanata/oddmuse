@@ -1319,8 +1319,8 @@ Translated page:
 
 Please provide a different page name for the translation.
 
-This page is a translation of %s. 
-Αυτή η σελίδα είναι μετάφραση της %s. 
+This page is a translation of %s.
+Αυτή η σελίδα είναι μετάφραση της %s.
 The translation is up to date.
 Αυτή η μετάφραση είναι ενημερωμένη με τις τελευταίες αλλαγές.
 The translation is outdated.

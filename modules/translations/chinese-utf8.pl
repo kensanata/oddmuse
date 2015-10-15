@@ -1322,7 +1322,7 @@ Translated page:
 
 Please provide a different page name for the translation.
 
-This page is a translation of %s. 
+This page is a translation of %s.
 本頁是頁面 %s 的翻譯。
 The translation is up to date.
 本頁翻譯符合最新的內容。

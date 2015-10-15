@@ -1325,7 +1325,7 @@ Translated page:
 Page traduite :
 Please provide a different page name for the translation.
 Donnez s'il vous plait un nom différent à votre traduction
-This page is a translation of %s. 
+This page is a translation of %s.
 Cette page est une traduction de %s.
 The translation is up to date.
 La traduction est à jour.

@@ -1325,8 +1325,8 @@ Translated page:
 
 Please provide a different page name for the translation.
 
-This page is a translation of %s. 
-Эта страница является переводом %s. 
+This page is a translation of %s.
+Эта страница является переводом %s.
 The translation is up to date.
 
 The translation is outdated.
