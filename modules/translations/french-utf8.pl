@@ -1371,7 +1371,7 @@ New
 Nouveau
 Edit %s.
 Éditer %s.
-Title: 
+Title:
 Titre :
 Tags:
 Tags :

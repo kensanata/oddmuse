@@ -1367,8 +1367,8 @@ New
 Neu
 Edit %s.
 %s bearbeiten.
-Title: 
-Titel: 
+Title:
+Titel:
 Tags:
 Tags:
 END_OF_TRANSLATION

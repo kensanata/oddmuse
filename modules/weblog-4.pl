@@ -64,8 +64,8 @@ sub DoNewPage {
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime();
     my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
     my $go = T('Go!');
-    print $q->p(T('Title: '),
-		qq{<input type="text" name="id" value="$today" tabindex="1" />},
+    print $q->p(T('Title:') . ' '
+		. qq{<input type="text" name="id" value="$today" tabindex="1" />},
 		GetHiddenValue('action', 'new'));
     print $q->p(T('Tags:') . ' '
 		. qq{<input type="text" name="tags" tabindex="2" />});
