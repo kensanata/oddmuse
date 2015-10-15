@@ -446,7 +446,7 @@ sub GetWantedPages {
   # if any wanted pages remain, print them
   if (@wanted) {
     return $q->div({-class=>'definition'},
-		   $q->p(T('Define external redirect: '),
+		   $q->p(T('Define external redirect:'), ' ',
 			 map { my $page = NormalToFree($_);
 			       ScriptLink('action=define;name='
 					  . UrlEncode($page),

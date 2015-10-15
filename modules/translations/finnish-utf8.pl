@@ -941,7 +941,7 @@ URL:
 
 Define Local Names
 
-Define external redirect: 
+Define external redirect:
 
  -- defined on %s
 

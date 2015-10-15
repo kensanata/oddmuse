@@ -944,7 +944,7 @@ URL:
 
 Define Local Names
 
-Define external redirect: 
+Define external redirect:
 
  -- defined on %s
  -- 在 %s 中定義
