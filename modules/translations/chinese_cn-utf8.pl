@@ -1268,8 +1268,6 @@ Feed for this tag
 订阅这个标签
 Tag Cloud
 标签云
- ... 
- ... 
 Rebuilding index not done.
 重建索引尚未完成
 (Rebuilding the index can only be done once every 12 hours.)

@@ -1252,8 +1252,6 @@ Feed for this tag
 
 Tag Cloud
 Nuvem de Etiquetas
- ... 
- ... 
 Rebuilding index not done.
 Recriação do índice não concluída.
 (Rebuilding the index can only be done once every 12 hours.)

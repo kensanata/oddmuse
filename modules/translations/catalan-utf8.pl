@@ -1251,8 +1251,6 @@ Feed for this tag
 
 Tag Cloud
 Núvol de Etiquetes
- ... 
-
 Rebuilding index not done.
 Reconstruir índex no està fet.
 (Rebuilding the index can only be done once every 12 hours.)

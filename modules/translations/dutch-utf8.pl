@@ -1258,8 +1258,6 @@ Feed for this tag
 
 Tag Cloud
 
- ... 
-
 Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)

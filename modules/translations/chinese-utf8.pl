@@ -1252,8 +1252,6 @@ Feed for this tag
 
 Tag Cloud
 標籤雲
- ... 
-
 Rebuilding index not done.
 重建索引尚未完成
 (Rebuilding the index can only be done once every 12 hours.)
