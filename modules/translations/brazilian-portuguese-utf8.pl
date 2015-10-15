@@ -74,8 +74,8 @@ RSS parsing failed for %s
 Análise RSS falhou para %s
 No items found in %s.
 Nenhum ítem encontrado em %s.
- . . . . 
- . . . . 
+ . . . .
+ . . . .
 Click to edit this page
 Clique para editar essa página
 CGI Internal error: %s

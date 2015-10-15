@@ -73,7 +73,7 @@ RSS parsing failed for %s
 Parsowanie RSS nie powiodło się dla %s
 No items found in %s.
 Nie znaleziono elementów w %s.
- . . . . 
+ . . . .
  . . . .
 Click to edit this page
 Kliknij aby edytować tę stronę

@@ -75,7 +75,7 @@ RSS parsing failed for %s
 Misslyckades med RSS-tolkningen av %s
 No items found in %s.
 Ingen information funnen i %s.
- . . . . 
+ . . . .
 
 Click to edit this page
 Klicka för att redigera den här sidan

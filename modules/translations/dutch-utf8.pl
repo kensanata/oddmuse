@@ -80,7 +80,7 @@ RSS parsing failed for %s
 Lezen van RSS is niet gelukt voor %s
 No items found in %s.
 
- . . . . 
+ . . . .
 
 Click to edit this page
 Klik hier om deze pagina aan te maken

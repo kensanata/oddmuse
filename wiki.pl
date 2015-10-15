@@ -968,7 +968,7 @@ sub RSS {
 	  $contributor =~ s/^\s+//;
 	  $contributor =~ s/\s+$//;
 	  $contributor ||= $i->{$rdfns}->{value};
-	  $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor) if $contributor;
+	  $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . .') . ' ') . $contributor) if $contributor;
 	  if ($description) {
 	    if ($description =~ /</) {
 	      $line .= $q->div({-class=>'description'}, $description);
@@ -1795,7 +1795,7 @@ sub RcHtml {
       }
     }
     $html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history,
-		    $rollback, $pagelink, T(' . . . . '), $author, $sum, $lang,
+		    $rollback, $pagelink, T(' . . . .'), $author, $sum, $lang,
 		    $edit);
   };
   ProcessRcLines($printDailyTear, $printRCLine);
@@ -2035,7 +2035,7 @@ sub GetHistoryLine {
           Ts('Revision %s', $revision));
   }
   my $host = $data{host} || $data{ip};
-  $html .= T(' . . . . ') . GetAuthorLink($host, $data{username});
+  $html .= T(' . . . .') . ' ' . GetAuthorLink($host, $data{username});
   $html .= $q->span({class=>'dash'}, ' &#8211; ')
     . $q->strong(QuoteHtml($data{summary})) if $data{summary};
   $html .= ' ' . $q->em({class=>'type'}, T('(minor)')) . ' ' if $data{minor};

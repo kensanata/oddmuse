@@ -74,7 +74,7 @@ RSS parsing failed for %s
 %s 的 RSS 解析失敗
 No items found in %s.
 在 %s 中未發現項目。
- . . . . 
+ . . . .
 
 Click to edit this page
 按此即可編輯此頁面

@@ -71,8 +71,8 @@ RSS parsing failed for %s
 Die RSS Daten von %s sind ungültig; sie können nicht verarbeitet werden
 No items found in %s.
 %s liefert keine Artikel
- . . . . 
- . . . . 
+ . . . .
+ . . . .
 Click to edit this page
 Hier klicken um die Seite zu bearbeiten
 CGI Internal error: %s

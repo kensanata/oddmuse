@@ -71,8 +71,8 @@ RSS parsing failed for %s
 %s 에 대한 RSS 파싱이 실패하였습니다.
 No items found in %s.
 %s 에서 아무런 항목도 찾지 못했습니다.
- . . . . 
- . . . . 
+ . . . .
+ . . . .
 Click to edit this page
 클릭하여 페이지를 편집합니다
 CGI Internal error: %s
