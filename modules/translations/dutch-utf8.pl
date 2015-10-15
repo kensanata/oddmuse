@@ -1246,7 +1246,7 @@ Editing not allowed for %s.
 Het wijzigen van %s is niet toegestaan.
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 

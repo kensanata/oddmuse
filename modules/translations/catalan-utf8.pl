@@ -1239,7 +1239,7 @@ Editing not allowed for %s.
 No es permet editar %s.
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 Copiar a %1 aconseguit: %2.

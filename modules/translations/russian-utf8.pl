@@ -1243,7 +1243,7 @@ Editing not allowed for %s.
 Редактирование не разрешено для %s.
 Edit image in the browser
 Отредактировать изображение в браузере
-Summary of your changes: 
+Summary of your changes:
 Описание изменений:
 Copy to %1 succeeded: %2.
 

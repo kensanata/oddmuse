@@ -1237,7 +1237,7 @@ Editing not allowed for %s.
 %s 에 대한 편집이 허용되지 않습니다.
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 

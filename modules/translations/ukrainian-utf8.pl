@@ -1237,7 +1237,7 @@ Editing not allowed for %s.
 Редагування не дозволено для %s.
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 Копіювання в %1 виконано: %2.

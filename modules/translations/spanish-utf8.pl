@@ -1240,7 +1240,7 @@ Editing not allowed for %s.
 No se permite editar %s.
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 Copiar a %1 logrado: %2.

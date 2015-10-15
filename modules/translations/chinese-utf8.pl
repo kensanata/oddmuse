@@ -1240,7 +1240,7 @@ Editing not allowed for %s.
 不允許編輯 %s 。
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 從 %2 複製到 %1 成功

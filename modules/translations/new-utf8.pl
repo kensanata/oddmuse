@@ -1480,7 +1480,7 @@ Editing not allowed for %s.
 ################################################################################
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 ################################################################################
 # modules/sync.pl
