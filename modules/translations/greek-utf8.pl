@@ -1249,8 +1249,6 @@ Feed for this tag
 
 Tag Cloud
 Σύννεφο Ετικετών
- ... 
- ... 
 Rebuilding index not done.
 Η ενημέρωση του καταλόγου δεν έχει ολοκληρωθεί ακόμη.
 (Rebuilding the index can only be done once every 12 hours.)

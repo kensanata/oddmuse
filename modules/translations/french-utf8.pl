@@ -1255,8 +1255,6 @@ Feed for this tag
 Flux pour ce tag
 Tag Cloud
 Nuage de Tags
- ... 
- ... 
 Rebuilding index not done.
 Reconstruction de l'index non effectuée.
 (Rebuilding the index can only be done once every 12 hours.)

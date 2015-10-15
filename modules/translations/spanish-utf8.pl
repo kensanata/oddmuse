@@ -1252,8 +1252,6 @@ Feed for this tag
 
 Tag Cloud
 Nube de Etiqueta
- ... 
- ... 
 Rebuilding index not done.
 Reconstruir índice no hecho
 (Rebuilding the index can only be done once every 12 hours.)

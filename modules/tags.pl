@@ -316,7 +316,7 @@ sub TagCloud {
 		 -style => 'font-size: '
 		 . int(80+120*($max == $min ? 1 : ($n-$min)/($max-$min)))
 		 . '%;',
-		}, NormalToFree($tag)), T(' ... ');
+		}, NormalToFree($tag)), ' ... ';
   }
   print '</p></div>';
   PrintFooter();

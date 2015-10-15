@@ -1251,8 +1251,6 @@ Feed for this tag
 Feed für diesen Tag
 Tag Cloud
 Tag Wolke
- ... 
- … 
 Rebuilding index not done.
 Der Index für die Suche wurde noch nicht neu erstellt.
 (Rebuilding the index can only be done once every 12 hours.)
