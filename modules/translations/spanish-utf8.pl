@@ -652,10 +652,10 @@ Pages without a Cluster
 Páginas sin Cluster
 Comments:
 
-Comments on 
-Comentarios sobre 
-Comment on 
-Comentar 
+Comments on
+Comentarios sobre
+Comment on
+Comentar
 Compilation for %s
 Compilación para %s
 Compilation tag is missing a regular expression.

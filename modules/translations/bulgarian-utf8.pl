@@ -652,9 +652,9 @@ Pages without a Cluster
 
 Comments:
 
-Comments on 
+Comments on
 
-Comment on 
+Comment on
 
 Compilation for %s
 

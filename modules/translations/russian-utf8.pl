@@ -655,10 +655,10 @@ Pages without a Cluster
 Некластеризованые страницы
 Comments:
 Комментарии:
-Comments on 
-Комментарии к 
-Comment on 
-Комментарий к 
+Comments on
+Комментарии к
+Comment on
+Комментарий к
 Compilation for %s
 
 Compilation tag is missing a regular expression.

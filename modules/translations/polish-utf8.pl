@@ -651,10 +651,10 @@ Pages without a Cluster
 Strony bez klastra
 Comments:
 
-Comments on 
+Comments on
 Komentarze na
-Comment on 
-Skomentuj 
+Comment on
+Skomentuj
 Compilation for %s
 Kompilacja dla %s
 Compilation tag is missing a regular expression.

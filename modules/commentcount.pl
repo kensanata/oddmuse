@@ -59,8 +59,8 @@ sub NewCommentcountScriptLink {
       $num = $1;
     }
     # Fix plurals
-    my $plural = T('Comments on ');
-    my $singular = T('Comment on ');
+    my $plural = T('Comments on');
+    my $singular = T('Comment on');
     $text =~ s/$plural/$singular/ if($num == 1);
     $text = $num . ' ' . $text;
   }

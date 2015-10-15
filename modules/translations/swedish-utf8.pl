@@ -653,10 +653,10 @@ Pages without a Cluster
 Sidor utan kluster
 Comments:
 
-Comments on 
-Kommentarer till 
-Comment on 
-Kommentar till 
+Comments on
+Kommentarer till
+Comment on
+Kommentar till
 Compilation for %s
 Sammanställning för %s
 Compilation tag is missing a regular expression.

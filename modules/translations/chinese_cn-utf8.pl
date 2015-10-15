@@ -668,9 +668,9 @@ Pages without a Cluster
 不包含簇的页面
 Comments:
 
-Comments on 
+Comments on
 评论关于
-Comment on 
+Comment on
 评论关于
 Compilation for %s
 %s的汇编

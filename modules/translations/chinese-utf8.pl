@@ -652,9 +652,9 @@ Pages without a Cluster
 不包含叢集頁面
 Comments:
 
-Comments on 
+Comments on
 評論關於
-Comment on 
+Comment on
 評論關於
 Compilation for %s
 %s 的彙整
