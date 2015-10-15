@@ -1368,7 +1368,7 @@ New
 新增日誌
 Edit %s.
 編輯 %s
-Title: 
+Title:
 標題:
 Tags:
 標籤:

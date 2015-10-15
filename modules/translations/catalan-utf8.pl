@@ -1367,7 +1367,7 @@ New
 Nou
 Edit %s.
 Editar %s.
-Title: 
+Title:
 
 Tags:
 

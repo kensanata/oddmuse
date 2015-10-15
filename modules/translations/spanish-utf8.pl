@@ -1368,7 +1368,7 @@ New
 Nuevo
 Edit %s.
 Editar %s.
-Title: 
+Title:
 Título:
 Tags:
 Etiquetas:

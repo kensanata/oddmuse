@@ -1365,8 +1365,8 @@ New
 Νέο
 Edit %s.
 Επεξεργασία του %s.
-Title: 
-Τίτλος: 
+Title:
+Τίτλος:
 Tags:
 Ετικέτες:
 END_OF_TRANSLATION

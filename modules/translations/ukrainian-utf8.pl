@@ -1365,7 +1365,7 @@ New
 Нова
 Edit %s.
 Редагувати %s.
-Title: 
+Title:
 
 Tags:
 

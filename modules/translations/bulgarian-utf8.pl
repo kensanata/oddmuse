@@ -1368,7 +1368,7 @@ New
 
 Edit %s.
 
-Title: 
+Title:
 
 Tags:
 

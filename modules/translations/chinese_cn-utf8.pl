@@ -1384,7 +1384,7 @@ New
 新增日志
 Edit %s.
 编辑%s。
-Title: 
+Title:
 标题：
 Tags:
 标签：

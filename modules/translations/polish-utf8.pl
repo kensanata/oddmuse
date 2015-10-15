@@ -1367,7 +1367,7 @@ New
 Nowy
 Edit %s.
 Edycja %s.
-Title: 
+Title:
 Tytuł:
 Tags:
 Znaczniki:
