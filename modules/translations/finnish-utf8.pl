@@ -71,7 +71,7 @@ RSS parsing failed for %s
 RSS-parseri epäonnistui: %s
 No items found in %s.
 No items found in %s.
- . . . . 
+ . . . .
 
 Click to edit this page
 Klikkaa muokataksesi tätä sivua

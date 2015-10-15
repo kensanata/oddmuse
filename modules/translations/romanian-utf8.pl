@@ -71,7 +71,7 @@ RSS parsing failed for %s
 
 No items found in %s.
 Nici un element găsit în %s.
- . . . . 
+ . . . .
 
 Click to edit this page
 Editează această pagină

@@ -73,7 +73,7 @@ RSS parsing failed for %s
 
 No items found in %s.
 
- . . . . 
+ . . . .
 
 Click to edit this page
 

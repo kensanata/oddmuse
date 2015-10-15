@@ -71,8 +71,8 @@ RSS parsing failed for %s
 %s のRSS解析に失敗しました
 No items found in %s.
 %s に項目がありません。
- . . . . 
- . . . . 
+ . . . .
+ . . . .
 Click to edit this page
 このページを編集するにはクリックしてください
 CGI Internal error: %s

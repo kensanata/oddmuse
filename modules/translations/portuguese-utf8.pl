@@ -76,7 +76,7 @@ RSS parsing failed for %s
 O parsing de RSS para %s falhou.
 No items found in %s.
 Não foram encontrados itens em %s.
- . . . . 
+ . . . .
 
 Click to edit this page
 Clique para editar esta página

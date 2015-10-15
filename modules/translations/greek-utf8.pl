@@ -71,8 +71,8 @@ RSS parsing failed for %s
 Η ανάλυση RSS απέτυχε για το %s
 No items found in %s.
 Δε βρέθηκαν στοιχεία στο %s.
- . . . . 
- . . . . 
+ . . . .
+ . . . .
 Click to edit this page
 Πατήστε εδώ για να επεξεργαστείτε αυτή τη σελίδα
 CGI Internal error: %s

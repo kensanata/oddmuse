@@ -71,7 +71,7 @@ RSS parsing failed for %s
 Не вдалось проаналізувати RSS для %s
 No items found in %s.
 Жодних елементів не знайдено в %s
- . . . . 
+ . . . .
  . . . .
 Click to edit this page
 Натисніть щоб відредагувати цю сторінку

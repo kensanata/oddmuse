@@ -73,7 +73,7 @@ RSS parsing failed for %s
 Anàlisi RSS va fallar per a %s
 No items found in %s.
 Ítems no trobats en %s.
- . . . . 
+ . . . .
 
 Click to edit this page
 Clic per a editar aquesta pàgina
