@@ -763,8 +763,8 @@ All Pages +1
 Alle Seiten mit Google +1 Schaltflächen
 This page lists the twenty last diary entries and their +1 buttons.
 Diese Seite führt die letzten zwanzig Tagesseiten mit ihren +1 Schaltflächen auf.
-Email: 
-Email: 
+Email:
+Email:
 Could not find %1.html template in %2
 Im Verzeichnis %2 gibt es kein %1.html Template
 Only Editors are allowed to see this hidden page.

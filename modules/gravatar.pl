@@ -53,7 +53,7 @@ sub GravatarFormAddition {
   return $html unless $type eq 'comment';
 
   my $addition = $q->span({-class=>'mail'},
-			  $q->label({-for=>'mail'}, T('Email: '))
+			  $q->label({-for=>'mail'}, T('Email:') . ' ')
 			  . ' ' . $q->textfield(-name=>'mail', -id=>'mail',
 						-default=>GetParam('mail', '')));
   $html =~ s!(name="homepage".*?)</p>!$1 $addition</p>!i;
