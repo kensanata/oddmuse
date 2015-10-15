@@ -1237,7 +1237,7 @@ Editing not allowed for %s.
 Δεν επιτρέπεται η επεξεργασία του %s.
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 Η αντιγραφή στο %1 ολοκληρώθηκε με επιτυχία: %2.

@@ -1239,7 +1239,7 @@ Editing not allowed for %s.
 Das bearbeiten von %s ist nicht erlaubt.
 Edit image in the browser
 Bild im Browser bearbeiten
-Summary of your changes: 
+Summary of your changes:
 Zusammenfassung der gemachten Änderungen:
 Copy to %1 succeeded: %2.
 Die %1 Kopie hat funktioniert: %2.

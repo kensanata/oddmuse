@@ -1243,7 +1243,7 @@ Editing not allowed for %s.
 Modification non autorisée pour %s.
 Edit image in the browser
 Éditer l'image dans le navigateur
-Summary of your changes: 
+Summary of your changes:
 Résumé de tous vos changements :
 Copy to %1 succeeded: %2.
 Copie vers %1 réussie : %2.

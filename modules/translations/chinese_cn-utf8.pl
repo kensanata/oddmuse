@@ -1256,7 +1256,7 @@ Editing not allowed for %s.
 不允许编辑%s。
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 成功复制为%1：%2

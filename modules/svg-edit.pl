@@ -88,7 +88,7 @@ $Action{svg} = \&DoSvg;
 
 sub DoSvg {
   my $id = shift;
-  my $summary = T('Summary of your changes: ');
+  my $summary = T('Summary of your changes:') . ' ';
   $HtmlHeaders .= qq{
 <script type="text/javascript">
 

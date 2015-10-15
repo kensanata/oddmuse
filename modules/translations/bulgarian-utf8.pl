@@ -1240,7 +1240,7 @@ Editing not allowed for %s.
 Редакция на %s не е разрешена.
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 

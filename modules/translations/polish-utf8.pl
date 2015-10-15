@@ -1239,7 +1239,7 @@ Editing not allowed for %s.
 Edycja %s niedozwolona.
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 Copy to %1 succeeded: %2.
 Kopiowanie do %1 udane: %2.
