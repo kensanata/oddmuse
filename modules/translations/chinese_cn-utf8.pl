@@ -357,7 +357,7 @@ unlock the wiki
 Could not get %s lock
 无法获得%s锁定
 The lock was created %s.
-为 %s 建立锁定 。	
+为 %s 建立锁定 。
 Maybe the user running this script is no longer allowed to remove the lock directory?
 
 This operation may take several seconds...
