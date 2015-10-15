@@ -1249,7 +1249,7 @@ Please note that this module does not handle situations when your problem is cau
 
 Good luck fixing your problem! ;)
 
-Module count (only testable modules): 
+Module count (only testable modules):
 
 Current module statuses:
 
