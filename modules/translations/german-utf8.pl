@@ -510,7 +510,7 @@ Informationen für die Fehlersuche
 Too many connections by %s
 Zu viele Verbindungen durch %s
 Please do not fetch more than %1 pages in %2 seconds.
-Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
+Bitte rufen Sie nicht mehr als %1 Seiten in %2 Sekunden auf.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Vielleicht kann der Webserver das Verzeichnis %s nicht anlegen oder es wurde schon angelegt, aber der Webserver kann darin keine neuen Dateien anlegen.
 , see
@@ -577,8 +577,8 @@ Regulärer Ausdruck:
 %s ist schon gesperrt
 These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 Diese URLs wurden rückgängig gemacht. Vielleicht wollen Sie einen passenden regulären Ausdruck zu %s hinzufügen?
-Consider banning the IP number as well: 
-Überlegen Sie sich, ob sie die IP Nummer ebenfalls sperren wollen: 
+Consider banning the IP number as well:
+Überlegen Sie sich, ob Sie die IP Nummer ebenfalls sperren wollen: 
 Regular expression "%1" matched "%2" on this page.
 Regulärer Ausdruck "%1" passt zu "%2" auf dieser Seite.
 Regular expression "%s" matched on this page.
@@ -790,7 +790,7 @@ Melden Sie sich mit unten stehendem Link an. Dort können Sie ein neues Passwort
 Change Email Address
 Email Adresse ändern
 To confirm changing email address, follow the link below.
-Um die neue Email Adresse zu bestätigen, folgen sie untenstehendem Link.
+Um die neue Email Adresse zu bestätigen, folgen Sie untenstehendem Link.
 To submit this form you must answer this question:
 Um dieses Formular abschicken zu können, müssen Sie folgende Frage beantworten:
 Question:
@@ -954,7 +954,7 @@ IP Nummer passt auf %s
 Register for %s
 Anmeldung für %s
 Please choose a username of the form "FirstLast" using your real name.
-Bitte verwenden sie ihren Vorname und Nachname ohne Leerzeichen ("VornameNachname") als ihren Benutzernamen.
+Bitte verwenden Sie ihren Vorname und Nachname ohne Leerzeichen ("VornameNachname") als ihren Benutzernamen.
 The passwords do not match.
 Das Passwort stimmt nicht mit der Kopie überein.
 The password must be at least %s characters.
@@ -1156,7 +1156,7 @@ Offline zur Verfügung stellen
 Offline
 Offline
 You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
-Sie sind im Moment offline und was sie verlangt haben, ist nicht Teil der Offline Applikation. Hierfür müssen sie online sein.
+Sie sind im Moment offline und was Sie verlangt haben, ist nicht Teil der Offline Applikation. Hierfür müssen Sie online sein.
 LocalMap
 LocalMap
 No page id for action localmap

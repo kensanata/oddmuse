@@ -594,7 +594,7 @@ Regular expression:
 
 These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
-Consider banning the IP number as well: 
+Consider banning the IP number as well:
 
 Regular expression "%1" matched "%2" on this page.
 
