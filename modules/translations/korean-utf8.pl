@@ -364,7 +364,7 @@ just now
 Only administrators can upload files.
 오직 관리자만이 파일을 업로드할 수 있습니다.
 Editing revision %s of
-리비젼 %s를 편집 - 
+리비젼 %s를 편집 -
 Editing %s
 %s 를 편집
 Editing old revision %s.
@@ -488,7 +488,7 @@ Moving part of the %s log file.
 Could not open %s log file
 %s 로그 파일을 열 수 없었습니다.
 Error was
-오류는 
+오류는
 Note: This error is normal if no changes have been made.
 주의: 변경이 전혀 없었다면 이 오류는 정상적인 것입니다.
 Moving %s log entries.
