@@ -558,8 +558,8 @@ Archive:
 Archivo:
 Rebuild BackLink database
 Reconstruir base de datos de Retroenlaces
-Internal Page: 
-Página interna: 
+Internal Page: %s
+Página interna: %s
 Pages that link to this page
 Páginas que enlazan a esta página
 The search parameter is missing.

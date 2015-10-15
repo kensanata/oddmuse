@@ -555,8 +555,8 @@ Archive:
 Αρχείο:
 Rebuild BackLink database
 Ανανέωση της βάσης των BackLink
-Internal Page: 
-Εσωτερική Σελίδα: 
+Internal Page: %s
+Εσωτερική Σελίδα: %s
 Pages that link to this page
 Σελίδες με συνδέσμους προς αυτή τη σελίδα
 The search parameter is missing.

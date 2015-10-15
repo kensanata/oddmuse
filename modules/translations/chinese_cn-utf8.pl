@@ -574,8 +574,8 @@ Archive:
 存档：
 Rebuild BackLink database
 重建BackLink数据库
-Internal Page: 
-内部页面：
+Internal Page: %s
+内部页面： %s
 Pages that link to this page
 本页的链接页面
 The search parameter is missing.
