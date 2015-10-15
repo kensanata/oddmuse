@@ -1321,7 +1321,7 @@ Please indicate a page name for the translation of %s.
 Indiquez s'il vous plaît un nom de page pour la traduction de %s.
 More help may be available here: %s.
 Plus d'aide disponible ici : %s.
-Translated page: 
+Translated page:
 Page traduite :
 Please provide a different page name for the translation.
 Donnez s'il vous plait un nom différent à votre traduction

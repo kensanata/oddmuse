@@ -202,7 +202,7 @@ sub DoTranslationLink {
     if (defined $q->param('target') and $error) {
       print $q->div({-class=>'message'}, $q->p($error));
     }
-    print $q->p($q->label({-for=>'target'}, T('Translated page: ')),
+    print $q->p($q->label({-for=>'target'}, T('Translated page:')), ' ',
 		$q->textfield('target', '', 40),
 		# don't use $q->hidden or you'll get encoding errors
 		$q->input({-type=>'hidden', -name=>'id',

@@ -1334,7 +1334,7 @@ Please indicate a page name for the translation of %s.
 请指定 %s 的翻译页面名称
 More help may be available here: %s.
 在 %s 查找更多帮助
-Translated page: 
+Translated page:
 已翻译页面：
 Please provide a different page name for the translation.
 
