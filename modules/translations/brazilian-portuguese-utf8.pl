@@ -1322,8 +1322,8 @@ Translated page:
 
 Please provide a different page name for the translation.
 
-This page is a translation of %s. 
-Esta página é uma tradução de %s. 
+This page is a translation of %s.
+Esta página é uma tradução de %s.
 The translation is up to date.
 A tradução está atualizada.
 The translation is outdated.

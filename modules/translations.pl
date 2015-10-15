@@ -47,9 +47,9 @@ sub GetTranslationLink {
   $id =~ s/^\s+//;		# Trim extra spaces
   $id =~ s/\s+$//;
   $id     = FreeToNormal($id);
-  $result = Ts('This page is a translation of %s. ', GetPageOrEditLink( $id, '', 0, 1));
+  $result = Ts('This page is a translation of %s.', GetPageOrEditLink( $id, '', 0, 1));
+  $result .= ' ';
   $currentRevision = GetCurrentPageRevision($id);
-
   if ($currentRevision == $revision) {
     $result .= T("The translation is up to date.");
   } elsif ( $currentRevision > $revision ) {

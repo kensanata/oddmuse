@@ -1323,8 +1323,8 @@ Translated page:
 
 Please provide a different page name for the translation.
 
-This page is a translation of %s. 
-Denna sida är en översättning av %s. 
+This page is a translation of %s.
+Denna sida är en översättning av %s.
 The translation is up to date.
 Denna översättning är aktuell.
 The translation is outdated.

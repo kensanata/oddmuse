@@ -1319,7 +1319,7 @@ Translated page:
 
 Please provide a different page name for the translation.
 
-This page is a translation of %s. 
+This page is a translation of %s.
 Questa pagina è una traduzione di %s.
 The translation is up to date.
 La traduzione è aggiornata.

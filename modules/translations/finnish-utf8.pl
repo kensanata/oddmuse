@@ -1319,7 +1319,7 @@ Translated page:
 
 Please provide a different page name for the translation.
 
-This page is a translation of %s. 
+This page is a translation of %s.
 
 The translation is up to date.
 Käännös on ajantasainen.

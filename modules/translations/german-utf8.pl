@@ -1321,8 +1321,8 @@ Translated page:
 Übersetzte Seite:
 Please provide a different page name for the translation.
 Die Übersetzung darf nicht gleich heissen.
-This page is a translation of %s. 
-Diese Seite ist eine Übersetzung von %s. 
+This page is a translation of %s.
+Diese Seite ist eine Übersetzung von %s.
 The translation is up to date.
 Die Übersetztung ist aktuell.
 The translation is outdated.
