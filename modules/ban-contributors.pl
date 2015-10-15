@@ -153,7 +153,7 @@ sub NewBanContributorsWriteRcLog {
 		  $q->submit(T('Ban!'))),
 	    $q->end_form();
     };
-    print $q->p(T("Consider banning the IP number as well: "),
+    print $q->p(T("Consider banning the IP number as well:"), ' ',
 		ScriptLink('action=ban;id=' . UrlEncode($id), T('Ban contributors')));
   };
   return OldBanContributorsWriteRcLog(@_);
