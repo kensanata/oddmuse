@@ -790,7 +790,7 @@ Melden Sie sich mit unten stehendem Link an. Dort können Sie ein neues Passwort
 Change Email Address
 Email Adresse ändern
 To confirm changing email address, follow the link below.
-Um die neue Email Adresse zu bestätigen, folgen sie untenstehendem Link. 
+Um die neue Email Adresse zu bestätigen, folgen sie untenstehendem Link.
 To submit this form you must answer this question:
 Um dieses Formular abschicken zu können, müssen Sie folgende Frage beantworten:
 Question:
