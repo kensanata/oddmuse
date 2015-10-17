@@ -128,6 +128,7 @@ our $SummaryHours = 4;              # Hours to offer the old subject when editin
 our $SummaryDefaultLength = 150;    # Length of default text for summary (0 to disable)
 our $ShowEdits   = 0;               # 1 = major and show minor edits in recent changes
 our $ShowAll     = 0;               # 1 = show multiple edits per page in recent changes
+our $ShowRollbacks = 0;             # 1 = show rollbacks in recent changes
 our $RecentLink  = 1;               # 1 = link to usernames
 our $PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
 our $InterWikiMoniker = '';        	# InterWiki prefix for this wiki for RSS
@@ -1517,7 +1518,7 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
 }
 
 sub LatestChanges {
-  my $all = GetParam('all', 0);
+  my $all = GetParam('all', $ShowAll);
   my @result = @_;
   my %seen = ();
   for (my $i = $#result; $i >= 0; $i--) {
@@ -1543,7 +1544,7 @@ sub LatestChanges {
 
 sub StripRollbacks {
   my @result = @_;
-  if (not (GetParam('all', 0) or GetParam('rollback', 0))) { # strip rollbacks
+  if (not (GetParam('all', $ShowAll) or GetParam('rollback', $ShowRollbacks))) { # strip rollbacks
     my (%rollback);
     for (my $i = $#result; $i >= 0; $i--) {
       # some fields have a different meaning if looking at rollbacks
@@ -1643,9 +1644,9 @@ sub ProcessRcLines {
 sub RcHeader {
   my ($from, $upto, $html) = (GetParam('from', 0), GetParam('upto', 0), '');
   my $days = GetParam('days') + 0 || $RcDefault; # force numeric $days
-  my $all = GetParam('all', 0);
-  my $edits = GetParam('showedit', 0);
-  my $rollback = GetParam('rollback', 0);
+  my $all = GetParam('all', $ShowAll);
+  my $edits = GetParam('showedit', $ShowEdits);
+  my $rollback = GetParam('rollback', $ShowRollbacks);
   if ($from) {
     $html .= $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))) . ' '
 		    . ($upto ? Ts('up to %s', TimeToText($upto)) : ''));
@@ -1717,8 +1718,8 @@ sub GetScriptUrlWithRcParameters {
 sub GetFilterForm {
   my $form = $q->strong(T('Filters'));
   $form .= $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
-  $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if (GetParam('all', 0));
-  $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
+  $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if (GetParam('all', $ShowAll));
+  $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', $ShowEdits));
   if (GetParam('days', $RcDefault) != $RcDefault) {
     $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)});
   }
@@ -1742,7 +1743,7 @@ sub GetFilterForm {
 sub RcHtml {
   my ($html, $inlist) = ('', 0);
   # Optimize param fetches and translations out of main loop
-  my $all = GetParam('all', 0);
+  my $all = GetParam('all', $ShowAll);
   my $admin = UserIsAdmin();
   my $rollback_was_possible = 0;
   my $printDailyTear = sub {
@@ -1840,7 +1841,7 @@ sub RcTextRevision {
   my($id, $ts, $host, $username, $summary, $minor, $revision,
      $languages, $cluster, $last) = @_;
   my $link = $ScriptName
-    . (GetParam('all', 0) && ! $last
+    . (GetParam('all', $ShowAll) && ! $last
        ? '?' . GetPageParameters('browse', $id, $revision, $cluster, $last)
        : ($UsePathInfo ? '/' : '?') . UrlEncode($id));
   print "\n", RcTextItem('title', NormalToFree($id)),
