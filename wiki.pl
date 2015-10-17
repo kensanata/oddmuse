@@ -127,6 +127,7 @@ our $KeepMajor   = 1;               # 1 = keep at least one major rev when expir
 our $SummaryHours = 4;              # Hours to offer the old subject when editing a page
 our $SummaryDefaultLength = 150;    # Length of default text for summary (0 to disable)
 our $ShowEdits   = 0;               # 1 = major and show minor edits in recent changes
+our $ShowAll     = 0;               # 1 = show multiple edits per page in recent changes
 our $RecentLink  = 1;               # 1 = link to usernames
 our $PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
 our $InterWikiMoniker = '';        	# InterWiki prefix for this wiki for RSS
@@ -1579,7 +1580,7 @@ sub GetRcLinesFor {
   my %following = %{$_[1]}; # deref
   # parameters
   my $showminoredit = GetParam('showedit', $ShowEdits); # show minor edits
-  my $all = GetParam('all', 0);
+  my $all = GetParam('all', $ShowAll);
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang,
       $followup) = map { UnquoteHtml(GetParam($_, '')); }
 	qw(rcidonly rcuseronly rchostonly
