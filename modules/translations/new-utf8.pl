@@ -918,8 +918,6 @@ Confirmation email will be sent to the email address.
 
 Repeat Password:
 
-Email:
-
 Bad email address format.
 
 Password needs to have at least %s characters.
@@ -1195,6 +1193,8 @@ Your mail subscriptions
 All mail subscriptions
 
 Subscriptions
+
+Email: 
 
 Show
 
@@ -1660,8 +1660,6 @@ Edit %s.
 ################################################################################
 # modules/weblog-4.pl
 ################################################################################
-Title:
-
 Tags:
 
 END_OF_TRANSLATION
