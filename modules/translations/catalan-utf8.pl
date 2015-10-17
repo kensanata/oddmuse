@@ -22,11 +22,10 @@ use strict;
 
 AddModuleDescription('catalan-utf8.pl', 'Catalan') if defined &AddModuleDescription;
 
-our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
-This page is empty.
-
-Add your comment here:
-
+our %Translate = grep(!/^#/, split(/\n/,<<'END_OF_TRANSLATION'));
+################################################################################
+# wiki.pl
+################################################################################
 Reading not allowed: user, ip, or network is blocked.
 Lectura no permesa: l'usuari, ip o sub-xarxa està bloquejat.
 Login
@@ -91,6 +90,14 @@ Invalid Page %s (must not end with .lck)
 pàgina %s no vàlida (no ha d'acabar amb l'extensió .lck)
 Invalid Page %s
 Pàgina %s no vàlida
+There are no comments, yet. Be the first to leave a comment!
+
+Welcome!
+
+This page does not exist, but you can %s.
+
+create it now
+
 Too many redirections
 
 No redirection for old revisions
@@ -121,9 +128,7 @@ List only major changes
 Llistar només canvis majors
 Include minor changes
 Incloure canvis menors
-%s days
-%s dies
-%s day
+days
 
 List later changes
 Llistar darrers canvis
@@ -136,7 +141,7 @@ RSS amb pàgines i diff
 Filters
 Filtres
 Title:
-Títol:
+
 Title and Body:
 Títol i Contingut:
 Username:
@@ -267,6 +272,8 @@ View all changes
 Veure tots els canvis
 View contributors
 Veure contribuidors
+Add your comment here:
+
 Homepage URL:
 URL de Inici:
 s
@@ -287,26 +294,22 @@ Delete
 Esborrar
 Filter:
 Filtre:
-Validate HTML
-Validar HTML
-Validate CSS
-Validar CSS
 Last edit
 Darrer cop editat
-Summary:
-Resum:
-Difference between revision %1 and %2
-Diferència entre revisió %1 i %2
 revision %s
 revisió %s
 current revision
 revisió actual
+Difference between revision %1 and %2
+Diferència entre revisió %1 i %2
 Last major edit (%s)
 Darrer edició major (%s)
 later minor edits
 últimes edicions menors
 No diff available.
 Diff no disponible.
+Summary:
+Resum:
 Old revision:
 Revisió antiga:
 Changed:
@@ -335,13 +338,15 @@ Cannot open %s
 No es pot obrir %s
 Cannot write %s
 No es pot escriure en %s
-unlock the wiki
-
 Could not get %s lock
 No es va poder activar el bloqueig de %s
 The lock was created %s.
 El bloqueig és actiu per %s.
 Maybe the user running this script is no longer allowed to remove the lock directory?
+
+Sometimes locks are left behind if a job crashes.
+
+After ten minutes, you could try to unlock the wiki.
 
 This operation may take several seconds...
 Aquesta operació pot tardar varis segons...
@@ -431,7 +436,7 @@ Motiu desconegut.
 (per %s)
 %s pages found.
 %s pàgines trobades.
-Malformed regular expression in %s
+Preview: %s
 
 Replaced: %s
 Reemplaçat: %s
@@ -521,6 +526,9 @@ Comprova si el servidor web pot crear el directori %s i si pot crear arxius dins
 
 The two revisions are the same.
 Les dues revisions són iguals.
+################################################################################
+# modules/admin.pl
+################################################################################
 Deleting %s
 Borrant %s
 Deleted %s
@@ -543,28 +551,49 @@ Immediately delete %s
 Esborrar immediatament
 Rename %s to:
 Reanomenar %s a:
+################################################################################
+# modules/advanced-uploads.pl
+################################################################################
 Attach file:
 
 Upload
 
+################################################################################
+# modules/aggregate.pl
+################################################################################
 Learn more...
 Per saber més ...
+################################################################################
+# modules/all.pl
+################################################################################
 Complete Content
 Contingut Complet
 The main page is %s.
 La pàgina principal és %s.
+################################################################################
+# modules/archive.pl
+################################################################################
 Archive:
 Arxiu:
+################################################################################
+# modules/backlinkage.pl
+################################################################################
 Rebuild BackLink database
 Reconstruir base de dades de Retroenllaços
 Internal Page: %s
 
 Pages that link to this page
 Pàgines que enllacen a aquesta pàgina
+################################################################################
+# modules/backlinks.pl
+################################################################################
 The search parameter is missing.
 
 Pages link to %s
 
+################################################################################
+# modules/ban-contributors.pl
+################################################################################
 Ban contributors
 
 Ban Contributors to %s
@@ -579,10 +608,16 @@ These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Consider banning the IP number as well:
 
+################################################################################
+# modules/banned-regexps.pl
+################################################################################
 Regular expression "%1" matched "%2" on this page.
 
 Regular expression "%s" matched on this page.
 
+################################################################################
+# modules/big-brother.pl
+################################################################################
 Recent Visitors
 Visitants Recents
 some action
@@ -591,6 +626,9 @@ was here
 va estar aquí
 and read
 i va llegir
+################################################################################
+# modules/calendar.pl
+################################################################################
 Illegal year value: Use 0001-9999
 Valor prohibit de any: utilitza 0001-9999
 The match parameter is missing.
@@ -641,36 +679,60 @@ November
 Novembre
 December
 Desembre
+################################################################################
+# modules/checkbox.pl
+################################################################################
 set %s
 establir %s
 unset %s
 remoure %s
+################################################################################
+# modules/clustermap.pl
+################################################################################
 Clustermap
 Clustermap
 Pages without a Cluster
 Pàgines sense Cluster
+################################################################################
+# modules/comment-div-wrapper.pl
+################################################################################
 Comments:
 
+################################################################################
+# modules/commentcount.pl
+################################################################################
 Comments on
 
 Comment on
 
+################################################################################
+# modules/compilation.pl
+################################################################################
 Compilation for %s
 Compilació per %s
 Compilation tag is missing a regular expression.
 
+################################################################################
+# modules/css-install.pl
+################################################################################
 Install CSS
 Instal·lar CSS
 Copy one of the following stylesheets to %s:
 Copia una de les següents fulles d'estil a %s:
 Reset
 
+################################################################################
+# modules/dates.pl
+################################################################################
 Extract all dates from the database
 
 Dates
 
 No dates found.
 
+################################################################################
+# modules/despam.pl
+################################################################################
 List spammed pages
 Llista de pàgines amb spam
 Despamming pages
@@ -685,10 +747,16 @@ Marked as %s.
 Marcat com %s.
 Cannot find unspammed revision.
 No es pot trobar revisió sense spam
+################################################################################
+# modules/diff.pl
+################################################################################
 Page diff
 
 Diff
 
+################################################################################
+# modules/drafts.pl
+################################################################################
 Recover Draft
 Recuperar Esborrany
 No text to save
@@ -709,26 +777,49 @@ Imposible esborrar esborrany %s
 %1 fou la darrera modificació %2 i fou guardado
 %1 was last modified %2 and was deleted
 %1 fou la darrera modificació i %2 fou esborrat
+################################################################################
+# modules/dynamic-comments.pl
+################################################################################
 Add Comment
 Afegir Comentari
+################################################################################
+# modules/edit-cluster.pl
+################################################################################
 ordinary changes
 canvis normals
+%s days
+%s dies
+################################################################################
+# modules/edit-paragraphs.pl
+################################################################################
 Could not identify the paragraph you were editing
 
 This is the section you edited:
 
 This is the current page:
 
+################################################################################
+# modules/find.pl
+################################################################################
 Matching page names:
 Coincidències amb nombres de pàgina:
+################################################################################
+# modules/fix-encoding.pl
+################################################################################
 Fix character encoding
 
 Fix HTML escapes
 
+################################################################################
+# modules/form_timeout.pl
+################################################################################
 Set $FormTimeoutSalt.
 
 Form Timeout
 
+################################################################################
+# modules/gd_security_image.pl
+################################################################################
 GD or Image::Magick modules not available.
 
 GD::SecurityImage module not available.
@@ -747,8 +838,14 @@ You did not answer correctly.
 No has donat la respuesta correcta.
 $GdSecurityImageFont is not set.
 
+################################################################################
+# modules/git-another.pl
+################################################################################
 No summary provided
 
+################################################################################
+# modules/git.pl
+################################################################################
 no summary available
 
 page was marked for deletion
@@ -757,22 +854,40 @@ Oddmuse
 
 Cleaning up git repository
 
+################################################################################
+# modules/google-plus-one.pl
+################################################################################
 Google +1 Buttons
 
 All Pages +1
 
 This page lists the twenty last diary entries and their +1 buttons.
 
+################################################################################
+# modules/gravatar.pl
+################################################################################
 Email:
 
+################################################################################
+# modules/header-and-footer-templates.pl
+################################################################################
 Could not find %1.html template in %2
 No es va poder trobar plantilla %1.html en %2
+################################################################################
+# modules/hiddenpages.pl
+################################################################################
 Only Editors are allowed to see this hidden page.
 Només es permeten Editors per veure aquesta pàgina oculta.
 Only Admins are allowed to see this hidden page.
 Només es permeten Administradors per veure aquesta pàgina oculta.
+################################################################################
+# modules/index.pl
+################################################################################
 Index
 Índex
+################################################################################
+# modules/joiner.pl
+################################################################################
 The username %s already exists.
 
 The email address %s has already been used.
@@ -804,8 +919,6 @@ The username must be valid page name.
 Confirmation email will be sent to the email address.
 
 Repeat Password:
-
-Email:
 
 Bad email address format.
 
@@ -909,10 +1022,16 @@ Unban
 
 Register
 
+################################################################################
+# modules/lang.pl
+################################################################################
 Languages:
 Idiomes:
 Show!
 Mostrar!
+################################################################################
+# modules/like.pl
+################################################################################
 ====(\d+) persons? liked this====
 
 ====%d persons liked this====
@@ -921,22 +1040,43 @@ Mostrar!
 
 I like this!
 
+################################################################################
+# modules/link-all.pl
+################################################################################
 Define
 Definir
+################################################################################
+# modules/links.pl
+################################################################################
 Full Link List
 Llista Completa de Enllaços
+################################################################################
+# modules/list-banned-content.pl
+################################################################################
 Banned Content
 
 Rule "%1" matched on this page.
 
+################################################################################
+# modules/listlocked.pl
+################################################################################
 List of locked pages
 
+################################################################################
+# modules/listtags.pl
+################################################################################
 Pages tagged with %s
 
+################################################################################
+# modules/live-templates.pl
+################################################################################
 Template without parameters
 Plantilla sense paràmetres
 The template %s is either empty or does not exist.
 La plantilla %s està buida o bé no existeix.
+################################################################################
+# modules/localnames.pl
+################################################################################
 Name:
 
 URL:
@@ -949,8 +1089,14 @@ Define external redirect:
  -- definit en %s
 Local names defined on %1: %2
 Noms locals definits en %1: %2
+################################################################################
+# modules/logbannedcontent.pl
+################################################################################
 IP number matched %s
 
+################################################################################
+# modules/login.pl
+################################################################################
 Register for %s
 Registre per %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -1033,6 +1179,9 @@ There was an error approving %s.
 Ha hagut un error aprovant %s.
 There are no pending registrations.
 No existen registres pendents.
+################################################################################
+# modules/mail.pl
+################################################################################
 Invalid Mail %s: not saved.
 
 unsubscribe
@@ -1046,6 +1195,8 @@ Your mail subscriptions
 All mail subscriptions
 
 Subscriptions
+
+Email: 
 
 Show
 
@@ -1075,6 +1226,9 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+################################################################################
+# modules/module-bisect.pl
+################################################################################
 Bisect modules
 
 Module Bisect
@@ -1107,18 +1261,30 @@ Bad
 
 Enabling %s
 
+################################################################################
+# modules/module-updater.pl
+################################################################################
 Update modules
 
 Module Updater
 
 Looks good. Update modules now!
 
+################################################################################
+# modules/multi-url-spam-block.pl
+################################################################################
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
+################################################################################
+# modules/namespaces.pl
+################################################################################
 %s is not a legal name for a namespace
 %s no és un nom admisible per un nom de espai
 Namespaces
 
+################################################################################
+# modules/near-links.pl
+################################################################################
 Getting page index file for %s.
 Obtenint arxiu índex de pàgina per %s.
 Near links:
@@ -1135,14 +1301,26 @@ EditNearLinks
 EditarEnllaçosPropers
 The same page on other sites:
 La mateixa pàgina en altres llocs:
+################################################################################
+# modules/nearlink-create.pl
+################################################################################
  (create locally)
  (crear localment)
+################################################################################
+# modules/no-question-mark.pl
+################################################################################
 image
 imatge
 download
 descarregar
+################################################################################
+# modules/nosearch.pl
+################################################################################
 Backlinks
 
+################################################################################
+# modules/not-found-handler.pl
+################################################################################
 Clearing Cache
 Netejant Cache
 Done.
@@ -1151,12 +1329,18 @@ Generating Link Database
 Generant base de dades d'enllaços
 The 404 handler extension requires the link data extension (links.pl).
 La extensió del manegador 404 requereix la extensió de enllaç de dades (links.pl).
+################################################################################
+# modules/offline.pl
+################################################################################
 Make available offline
 
 Offline
 
 You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
 
+################################################################################
+# modules/olocalmap.pl
+################################################################################
 LocalMap
 LocalMap
 No page id for action localmap
@@ -1167,84 +1351,149 @@ Local Map for %s
 LocalMap per %s
 view
 veure
+################################################################################
+# modules/open-proxy.pl
+################################################################################
 Self-ban by %s
 Baneig pròpi per %s
 You have banned your own IP.
 Has banejat la teva pròpia IP.
+################################################################################
+# modules/orphans.pl
+################################################################################
 Orphan List
 Llistat de òrfanes
+################################################################################
+# modules/page-trail.pl
+################################################################################
 Trail:
 
+################################################################################
+# modules/page-type.pl
+################################################################################
 None
 Cap
 Type
 Tipus
+################################################################################
+# modules/paragraph-link.pl
+################################################################################
 Permalink to "%s"
 Enllaç permanent a "%s"
 anchor first defined here: %s
 primera ancora definida aquí: %s
 the page %s also exists
 la pàgina %s també existeix
-There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
-Ha hagut un error generant el pdf per %s. Si us plau, reporta això al webmaster, però no intentis baixar-ho de nou ja que no funcionarà.
-Someone else is generating a pdf for %s.  Please wait a minute and then try again.
-Algú més està generant un pdf per %s. Si us plau, espera un minut i intenta-ho de nou
-Download this page as PDF
-Descarregar aquesta pàgina com PDF
+################################################################################
+# modules/permanent-anchors.pl
+################################################################################
 Click to search for references to this permanent anchor
 Clic per cercar referer a aquest ancora permanent
 Include permanent anchors
 Incloure ancores permanents
+################################################################################
+# modules/portrait-support.pl
+################################################################################
 Portrait
 Foto personal
+################################################################################
+# modules/preview.pl
+################################################################################
+Pages with changed HTML
+
+Preview changes in HTML output
+
+################################################################################
+# modules/private-pages.pl
+################################################################################
 This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
 
 supply the password now
 
+################################################################################
+# modules/private-wiki.pl
+################################################################################
 This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
 
 Attempt to read encrypted data without a password.
 
 Cannot refresh index.
 
+################################################################################
+# modules/publish.pl
+################################################################################
 Publish %s
 Publicar %s
 No target wiki was specified in the config file.
 No s'ha especificat un wiki destí en el fitxer de configuració.
 The target wiki was misconfigured.
 El destí de wiki està desconfigurat.
+################################################################################
+# modules/put.pl
+################################################################################
 Upload is limited to %s bytes
 
+################################################################################
+# modules/questionasker.pl
+################################################################################
 To save this page you must answer this question:
 Per guardar aquesta pàgina has de respondre a aquesta qüestió:
+################################################################################
+# modules/recaptcha.pl
+################################################################################
 Please type the following two words:
 
 Please answer this captcha:
 
+################################################################################
+# modules/referrer-rss.pl
+################################################################################
 Referrers
 Referrers
+################################################################################
+# modules/referrer-tracking.pl
+################################################################################
 All Referrers
 Tots els Referrers
+################################################################################
+# modules/search-list.pl
+################################################################################
 Page list for %s
 
-Slideshow:%s
-Presentació diapositives:%s
+################################################################################
+# modules/small.pl
+################################################################################
 Index of all small pages
 Índex de totes les pàgines breus
+################################################################################
+# modules/static-copy.pl
+################################################################################
 Static Copy
 Copia estàtica
 Back to %s
 Tornar a %s
+################################################################################
+# modules/static-hybrid.pl
+################################################################################
 Editing not allowed for %s.
 No es permet editar %s.
+################################################################################
+# modules/svg-edit.pl
+################################################################################
 Edit image in the browser
 
 Summary of your changes:
 
+################################################################################
+# modules/sync.pl
+################################################################################
 Copy to %1 succeeded: %2.
 Copiar a %1 aconseguit: %2.
 Copy to %1 failed: %2.
 Copiar a %1 fallat: %2.
+################################################################################
+# modules/tags.pl
+################################################################################
 Tag
 Etiqueta
 Feed for this tag
@@ -1261,12 +1510,21 @@ list tags
 
 tag cloud
 
+################################################################################
+# modules/templates.pl
+################################################################################
 Alternatively, use one of the following templates:
 O bé, utilitza una de les següents plantillas:
+################################################################################
+# modules/throttle.pl
+################################################################################
 Too many instances.  Only %s allowed.
 Masses instàncies. Només %s permeses
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 Si us plau, intenta-ho de nou més tard. Potser algú està executant un manteniment o realitzant una cerca extensa. Malhauradament, aquest lloc té recursos limitats, així que hem de demanarte una mica de paciència.
+################################################################################
+# modules/thumbs.pl
+################################################################################
 thumb
 
 Error creating thumbnail from non existant page %s.
@@ -1287,16 +1545,28 @@ Failed to run %1 to create thumbnail: %2
 
 Failed to parse %s.
 
+################################################################################
+# modules/timezone.pl
+################################################################################
 Timezone
 
 Pick your timezone:
 
 Set
 
+################################################################################
+# modules/toc-headers.pl
+################################################################################
 Contents
 Continguts
+################################################################################
+# modules/today.pl
+################################################################################
 Create a new page for today
 Crear una pàgina nova per avui
+################################################################################
+# modules/translation-links.pl
+################################################################################
 Add Translation
 
 Added translation: %1 (%2)
@@ -1319,6 +1589,9 @@ Translated page:
 
 Please provide a different page name for the translation.
 
+################################################################################
+# modules/translations.pl
+################################################################################
 This page is a translation of %s.
 
 The translation is up to date.
@@ -1327,6 +1600,9 @@ The translation is outdated.
 La traducció està desfasada.
 The page does not exist.
 La pàgina no existeix.
+################################################################################
+# modules/upgrade.pl
+################################################################################
 Upgrading Database
 
 Did the previous upgrade end with an error? A lock was left behind.
@@ -1337,6 +1613,9 @@ Upgrade complete.
 
 Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
 
+################################################################################
+# modules/usemod.pl
+################################################################################
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1347,26 +1626,42 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 cercar
+################################################################################
+# modules/wanted.pl
+################################################################################
 Wanted Pages
 Pàgines desitjades
 %s pages
 % pàgines
 %s, referenced from:
 %s, referenciada des de:
+################################################################################
+# modules/webapp.pl
+################################################################################
 Web application for offline browsing
 
+################################################################################
+# modules/webdav.pl
+################################################################################
 Upload of %s file
 
+################################################################################
+# modules/weblog-1.pl
+################################################################################
 Blog
 Blog
+################################################################################
+# modules/weblog-3.pl
+################################################################################
 Matching pages:
 Pàgines trobades:
 New
 Nou
 Edit %s.
 Editar %s.
-Title:
-
+################################################################################
+# modules/weblog-4.pl
+################################################################################
 Tags:
 
 END_OF_TRANSLATION
