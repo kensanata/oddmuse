@@ -894,7 +894,7 @@ Wait %s minutes before try again.
 Bitte warten Sie %s Minuten, bevor Sie es noch einmal versuchen.
 Registration Confirmation
 Registrierungsbestätigung
-Visit the link blow to confirm registration.
+Visit the link below to confirm registration.
 Klicken Sie auf den untenstehenden Link, um ihre Registrierung zu bestätigen.
 Recover Account
 Konto zurückgewinnen

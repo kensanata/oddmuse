@@ -214,7 +214,7 @@ sub JoinerSendRegistrationConfirmationEmail {
   print $EMAIL "From: $JoinerEmailSenderAddress\n";
   print $EMAIL "Subject: $SiteName " . T('Registration Confirmation') . "\n";
   print $EMAIL "\n";
-  print $EMAIL T('Visit the link blow to confirm registration.') . "\n";
+  print $EMAIL T('Visit the link below to confirm registration.') . "\n";
   print $EMAIL "\n";
   print $EMAIL "$link\n";
   print $EMAIL "\n";
