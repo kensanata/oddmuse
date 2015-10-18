@@ -343,7 +343,7 @@ sub GetRcLinesFor {
   my %following = %{$_[1]}; # deref
   # parameters
   my $showminoredit = GetParam('showedit', $ShowEdits); # show minor edits
-  my $all = GetParam('all', 0);
+  my $all = GetParam('all', $ShowAll);
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang,
       $followup) = map { UnquoteHtml(GetParam($_, '')); }
   qw(rcidonly rcuseronly rchostonly
