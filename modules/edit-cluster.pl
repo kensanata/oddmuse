@@ -34,7 +34,7 @@ sub GetRc {
     $changetime{$pagename} = $ts;
   }
   my $date = '';
-  my $all = GetParam('all', 0);
+  my $all = GetParam('all', $ShowAll);
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
     map { GetParam($_, ''); }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
@@ -128,7 +128,7 @@ sub EditClusterNewRcHeader {
     $action = "action=rc$action";
   }
   my $days = GetParam('days', $RcDefault);
-  my $all = GetParam('all', 0);
+  my $all = GetParam('all', $ShowAll);
   my @menu;
   if ($all) {
     push(@menu, ScriptLink("$action;days=$days;all=0",
