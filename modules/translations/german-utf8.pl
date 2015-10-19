@@ -65,7 +65,7 @@ Unterschiede
 history
 alte Versionen
 %s returned no data, or LWP::UserAgent is not available.
-Entweder liefert %s liefert keine Daten, oder das LWP::UserAgent Modul ist auf diesem System nicht installiert.
+Entweder %s liefert keine Daten, oder das LWP::UserAgent Modul ist auf diesem System nicht installiert.
 RSS parsing failed for %s
 Die RSS Daten von %s sind ungültig; sie können nicht verarbeitet werden
 No items found in %s.
