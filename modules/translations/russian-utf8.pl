@@ -33,15 +33,15 @@ our %Translate = grep(!/^#/, split(/\n/,<<'END_OF_TRANSLATION'));
 Reading not allowed: user, ip, or network is blocked.
 Просмотр недоступен: имя пользователя, IP-адрес или сеть заблокированы.
 Login
-
+Войти в систему
 Error
 Ошибка
 %s calls
-
+%s вызовов
 Cannot create %s
 Невозможно создать %s
 Include normal pages
-
+Включая нормальные страницы
 Invalid UserName %s: not saved.
 Hекорректное имя пользователя %s: не сохранено.
 UserName must be 50 characters or less: not saved
@@ -71,11 +71,11 @@ diff
 history
 история
 %s returned no data, or LWP::UserAgent is not available.
-
+Либо %s не возвращает данные, либо не доступен LWP::UserAgent.
 RSS parsing failed for %s
-
+Не удалось распарсить RSS для %s
 No items found in %s.
-
+Нет записей в %s.
  . . . .
 
 Click to edit this page
@@ -95,25 +95,25 @@ Invalid Page %s (must not end with .lck)
 Invalid Page %s
 Некорректная страница %s
 There are no comments, yet. Be the first to leave a comment!
-
+Здесь пока нет комментариев. Не стесняйся быть первым!
 Welcome!
-
+Добро пожаловать!
 This page does not exist, but you can %s.
-
+Эта страница не существует, но вы можете %s.
 create it now
-
+создать её прямо сейчас
 Too many redirections
 Слишком много перенаправлений
 No redirection for old revisions
-
+Переадресация не разрешена для старых версий
 Invalid link pattern for #REDIRECT
-
+Неправильный формат ссылки для #REDIRECT
 Please go on to %s.
-
+Пожалуйста перейдите на %s.
 Updates since %s
 Обновления с %s
 up to %s
-
+до %s
 Updates in the last %s days
 Обновления за последние %s дней
 Updates in the last day
@@ -133,7 +133,7 @@ List only major changes
 Include minor changes
 Включая несущественные изменения
 days
-
+дней
 List later changes
 Показать недавние изменения
 RSS
@@ -145,7 +145,7 @@ RSS со страницами изменениями
 Filters
 Фильтры
 Title:
-
+Заголовок:
 Title and Body:
 Заголовок и содержимое:
 Username:
@@ -153,7 +153,7 @@ Username:
 Host:
 Хост:
 Follow up to:
-
+Ответы пользователю:
 Language:
 Язык:
 Go!
@@ -189,7 +189,7 @@ Missing target for rollback.
 Target for rollback is too far back.
 Цель отката слишком далеко.
 A username is required for ordinary users.
-
+Необходимо выставить имя пользователя.
 Rolling back changes
 Откат изменений
 Editing not allowed: %s is read-only.
@@ -279,7 +279,7 @@ View contributors
 Add your comment here:
 Добавьте свой комментарий здесь:
 Homepage URL:
-
+Домашняя страница:
 s
 
 Save
@@ -349,9 +349,9 @@ The lock was created %s.
 Maybe the user running this script is no longer allowed to remove the lock directory?
 Возможно пользователь, под которым запущен этот скрипт, более не может удалить lock-директорию?
 Sometimes locks are left behind if a job crashes.
-
+Иногда блокировка остается, если какое-то действие прерывается.
 After ten minutes, you could try to unlock the wiki.
-
+Через десять минут вы можете попытаться разблокировать вики.
 This operation may take several seconds...
 Эта операция может занять несколько секунд...
 Forced unlock of %s lock.
@@ -405,7 +405,7 @@ You are currently an editor on this site.
 You are a normal user on this site.
 Сейчас вы имеете права обычного пользователя.
 You do not have a password set.
-
+У вас не выставлен пароль.
 Your password does not match any of the administrator or editor passwords.
 Ваш пароль не совпадает с паролями администратора или редактора.
 Password:
@@ -425,15 +425,15 @@ Contact the wiki administrator for more information.
 The rule %s matched for you.
 Сработало правило %s.
 See %s for more information.
-
+Смотрите %s чтобы узнать подробнее.
 SampleUndefinedPage
 ПримерПроизвольнойСтраницы
 Sample_Undefined_Page
 Пример_Произвольной_Страницы
 Rule "%1" matched "%2" on this page.
-
+Правило "%1" сработало на "%2" на этой странице.
 Reason: %s.
-
+Причина: %s.
 Reason unknown.
 Причина неизвестна.
 (for %s)
@@ -441,7 +441,7 @@ Reason unknown.
 %s pages found.
 Найдено %s страниц
 Preview: %s
-
+Предпросмотр: %s
 Replaced: %s
 Заменено: %s
 Search for: %s
@@ -453,11 +453,11 @@ last updated
 by
 пользователем
 Transfer Error: %s
-
+Ошибка загрузки: %s
 Browser reports no file info.
-
+Браузер не предоставил информацию о файле.
 Browser reports no file type.
-
+Браузер не предоставил тип файла.
 The page contains banned text.
 Страница содержит запрещенный текст.
 No changes to be saved.
@@ -525,7 +525,7 @@ Too many connections by %s
 Please do not fetch more than %1 pages in %2 seconds.
 Пожалйуста, не запрашивайте более %1 страниц в течение %2 секунд.
 Check whether the web server can create the directory %s and whether it can create files in it.
-
+Проверье, что веб сервер может создать директорию %s, и что он может создавать в ней файлы.
 , see
 , смотрите
 The two revisions are the same.
@@ -561,19 +561,19 @@ Rename %s to:
 Attach file:
 Прикрепить файл:
 Upload
-
+Загрузить
 ################################################################################
 # modules/aggregate.pl
 ################################################################################
 Learn more...
-
+Читать далее...
 ################################################################################
 # modules/all.pl
 ################################################################################
 Complete Content
-
+Полное содержаниe
 The main page is %s.
-
+Главная страница – %s.
 ################################################################################
 # modules/archive.pl
 ################################################################################
@@ -583,7 +583,7 @@ Archive:
 # modules/backlinkage.pl
 ################################################################################
 Rebuild BackLink database
-
+Пересоздать базу данных обратных ссылок
 Internal Page: %s
 Внутренняя страница: %s
 Pages that link to this page
@@ -592,16 +592,16 @@ Pages that link to this page
 # modules/backlinks.pl
 ################################################################################
 The search parameter is missing.
-
+Отсутствует параметр для поиска.
 Pages link to %s
-
+Страницы, ссылающиеся на %s
 ################################################################################
 # modules/ban-contributors.pl
 ################################################################################
 Ban contributors
-
+Заблокировать пользователей
 Ban Contributors to %s
-
+Заблокировать пользователей, редактировавших %s
 Ban!
 Заблокировать!
 Regular expression:
@@ -609,34 +609,34 @@ Regular expression:
 %s is banned
 %s забанен
 These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-
+Во время отката были убраны эти ссылки. Возможно вы хотите добавить регулярное выражения для %s?
 Consider banning the IP number as well:
 Также вы можете забанить IP адрес:
 ################################################################################
 # modules/banned-regexps.pl
 ################################################################################
 Regular expression "%1" matched "%2" on this page.
-
+Регулярное выражение "%1" сработало на "%2" на этой странице.
 Regular expression "%s" matched on this page.
-
+Регулярное выражение "%s" сработало на этой странице.
 ################################################################################
 # modules/big-brother.pl
 ################################################################################
 Recent Visitors
-
+Последние посетители
 some action
 
 was here
-
+был здесь
 and read
-
+и читал
 ################################################################################
 # modules/calendar.pl
 ################################################################################
 Illegal year value: Use 0001-9999
 Неправильное значение года, используйте 0001-9999
 The match parameter is missing.
-
+Отсутствует параметр match.
 Page Collection for %s
 Страницы (%s)
 Previous
@@ -687,9 +687,9 @@ December
 # modules/checkbox.pl
 ################################################################################
 set %s
-
+отметил %s
 unset %s
-
+убрал отметку %s
 ################################################################################
 # modules/clustermap.pl
 ################################################################################
@@ -724,33 +724,33 @@ Install CSS
 Copy one of the following stylesheets to %s:
 Выберите один из перечисленных стилей для копирования в %s
 Reset
-
+Сбросить
 ################################################################################
 # modules/dates.pl
 ################################################################################
 Extract all dates from the database
-
+Обновить базу данных дат
 Dates
-
+Даты
 No dates found.
-
+Дат не найдено.
 ################################################################################
 # modules/despam.pl
 ################################################################################
 List spammed pages
-
+Показать страницы со спамом
 Despamming pages
-
+Удаление спама
 Spammed pages
-
+Страницы со спамом
 Cannot find revision %s.
-
+Невозможно найти версию %s.
 Revert to revision %1: %2
-
+Откат до версии %1: %2
 Marked as %s.
-
+Помечено как %s.
 Cannot find unspammed revision.
-
+Не могу найти версию без спама.
 ################################################################################
 # modules/diff.pl
 ################################################################################
@@ -774,13 +774,13 @@ No draft available to recover
 Save Draft
 Сохранить черновик
 Draft Cleanup
-
+Очищение черновиков
 Unable to delete draft %s
 Не могу удалить черновик %s
 %1 was last modified %2 and was kept
-
+%1 был изменен %2 и был оставлен
 %1 was last modified %2 and was deleted
-
+%1 был изменен %2 и был удален
 ################################################################################
 # modules/dynamic-comments.pl
 ################################################################################
@@ -797,11 +797,11 @@ ordinary changes
 # modules/edit-paragraphs.pl
 ################################################################################
 Could not identify the paragraph you were editing
-
+Не получилось определить параграф который вы редактировали
 This is the section you edited:
-
+Это часть, которую вы отредактировали:
 This is the current page:
-
+Это текущая страница:
 ################################################################################
 # modules/find.pl
 ################################################################################
@@ -811,14 +811,14 @@ Matching page names:
 # modules/fix-encoding.pl
 ################################################################################
 Fix character encoding
-
+Исправить проблемы с кодировкой
 Fix HTML escapes
 
 ################################################################################
 # modules/form_timeout.pl
 ################################################################################
 Set $FormTimeoutSalt.
-
+Установить $FormTimeoutSalt.
 Form Timeout
 
 ################################################################################
@@ -839,7 +839,7 @@ Submit
 CAPTCHA
 
 You did not answer correctly.
-
+Вы неправильно ответили на вопрос.
 $GdSecurityImageFont is not set.
 
 ################################################################################
@@ -876,7 +876,7 @@ Email:
 # modules/header-and-footer-templates.pl
 ################################################################################
 Could not find %1.html template in %2
-
+Не удалось найти шаблон %1.html в %2
 ################################################################################
 # modules/hiddenpages.pl
 ################################################################################
@@ -893,45 +893,45 @@ Index
 # modules/joiner.pl
 ################################################################################
 The username %s already exists.
-
+Пользователь %s уже существует.
 The email address %s has already been used.
-
+Email адрес %s уже существует.
 Wait %s minutes before try again.
-
+Подождите %s минут прежде чем попробовать еще раз.
 Registration Confirmation
-
+Подтверждение регистрации
 Visit the link below to confirm registration.
-
+Пройдите по этой ссылке чтобы подтвердить регистрацию.
 Recover Account
-
+Восстановить аккаунт
 You can login by following the link below. Then set new password.
-
+Вы можете войти пройдя по ссылке ниже. Там выставьте новый пароль.
 Change Email Address
-
+Поменять email адрес
 To confirm changing email address, follow the link below.
-
+Чтобы подтвердить изменение email адреса, пройдите по ссылке.
 To submit this form you must answer this question:
-
+Чтобы пройти эту форму вы должны ответить вопрос:
 Question:
 
 CAPTCHA:
 
 Registration
-
+Регистрация
 The username must be valid page name.
-
+Имя пользователя должно быть валидным названием страницы.
 Confirmation email will be sent to the email address.
-
+Информация для подтверждения будет выслана на email.
 Repeat Password:
 Повторите пароль:
 Bad email address format.
-
+Плохой формат email адреса.
 Password needs to have at least %s characters.
 Пароль должен содержать как минимум %s символов.
 Passwords differ.
 Пароли не совпадают.
 Email Sent
-
+Сообщение отправлено
 Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
 Письмо для подтверждения было отправлено на %s. Пройдите по ссылке в письме чтобы подтвердить регистрацию.
 Failed to Confirm Registration
@@ -943,15 +943,15 @@ The key expired.
 Registration Confirmed
 Регистрация подтверждена
 Now, you can login by using username and password.
-
+Теперь вы можете зайти используя логин и пароль.
 Forgot your password?
 Забыли пароль?
 Login failed.
-
+Вход не удался.
 You are banned.
 Вы забанены.
 You must confirm email address.
-
+Вы должны подтвердить email адрес.
 Logged in
 
 %s has logged in.
@@ -965,7 +965,7 @@ Logged out
 %s has logged out.
 
 Account Settings
-
+Настройки аккаунта
 Logout
 
 Current Password:
@@ -983,7 +983,7 @@ Your password has been changed.
 Forgot Password
 
 Enter email address, and recovery login ticket will be sent.
-
+Впишите свой email и вам будет отправлено сообщение для восстановления.
 Not found.
 
 The mail address is not valid anymore.
@@ -1009,13 +1009,13 @@ Account Management
 Ban Account
 
 Enter username of the account to ban:
-
+Введите имя пользователя, которого вы хотите забанить:
 Ban
-
+Забанить
 Enter username of the account to unban:
-
+Введите имя пользователя, которого вы хотите разбанить:
 Unban
-
+Разбанить
 %s is already banned.
 %s уже заблокирован.
 %s has been banned.
@@ -1025,7 +1025,7 @@ Unban
 %s has been unbanned.
 %s разблокирован.
 Register
-
+Зарегистрироваться
 ################################################################################
 # modules/lang.pl
 ################################################################################
@@ -1037,13 +1037,13 @@ Show!
 # modules/like.pl
 ################################################################################
 ====(\d+) persons? liked this====
-
+====Понравилось (\d+) (?:человеку|людям)====
 ====%d persons liked this====
-
+====Понравилось %d людям====
 ====1 person liked this====
-
+====Понравилось 1 человеку====
 I like this!
-
+Мне нравится!
 ################################################################################
 # modules/link-all.pl
 ################################################################################
@@ -1060,7 +1060,7 @@ Full Link List
 Banned Content
 
 Rule "%1" matched on this page.
-
+Правило "%1" сработало на этой странице.
 ################################################################################
 # modules/listlocked.pl
 ################################################################################
@@ -1245,7 +1245,7 @@ Test / Always enabled / Always disabled
 Проверить / Всегда включены / Всегда выключены
 Start
 Начать
-Biscecting proccess is already active.
+Bisection proccess is already active.
 
 Stop
 Остановить
@@ -1599,9 +1599,9 @@ Please provide a different page name for the translation.
 This page is a translation of %s.
 Эта страница является переводом %s.
 The translation is up to date.
-
+Этот перевод актуален.
 The translation is outdated.
-Это перевод устарел.
+Этот перевод устарел.
 The page does not exist.
 Эта страница не существует.
 ################################################################################
