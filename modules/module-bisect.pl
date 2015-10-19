@@ -68,7 +68,7 @@ sub BisectInitialScreen {
     }
     print $q->submit(-name=>'bad', -value=>T('Start'));
   } else {
-    print T('Biscecting proccess is already active.'), $q->br();
+    print T('Bisecting proccess is already active.'), $q->br();
     print $q->submit(-name=>'stop', -value=>T('Stop'));
   }
   print $q->end_form();

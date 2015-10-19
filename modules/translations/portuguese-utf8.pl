@@ -1244,7 +1244,7 @@ Test / Always enabled / Always disabled
 
 Start
 
-Biscecting proccess is already active.
+Bisection proccess is already active.
 
 Stop
 

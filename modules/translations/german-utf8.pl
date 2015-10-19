@@ -1239,7 +1239,7 @@ Test / Always enabled / Always disabled
 Test / Immer aktiv / Immer deaktiviert
 Start
 Start
-Biscecting proccess is already active.
+Bisection proccess is already active.
 Der Bisektionsprozess ist schon aktiv.
 Stop
 Stop
