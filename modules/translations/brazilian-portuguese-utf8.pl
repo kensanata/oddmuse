@@ -1528,7 +1528,7 @@ Por favor, tente novamente mais tarde. Talvez algu√©m esteja executando manuten√
 ################################################################################
 thumb
 
-Error creating thumbnail from non existant page %s.
+Error creating thumbnail from nonexisting page %s.
 
 Can not create thumbnail for file type %s.
 

@@ -1527,7 +1527,7 @@ Si us plau, intenta-ho de nou més tard. Potser algú està executant un manteni
 ################################################################################
 thumb
 
-Error creating thumbnail from non existant page %s.
+Error creating thumbnail from nonexisting page %s.
 
 Can not create thumbnail for file type %s.
 

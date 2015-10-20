@@ -1525,7 +1525,7 @@ Versuchen Sie es später nocheinmal. Vielleicht werden gerade Wartungsarbeiten d
 ################################################################################
 thumb
 Vorschau
-Error creating thumbnail from non existant page %s.
+Error creating thumbnail from nonexisting page %s.
 Die Vorschau für %s konnte nicht erstellt werden, da diese Seite nicht existiert.
 Can not create thumbnail for file type %s.
 Für Dateien vom Typ %s kann keine Vorschau erstellt werden.
