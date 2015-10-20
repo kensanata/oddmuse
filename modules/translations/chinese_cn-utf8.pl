@@ -1544,7 +1544,7 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 ################################################################################
 thumb
 
-Error creating thumbnail from non existant page %s.
+Error creating thumbnail from nonexisting page %s.
 
 Can not create thumbnail for file type %s.
 

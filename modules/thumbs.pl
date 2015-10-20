@@ -177,7 +177,7 @@ sub GenerateThumbNail {
 
     AllPagesList();
 
-     if (not $IndexHash{$id}) { ReportError(Ts('Error creating thumbnail from non existant page %s.' , $id), '500 INTERNAL SERVER ERROR'); }   # Page Doesn't exist,
+     if (not $IndexHash{$id}) { ReportError(Ts('Error creating thumbnail from nonexisting page %s.' , $id), '500 INTERNAL SERVER ERROR'); }   # Page Doesn't exist,
 
 
      my $openpage = $OpenPageName;       # remember  the current page we are on

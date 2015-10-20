@@ -1531,7 +1531,7 @@ Essayez plus tard s'il vous plaît. Peut-être que quelqu'un effectue une mainte
 ################################################################################
 thumb
 
-Error creating thumbnail from non existant page %s.
+Error creating thumbnail from nonexisting page %s.
 
 Can not create thumbnail for file type %s.
 
