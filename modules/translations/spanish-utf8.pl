@@ -1524,7 +1524,7 @@ Por favor, inténtalo de nuevo más tarde. Quizás alguien está ejecutando un m
 ################################################################################
 thumb
 Miniatura
-Error creating thumbnail from non existent page %s.
+Error creating thumbnail from nonexisting page %s.
 Error al crear miniatura desde la página %s que no existe.
 Can not create thumbnail for file type %s.
 No se puede crear la miniatura por el tipo de archivo %s.
