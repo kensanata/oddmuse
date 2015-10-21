@@ -231,6 +231,7 @@ desde %s
 redirected from %s
 redirigido desde %s
 %s:
+
 [Home]
 [Casa]
 Click to search for references to this page
@@ -256,10 +257,13 @@ por %s
 (diff)
 (diff)
 a
+
 c
+
 Edit revision %s of this page
 Editar revisión %s de esta página
 e
+
 This page is read-only
 Esta página es de sólo-lectura
 View other revisions
@@ -275,9 +279,11 @@ Agregue su comentario aquí:
 Homepage URL:
 URL de Inicio:
 s
+
 Save
 Guardar
 p
+
 Preview
 Previsualizar
 Search:
@@ -396,13 +402,13 @@ Usted es actualmente un editor de este sitio.
 You are a normal user on this site.
 Ustes es un usuario normal en este sitio.
 You do not have a password set.
-Eres un usuario normal en este sitio.
 Usted no tiene una contraseña establecida.
 Your password does not match any of the administrator or editor passwords.
 Su contraseña no coincide con ninguna de las contraseñas de administrador o editor.
 Password:
 Contraseña:
 Return to %s
+
 This operation is restricted to site editors only...
 Esta operación se restringe a sólo editores del sitio...
 This operation is restricted to administrators only...
@@ -432,6 +438,7 @@ Motivo desconocido.
 %s pages found.
 %s páginas encontradas.
 Preview: %s
+
 Vista previa: %s
 Replaced: %s
 Reemplazado: %s
@@ -828,6 +835,7 @@ Por favor escriba los seis caracteres de la imagen anti-spam
 Submit
 Enviar
 CAPTCHA
+
 You did not answer correctly.
 No respondiste la respuesta correctamente.
 $GdSecurityImageFont is not set.
@@ -904,7 +912,7 @@ Para enviar este formulario, usted debe responder a esta pregunta:
 Question:
 Pregunta:
 CAPTCHA:
-CAPTCHA:
+
 Registration
 Inscripción
 The username must be valid page name.
@@ -1026,7 +1034,7 @@ Mostrar!
 # modules/like.pl
 ################################################################################
 ====(\d+) persons? liked this====
-====a (\d+) ¿personas? les gusta esto====
+====a (\d+) personas? les gusta esto====
 ====%d persons liked this====
 ====a %d personas les gusta esto====
 ====1 person liked this====
@@ -1189,7 +1197,7 @@ All mail subscriptions
 Todas las suscripciones de correo
 Subscriptions
 Suscripciones
-Email: 
+Email:
 Correo:
 Show
 Mostrar
@@ -1234,7 +1242,7 @@ Test / Always enabled / Always disabled
 Probar / Siempre habilitado / Siempre deshabilitado
 Start
 Empezar
-Bisection process is already active.
+Bisection proccess is already active.
 El proceso de bisección ya está activo.
 Stop
 Parar
@@ -1282,8 +1290,6 @@ Getting page index file for %s.
 Obteniendo archivo índice de página para %s.
 Near links:
 Enlaces cercanos:
-Nearlinks:
-EnlaceCercanos
 Search sites on the %s as well
 Buscar sitios en %s también
 Fetching results from %s:
@@ -1523,6 +1529,7 @@ Por favor, inténtalo de nuevo más tarde. Quizás alguien está ejecutando un m
 # modules/thumbs.pl
 ################################################################################
 thumb
+
 Miniatura
 Error creating thumbnail from nonexisting page %s.
 Error al crear miniatura desde la página %s que no existe.
@@ -1614,10 +1621,12 @@ Actualización completa. Por favor, remueva $ModuleDir/upgade.pl, ahora.
 # modules/usemod.pl
 ################################################################################
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
+
 http://www.amazon.com/exec/obidos/ISBN=%s
 alternate
 alternativo
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+
 search
 buscar
 ################################################################################
