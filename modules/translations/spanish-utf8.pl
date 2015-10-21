@@ -289,6 +289,7 @@ Previsualizar
 Search:
 Buscar:
 f
+
 Replace:
 Reemplazar:
 Delete
@@ -438,7 +439,6 @@ Motivo desconocido.
 %s pages found.
 %s páginas encontradas.
 Preview: %s
-
 Vista previa: %s
 Replaced: %s
 Reemplazado: %s
@@ -853,6 +853,7 @@ No hay sumario disponible
 page was marked for deletion
 La página fue marcada para su eliminación
 Oddmuse
+
 Cleaning up git repository
 Limpiando el repositorio git
 ################################################################################
@@ -1296,8 +1297,6 @@ Fetching results from %s:
 Recopilando resultados desde %s:
 Near pages:
 Páginas cercanas:
-Nearpages:
-PáginasCercanas:
 Include near pages
 Incluir Nearpages
 EditNearLinks
@@ -1529,7 +1528,6 @@ Por favor, inténtalo de nuevo más tarde. Quizás alguien está ejecutando un m
 # modules/thumbs.pl
 ################################################################################
 thumb
-
 Miniatura
 Error creating thumbnail from nonexisting page %s.
 Error al crear miniatura desde la página %s que no existe.
