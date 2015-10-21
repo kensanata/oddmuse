@@ -15,13 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 set -e
 
-TEST_LOCK='../data/testlock'
-TEST_LOG='../data/log'
-ODDMUSE_TEST_LOCATION='../data/oddmuse-for-tests/'
-LAST_COMMIT_FILE='../data/last_commit'
+WORKING_DIRECTORY='../data/'
+TEST_LOCK="$WORKING_DIRECTORY/testlock"
+TEST_LOG="$WORKING_DIRECTORY/log"
+ODDMUSE_TEST_LOCATION="$WORKING_DIRECTORY/oddmuse-for-tests/"
+GIT_LOCATION="$WORKING_DIRECTORY/"
+LAST_COMMIT_FILE="$WORKING_DIRECTORY/last_commit"
 FIRST_TESTABLE_COMMIT='1c0801bd6ca23de71c7c360a18a648c2b953f1da'
-RESULT_FILE='../data/output'
-WIKIPUT='../data/oddmuse/scripts/cli/wikiput'
+RESULT_FILE="$WORKING_DIRECTORY/output"
+WIKIPUT='../config/oddmuse/scripts/cli/wikiput'
 STATUS_PAGE='Test Status'
 OUT_PAGE='https://github.com/AlexDaniel/oddmuse-alexine/blob/master/output'
 WIKI_LOCATION='https://oddmuse.org/wiki/'
@@ -41,6 +43,7 @@ else
 fi
 
 git=('git' '--git-dir' "$ODDMUSE_TEST_LOCATION/.git" '--work-tree' "$ODDMUSE_TEST_LOCATION")
+gitRepo=('git' '--git-dir' "$WORKING_DIRECTORY/.git" '--work-tree' "$WORKING_DIRECTORY") # our repo where we will make commits
 while :; do
   "${git[@]}" fetch # get latest changes
   "${git[@]}" reset --hard origin/master # starting our search from the last commit
@@ -55,7 +58,7 @@ while :; do
   "${git[@]}" checkout "$currentCommit"
   # ((startTime = SECONDS)) ||:
   pushd -- "$ODDMUSE_TEST_LOCATION" || exit 1
-  output=$(make test 2>&1) &&:
+  output=$(make test jobs=8 2>&1) &&:
   status=$?
   popd
   # ((duration = SECONDS - startTime)) ||:
@@ -63,10 +66,10 @@ while :; do
   # echo "Duration: $((duration/60))m$((duration%60))s Status: $status" >> "$RESULT_FILE"
   printf "%s\n" "$currentCommit" > "$LAST_COMMIT_FILE"
 
-  git add -- "$RESULT_FILE" "$LAST_COMMIT_FILE" # other git repo, therefore just 'git'
-  git commit -m "Test status at $currentCommit (automated commit)"
+  "${gitRepo[@]}" add -- "$(readlink -m -- "$RESULT_FILE")" "$(readlink -m -- "$LAST_COMMIT_FILE")"
+  "${gitRepo[@]}" commit -m "Test status at $currentCommit (automated commit)"
 
-  git push
+  "${gitRepo[@]}" push
 
   if (( status == 0 )); then
     "$WIKIPUT" -m -u "$USER_NAME" -s 'Tests PASSED' -z 'ham' "$WIKI_LOCATION/$STATUS_PAGE" <<< $'TEST STATUS – **OK**\n\n'"Commit:${currentCommit:0:7} – see [[$OUT_PAGE|test log]]"

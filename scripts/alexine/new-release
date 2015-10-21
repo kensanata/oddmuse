@@ -17,7 +17,7 @@ set -e
 
 RELEASE_LOCK='../data/releaselock'
 ODDMUSE_LOCATION='../data/oddmuse-for-releases/'
-WIKIPUT='../data/oddmuse/scripts/cli/wikiput'
+WIKIPUT='../config/oddmuse/scripts/cli/wikiput'
 WIKI_LOCATION='https://oddmuse.org/wiki/'
 USER_NAME='Alexine'
 
