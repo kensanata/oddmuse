@@ -18,7 +18,7 @@ use v5.10;
 
 AddModuleDescription('edit-cluster.pl', 'Edit Cluster Extension');
 
-our ($q, $FS, $RcDefault, @RcDays, $RecentTop, $LastUpdate);
+our ($q, $FS, $RcDefault, @RcDays, $RecentTop, $LastUpdate, $ShowAll);
 
 our $EditCluster = 'EditCluster';
 
