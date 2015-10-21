@@ -55,4 +55,4 @@ translations: $(TRANSLATIONS)
 jobs ?= 4
 test:
 	prove t/setup.pl
-	prove --jobs=$(jobs) t
+	prove --jobs=$(jobs) --state=slow,save t
