@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use v5.10;
+use utf8;
+
+my $help = q{
+NAME
+       translations-stats - print statistics about Oddmuse translations
+
+SYNOPSIS
+       scripts/translations-stats [FILE]...
+
+DESCRIPTION
+
+       Read all translation files and print some stats.
+
+EXAMPLES
+
+       scripts/translations-stats
+
+       scripts/translations-stats wiki.pl modules/joiner.pl
+
+};
+if (@ARGV == 1 and $ARGV[0] eq '--help') {
+  print $help;
+  exit 0;
+}
+
+sub AddModuleDescription { print $_[0], ' ' };
+our %Translate;
+
+my @files = <modules/translations/*-utf8.pl>;
+for (@files) {
+  if (@ARGV) { # some specific modules
+    my $files = join ' ', map { quotemeta } @ARGV; # quick and dirty
+    my $out = `stuff/oddtrans -l \Q$_\E $files`;
+    eval $out;
+  } else {
+    do $_;
+  }
+  my $total = keys %Translate;
+  my $count = grep { $_ } values %Translate;
+  my $missing = $total - $count;
+  printf(qq{%d/%d translations missing (%d%% done)\n}, $missing, $total, 100 * $count / $total);
+}
