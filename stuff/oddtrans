@@ -4,6 +4,8 @@
 
 use strict;
 use warnings;
+use v5.10;
+use utf8;
 
 binmode(STDOUT, ":encoding(UTF-8)");
 
@@ -46,7 +48,7 @@ while ($arg =~ /^-l/) {
   %Translate = %backup;
   $arg = shift;
 }
-unshift(@ARGV,$arg); # shove the last one back because it is not -l!
+unshift(@ARGV, $arg); # shove the last one back because it is not -l!
 
 print "our \%Translate = grep(!/^#/, split(/\\n/,<<'END_OF_TRANSLATION'));\n";
 undef $/; # slurp
@@ -61,7 +63,7 @@ foreach my $file (@ARGV) {
   while(/Ts?s?\(\"([^"]+)/g) { trans($file, $1); }
 }
 
-print "END_OF_TRANSLATION\n";
+print "#\nEND_OF_TRANSLATION\n";
 
 my %seen = ();
 my %read = ();
@@ -88,7 +90,7 @@ sub marker {
 }
 my $header = 0;
 
-sub header_info_extract{
+sub header_info_extract {
   return if $header++;
   my $file = shift;
   open(FILE, "<:encoding(utf8)", $file) or die "Can't open $file because: $!";
