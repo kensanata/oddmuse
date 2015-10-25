@@ -39,6 +39,17 @@ negative_xpath_test($page,
 xpath_test($page,
 	   '//link[@type="text/css"][@rel="stylesheet"][@href="http://example.org/test.css"]');
 
+# StyleSheet option (multiple css files)
+AppendStringToFile($ConfigFile, "\$StyleSheet = ['http://example.org/test.css', 'http://example.org/another.css'];\n");
+$page = get_page('HomePage');
+negative_xpath_test($page,
+	    '//link[@type="text/css"][@rel="stylesheet"][@href="http://www.oddmuse.org/default.css"]',
+	    '//link[@type="text/css"][@rel="stylesheet"][@href="http://localhost/wiki.pl?action=browse;id=css;raw=1;mime-type=text/css"]');
+xpath_test($page,
+	   '//link[@type="text/css"][@rel="stylesheet"][@href="http://example.org/test.css"]');
+xpath_test($page,
+	   '//link[@type="text/css"][@rel="stylesheet"][@href="http://example.org/another.css"]');
+
 # Parameter
 $page = get_page('action=browse id=HomePage css=http://example.org/my.css');
 negative_xpath_test($page,

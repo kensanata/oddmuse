@@ -2373,7 +2373,7 @@ sub GetFeeds {      # default for $HtmlHeaders
 
 sub GetCss {      # prevent javascript injection
   my @css = map { my $x = $_; $x =~ s/\".*//; $x; } split(/\s+/, GetParam('css', ''));
-  push (@css, $StyleSheet) if $StyleSheet and not @css;
+  push (@css, ref $StyleSheet ? @$StyleSheet : $StyleSheet) if $StyleSheet and not @css;
   if ($IndexHash{$StyleSheetPage} and not @css) {
     push (@css, "$ScriptName?action=browse;id=" . UrlEncode($StyleSheetPage) . ";raw=1;mime-type=text/css")
   }
