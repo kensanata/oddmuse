@@ -78,7 +78,7 @@ sub DoManifest {
   #   print ScriptUrl($id) . "\n" unless $IndexHash{$id};
   # }
   # External CSS
-  print $StyleSheet . "\n" if $StyleSheet;
+  print ref $StyleSheet ? join("\n", @$StyleSheet) . "\n" : "$StyleSheet\n" if $StyleSheet;
   # FIXME: $StyleSheetPage
   # FIXME: external images, stuff in $HtmlHeaders
   # Error message all the stuff that's not available offline.

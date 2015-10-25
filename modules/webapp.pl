@@ -76,7 +76,7 @@ EOT
     print ScriptUrl('webapp/index.html') . "\n";
     # CSS file
     if ($StyleSheet) {
-      print "$StyleSheet\n";
+      print ref $StyleSheet ? join("\n", @$StyleSheet) . "\n" : "$StyleSheet\n";
     } elsif ($IndexHash{$StyleSheetPage}) {
       print "$ScriptName?action=browse;id=" . UrlEncode($StyleSheetPage)
       . ";raw=1;mime-type=text/css\n";

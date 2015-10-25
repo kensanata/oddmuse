@@ -232,7 +232,11 @@ EOT
 sub StaticWriteCss {
   my $css;
   if ($StyleSheet) {
-    $css = GetRaw($StyleSheet);
+    if (ref $StyleSheet) {
+      $css = join '', map { GetRaw($_) } @$StyleSheet;
+    } else {
+      $css = GetRaw($StyleSheet);
+    }
   }
   if (not $css and $IndexHash{$StyleSheetPage}) {
     $css = GetPageContent($StyleSheetPage);
