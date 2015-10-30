@@ -1,0 +1,101 @@
+#! /usr/bin/env perl
+
+# Copyright (C) 2015  Alex Schroeder <alex@gnu.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+use strict;
+use warnings;
+
+sub ParseData {
+  my $data = shift;
+  my %result;
+  while ($data =~ /(\S+?): (.*?)(?=\n[^ \t]|\Z)/sg) {
+    my ($key, $value) = ($1, $2);
+    $value =~ s/\n\t/\n/g;
+    $result{$key} = $value;
+  }
+  return %result;
+}
+
+sub main {
+  my ($match, $search, $PageDir) = @_;
+  my $pages = 0;
+  my $words = 0;
+  # include dotfiles!
+  local $/ = undef;   # Read complete files
+  foreach my $file (glob("$PageDir/*.pg $PageDir/.*.pg")) {
+    next unless $file =~ m|.*/(.+)\.pg$|;
+    my $id = $1;
+    next if $match && $id !~ /$match/;
+    open(F, $file) or die "Cannot read $id file: $!";
+    my $data = <F>;
+    close(F);
+    my %Page = ParseData($data);
+    next if $search && $Page{text} !~ /$search/;
+    my $n = () = $Page{text} =~ /\w+/g;
+    $words += $n;
+    $pages++;
+    warn "$id: $n\n" if $ENV{DEBUG};
+  }
+  die "No pages found in $PageDir\n" unless $pages;
+  printf "%d %d %.2f\n", $words, $pages, $words /$pages;
+}
+
+use Getopt::Long;
+my $match = undef;
+my $search = undef;
+my $dir = 'page';
+my $help = undef;
+GetOptions ("match=s" => \$match,
+	    "search=s" => \$search,
+	    "dir=s"   => \$dir,
+	    "help"     => \$help);
+
+if ($help or not -d $dir) {
+  print qq{Usage: $0 [--match REGEXP] [--search REGEXP] [--dir DIR]
+
+Counts the words for your pages.
+
+--match selects a subsets of pages whose names match the regular
+  expression. Note that spaces have been translated to underscores.
+
+--search selects a subsets of pages whose content matches the regular
+  expression.
+
+--page designates the page directory. By default this is 'page' in the
+  current directory. If you run this script in your data directory,
+  the default should be fine.
+
+If the environment variable DEBUG is set, the page count for each page
+will be printed to stderr.
+
+Examples
+--------
+
+Journal pages only:
+$0 --match '^\d{4}-\d{2}-\d{2}'
+
+Skip comment pages:
+$0 --match '^(?!Comments_on_)'
+
+Pages tagged RPG:
+$0 --search '\[\[tag:RPG\]\]'
+
+Debug output:
+DEBUG=1 $0
+}
+} else {
+  main ($match, $search, $dir);
+}
