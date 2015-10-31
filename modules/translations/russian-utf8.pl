@@ -790,14 +790,14 @@ Add Comment
 # modules/edit-cluster.pl
 ################################################################################
 ordinary changes
-
+обычные изменения
 %s days
 %s дней
 ################################################################################
 # modules/edit-paragraphs.pl
 ################################################################################
 Could not identify the paragraph you were editing
-Не получилось определить параграф который вы редактировали
+Не получилось определить параграф, который вы редактировали
 This is the section you edited:
 Это часть, которую вы отредактировали:
 This is the current page:
@@ -841,7 +841,7 @@ CAPTCHA
 You did not answer correctly.
 Вы неправильно ответили на вопрос.
 $GdSecurityImageFont is not set.
-
+Переменная $GdSecurityImageFont не установлена.
 ################################################################################
 # modules/git-another.pl
 ################################################################################
@@ -855,23 +855,23 @@ no summary available
 page was marked for deletion
 страница была помечена для удаления
 Oddmuse
-
+Oddmuse
 Cleaning up git repository
 Чищу git репозиторий
 ################################################################################
 # modules/google-plus-one.pl
 ################################################################################
 Google +1 Buttons
-
+Кнопки Google +1
 All Pages +1
 
 This page lists the twenty last diary entries and their +1 buttons.
-
+На этой странице виден список двадцати записей в дневнике и их +1 кнопки.
 ################################################################################
 # modules/gravatar.pl
 ################################################################################
 Email:
-
+Email:
 ################################################################################
 # modules/header-and-footer-templates.pl
 ################################################################################
@@ -913,7 +913,7 @@ To confirm changing email address, follow the link below.
 To submit this form you must answer this question:
 Чтобы пройти эту форму вы должны ответить вопрос:
 Question:
-
+Вопрос:
 CAPTCHA:
 
 Registration
@@ -957,7 +957,7 @@ Logged in
 %s has logged in.
 
 You should set new password immediately.
-
+Вы должны установить новый пароль.
 Change Password
 Изменить пароль
 Logged out
@@ -967,7 +967,7 @@ Logged out
 Account Settings
 Настройки аккаунта
 Logout
-
+Выйти
 Current Password:
 Текущий пароль:
 New Password:
@@ -981,33 +981,33 @@ Password Changed
 Your password has been changed.
 Ваш пароль был изменен.
 Forgot Password
-
+Восстановление пароля
 Enter email address, and recovery login ticket will be sent.
 Впишите свой email и вам будет отправлено сообщение для восстановления.
 Not found.
 
 The mail address is not valid anymore.
-
+Этот email адрес больше не является валидным.
 An email has been sent to %s with further instructions.
-
+Письмо с дальнейшими инструкциями было отправлено на %s.
 New Email Address:
-
+Новый Email адрес
 Failed to load account.
-
+Не удалось загрузить аккаунт.
 An email has been sent to %s with a login ticket.
 
 Confirmation Failed
-
+Подтверждение не удалось.
 Failed to confirm.
-
+Не удалось подтвердить email адрес.
 Email Address Changed
-
+Email адрес изменен
 Email address for %1 has been changed to %2.
-
+Email адрес для %1 был изменен на %2.
 Account Management
 
 Ban Account
-
+Заблокировать аккуант
 Enter username of the account to ban:
 Введите имя пользователя, которого вы хотите забанить:
 Ban
@@ -1058,7 +1058,7 @@ Full Link List
 # modules/list-banned-content.pl
 ################################################################################
 Banned Content
-
+Заблокированный контент
 Rule "%1" matched on this page.
 Правило "%1" сработало на этой странице.
 ################################################################################
@@ -1070,21 +1070,21 @@ List of locked pages
 # modules/listtags.pl
 ################################################################################
 Pages tagged with %s
-
+Страницы с тегом %s
 ################################################################################
 # modules/live-templates.pl
 ################################################################################
 Template without parameters
-
+Шаблоны без параметров
 The template %s is either empty or does not exist.
-
+Шаблон %s пуст или не существует.
 ################################################################################
 # modules/localnames.pl
 ################################################################################
 Name:
-
+Имя:
 URL:
-
+Ссылка:
 Define Local Names
 
 Define external redirect:
@@ -1097,7 +1097,7 @@ Local names defined on %1: %2
 # modules/logbannedcontent.pl
 ################################################################################
 IP number matched %s
-
+Правило %s сработало на IP адрес
 ################################################################################
 # modules/login.pl
 ################################################################################
@@ -1116,17 +1116,17 @@ The username %s has already been registered.
 Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
-
+Пожалуйста подождите, пока вебмастер подтвердит вашу заявку.
 An email has been sent to "%s" with further instructions.
-
+Письмо с дальнейшими инструкциями было отправлено на "%s".
 There was an error saving your registration.
-
+Произошла ошибка при сохранении вашей регистрации.
 An account was created for %s.
-
+Аккаунт %s был создан.
 Login to %s
 
 Username and/or password are incorrect.
-
+Имя пользователя или пароль не верны.
 Logged in as %s.
 
 Logout of %s
@@ -1138,7 +1138,7 @@ Logged out of %s
 You are now logged out.
 
 Register a new account
-
+Создать новый аккаунт
 Who am I?
 Кто я?
 Change your password
@@ -1146,11 +1146,11 @@ Change your password
 Approve pending registrations
 
 Confirm Registration for %s
-
+Подтверждение регистрации для %s
 %s, your registration has been approved. You can now use your password to login and edit this wiki.
 
 Confirmation failed.  Please email %s for help.
-
+Подтверждение не удалось.  Пожалуйста напишите письмо на адрес %s для получения помощи.
 Who Am I?
 Кто я?
 You are logged in as %s.
@@ -1158,15 +1158,15 @@ You are logged in as %s.
 You are not logged in.
 
 Reset Password
-
+Сбросить пароль
 The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
-
+Произошла ошибка при сбросе пароля для %s.
 The username "%s" does not exist.
 Пользователь "%s" не существует.
 Reset Password for %s
-
+Сбросить пароль для %s
 Reset Password?
 Сбросить пароль?
 Change Password for %s
@@ -1180,7 +1180,7 @@ Approve Pending Registrations for %s
 %s has been approved.
 
 There was an error approving %s.
-
+Произошла ошибка при подтверждении %s.
 There are no pending registrations.
 
 ################################################################################
@@ -1252,13 +1252,13 @@ Stop
 It seems like module %s is causing your problem.
 Судя по всему, модуль %s вызывает вашу проблему.
 Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
-
+Пожалуйста учитывайте, что этот модуль не может определить проблему, если она вызвана несколькими модулями одновременно (это довольно редкий случай).
 Good luck fixing your problem! ;)
 Удачи в решении вашей проблемы! ;)
 Module count (only testable modules):
 Количество модулей (только тестируемые модули):
 Current module statuses:
-
+Текущий статус модулей:
 Good
 Нет проблемы
 Bad
@@ -1278,12 +1278,12 @@ Looks good. Update modules now!
 # modules/multi-url-spam-block.pl
 ################################################################################
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
-
+Вы использовали больше чем %s ссылок на один и тот же домен. Обычно так делают только спаммеры. Ваше изменение отклонено.
 ################################################################################
 # modules/namespaces.pl
 ################################################################################
 %s is not a legal name for a namespace
-
+%s не является разрешенным именем для пространства имен
 Namespaces
 Пространства имен
 ################################################################################
@@ -1321,7 +1321,7 @@ download
 # modules/nosearch.pl
 ################################################################################
 Backlinks
-
+Обратные ссылки
 ################################################################################
 # modules/not-found-handler.pl
 ################################################################################
@@ -1330,18 +1330,18 @@ Clearing Cache
 Done.
 Готово.
 Generating Link Database
-
+Сгенерировать индекс ссылок
 The 404 handler extension requires the link data extension (links.pl).
 
 ################################################################################
 # modules/offline.pl
 ################################################################################
 Make available offline
-
+Сделать доступным офлайн
 Offline
-
+Офлайн
 You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
-
+В данный момент вы просматриваете офлайновую версию и то, что вы запросили, не доступно. Вам нужно быть онлайн чтобы сделать это.
 ################################################################################
 # modules/olocalmap.pl
 ################################################################################
@@ -1366,35 +1366,35 @@ You have banned your own IP.
 # modules/orphans.pl
 ################################################################################
 Orphan List
-
+Список страниц-сирот
 ################################################################################
 # modules/page-trail.pl
 ################################################################################
 Trail:
-
+След:
 ################################################################################
 # modules/page-type.pl
 ################################################################################
 None
 
 Type
-
+Тип
 ################################################################################
 # modules/paragraph-link.pl
 ################################################################################
 Permalink to "%s"
 
 anchor first defined here: %s
-
+Якорь впервые объявлен здесь: %s
 the page %s also exists
-
+также существует страница %s
 ################################################################################
 # modules/permanent-anchors.pl
 ################################################################################
 Click to search for references to this permanent anchor
-
+Нажмите чтобы посмотреть все ссылки на этот якорь
 Include permanent anchors
-
+Включая якоря
 ################################################################################
 # modules/portrait-support.pl
 ################################################################################
@@ -1404,9 +1404,9 @@ Portrait
 # modules/preview.pl
 ################################################################################
 Pages with changed HTML
-
+Страницы с измененным HTML
 Preview changes in HTML output
-
+Посмотреть изменения в HTML
 ################################################################################
 # modules/private-pages.pl
 ################################################################################
@@ -1422,16 +1422,16 @@ This error should not happen. If your password is set correctly and you are stil
 Attempt to read encrypted data without a password.
 Попытка прочитать зашифрованные данные без пароля.
 Cannot refresh index.
-
+Невозможно обновить индекс.
 ################################################################################
 # modules/publish.pl
 ################################################################################
 Publish %s
-
+Опубликовать %s
 No target wiki was specified in the config file.
-
+Целевая вики не указана в файле конфигурации.
 The target wiki was misconfigured.
-
+Целевая вики настроена неправильно.
 ################################################################################
 # modules/put.pl
 ################################################################################
@@ -1446,29 +1446,29 @@ To save this page you must answer this question:
 # modules/recaptcha.pl
 ################################################################################
 Please type the following two words:
-
+Пожалуйства введите эти слова:
 Please answer this captcha:
 Пожалуйста введите капчу:
 ################################################################################
 # modules/referrer-rss.pl
 ################################################################################
 Referrers
-
+Ссылающиеся
 ################################################################################
 # modules/referrer-tracking.pl
 ################################################################################
 All Referrers
-
+Все ссылающиеся
 ################################################################################
 # modules/search-list.pl
 ################################################################################
 Page list for %s
-
+Список страниц для %s
 ################################################################################
 # modules/small.pl
 ################################################################################
 Index of all small pages
-
+Индекс маленьких страниц
 ################################################################################
 # modules/static-copy.pl
 ################################################################################
@@ -1492,22 +1492,22 @@ Summary of your changes:
 # modules/sync.pl
 ################################################################################
 Copy to %1 succeeded: %2.
-
+Копирование на %1 удалось: %2.
 Copy to %1 failed: %2.
-
+Копирование на %1 не удалось: %2.
 ################################################################################
 # modules/tags.pl
 ################################################################################
 Tag
-
+Тег
 Feed for this tag
-
+Лента для этого тега
 Tag Cloud
-
+Облако тегов
 Rebuilding index not done.
-
+Индекс не был пересоздан.
 (Rebuilding the index can only be done once every 12 hours.)
-
+(Пересоздание индекса может быть сделано только каждые 12 часов)
 Rebuild tag index
 Пересоздать индекс тегов
 list tags
@@ -1518,51 +1518,51 @@ tag cloud
 # modules/templates.pl
 ################################################################################
 Alternatively, use one of the following templates:
-
+Вы также можете воспользоваться одним из этих шаблонов:
 ################################################################################
 # modules/throttle.pl
 ################################################################################
 Too many instances.  Only %s allowed.
-
+Слишком много одновременных запросов.  Разрешено только %s.
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 Попробуйте еще раз попозже. Возможно, кто-то запустил процедуру техобслуживания, или в процессе находится долгий поиск. К сожалению, ресурсы этого сайта ограничены, мы вынуждены попросить Вас быть терпеливыми.
 ################################################################################
 # modules/thumbs.pl
 ################################################################################
 thumb
-
+миниатюра
 Error creating thumbnail from nonexisting page %s.
-
+Ошибка создания миниатюры из несуществующей страницы %s.
 Can not create thumbnail for file type %s.
-
+Невозможно создать миниатюру для файла типа %s.
 Can not create thumbnail for a text document
-
+Невозможно создать миниатюру для текстового документа.
 Can not create path for thumbnail - %s
-
+Невозможно создать папку для миниатюры - %s
 Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
+Во время записи изображения невозможно было открыть %s для записи. Проверьте права на запись.
 Failed to run %1 to create thumbnail: %2
-
+Невозможно запустить %1 для создания миниатюры: %2
 %s ran into an error
-
+Произошла ошибка во время запуска %s
 %s produced no output
-
+%s не вернул результата
 Failed to parse %s.
-
+Невозможно распарсить %s.
 ################################################################################
 # modules/timezone.pl
 ################################################################################
 Timezone
-
+Часовой пояс
 Pick your timezone:
 Выберите ваш часовой пояс:
 Set
-
+Установить
 ################################################################################
 # modules/toc-headers.pl
 ################################################################################
 Contents
-
+Содержашие
 ################################################################################
 # modules/today.pl
 ################################################################################
@@ -1574,25 +1574,25 @@ Create a new page for today
 Add Translation
 Добавить перевод
 Added translation: %1 (%2)
-
+Добавлен перевод: %1 (%2)
 Translate %s
-
+Перевести %s
 Thank you for writing a translation of %s.
-
+Спасибо за написание перевода для %s.
 Please indicate what language you will be using.
-
+Пожалуйста укажите язык перевода.
 Language is missing
-
+Такой язык отсутствует
 Suggested languages:
-
+Возможные языки:
 Please indicate a page name for the translation of %s.
-
+Пожалуйста укажите имя страницы для перевода %s.
 More help may be available here: %s.
-
+Помощь по переводам находится здесь: %s.
 Translated page:
-
+Переведенная страница:
 Please provide a different page name for the translation.
-
+Пожалуйста укажите другое имя страницы для перевода.
 ################################################################################
 # modules/translations.pl
 ################################################################################
@@ -1643,7 +1643,7 @@ Wanted Pages
 # modules/webapp.pl
 ################################################################################
 Web application for offline browsing
-
+Офлайн просмотр
 ################################################################################
 # modules/webdav.pl
 ################################################################################
@@ -1653,7 +1653,7 @@ Upload of %s file
 # modules/weblog-1.pl
 ################################################################################
 Blog
-
+Блог
 ################################################################################
 # modules/weblog-3.pl
 ################################################################################
@@ -1662,10 +1662,10 @@ Matching pages:
 New
 
 Edit %s.
-
+Редактировать %s.
 ################################################################################
 # modules/weblog-4.pl
 ################################################################################
 Tags:
-
+Теги:
 END_OF_TRANSLATION
