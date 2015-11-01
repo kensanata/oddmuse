@@ -101,6 +101,9 @@ our $EditPass  //= '';              # Whitespace separated passwords.
 our $PassHashFunction //= '';       # Name of the function to create hashes
 our $PassSalt  //= '';              # Salt will be added to any password before hashing
 
+our $UseCsp      = 0;               # 1 = enable Content Security Policy # TODO should be enabled by default
+our %CspDirectives = ('default-src' => ["'self'"], 'style-src' => ['*'], 'img-src' => ['*']); # CSP directives
+
 our $BannedHosts = 'BannedHosts';   # Page for banned hosts
 our $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
 our $BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
@@ -2303,6 +2306,12 @@ sub GetHttpHeader {
   $headers{-Content_Encoding} = $encoding if $encoding;
   my $cookie = Cookie();
   $headers{-cookie} = $cookie if $cookie;
+  if ($UseCsp) {
+    my $csp = join '; ', map { join ' ', $_, @{$CspDirectives{$_}} } sort keys %CspDirectives;
+    $headers{'Content-Security-Policy'}   = $csp;
+    $headers{'X-Content-Security-Policy'} = $csp; # required for IE
+    $headers{'X-Webkit-CSP'}              = $csp; # required for UC browser
+  }
   if ($q->request_method() eq 'HEAD') {
     print $q->header(%headers), "\n\n"; # add newlines for FCGI because of exit()
     exit; # total shortcut -- HEAD never expects anything other than the header!
