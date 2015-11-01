@@ -101,6 +101,7 @@ our $EditPass  //= '';              # Whitespace separated passwords.
 our $PassHashFunction //= '';       # Name of the function to create hashes
 our $PassSalt  //= '';              # Salt will be added to any password before hashing
 
+our $UnicodeIcons  = '';            # 1 = Use unicode characters as icons (fallback font is recommended)
 our $BannedHosts = 'BannedHosts';   # Page for banned hosts
 our $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
 our $BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
@@ -1170,7 +1171,7 @@ sub GetEditLink {   # shortcut
   $id = FreeToNormal($id);
   my $action = 'action=edit;id=' . UrlEncode($id);
   $action .= ';upload=1' if $upload;
-  return ScriptLink($action, NormalToFree($name), 'edit', undef, T('Click to edit this page'), $accesskey);
+  return ScriptLink($action, NormalToFree($name), 'edit', undef, ($UnicodeIcons && '✎ ') . T('Click to edit this page'), $accesskey);
 }
 
 sub ScriptUrl {
@@ -1674,24 +1675,24 @@ sub RcHeader {
   my @menu;
   if ($all) {
     push(@menu, ScriptLink("$action;days=$days;all=0;showedit=$edits",
-			   T('List latest change per page only')));
+			   ($UnicodeIcons && '● ') . T('List latest change per page only')));
   } else {
     push(@menu, ScriptLink("$action;days=$days;all=1;showedit=$edits",
-			   T('List all changes')));
+			   ($UnicodeIcons && '○ ') . T('List all changes')));
     if ($rollback) {
       push(@menu, ScriptLink("$action;days=$days;all=0;rollback=0;"
-			     . "showedit=$edits", T('Skip rollbacks')));
+			     . "showedit=$edits", ($UnicodeIcons && '● ') . T('Skip rollbacks')));
     } else {
       push(@menu, ScriptLink("$action;days=$days;all=0;rollback=1;"
-			     . "showedit=$edits", T('Include rollbacks')));
+			     . "showedit=$edits", ($UnicodeIcons && '○ ') . T('Include rollbacks')));
     }
   }
   if ($edits) {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=0",
-			   T('List only major changes')));
+			   ($UnicodeIcons && '● ') . T('List only major changes')));
   } else {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=1",
-			   T('Include minor changes')));
+			   ($UnicodeIcons && '○ ') . T('Include minor changes')));
   }
   return $html .
     $q->p(join(' | ', (map { ScriptLink("$action;days=$_;all=$all;showedit=$edits", $_); } @RcDays)),
@@ -2119,10 +2120,10 @@ sub DoRollback {
 sub DoAdminPage {
   my ($id, @rest) = @_;
   my @menu = ();
-  push(@menu, ScriptLink('action=index',    T('Index of all pages'), 'index')) if $Action{index};
-  push(@menu, ScriptLink('action=version',  T('Wiki Version'),     'version')) if $Action{version};
-  push(@menu, ScriptLink('action=password', T('Password'), 'password')) if $Action{password};
-  push(@menu, ScriptLink('action=maintain', T('Run maintenance'), 'maintain')) if $Action{maintain};
+  push(@menu, ScriptLink('action=index', ($UnicodeIcons && '🗐 ') . T('Index of all pages'), 'index')) if $Action{index};
+  push(@menu, ScriptLink('action=version', ($UnicodeIcons && '❓ ') . T('Wiki Version'), 'version')) if $Action{version};
+  push(@menu, ScriptLink('action=password', ($UnicodeIcons && '🛂 ') . T('Password'), 'password')) if $Action{password};
+  push(@menu, ScriptLink('action=maintain', ($UnicodeIcons && '♻ ') . T('Run maintenance'), 'maintain')) if $Action{maintain};
   my @locks;
   for my $pattern (@KnownLocks) {
     for my $name (bsd_glob $pattern) {
@@ -2454,20 +2455,20 @@ sub GetFooterLinks {
       if ($id =~ /$CommentsPattern/) {
 	push(@elements, GetPageLink($1, undef, 'original', T('a'))) if $1;
       } else {
-	push(@elements, GetPageLink($CommentsPrefix . $id, undef, 'comment', T('c')));
+	push(@elements, GetPageLink(($UnicodeIcons && '💬 ') . $CommentsPrefix . $id, undef, 'comment', T('c')));
       }
     }
     if (UserCanEdit($id, 0)) {
       if ($rev) {		# showing old revision
-	push(@elements, GetOldPageLink('edit', $id, $rev, Ts('Edit revision %s of this page', $rev)));
+	push(@elements, GetOldPageLink('edit', $id, $rev, ($UnicodeIcons && '⎇ ') . Ts('Edit revision %s of this page', $rev)));
       } else {			# showing current revision
-	push(@elements, GetEditLink($id, T('Edit this page'), undef, T('e')));
+	push(@elements, GetEditLink($id, ($UnicodeIcons && '✎ ') . T('Edit this page'), undef, T('e')));
       }
     } else {			# no permission or generated page
-      push(@elements, ScriptLink('action=password', T('This page is read-only'), 'password'));
+      push(@elements, ScriptLink('action=password', ($UnicodeIcons && '🔒 ') . T('This page is read-only'), 'password'));
     }
   }
-  push(@elements, GetHistoryLink($id, T('View other revisions'))) if $Action{history} and $id and $rev ne 'history';
+  push(@elements, GetHistoryLink($id, ($UnicodeIcons && '⍿ ') . T('View other revisions'))) if $Action{history} and $id and $rev ne 'history';
   push(@elements, GetPageLink($id, T('View current revision')),
        GetRCLink($id, T('View all changes'))) if $Action{history} and $rev ne '';
   if ($Action{contrib} and $id and $rev eq 'history') {
@@ -2476,7 +2477,7 @@ sub GetFooterLinks {
   if ($Action{admin} and GetParam('action', '') ne 'admin') {
     my $action = 'action=admin';
     $action .= ';id=' . UrlEncode($id) if $id;
-    push(@elements, ScriptLink($action, T('Administration'), 'admin'));
+    push(@elements, ScriptLink($action, ($UnicodeIcons && '⚙ ') . T('Administration'), 'admin'));
   }
   return @elements ? $q->div({-class=>'edit bar'}, @elements) : '';
 }
