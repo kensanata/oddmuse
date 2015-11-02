@@ -2308,9 +2308,9 @@ sub GetHttpHeader {
   $headers{-cookie} = $cookie if $cookie;
   if ($UseCsp) {
     my $csp = join '; ', map { join ' ', $_, @{$CspDirectives{$_}} } sort keys %CspDirectives;
-    $headers{'Content-Security-Policy'}   = $csp;
-    $headers{'X-Content-Security-Policy'} = $csp; # required for IE
-    $headers{'X-Webkit-CSP'}              = $csp; # required for UC browser
+    $headers{'-Content-Security-Policy'}   = $csp;
+    $headers{'-X-Content-Security-Policy'} = $csp; # required for IE
+    $headers{'-X-Webkit-CSP'}              = $csp; # required for UC browser
   }
   if ($q->request_method() eq 'HEAD') {
     print $q->header(%headers), "\n\n"; # add newlines for FCGI because of exit()
