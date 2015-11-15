@@ -47,8 +47,8 @@ textarea, pre, code, tt {
 .browse { min-height: 3em; }
 .header form, .header p { margin: 0; }
 /* hide the buttons but don't use display:none because of
-   http://stackoverflow.com/questions/5665203/getting-iphone-go-button-to-submit-form */
-.header input[type="submit"] { position: absolute; visibility: hidden; }
+   http://stackoverflow.com/questions/5665203/getting-iphone-go-button-to-submit-form
+.header input[type="submit"] { position: absolute; visibility: hidden; } */
 .header input { width: 5em; font-size: 80%; }
 .footer { clear:both; font-size: 90%; }
 .content input { font-size: 80%; line-height: 125%; }
@@ -205,6 +205,7 @@ span.result { font-size:larger; }
 span.info { font-size:smaller; font-style:italic; }
 div.rc hr { display: none; }
 div.rc li { padding-bottom: 0.5em; }
+div.rc li strong { font-weight: normal; }
 
 /* Tables */
 table.user {
