@@ -321,7 +321,6 @@ div.sister {
     float:left;
     margin-right:1ex;
     padding-right:1ex;
-    border-right:1px dashed;
 }
 div.sister p { padding:1ex; margin:0; }
 div.sister hr { display:none; }
