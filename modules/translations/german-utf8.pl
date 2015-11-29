@@ -89,9 +89,9 @@ Ungültige Seite %s (Darf nicht mit .lck enden)
 Invalid Page %s
 Ungültige Seite %s
 There are no comments, yet. Be the first to leave a comment!
-
+Es gibt noch keine Kommentare, sei der Erste der einen hinterlässt!
 Welcome!
-
+Wilkommen!
 This page does not exist, but you can %s.
 Diese Seite gibt es nicht, aber du kannst %s.
 create it now
@@ -343,9 +343,9 @@ Die Sperre wurde %s gesetzt.
 Maybe the user running this script is no longer allowed to remove the lock directory?
 Vielleicht darf der user, welcher dieses script ausführt, das Sperr-Verzeichnis nicht löschen?
 Sometimes locks are left behind if a job crashes.
-
+Manchmal bleiben Sperren erhalten, wenn ein Prozess abbricht.
 After ten minutes, you could try to unlock the wiki.
-
+Nach zehn Minuten kann versucht werden, das Wiki zu entsperren.
 This operation may take several seconds...
 Das könnte einige Sekunden dauern...
 Forced unlock of %s lock.
@@ -435,7 +435,7 @@ Grund unbekannt.
 %s pages found.
 %s Seiten gefunden.
 Preview: %s
-
+Vorschau: %s
 Replaced: %s
 Ersetzt: %s
 Search for: %s
@@ -786,7 +786,7 @@ Kommentar hinzufügen
 ordinary changes
 normale Änderungen
 %s days
-
+%s Tage
 ################################################################################
 # modules/edit-paragraphs.pl
 ################################################################################
@@ -1398,9 +1398,9 @@ Portrait
 # modules/preview.pl
 ################################################################################
 Pages with changed HTML
-
+Seiten mit geändertem HTML
 Preview changes in HTML output
-
+Vorschau der Änderungen der HTML-Ausgabe
 ################################################################################
 # modules/private-pages.pl
 ################################################################################
