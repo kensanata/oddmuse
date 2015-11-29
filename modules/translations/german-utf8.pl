@@ -91,7 +91,7 @@ Ungültige Seite %s
 There are no comments, yet. Be the first to leave a comment!
 Es gibt noch keine Kommentare, sei der Erste der einen hinterlässt!
 Welcome!
-Wilkommen!
+Willkommen!
 This page does not exist, but you can %s.
 Diese Seite gibt es nicht, aber du kannst %s.
 create it now
