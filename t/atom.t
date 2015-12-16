@@ -48,7 +48,7 @@ sub random_port {
 my $port = random_port();
 $ScriptName = "http://localhost:$port";
 
-AppendStringToFile($ConfigFile, "\$ScriptName = $ScriptName;\n");
+AppendStringToFile($ConfigFile, "\$ScriptName = '$ScriptName';\n");
 
 add_module('atom.pl');
 
