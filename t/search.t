@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 72;
+use Test::More tests => 89;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('mac.pl');
@@ -115,6 +115,17 @@ xpath_test($page, '//a[@class="more"][@href="http://localhost/wiki.pl?search=Som
 
 $page = get_page('search=Something preview=1 offset=10 num=10 replace=Other pwd=foo');
 test_page($page, map { "Page_$_" } ('K' .. 'M'));
+
+# Now do the replacement
+
+$page = get_page('search=Something replace=Other pwd=foo');
+test_page($page, 'Replaced: Something &#x2192; Other', '13 pages found',
+	  map { "Page_$_" } ('A' .. 'M'));
+
+# Verify that the change has been made
+
+test_page(get_page('search=Other'), 'Search for: Other', '13 pages found');
+
 
 # Replace with backreferences, where the replacement pattern is no longer found.
 # Take 'fuuz and barz.' and replace ([a-z]+)z with x$1 results in 'xfuu and xbar.'
