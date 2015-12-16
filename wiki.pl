@@ -3580,7 +3580,7 @@ sub SearchExtract {
 sub ReplaceAndSave {
   my ($from, $to) = @_;
   RequestLockOrError();   # fatal
-  my @result = Replace($from, $to, sub {
+  my @result = Replace($from, $to, 1, sub {
     my ($id, $new) = @_;
     Save($id, $new, $from . ' → ' . $to, 1, ($Page{host} ne $q->remote_addr()));
 		       });
@@ -3590,7 +3590,7 @@ sub ReplaceAndSave {
 
 sub ReplaceAndDiff {
   my ($from, $to) = @_;
-  my @found = Replace($from, $to, sub {
+  my @found = Replace($from, $to, 0, sub {
     my ($id, $new) = @_;
     print $q->h2(GetPageLink($id)), $q->div({-class=>'diff'}, ImproveDiff(DoDiff($Page{text}, $new)));
 		      });
@@ -3606,7 +3606,7 @@ sub ReplaceAndDiff {
 }
 
 sub Replace {
-  my ($from, $to, $func) = @_; # $func takes $id and $new text
+  my ($from, $to, $all, $func) = @_; # $func takes $id and $new text
   my $lang = GetParam('lang', '');
   my $num = GetParam('num', 10);
   my $offset = GetParam('offset', 0);
@@ -3626,7 +3626,7 @@ sub Replace {
     };
     if (s/$from/$replacement->()/egi) { # allows use of backreferences
       push (@result, $id);
-      $func->($id, $_) if @result > $offset and @result <= $offset + $num;
+      $func->($id, $_) if $all or @result > $offset and @result <= $offset + $num;
     }
   }
   return @result;
