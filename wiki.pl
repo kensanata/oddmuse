@@ -3409,6 +3409,11 @@ sub DoSearch {
     if (GetParam('preview', '')) { # Preview button was used
       print GetHeader('', Ts('Preview: %s', $string . " &#x2192; " . $replacement));
       print $q->start_div({-class=>'content replacement'});
+      print GetFormStart(undef, 'post', 'replace');
+      print GetHiddenValue('search', $string);
+      print GetHiddenValue('replace', $replacement);
+      print GetHiddenValue('delete', GetParam('delete', 0));
+      print $q->submit(-value=>T('Go!')) . $q->end_form();
       @results = ReplaceAndDiff($re, UnquoteHtml($replacement));
     } else {
       print GetHeader('', Ts('Replaced: %s', $string . " &#x2192; " . $replacement));
