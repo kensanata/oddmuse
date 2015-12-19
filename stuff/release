@@ -1,0 +1,58 @@
+#!/bin/env perl
+# Copyright (C) 2015  Alex Schroeder <alex@gnu.org>
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+use strict;
+use warnings;
+use version;
+
+my $dir = shift;
+
+unless (-d $dir) {
+  die <<"EOT";
+Usage: $0 DIR [RELEASE]
+
+DIR is the directory where the tarballs for each tag are created.
+It must already exist.
+
+If an optional RELEASE such as 2.3.0 is provided, then only tags
+equal or greater than 2.3.0 will be considered. The default is 2.3.0.
+EOT
+}
+
+my $min = version->parse(shift || "2.3.0");
+
+my @tags = grep { /\d+\.\d+\.\d+/ and version->parse($_) > $min } 
+           split(/\n/, qx{git tag --list});
+
+unless (@tags) {
+  die "git tag --list produced no list of tags\n";
+}
+
+for my $tag (@tags) {
+  my $fname = "$dir/oddmuse-$tag.tar.gz";
+  unless (-f $fname) {
+    
+    system("git", "checkout", $tag) == 0
+	or die "Failed to git checkout $tag\n";
+    system("make", "prepare") == 0
+	or die "Failed to run make prepare for tag $tag\n";
+    system("mv", "build", "oddmuse-$tag") == 0
+	or die "Failed to rename the build directory to oddmuse-$tag\n";
+    system("tar", "czf", "oddmuse-$tag.tar.gz", "oddmuse-$tag") == 0
+	or die "Failed to build tarball oddmuse-$tag.tar.gz\n";
+    system("mv", "oddmuse-$tag.tar.gz", $fname) == 0
+	or die "Failed to move the tarball oddmuse-$tag.tar.gz\n";
+  }
+}
