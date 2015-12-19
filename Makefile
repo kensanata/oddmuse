@@ -19,6 +19,10 @@ build:
 
 clean:
 	rm -rf build
+	prove t/setup.pl
+
+release:
+	perl stuff/release ~/oddmuse.org
 
 build/wiki.pl: wiki.pl
 	perl -lne "s/(\\\$$q->a\({-href=>'http:\/\/www.oddmuse.org\/'}, 'Oddmuse'\))/\\\$$q->a({-href=>'http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ' ($(VERSION_NO)), see ' . \$$1/; print" < $< > $@
