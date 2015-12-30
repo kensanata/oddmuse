@@ -29,6 +29,7 @@ our %TranslationsLibrary = (
   'bg'    => 'bulgarian-utf8.pl',
   'ca'    => 'catalan-utf8.pl',
   'de'    => 'german-utf8.pl',
+  'et'    => 'estonian-utf8.pl',
   'es'    => 'spanish-utf8.pl',
   'fi'    => 'finnish-utf8.pl',
   'fr'    => 'french-utf8.pl',
