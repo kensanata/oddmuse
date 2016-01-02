@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006–2016  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,19 +16,71 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 6;
+use Test::More tests => 9;
+
+# basic test
 
 add_module('sidebar.pl');
 
 test_page(update_page($SidebarName, 'mu'), '<div class="sidebar"><p>mu</p></div>');
 test_page(get_page('HomePage'), '<div class="sidebar"><p>mu</p></div>');
 
-#FIXME: Due to the recent refactoring of the Table of Contents module, the
-#Sidebar module is now known **not** to work as expected with that module.
-#This would appear to be an unavoidable consequence of that refactoring... The
-#Sidebar module, as currently implemented, **cannot** be made to work with the
-#Table of Contents module. As such, we disable all prior tests against the
-#Table of Contents module. It's hardly ideal. (But then, what is?)
+# with images
+
+add_module('image.pl');
+# enable uploads
+AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
+update_page('pic', "#FILE image/png\niVBORw0KGgoAAAA");
+xpath_test(update_page($SidebarName, '[[image:pic|picture|Target]]'),
+	   '//div[@class="sidebar"]/p/a[@class="image"][@href="http://localhost/wiki.pl/Target"]/img[@class="upload"][@src="http://localhost/wiki.pl/download/pic"][@alt="picture"]');
+
+# with static-copy
+
+add_module('static-copy.pl');
+
+AppendStringToFile($ConfigFile, q{
+$StaticAlways = 1;
+$StaticDir = $DataDir . '/static';
+$StaticUrl = '/static/';
+%StaticMimeTypes = ('image/png'  => 'png', );
+@UploadTypes = ('image/png', );
+});
+
+update_page('pic', "DeletedPage");
+update_page('pic', "#FILE image/png\niVBORw0KGgoAAAA", undef, 0, 1);
+ok(-f "$DataDir/static/pic.png", "$DataDir/static/pic.png exists");
+
+xpath_test(update_page($SidebarName, '[[image:pic|a picture|Target]]'),
+	   '//div[@class="sidebar"]/p/a[@class="image"][@href="http://localhost/wiki.pl/Target"]/img[@class="upload"][@src="/static/pic.png"][@alt="a picture"]');
+
+# with forms
+
+add_module('forms.pl');
+
+# Markup the sidebar page prior to locking the sidebar page. This should ensure
+# that forms on that page are not interpreted.
+test_page(update_page($SidebarName, '<form><h1>mu</h1></form>'),
+    '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');
+
+# Lock the sidebar page, mark it up again, and ensure that forms on that page
+# are now interpreted.
+xpath_test(get_page("action=pagelock id=$SidebarName set=1 pwd=foo"),
+     '//p/text()[string()="Lock for "]/following-sibling::a[@href="http://localhost/wiki.pl/SideBar"][@class="local"][text()="SideBar"]/following-sibling::text()[string()=" created."]');
+test_page(get_page("action=browse id=$SidebarName cache=0"), #update_page($SidebarName, '<form><h1>mu</h1></form>'),
+    '<div class="sidebar"><form><h1>mu</h1></form></div>');
+# While rendering the SideBar as part of the HomePage, it should still
+# be considered "locked", and therefore the form should render
+# correctly.
+test_page(get_page('HomePage'),
+    '<div class="sidebar"><form><h1>mu</h1></form></div>');
+
+
+# FIXME: Due to the recent refactoring of the Table of Contents module, the
+# Sidebar module is now known **not** to work as expected with that module.
+# This would appear to be an unavoidable consequence of that refactoring... The
+# Sidebar module, as currently implemented, **cannot** be made to work with the
+# Table of Contents module. As such, we disable all prior tests against the
+# Table of Contents module. It's hardly ideal. (But then, what is?)
 
 # with toc
 
@@ -72,24 +124,3 @@ test_page(get_page('HomePage'), '<div class="sidebar"><p>mu</p></div>');
 
 # remove_rule(\&TocRule);
 # remove_rule(\&UsemodRule);
-
-# with forms
-
-add_module('forms.pl');
-
-# Markup the sidebar page prior to locking the sidebar page. This should ensure
-# that forms on that page are not interpreted.
-test_page(update_page($SidebarName, '<form><h1>mu</h1></form>'),
-    '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');
-
-# Lock the sidebar page, mark it up again, and ensure that forms on that page
-# are now interpreted.
-xpath_test(get_page("action=pagelock id=$SidebarName set=1 pwd=foo"),
-     '//p/text()[string()="Lock for "]/following-sibling::a[@href="http://localhost/wiki.pl/SideBar"][@class="local"][text()="SideBar"]/following-sibling::text()[string()=" created."]');
-test_page(get_page("action=browse id=$SidebarName cache=0"), #update_page($SidebarName, '<form><h1>mu</h1></form>'),
-    '<div class="sidebar"><form><h1>mu</h1></form></div>');
-# While rendering the SideBar as part of the HomePage, it should still
-# be considered "locked", and therefore the form should render
-# correctly.
-test_page(get_page('HomePage'),
-    '<div class="sidebar"><form><h1>mu</h1></form></div>');
