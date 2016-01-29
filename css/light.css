@@ -201,6 +201,7 @@ div.message {
 }
 table.history { border-style:none; }
 td.history { border-style:none; }
+div.history span.dash + strong { font-weight: normal; }
 span.result { font-size:larger; }
 span.info { font-size:smaller; font-style:italic; }
 div.rc hr { display: none; }
