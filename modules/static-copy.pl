@@ -81,7 +81,7 @@ sub StaticScriptLink {
   my %params;
   if ($action !~ /=/) {
     # the page might not exist, eg. if called via GetAuthorLink
-    $params{-href} = StaticFileName($action) if $IndexHash{$action};
+    $params{'-href'} = StaticFileName($action) if $IndexHash{UrlDecode($action)};
   }
   $params{'-class'} = $class  if $class;
   $params{'-name'} = UrlEncode($name)  if $name;

@@ -16,7 +16,7 @@
 require 't/test.pl';
 package OddMuse;
 use utf8;
-use Test::More tests => 36;
+use Test::More tests => 38;
 
 add_module('static-copy.pl');
 
@@ -167,3 +167,17 @@ xpath_test(update_page('test_image', '[[image/right:bar baz]]'),
 # Next, using a real page. The image type is used appropriately.
 xpath_test(update_page('test_image', '[[image/right:Logo]]'),
 	   '//a[@class="image right"][@href="http://localhost/wiki.pl/Logo"]/img[@class="upload"][@src="/static/Logo.png"][@alt="Logo"]');
+
+
+my $weirdPage = 'Ï_lövé_¥ǫµnĩçȯḑë';
+update_page($weirdPage, 'Some text');
+update_page('Unicode', '[[' . $weirdPage . ']]');
+
+get_page('action=static raw=1 pwd=foo html=1'); # generate static files
+
+my ($status, $data) = ReadFile("$DataDir/static/Unicode.html");
+
+xpath_test(get_page('Unicode'),
+	   '//a[@class="local"]' . '[@href="http://localhost/wiki.pl/' . UrlEncode($weirdPage) . '"]');
+xpath_test($data,
+	   '//a[@class="local"]' . '[@href="' . UrlEncode($weirdPage) . '.html"]');
