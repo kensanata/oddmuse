@@ -290,7 +290,7 @@ div.sidebar ul {
 /* replacements, features */
 
 ins {
-    color: #b33;
+    font-style: italic;
     text-decoration: none;
 }
 acronym, abbr {
