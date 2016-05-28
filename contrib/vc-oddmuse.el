@@ -47,7 +47,8 @@ For a list of possible values, see `vc-state'."
 
 (defun vc-oddmuse-working-revision (file)
   "The current revision based on `oddmuse-revisions'."
-  (oddmuse-revision-get oddmuse-wiki oddmuse-page-name))
+  (with-oddmuse-file
+      (oddmuse-get-latest-revision wiki pagename)))
 
 (defun vc-oddmuse-checkout-model (files)
   "No locking."
@@ -58,10 +59,6 @@ For a list of possible values, see `vc-state'."
 
 (defun vc-oddmuse-register (files &optional rev comment)
   "This always works.")
-
-(defun vc-oddmuse-revert (file &optional contents-done)
-  "No idea"
-  nil)
 
 (defvar vc-oddmuse-log-command
   (concat "curl --silent %w"
@@ -149,7 +146,7 @@ a version backup."
     (with-oddmuse-file file
       (let ((command (oddmuse-format-command vc-oddmuse-get-revision-command)))
 	(with-temp-buffer
-	  (oddmuse-run "Loading" command)
+	  (oddmuse-run "Loading" command wiki pagename)
 	  (write-file file))))))
 
 (defun vc-oddmuse-checkin (files rev comment)

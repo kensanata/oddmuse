@@ -38,9 +38,10 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'cl)
-  (require 'sgml-mode)
-  (require 'skeleton))
+  '(progn
+     (require 'cl)
+     (require 'sgml-mode)
+     (require 'skeleton)))
 
 (require 'goto-addr); URL regexp
 (require 'info); link face
@@ -257,24 +258,6 @@ Example:
 (defvar oddmuse-revision nil
   "A variable to bind dynamically when calling `oddmuse-format-command'.")
 
-(defun oddmuse-revision-put (wiki page rev)
-  "Store REV for WIKI and PAGE in `oddmuse-revisions'."
-  (let ((w (assoc wiki oddmuse-revisions)))
-    (unless w
-      (setq w (list wiki)
-	    oddmuse-revisions (cons w oddmuse-revisions)))
-    (let ((p (assoc page w)))
-      (unless p
-	(setq p (list page))
-	(setcdr w (cons p (cdr w))))
-      (setcdr p rev))))
-
-(defun oddmuse-revision-get (wiki page)
-  "Get revision for WIKI and PAGE in `oddmuse-revisions'."
-  (let ((w (assoc wiki oddmuse-revisions)))
-    (when w
-      (cdr (assoc page w)))))
-
 ;;; Helpers
 
 (defsubst oddmuse-page-name (file)
@@ -300,7 +283,7 @@ Example:
 (defun oddmuse-url (wiki pagename)
   "Get the URL of oddmuse wiki."
   (condition-case v
-      (concat (or (cadr (assoc wiki oddmuse-wikis)) (error)) "/"
+      (concat (or (cadr (assoc wiki oddmuse-wikis)) (error "Wiki not found in `oddmuse-wikis'")) "/"
 	      (url-hexify-string pagename))
     (error nil)))
 
@@ -534,7 +517,7 @@ as well."
 	    ((string-match "<title>Error</title>" status)
 	     (if (string-match "<h1>\\(.*\\)</h1>" status)
 		 (error "Error %s: %s" mesg (match-string 1 status))
-	       (error "Error %s: Cause unknown")))
+	       (error "Error %s: Cause unknown" status)))
 	    (t
 	     (message "%s...done" mesg))))))
 
@@ -736,7 +719,7 @@ Font-locking is controlled by `oddmuse-markup-functions'.
   (set (make-local-variable 'sgml-tag-alist)
        `(("b") ("code") ("em") ("i") ("strong") ("nowiki")
 	 ("pre" \n) ("tt") ("u")))
-  (set (make-local-variable 'skeleton-transformation) 'identity)
+  (set (make-local-variable 'skeleton-transformation-function) 'identity)
 
   (make-local-variable 'oddmuse-wiki)
   (make-local-variable 'oddmuse-page-name)
@@ -854,11 +837,8 @@ people have been editing the wiki in the mean time."
       (set-buffer (get-buffer-create name))
       (erase-buffer); in case of current-prefix-arg
       (oddmuse-run "Loading" oddmuse-get-command wiki pagename)
-      (oddmuse-revision-put wiki pagename (oddmuse-get-latest-revision wiki pagename))
-      ;; fix mode-line for VC in the new buffer because this is not a vc-checkout
       (setq buffer-file-name (concat oddmuse-directory "/" wiki "/" pagename))
-      (vc-mode-line buffer-file-name 'oddmuse)
-      (pop-to-buffer (current-buffer))
+      (vc-working-revision buffer-file-name 'oddmuse)
       ;; check for a diff (this ends with display-buffer) and bury the
       ;; buffer if there are no hunks
       (when (file-exists-p buffer-file-name)
@@ -869,7 +849,9 @@ people have been editing the wiki in the mean time."
       ;; this also changes the buffer name
       (basic-save-buffer)
       ;; this makes sure that the buffer name is set correctly
-      (oddmuse-mode))))
+      (oddmuse-mode)
+      ;; fix mode-line for VC in the new buffer because this is not a vc-checkout
+      (vc-mode-line buffer-file-name 'oddmuse))))
 
 (defalias 'oddmuse-go 'oddmuse-edit)
 
@@ -909,8 +891,11 @@ Use a prefix argument to override this."
   (and buffer-file-name (basic-save-buffer))
   (oddmuse-run "Posting" oddmuse-post-command nil nil
 	       (get-buffer-create " *oddmuse-response*") t 302)
-  (oddmuse-revision-put oddmuse-wiki oddmuse-page-name
-    (oddmuse-get-latest-revision oddmuse-wiki oddmuse-page-name)))
+  ;; force reload
+  (vc-file-setprop buffer-file-name 'vc-working-revision
+		   (oddmuse-get-latest-revision oddmuse-wiki oddmuse-page-name))
+  ;; fix mode-line for VC in the new buffer because this is not a vc-checkout
+  (vc-mode-line buffer-file-name 'oddmuse))
 
 ;;;###autoload
 (defun oddmuse-preview (&optional arg)
