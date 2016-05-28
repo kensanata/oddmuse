@@ -73,6 +73,7 @@ sub LoadLanguage {
   foreach (@prefs) {
     last if $Lang{$_} eq 'en'; # the default
     my $file = $TranslationsLibrary{$Lang{$_}};
+    next unless $file; # file is not listed, eg. there is no file for "de-ch"
     $file = "$LoadLanguageDir/$file" if defined $LoadLanguageDir;
     if (-r $file) {
       do $file;
