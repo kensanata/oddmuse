@@ -154,7 +154,7 @@ sub PageContentToTitle {
   $title =~ s!\s+! !g;
   $title =~ s!^ !!;
   $title =~ s! $!!;
-  $title = substring($title, 0, $RefererTitleLimit) . "..."
+  $title = substr($title, 0, $RefererTitleLimit) . "..."
     if length($title) > $RefererTitleLimit;
   return $title;
 }
