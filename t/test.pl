@@ -353,6 +353,56 @@ sub clear_pages {
   write_config_file();
 }
 
+# Find an unused port
+sub random_port {
+  use Errno  qw( EADDRINUSE );
+  use Socket qw( PF_INET SOCK_STREAM INADDR_ANY sockaddr_in );
+  
+  my $family = PF_INET;
+  my $type   = SOCK_STREAM;
+  my $proto  = getprotobyname('tcp')  or die "getprotobyname: $!";
+  my $host   = INADDR_ANY;  # Use inet_aton for a specific interface
+
+  for my $i (1..3) {
+    my $port   = 1024 + int(rand(65535 - 1024));
+    socket(my $sock, $family, $type, $proto) or die "socket: $!";
+    my $name = sockaddr_in($port, $host)     or die "sockaddr_in: $!";
+    setsockopt($sock, SOL_SOCKET, SO_REUSEADDR, 1);
+    bind($sock, $name)
+	and close($sock)
+	and return $port;
+    die "bind: $!" if $! != EADDRINUSE;
+    print "Port $port in use, retrying...\n";
+  }
+  die "Tried 3 random ports and failed.\n"
+}
+
+my $pid;
+
+# Fork a test server
+sub start_server {
+  die "A server already exists: $pid\n" if $pid;
+  my $port = random_port();
+  $ScriptName = "http://localhost:$port";
+  AppendStringToFile($ConfigFile, "\$ScriptName = '$ScriptName';\n");
+  $pid = fork();
+  if (!defined $pid) {
+    die "Cannot fork: $!";
+  } elsif ($pid == 0) {
+    use Config;
+    my $secure_perl_path = $Config{perlpath};
+    exec($secure_perl_path, "stuff/server.pl", "wiki.pl", $port) or die "Cannot exec: $!";
+  }
+}
+
+END {
+  # kill server
+  if ($pid) {
+    warn "Killing server $pid\n";
+    kill 'KILL', $pid or warn "Could not kill server $pid";
+  }  
+}
+
 sub RunAndTerminate { # runs a command for 1 second and then sends SIGTERM
   my $pid = fork();
   if (not $pid) { # child
@@ -374,3 +424,4 @@ sub AppendToConfig {
 }
 
 1;
+

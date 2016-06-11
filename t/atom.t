@@ -22,45 +22,9 @@ use XML::Atom::Client;
 use XML::Atom::Entry;
 use XML::Atom::Person;
 
-sub random_port {
-  use Errno  qw( EADDRINUSE );
-  use Socket qw( PF_INET SOCK_STREAM INADDR_ANY sockaddr_in );
-  
-  my $family = PF_INET;
-  my $type   = SOCK_STREAM;
-  my $proto  = getprotobyname('tcp')  or die "getprotobyname: $!";
-  my $host   = INADDR_ANY;  # Use inet_aton for a specific interface
-
-  for my $i (1..3) {
-    my $port   = 1024 + int(rand(65535 - 1024));
-    socket(my $sock, $family, $type, $proto) or die "socket: $!";
-    my $name = sockaddr_in($port, $host)     or die "sockaddr_in: $!";
-    setsockopt($sock, SOL_SOCKET, SO_REUSEADDR, 1);
-    bind($sock, $name)
-	and close($sock)
-	and return $port;
-    die "bind: $!" if $! != EADDRINUSE;
-    print "Port $port in use, retrying...\n";
-  }
-  die "Tried 3 random ports and failed.\n"
-}
-
-my $port = random_port();
-$ScriptName = "http://localhost:$port";
-
-AppendStringToFile($ConfigFile, "\$ScriptName = '$ScriptName';\n");
-
 add_module('atom.pl');
 
-# Fork a test server with the new config file and the module
-my $pid = fork();
-if (!defined $pid) {
-  die "Cannot fork: $!";
-} elsif ($pid == 0) {
-  use Config;
-  my $secure_perl_path = $Config{perlpath};
-  exec($secure_perl_path, "stuff/server.pl", "wiki.pl", $port) or die "Cannot exec: $!";
-}
+start_server();
 
 # Give the child time to start
 sleep 1; 
@@ -69,7 +33,7 @@ sleep 1;
 my $ua = LWP::UserAgent->new;
 my $response = $ua->get("$ScriptName?action=version");
 ok($response->is_success, "There is a wiki running at $ScriptName");
-like($response->content, qr/\batom\.pl/, "The  has the atom extension installed");
+like($response->content, qr/\batom\.pl/, "The server has the atom extension installed");
 
 # Testing the Atom API
 my $api = XML::Atom::Client->new;
@@ -179,8 +143,3 @@ sub trim {
 }
 ok(trim($result->content->body) eq ("<p>" . trim($content) . '</p>'), 'verify content');
 ok($result->author->name eq $username, 'verify author');
-
-END {
-  # kill server
-  kill 'KILL', $pid;
-}
