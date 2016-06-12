@@ -399,8 +399,8 @@ sub start_server {
 sub start_mojolicious_server {
   die "A server already exists: $pid\n" if $pid;
   my $port = random_port();
-  my $listen = "http://localhost:$port";
-  $ScriptName = "http://localhost:$port/wiki";
+  my $listen = "http://127.0.0.1:$port";
+  $ScriptName = "http://127.0.0.1:$port/wiki";
   AppendStringToFile($ConfigFile, "\$ScriptName = '$ScriptName';\n");
   $pid = fork();
   if (!defined $pid) {
