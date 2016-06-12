@@ -379,7 +379,7 @@ sub random_port {
 
 my $pid;
 
-# Fork a test server
+# Fork a simple test server
 sub start_server {
   die "A server already exists: $pid\n" if $pid;
   my $port = random_port();
@@ -392,6 +392,22 @@ sub start_server {
     use Config;
     my $secure_perl_path = $Config{perlpath};
     exec($secure_perl_path, "stuff/server.pl", "wiki.pl", $port) or die "Cannot exec: $!";
+  }
+}
+
+# Fork a Mojolicious server
+sub start_mojolicious_server {
+  die "A server already exists: $pid\n" if $pid;
+  my $port = random_port();
+  $ScriptName = "http://localhost:$port";
+  AppendStringToFile($ConfigFile, "\$ScriptName = '$ScriptName';\n");
+  $pid = fork();
+  if (!defined $pid) {
+    die "Cannot fork: $!";
+  } elsif ($pid == 0) {
+    use Config;
+    my $secure_perl_path = $Config{perlpath};
+    exec($secure_perl_path, "server.pl", "daemon", "-l", $ScriptName) or die "Cannot exec: $!";
   }
 }
 

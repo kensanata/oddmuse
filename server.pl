@@ -1,27 +1,31 @@
-#! /usr/bin/env perl
+#!/usr/bin/env perl
 
-# This script only works with a version of Mojolicious::Plugin::CGI better than
-# the official 0.23. One version would be my fork:
-# https://github.com/kensanata/mojolicious-plugin-cgi
+# Copyright (C) 2015-2016  Alex Schroeder <alex@gnu.org>
 
-# If you use the fork, you might want to simply add its lib directory to your
-# libraries instead of installing it?
-
-# use lib '/Users/alex/src/mojolicious-plugin-cgi/lib';
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Mojolicious::Lite;
 
 plugin CGI => {
   support_semicolon_in_query_string => 1,
-};
- 
-plugin CGI => {
   route => '/wiki',
   script => 'wiki.pl',
   run => \&OddMuse::DoWikiRequest,
   before => sub {
+    no warnings;
     $OddMuse::RunCGI = 0;
-    $OddMuse::DataDir = '/tmp/oddmuse';
+    # $OddMuse::DataDir = '/tmp/oddmuse';
+    use warnings;
     require 'wiki.pl' unless defined &OddMuse::DoWikiRequest;
   },
   env => {},
@@ -32,5 +36,5 @@ get '/' => sub {
   my $self = shift;
   $self->redirect_to('/wiki');
 };
- 
+
 app->start;
