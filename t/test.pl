@@ -399,7 +399,8 @@ sub start_server {
 sub start_mojolicious_server {
   die "A server already exists: $pid\n" if $pid;
   my $port = random_port();
-  $ScriptName = "http://localhost:$port";
+  my $listen = "http://localhost:$port";
+  $ScriptName = "http://localhost:$port/wiki";
   AppendStringToFile($ConfigFile, "\$ScriptName = '$ScriptName';\n");
   $pid = fork();
   if (!defined $pid) {
@@ -407,7 +408,8 @@ sub start_mojolicious_server {
   } elsif ($pid == 0) {
     use Config;
     my $secure_perl_path = $Config{perlpath};
-    exec($secure_perl_path, "server.pl", "daemon", "-l", $ScriptName) or die "Cannot exec: $!";
+    exec($secure_perl_path, "server.pl", "daemon", "-l", $listen)
+	or die "Cannot exec: $!";
   }
 }
 

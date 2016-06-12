@@ -24,13 +24,12 @@ sleep(1);
 
 my $t = Test::Mojo->new;
 
-$t->get_ok("$ScriptName/")->status_is(302)->header_like(Location => qr'/wiki');
-$t->get_ok("$ScriptName/wiki")->status_is(404)->content_like(qr/Welcome!/);
-$t->get_ok("$ScriptName/wiki?action=admin")->status_is(200);
+$t->get_ok("$ScriptName")->status_is(404)->content_like(qr/Welcome!/);
+$t->get_ok("$ScriptName?action=admin")->status_is(200);
 
-$t->post_ok("$ScriptName/wiki"
+$t->post_ok("$ScriptName"
 	    => form => {title => 'HomePage', text => 'This is a test.'})
   ->status_is(302);
-$t->get_ok("$ScriptName/wiki")->status_is(200)->content_like(qr/This is a test/);
+$t->get_ok("$ScriptName")->status_is(200)->content_like(qr/This is a test/);
 
 done_testing();
