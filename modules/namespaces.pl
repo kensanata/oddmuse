@@ -137,13 +137,8 @@ sub NamespacesInitVariables {
     $StaticUrl .= UrlEncode($NamespaceCurrent) . '/'
       if substr($StaticUrl,-1) eq '/'; # from static-copy.pl
     $WikiDescription .= "<p>Current namespace: $NamespaceCurrent</p>";
-    # override LastUpdate
-    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
-      = stat($IndexFile);
-    $LastUpdate = $mtime;
-    CreateDir($DataDir);	# Create directory if it doesn't exist
-    ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
-      unless -d $DataDir;
+    $LastUpdate = (stat($IndexFile))[9];
+    CreateDir($DataDir);
   }
   $Namespaces{$NamespacesSelf} = $ScriptName . '?';
   # reinitialize
