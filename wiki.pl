@@ -227,7 +227,7 @@ sub Init {
 }
 
 sub InitModules {
-  if ($UseConfig and $ModuleDir and -d $ModuleDir) {
+  if ($UseConfig and $ModuleDir and IsDir($ModuleDir)) {
     foreach my $lib (bsd_glob("$ModuleDir/*.p[ml]")) {
       do $lib unless $MyInc{$lib};
       $MyInc{$lib} = 1;   # Cannot use %INC in mod_perl settings
@@ -237,7 +237,7 @@ sub InitModules {
 }
 
 sub InitConfig {
-  if ($UseConfig and $ConfigFile and not $INC{$ConfigFile} and -f $ConfigFile) {
+  if ($UseConfig and $ConfigFile and not $INC{$ConfigFile} and IsFile($ConfigFile)) {
     do $ConfigFile; # these options must be set in a wrapper script or via the environment
     $Message .= CGI::p("$ConfigFile: $@") if $@; # remember, no $q exists, yet
   }
@@ -300,12 +300,12 @@ sub InitVariables {  # Init global session variables for mod_perl!
   delete $PlainTextPages{''}; # $ConfigPage and others might be empty.
   CreateDir($DataDir);    # Create directory if it doesn't exist
   $Now = time;      # Reset in case script is persistent
-  my $ts = (stat($IndexFile))[9]; # always stat for multiple server processes
+  my $ts = Modified($IndexFile); # always stat for multiple server processes
   ReInit() if not $ts or $LastUpdate != $ts; # reinit if another process changed files (requires $DataDir)
   $LastUpdate = $ts;
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
-  ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR') unless -d $DataDir;
+  ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR') unless IsDir($DataDir);
   @IndexOptions = (['pages', T('Include normal pages'), 1, \&AllPagesList]);
   foreach my $sub (@MyInitVariables) {
     my $result = $sub->();
@@ -1013,7 +1013,7 @@ sub GetRss {
   my $str = '';
   if (GetParam('cache', $UseCache) > 0) {
     foreach my $uri (keys %todo) { # read cached rss files if possible
-      if ($Now - (stat($todo{$uri}))[9] < $RssCacheHours * 3600) {
+      if ($Now - Modified($todo{$uri}) < $RssCacheHours * 3600) {
 	$data{$uri} = ReadFile($todo{$uri});
 	delete($todo{$uri});  # no need to fetch them below
       }
@@ -2126,7 +2126,7 @@ sub DoAdminPage {
   my @locks;
   for my $pattern (@KnownLocks) {
     for my $name (bsd_glob $pattern) {
-      if (-d $LockDir . $name) {
+      if (IsDir($LockDir . $name)) {
 	push(@locks, $name);
       }
     }
@@ -2136,7 +2136,7 @@ sub DoAdminPage {
   };
   if (UserIsAdmin()) {
     if ($Action{editlock}) {
-      if (-f "$DataDir/noedit") {
+      if (IsFile("$DataDir/noedit")) {
 	push(@menu, ScriptLink('action=editlock;set=0', T('Unlock site'), 'editlock 0'));
       } else {
 	push(@menu, ScriptLink('action=editlock;set=1', T('Lock site'),   'editlock 1'));
@@ -2144,7 +2144,7 @@ sub DoAdminPage {
     }
     if ($id and $Action{pagelock}) {
       my $title = NormalToFree($id);
-      if (-f GetLockedPageFile($id)) {
+      if (IsFile(GetLockedPageFile($id))) {
 	push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id),
 			       Ts('Unlock %s', $title), 'pagelock 0'));
       } else {
@@ -2843,7 +2843,7 @@ sub ExpireKeepFiles {   # call with opened page
     my $keep = GetKeptRevision($revision);
     next if $keep->{'keep-ts'} >= $expirets;
     next if $KeepMajor and $keep->{revision} == $Page{lastmajor};
-    unlink GetKeepFile($OpenPageName, $revision);
+    Unlink(GetKeepFile($OpenPageName, $revision));
   }
 }
 
@@ -2887,12 +2887,42 @@ sub AppendStringToFile {
   close($OUT);
 }
 
+sub IsFile {
+  my $file = shift;
+  utf8::encode($file);
+  return -f $file;
+}
+
+sub IsDir {
+  my $dir = shift;
+  utf8::encode($dir);
+  return -d $dir;
+}
+
+sub Unlink {
+  my $file = shift;
+  utf8::encode($file);
+  return unlink($file); # lower case!
+}
+
+sub Modified {
+  my $file = shift;
+  utf8::encode($file);
+  return (stat($file))[9];
+}
+
 sub CreateDir {
   my ($newdir) = @_;
   utf8::encode($newdir);
   return if -d $newdir;
   mkdir($newdir, 0775)
     or ReportError(Ts('Cannot create %s', $newdir) . ": $!", '500 INTERNAL SERVER ERROR');
+}
+
+sub RemoveDir {
+  my ($dir) = @_;
+  utf8::encode($dir);
+  rmdir($dir);
 }
 
 sub GetLockedPageFile {
@@ -2906,10 +2936,11 @@ sub RequestLockDir {
   $wait ||= 2;
   CreateDir($TempDir);
   my $lock = $LockDir . $name;
+  utf8::encode($lock);
   my $n = 0;
   while (mkdir($lock, 0555) == 0) {
     if ($n++ >= $tries) {
-      my $ts = (stat($lock))[9];
+      my $ts = Modified($lock);
       if ($Now - $ts > $LockExpiration and $LockExpires{$name} and not $retried) { # XXX should we remove this now?
 	ReleaseLockDir($name); # try to expire lock (no checking)
 	return 1 if RequestLockDir($name, undef, undef, undef, 1);
@@ -2942,9 +2973,9 @@ sub CleanLock {
 }
 
 sub ReleaseLockDir {
-  my $name = shift;        # We don't check whether we succeeded.
-  rmdir($LockDir . $name); # Before fixing, make sure we only call this
-  delete $Locks{$name};    # when we know the lock exists.
+  my $name = shift;            # We don't check whether we succeeded.
+  RemoveDir($LockDir . $name); # Before fixing, make sure we only call this
+  delete $Locks{$name};        # when we know the lock exists.
 }
 
 sub RequestLockOrError {
@@ -3227,10 +3258,10 @@ sub UserCanEdit {
   return 0 if $id eq 'SampleUndefinedPage' or $id eq T('SampleUndefinedPage')
     or $id eq 'Sample_Undefined_Page' or $id eq T('Sample_Undefined_Page');
   return 1 if UserIsAdmin();
-  return 0 if $id ne '' and -f GetLockedPageFile($id);
-  return 0 if $LockOnCreation{$id} and not -f GetPageFile($id); # new page
+  return 0 if $id ne '' and IsFile(GetLockedPageFile($id));
+  return 0 if $LockOnCreation{$id} and not IsFile(GetPageFile($id)); # new page
   return 1 if UserIsEditor();
-  return 0 if not $EditAllowed or -f $NoEditFile;
+  return 0 if not $EditAllowed or IsFile($NoEditFile);
   return 0 if $editing and UserIsBanned(); # this call is more expensive
   return 0 if $EditAllowed >= 2 and (not $CommentsPattern or $id !~ /$CommentsPattern/);
   return 1 if $EditAllowed >= 3 and GetParam('recent_edit', '') ne 'on' # disallow minor comments
@@ -3353,7 +3384,7 @@ sub AllPagesList {
   my $refresh = GetParam('refresh', 0);
   return @IndexList if @IndexList and not $refresh;
   SetParam('refresh', 0) if $refresh;
-  return @IndexList if not $refresh and -f $IndexFile and ReadIndex();
+  return @IndexList if not $refresh and IsFile($IndexFile) and ReadIndex();
   # If open fails just refresh the index
   RefreshIndex();
   return @IndexList;
@@ -3377,7 +3408,7 @@ sub RefreshIndex {
   @IndexList = ();
   %IndexHash = ();
   # If file exists and cannot be changed, error!
-  my $locked = RequestLockDir('index', undef, undef, -f $IndexFile);
+  my $locked = RequestLockDir('index', undef, undef, IsFile($IndexFile));
   foreach (bsd_glob("$PageDir/*.pg"), bsd_glob("$PageDir/.*.pg")) {
     next unless m|/.*/(.+)\.pg$|;
     my $id = $1;
@@ -3787,7 +3818,7 @@ sub Save {      # call within lock, with opened page
   my $revision = $Page{revision} + 1;
   my $old = $Page{text};
   my $olddiff = $Page{'diff-major'} == '1' ? $Page{'diff-minor'} : $Page{'diff-major'};
-  if ($revision == 1 and -e $IndexFile and not unlink($IndexFile)) { # regenerate index on next request
+  if ($revision == 1 and IsFile($IndexFile) and not Unlink($IndexFile)) { # regenerate index on next request
     SetParam('msg', Ts('Cannot delete the index file %s.', $IndexFile)
 	     . ' ' . T('Please check the directory permissions.')
 	     . ' ' . T('Your changes were not saved.'));
@@ -3872,7 +3903,7 @@ sub DoMaintain {
   print GetHeader('', T('Run Maintenance')), $q->start_div({-class=>'content maintain'});
   my $fname = "$DataDir/maintain";
   if (not UserIsAdmin()) {
-    if ((-f $fname) and ((-M $fname) < 0.5)) {
+    if (IsFile($fname) and $Now - Modified($fname) < 0.5) {
       print $q->p(T('Maintenance not done.') . ' ' . T('(Maintenance can only be done once every 12 hours.)')
 		  . ' ', T('Remove the "maintain" file or wait.')), $q->end_div();
       PrintFooter();
@@ -3915,7 +3946,7 @@ sub DoMaintain {
   }
   if (opendir(DIR, $RssDir)) {  # cleanup if they should expire anyway
     foreach (readdir(DIR)) {
-      unlink "$RssDir/$_" if $Now - (stat($_))[9] > $RssCacheHours * 3600;
+      Unlink("$RssDir/$_") if $Now - Modified($_) > $RssCacheHours * 3600;
     }
     closedir DIR;
   }
@@ -3948,8 +3979,8 @@ sub DeletePage {    # Delete must be done inside locks.
   ValidIdOrDie($id);
   AppendStringToFile($DeleteFile, "$id\n");
   foreach my $name (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id), GetLockedPageFile($id), $IndexFile) {
-    unlink $name if -f $name;
-    rmdir  $name if -d $name;
+    Unlink($name) if IsFile($name);
+    RemoveDir($name) if IsDir($name);
   }
   ReInit($id);
   delete $IndexHash{$id};
@@ -3964,10 +3995,10 @@ sub DoEditLock {
   if (GetParam("set", 1)) {
     WriteStringToFile($fname, 'editing locked.');
   } else {
-    unlink($fname);
+    Unlink($fname);
   }
   utime time, time, $IndexFile; # touch index file
-  print $q->p(-f $fname ? T('Edit lock created.') : T('Edit lock removed.'));
+  print $q->p(IsFile($fname) ? T('Edit lock created.') : T('Edit lock removed.'));
   PrintFooter();
 }
 
@@ -3980,10 +4011,10 @@ sub DoPageLock {
   if (GetParam('set', 1)) {
     WriteStringToFile($fname, 'editing locked.');
   } else {
-    unlink($fname);
+    Unlink($fname);
   }
   utime time, time, $IndexFile; # touch index file
-  print $q->p(-f $fname ? Ts('Lock for %s created.', GetPageLink($id))
+  print $q->p(IsFile($fname) ? Ts('Lock for %s created.', GetPageLink($id))
 	      : Ts('Lock for %s removed.', GetPageLink($id)));
   PrintFooter();
 }
