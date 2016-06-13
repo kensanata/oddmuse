@@ -52,18 +52,13 @@ $t->get_ok("$ScriptName/FiveWinds/Some_Page")
 $t->get_ok("$ScriptName/Some_Page")
   ->content_like(qr/This is the Main namespace/);
 
-TODO: {
-  local $TODO = "Some bug in namespaces.pl remains";
-  diag "Waiting for the lock dir in RefreshIndex...";
-  
-  # Umlauts
-  $t->post_ok("$ScriptName/F%C3%BCnfWinde"
-	      => form => {title => 'Some_Page',
-			  text => 'Wir sind im Namensraum Fünf Winde.'})
-      ->status_is(302);
-  $t->get_ok("$ScriptName/F%C3%BCnfWinde/Some_Page")
-      ->status_is(200)
-      ->content_like(qr/Wir sind im Namensraum Fünf Winde/);
-}
+# Umlauts
+$t->post_ok("$ScriptName/F%C3%BCnfWinde"
+	    => form => {title => 'Some_Page',
+			text => 'Wir sind im Namensraum Fünf Winde.'})
+    ->status_is(302);
+$t->get_ok("$ScriptName/F%C3%BCnfWinde/Some_Page")
+    ->status_is(200)
+    ->content_like(qr/Wir sind im Namensraum Fünf Winde/);
 
 done_testing();
