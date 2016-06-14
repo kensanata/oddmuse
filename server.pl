@@ -14,22 +14,31 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-package OddMuse;
-
-our $RunCGI = 0;
-do 'wiki.pl';
-
-my $dir = $DataDir; # used for Mojolicious::Plugin::CGI setup
-
 use Mojolicious::Lite;
 
+# This needs to be in a different section, sometimes?
 plugin CGI => {
   support_semicolon_in_query_string => 1,
+};
+
+plugin CGI => {
   route => '/wiki',
+  # We need this for older versions of Mojolicious::Plugin::CGI
+  script => 'wiki.pl',
   run => \&OddMuse::DoWikiRequest,
+  before => sub {
+    no warnings;
+    $OddMuse::RunCGI = 0;
+    # The default data directory is determined by the environment variable
+    # WikiDataDir and falls back to the following
+    # $OddMuse::DataDir = '/tmp/oddmuse';
+    use warnings;
+    require 'wiki.pl' unless defined &OddMuse::DoWikiRequest;
+  },
   env => {},
   # path to where STDERR from cgi script goes
-  errlog => "$dir/wiki.log",
+  errlog => ($ENV{WikiDataDir} || '/tmp/oddmuse')
+      . "/wiki.log",
 };
 
 get '/' => sub {
