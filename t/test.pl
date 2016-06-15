@@ -416,7 +416,6 @@ sub start_mojolicious_server {
 END {
   # kill server
   if ($pid) {
-    warn "Killing server $pid\n";
     kill 'KILL', $pid or warn "Could not kill server $pid";
   }  
 }
