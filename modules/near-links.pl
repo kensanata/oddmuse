@@ -18,7 +18,7 @@ use v5.10;
 
 AddModuleDescription('near-links.pl', 'Near Links');
 
-our ($q, %AdminPages, %InterSite, $CommentsPrefix, $DataDir, $UseCache, @MyFooters, @MyMaintenance, @MyInitVariables, @Debugging, $InterSitePattern, @UserGotoBarPages, @IndexOptions);
+our ($q, $Now, %AdminPages, %InterSite, $CommentsPrefix, $DataDir, $UseCache, @MyFooters, @MyMaintenance, @MyInitVariables, @Debugging, $InterSitePattern, @UserGotoBarPages, @IndexOptions);
 
 =head1 Near Links
 
@@ -128,7 +128,8 @@ sub NearLinksMaintenance {
     # skip if less than 12h old and caching allowed (the default)
     foreach my $site (keys %NearSite) {
       next if GetParam('cache', $UseCache) > 0
-	and -f "$NearDir/$site" and -M "$NearDir/$site" < 0.5;
+	and IsFile("$NearDir/$site")
+	and $Now - Modified("$NearDir/$site") < 0.5;
       print $q->p(Ts('Getting page index file for %s.', $site));
       my $data = GetRaw($NearSite{$site});
       print $q->p($q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',

@@ -31,7 +31,7 @@ push(@MyRules, \&HtmlLinksRule);
 $RuleOrder{\&HtmlLinksRule} = 105;
 
 sub HtmlLinksRule {
-	if (-f GetLockedPageFile($OpenPageName)) {
+	if (IsFile(GetLockedPageFile($OpenPageName))) {
 		$HtmlLinks = 1;
 	} else {
 		$HtmlLinks = 0;

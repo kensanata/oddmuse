@@ -60,7 +60,7 @@ for (my $i=0; $q->param("fileToUpload$i"); $i++) {
 
   $curFilename = $name . $extension;
 
-  while (-e "$uploadDir/$curFilename") { # keep adding random characters until we get unique filename
+  while (IsFile("$uploadDir/$curFilename")) { # keep adding random characters until we get unique filename
     squeak 'Error: Cannot save file with such filename' if length $curFilename >= 150; # cannot find available filename after so many attempts
     $name .= $additionalChars[rand @additionalChars];
     $curFilename = $name . $extension;

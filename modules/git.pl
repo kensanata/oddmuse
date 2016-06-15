@@ -80,7 +80,7 @@ sub GitRun {
   my $exitStatus;
   # warn join(' ', $GitBinary, @_) . "\n";
 
-  chdir($GitRepo);
+  ChangeDir($GitRepo);
   if ($GitDebug) {
     # TODO use ToString here
     # capture the output of the git comand in a temporary file
@@ -99,7 +99,7 @@ sub GitRun {
   } else {
     $exitStatus = system($GitBinary, @_);
   }
-  chdir($oldDir);
+  ChangeDir($oldDir);
   return $exitStatus;
 }
 
@@ -187,7 +187,7 @@ sub DoGitCleanup {
 }
 
 sub GitCleanup {
-  if (-d $GitRepo) {
+  if (IsDir($GitRepo)) {
     print $q->p('Git cleanup starting');
     AllPagesList();
     # delete all the files including all the files starting with a dot
@@ -197,7 +197,7 @@ sub GitCleanup {
       utf8::decode($name); # filenames are bytes
       next if $file eq '.git' or $file eq '.' or $file eq '..' or $IndexHash{$name};
       print $q->p("Deleting left over file $name");
-      unlink "$GitRepo/$file" or ReportError("cannot delete $GitRepo/$name: $!");
+      Unlink($GitRepo/$file) or ReportError("cannot delete $GitRepo/$name: $!");
     }
     closedir DIR;
     # write all the files again, just to be sure

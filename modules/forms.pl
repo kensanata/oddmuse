@@ -12,8 +12,8 @@ our ($q, $OpenPageName, @MyRules, $CrossbarPageName);
 push(@MyRules, \&FormsRule);
 
 sub FormsRule {
-  if (-f GetLockedPageFile($OpenPageName) or (InElement('div', '^class="crossbar"$') and
-      -f GetLockedPageFile($CrossbarPageName))) {
+  if (IsFile(GetLockedPageFile($OpenPageName)) or (InElement('div', '^class="crossbar"$') and
+      IsFile(GetLockedPageFile($CrossbarPageName)))) {
     if (/\G(\&lt;form.*?\&lt;\/form\&gt;)/cgs) {
       my $form = $1;
       my $oldpos = pos;

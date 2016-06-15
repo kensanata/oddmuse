@@ -290,7 +290,7 @@ sub DoProcessLogin {
 	ReportError(T('Username and/or password are incorrect.'))
 		unless (AuthenticateUser($username,$pwd));
 
-	unlink($IndexFile);
+	Unlink($IndexFile);
 	print GetHeader('', Ts('Register for %s', $SiteName), '');
 	print '<div class="content">';
 	print Ts('Logged in as %s.', $username);
@@ -318,7 +318,7 @@ $Action{process_logout} = \&DoProcessLogout;
 sub DoProcessLogout {
 	SetParam('pwd','');
 	SetParam('username','');
-	unlink($IndexFile);		# I shouldn't have to do this...
+	Unlink($IndexFile);		# I shouldn't have to do this...
 	print GetHeader('', Ts('Logged out of %s', $SiteName), '');
 	print '<div class="content">';
 	print T('You are now logged out.');

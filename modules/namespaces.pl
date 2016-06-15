@@ -87,7 +87,7 @@ sub NamespacesInitVariables {
     $Namespaces{$NamespacesMain} = $ScriptName . '/';
     foreach my $name (bsd_glob("$DataDir/*")) {
       utf8::decode($name);
-      if (-d $name
+      if (IsDir($name)
 	  and $name =~ m|/($InterSitePattern)$|
 	  and $name ne $NamespacesMain
 	  and $name ne $NamespacesSelf) {
@@ -98,7 +98,10 @@ sub NamespacesInitVariables {
   $NamespaceRoot = $ScriptName; # $ScriptName may be changed below
   $NamespaceCurrent = '';
   my $ns = GetParam('ns', '');
-  if (not $ns and $UsePathInfo) {
+  if ($ns) {
+    # GetParam quotes HTML but we don't care
+    utf8::decode($ns); # don't forget non-ASCII
+  } elsif (not $ns and $UsePathInfo) {
     my $path_info = $q->path_info();
     utf8::decode($path_info);
     # make sure ordinary page names are not matched!
@@ -137,7 +140,7 @@ sub NamespacesInitVariables {
     $StaticUrl .= UrlEncode($NamespaceCurrent) . '/'
       if substr($StaticUrl,-1) eq '/'; # from static-copy.pl
     $WikiDescription .= "<p>Current namespace: $NamespaceCurrent</p>";
-    $LastUpdate = (stat($IndexFile))[9];
+    $LastUpdate = Modified($IndexFile);
     CreateDir($DataDir);
   }
   $Namespaces{$NamespacesSelf} = $ScriptName . '?';

@@ -38,7 +38,7 @@ sub DoListLocked {
     print $q->start_div({-class=>'content list locked'}), $q->start_p();
   }
   foreach my $id (AllPagesList()) {
-    PrintPage($id) if -f GetLockedPageFile($id);
+    PrintPage($id) if IsFile(GetLockedPageFile($id));
   }
   if (not $raw) {
     print $q->end_p(), $q->end_div();

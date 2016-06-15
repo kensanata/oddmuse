@@ -57,7 +57,7 @@ sub DoInstanceThrottle {
   # pidfile if pid does not exist and return 0. Count the number of
   # zeros (= removed files = zombies) with grep.
   my $zombies = grep /^0$/,
-    (map {/(\d+)$/ and kill 0,$1 or unlink and 0} @pids);
+    (map {/(\d+)$/ and kill 0,$1 or Unlink($_) and 0} @pids);
   if (scalar(@pids)-$zombies >= $InstanceThrottleLimit) {
     ReportError(Ts('Too many instances.  Only %s allowed.',
 		   $InstanceThrottleLimit),
@@ -80,5 +80,5 @@ sub CreatePidFile {
 sub RemovePidFile {
   my $file = "$InstanceThrottleDir/$$";
   # not fatal
-  unlink $file;
+  Unlink($file);
 }

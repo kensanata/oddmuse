@@ -64,7 +64,7 @@ Example:
 
 =cut
 
-our ($q, %Action, %Page, $FreeLinkPattern, @MyInitVariables, @MyRules, @MyAdminCode, $DataDir, $ScriptName);
+our ($q, $Now, %Action, %Page, $FreeLinkPattern, @MyInitVariables, @MyRules, @MyAdminCode, $DataDir, $ScriptName);
 our ($TagUrl, $TagFeed, $TagFeedIcon, $TagFile);
 
 push(@MyInitVariables, \&TagsInit);
@@ -84,7 +84,7 @@ sub TagsGetLink {
 
 sub TagReadHash {
   require Storable;
-  return %{ Storable::retrieve($TagFile) } if -f $TagFile;
+  return %{ Storable::retrieve($TagFile) } if IsFile($TagFile);
 }
 
 
@@ -338,7 +338,9 @@ Example:
 $Action{reindex} = \&DoTagsReindex;
 
 sub DoTagsReindex {
-  if (!UserIsAdmin() && (-f $TagFile) && ((-M $TagFile) < 0.5)) {
+  if (not UserIsAdmin()
+      and IsFile($TagFile)
+      and $Now - Modified($TagFile) < 0.5) {
     ReportError(T('Rebuilding index not done.'), '403 FORBIDDEN',
 		0, T('(Rebuilding the index can only be done once every 12 hours.)'));
   }

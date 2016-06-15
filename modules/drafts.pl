@@ -29,7 +29,7 @@ push(@MyInitVariables, \&DraftInit);
 sub DraftInit {
   if (GetParam('Draft', '')) {
     SetParam('action', 'draft') ; # Draft button used
-  } elsif (-f "$DraftDir/" . GetParam('username', $q->remote_addr()) # draft exists
+  } elsif (IsFile("$DraftDir/" . GetParam('username', $q->remote_addr())) # draft exists
 	   and $FooterNote !~ /action=draft/) {                    # take care of mod_perl persistence
     $FooterNote = $q->p(ScriptLink('action=draft', T('Recover Draft'))) . $FooterNote;
   }
@@ -47,9 +47,9 @@ sub DoDraft {
     WriteStringToFile($draft, EncodePage(text=>$text, id=>$id));
     SetParam('msg', T('Draft saved')); # invalidate cache
     print GetHttpHeader('', T('Draft saved'), '204 NO CONTENT');
-  } elsif (-f $draft) {
+  } elsif (IsFile($draft)) {
     my $data = ParseData(ReadFileOrDie($draft));
-    unlink ($draft);
+    Unlink($draft);
     $Message .= $q->p(T('Draft recovered'));
     DoEdit($data->{id}, $data->{text}, 1);
   } else {
@@ -87,11 +87,11 @@ sub DraftCleanup {
   print '<p>' . T('Draft Cleanup');
   foreach my $draft (DraftFiles()) {
     next if $draft eq '.' or $draft eq '..';
-    my $ts = (stat("$DraftDir/$draft"))[9];
+    my $ts = Modified("$DraftDir/$draft");
     if ($Now - $ts < 1209600) { # 14*24*60*60
       print $q->br(), Tss("%1 was last modified %2 and was kept",
 		$draft, CalcTimeSince($Now - $ts));
-    } elsif (unlink("$DraftDir/$draft")) {
+    } elsif (Unlink("$DraftDir/$draft")) {
       print $q->br(), Tss("%1 was last modified %2 and was deleted",
 		$draft, CalcTimeSince($Now - $ts));
     } else {

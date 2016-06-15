@@ -66,7 +66,7 @@ push (@MyMaintenance, \&LnMaintenance);
 sub LnMaintenance {
   if (opendir(DIR, $RssDir)) { # cleanup if they should expire anyway
     foreach (readdir(DIR)) {
-      unlink "$RssDir/$_" if $Now - (stat($_))[9] > $LnCacheHours * 3600;
+      Unlink($RssDir/$_) if $Now - Modified($_) > $LnCacheHours * 3600;
     }
     closedir DIR;
   }
@@ -157,7 +157,7 @@ sub LocalNamesInit {
   my %data = ();
   if (GetParam('cache', $UseCache) > 0) {
     foreach my $uri (keys %todo) { # read cached rss files if possible
-      if ($Now - (stat($todo{$uri}))[9] < $LnCacheHours * 3600) {
+      if ($Now - Modified($todo{$uri}) < $LnCacheHours * 3600) {
 	$data{$uri} = ReadFile($todo{$uri});
 	delete($todo{$uri}); # no need to fetch them below
       }
