@@ -23,6 +23,8 @@ SKIP: {
 
   add_module('git.pl');
 
+  $ENV{LANG} = "en_US.UTF-8"; # test relies on English output
+
   if (qx($GitBinary --version) !~ /git version/) {
     skip "$GitBinary not found", 16;
   }
