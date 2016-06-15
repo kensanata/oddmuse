@@ -40,7 +40,7 @@ sub ModuleUpdaterAction {
   if (GetParam('ok')) {
     ModuleUpdaterApply();
   } else {
-    unlink bsd_glob("$TempDir/*.p[ml]"); # XXX is it correct to use $TempDir for such stuff? What if something else puts .pm files there?
+    Unlink(bsd_glob("$TempDir/*.p[ml]")); # XXX is it correct to use $TempDir for such stuff? What if something else puts .pm files there?
     for (bsd_glob("$ModuleDir/*.p[ml]")) {
       my $curModule = fileparse($_);
       ProcessModule($curModule);
@@ -66,7 +66,7 @@ sub ModuleUpdaterApply {
       print $q->strong("Unable to replace module $moduleName: $!"), $q->br();
     }
   }
-  unlink bsd_glob("$TempDir/*.p[ml]"); # XXX same as above
+  Unlink(bsd_glob("$TempDir/*.p[ml]")); # XXX same as above
   print $q->br(), $q->strong('Done!');
 }
 
@@ -89,7 +89,7 @@ sub ProcessModule {
   my $diff = DoModuleDiff("$ModuleDir/$module", "$TempDir/$module");
   if (not $diff) {
     print $q->strong('This module is up to date, there is no need to update it.'), $q->br();
-    unlink "$TempDir/$module";
+    Unlink($TempDir/$module);
     return;
   }
   print $q->strong('There is a newer version of this module. Here is a diff:'), $q->br();

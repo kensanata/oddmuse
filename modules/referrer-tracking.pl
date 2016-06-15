@@ -65,7 +65,7 @@ sub RefererNewDeletePage {
   return $status if $status; # this would be the error message
   my $id = shift;
   my $fname = GetRefererFile($id);
-  unlink($fname) if (-f $fname);
+  Unlink($fname) if (IsFile($fname));
   return ''; # no error
 }
 
@@ -79,7 +79,7 @@ sub GetRefererFile {
 sub ReadReferers {
   my $file = GetRefererFile(shift);
   %Referers = ();
-  if (-f $file) {
+  if (IsFile($file)) {
     my ($status, $data) = ReadFile($file);
     %Referers = split(/$FS/, $data, -1) if $status;
   }
@@ -187,7 +187,7 @@ sub WriteReferers {
     CreateDir($RefererDir);
     WriteStringToFile($file, $data);
   } else {
-    unlink $file; # just try it, doesn't matter if it fails
+    Unlink($file); # just try it, doesn't matter if it fails
   }
   ReleaseLockDir('refer_' . $id);
 }

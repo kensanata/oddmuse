@@ -394,7 +394,7 @@ sub propfind {
 
 sub propfind_data {
   my %data = ();
-  my $update = (stat($OddMuse::WebDavCache))[9];
+  my $update = Modified($OddMuse::WebDavCache);
   if ($update and $OddMuse::LastUpdate == $update) {
     my $data = OddMuse::ReadFileOrDie($OddMuse::WebDavCache);
     map {

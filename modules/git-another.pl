@@ -30,12 +30,12 @@ $GitMail = 'unknown@oddmuse.org';
 sub GitCommit {
   my ($message, $author) = @_;
   my $oldDir = cwd;
-  chdir("$DataDir/page");
+  ChangeDir("$DataDir/page");
   capture {
     system($GitBinary, qw(add -A));
     system($GitBinary, qw(commit -q -m), $message, "--author=$author <$GitMail>");
   };
-  chdir($oldDir);
+  ChangeDir($oldDir);
 }
 
 sub GitInitRepository {

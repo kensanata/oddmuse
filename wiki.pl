@@ -2899,10 +2899,16 @@ sub IsDir {
   return -d $dir;
 }
 
-sub Unlink {
+sub ZeroSize {
   my $file = shift;
   utf8::encode($file);
-  return unlink($file); # lower case!
+  return -z $file;
+}
+
+sub Unlink {
+  my @files = @_; # copy
+  map { utf8::encode($_) } @files;
+  return unlink(@files); # lower case!
 }
 
 sub Modified {
@@ -2923,6 +2929,12 @@ sub RemoveDir {
   my ($dir) = @_;
   utf8::encode($dir);
   rmdir($dir);
+}
+
+sub ChangeDir {
+  my ($dir) = @_;
+  utf8::encode($dir);
+  chdir($dir);
 }
 
 sub GetLockedPageFile {

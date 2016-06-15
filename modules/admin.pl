@@ -44,7 +44,7 @@ sub AdminPowerDelete {
 	       GetCluster($Page{text}));
   }
   # Regenerate index on next request
-  unlink($IndexFile);
+  Unlink($IndexFile);
   ReleaseLock();
   print $q->p(T('Main lock released.'));
   PrintFooter();
@@ -61,11 +61,11 @@ sub AdminPowerRename {
   print $q->p(T('Main lock obtained.'));
   # page file -- only check for existing or missing pages here
   my $fname = GetPageFile($id);
-  ReportError(Ts('The page %s does not exist', $id), '400 BAD REQUEST') unless -f $fname;
+  ReportError(Ts('The page %s does not exist', $id), '400 BAD REQUEST') unless IsFile($fname);
   my $newfname = GetPageFile($new);
-  ReportError(Ts('The page %s already exists', $new), '400 BAD REQUEST') if -f $newfname;
+  ReportError(Ts('The page %s already exists', $new), '400 BAD REQUEST') if IsFile($newfname);
   # Regenerate index on next request -- remove this before errors can occur!
-  unlink($IndexFile);
+  Unlink($IndexFile);
   # page file
   CreateDir($PageDir); # It might not exist yet
   rename($fname, $newfname)
@@ -76,7 +76,7 @@ sub AdminPowerRename {
   CreateDir($KeepDir); # It might not exist yet (only the parent directory!)
   rename($kdir, $newkdir)
     or ReportError(Tss('Cannot rename %1 to %2', $kdir, $newkdir) . ": $!", '500 INTERNAL SERVER ERROR')
-      if -d $kdir;
+      if IsDir($kdir);
   # refer file
   if (defined(&GetRefererFile)) {
     my $rdir = GetRefererFile($id);
@@ -84,7 +84,7 @@ sub AdminPowerRename {
     CreateDir($RefererDir); # It might not exist yet
     rename($rdir, $newrdir)
       or ReportError(Tss('Cannot rename %1 to %2', $rdir, $newrdir) . ": $!", '500 INTERNAL SERVER ERROR')
-	if -d $rdir;
+	if IsDir($rdir);
   }
   # RecentChanges
   OpenPage($new);

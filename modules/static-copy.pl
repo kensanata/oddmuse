@@ -279,7 +279,7 @@ sub StaticDeleteFile {
   %StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
   # we don't care if the files or $StaticDir don't exist -- just delete!
   for my $f (map { "$StaticDir/$id.$_" } (values %StaticMimeTypes, 'html')) {
-    unlink $f;               # delete copies with different extensions
+    Unlink($f);               # delete copies with different extensions
   }
 }
 

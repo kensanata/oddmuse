@@ -109,7 +109,7 @@ sub AppendStringToFile {
 *RefreshIndex = \&NewPrivateWikiRefreshIndex;
 
 sub NewPrivateWikiRefreshIndex {
-  if (not -f $IndexFile) { # Index file does not exist yet, this is a new wiki
+  if (not IsFile($IndexFile)) { # Index file does not exist yet, this is a new wiki
     my $fh;
     open($fh, '>', $IndexFile) or die "Unable to open file $IndexFile : $!"; # 'touch' equivalent
     close($fh) or die "Unable to close file : $IndexFile $!";
@@ -216,14 +216,14 @@ sub DoDiff {      # Actualy call the diff program
   my $oldName = "$TempDir/old";
   my $newName = "$TempDir/new";
   RequestLockDir('diff') or return '';
-  $LockCleaners{'diff'} = sub { unlink $oldName if -f $oldName; unlink $newName if -f $newName; };
+  $LockCleaners{'diff'} = sub { Unlink($oldName) if IsFile($oldName); Unlink($newName) if IsFile($newName); };
   OldPrivateWikiWriteStringToFile($oldName, $_[0]); # CHANGED Here we use the old sub!
   OldPrivateWikiWriteStringToFile($newName, $_[1]); # CHANGED
   my $diff_out = `diff -- \Q$oldName\E \Q$newName\E`;
   utf8::decode($diff_out); # needs decoding
   $diff_out =~ s/\n\K\\ No newline.*\n//g; # Get rid of common complaint.
   # CHANGED We have to unlink the files because we don't want to store them in plaintext!
-  unlink $oldName, $newName; # CHANGED
+  Unlink($oldName, $newName); # CHANGED
   ReleaseLockDir('diff');
   return $diff_out;
 }
@@ -237,7 +237,7 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
   CreateDir($TempDir);
   RequestLockDir('merge') or return T('Could not get a lock to merge!');
   $LockCleaners{'merge'} = sub { # CHANGED
-    unlink $name1 if -f $name1; unlink $name2 if -f $name2; unlink $name3 if -f $name3;
+    Unlink($name1) if IsFile($name1); Unlink($name2) if IsFile($name2); Unlink($name3) if IsFile($name3);
   };
   OldPrivateWikiWriteStringToFile($name1, $file1); # CHANGED
   OldPrivateWikiWriteStringToFile($name2, $file2); # CHANGED
@@ -245,7 +245,7 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
   my ($you, $ancestor, $other) = (T('you'), T('ancestor'), T('other'));
   my $output = `diff3 -m -L \Q$you\E -L \Q$ancestor\E -L \Q$other\E -- \Q$name1\E \Q$name2\E \Q$name3\E`;
   utf8::decode($output); # needs decoding
-  unlink $name1, $name2, $name3; # CHANGED unlink temp files -- we don't want to store them in plaintext!
+  Unlink($name1, $name2, $name3); # CHANGED unlink temp files -- we don't want to store them in plaintext!
   ReleaseLockDir('merge');
   return $output;
 }

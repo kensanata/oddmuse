@@ -102,7 +102,7 @@ sub ThumbNailSupportRule {
       {
 
 
-            if (! -e "$ThumbnailCacheDir/$id/$size")
+            if (!IsFile("$ThumbnailCacheDir/$id/$size"))
            {
                    GenerateThumbNail ($id, $size);
            }
@@ -249,7 +249,7 @@ sub GenerateThumbNail {
                  ReportError(Ts("Failed to parse %s.", $convert), '500 INTERNAL SERVER ERROR');
         }
 
-        unlink($filename);
+        Unlink($filename);
 
         # save tag to page
         #$Page{'thumbnail_' . $size} = '#FILE ' . $type . ' created=' . $Now . ' revision=' . $Page{'revision'} . ' size=' . $scaled_size_x . 'x' . $scaled_size_y . "\n" . $thumbnail_data;

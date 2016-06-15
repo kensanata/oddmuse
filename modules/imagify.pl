@@ -32,7 +32,7 @@ sub DivFooRule {
     my $str = $1;
     CreateDir($ImagifyDir);
     my $fileName = sha256_hex($str) . '.' . $ImagifyFormat;
-    system('convert', %ImagifyParams, "caption:$str", "$ImagifyDir/$fileName") unless -e "$ImagifyDir/$fileName";
+    system('convert', %ImagifyParams, "caption:$str", "$ImagifyDir/$fileName") unless IsFile("$ImagifyDir/$fileName");
     my $src = $ScriptName . "/imagify/" . UrlEncode($fileName);
     return CloseHtmlEnvironments() . $q->img({-class => 'imagify', -src => $src, -alt => '(rendered text)'}) . AddHtmlEnvironment('p');
   }

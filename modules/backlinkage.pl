@@ -44,7 +44,7 @@ sub BacklinksMenu {
 $Action{buildback} = \&BuildBacklinkDatabase;
 sub BuildBacklinkDatabase {
     print GetHttpHeader('text/plain');
-    unlink $backfile; # Remove old database
+    Unlink($backfile); # Remove old database
     tie my %backhash, 'MLDBM', $backfile or die "Cannot open file $backfile $!\n";
     log1("Starting Database Store Process ... please wait\n\n");
 

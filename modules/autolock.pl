@@ -171,9 +171,9 @@ sub UserCanEditAutoLockFix {
   return 0 if $id eq 'SampleUndefinedPage' or $id eq T('SampleUndefinedPage')
     or $id eq 'Sample_Undefined_Page' or $id eq T('Sample_Undefined_Page');
   return 1 if UserIsAdmin() || UserIsEditor();
-  return 0 if $id ne '' and -f GetLockedPageFile($id);
-  return 0 if $LockOnCreation{$id} and not -f GetPageFile($id); # new page
-  return 0 if !$EditAllowed or -f $NoEditFile;
+  return 0 if $id ne '' and IsFile(GetLockedPageFile($id));
+  return 0 if $LockOnCreation{$id} and not IsFile(GetPageFile($id)); # new page
+  return 0 if !$EditAllowed or IsFile($NoEditFile);
   return 0 if $editing and UserIsBanned(); # this call is more expensive
   return 0 if $EditAllowed >= 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/);
   return 1 if $EditAllowed >= 3 and ($comment or (GetParam('aftertext', '') and not GetParam('text', '')));

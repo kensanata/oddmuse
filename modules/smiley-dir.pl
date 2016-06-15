@@ -32,7 +32,7 @@ push(@MyInitVariables, \&SmileyDirInit);
 sub SmileyDirInit {
   if (opendir(DIR, $SmileyDir)) {
     map {
-      if (/^((.*)\.$ImageExtensions$)/ and -f "$SmileyDir/$_") {
+      if (/^((.*)\.$ImageExtensions$)/ and IsFile("$SmileyDir/$_")) {
 	my $regexp = quotemeta("{$2}");
 	$Smilies{$regexp} = "$SmileyUrlPath/$1";
       }

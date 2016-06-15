@@ -131,8 +131,8 @@ sub MakeLaTeX {
 
   # Select which binary to use for conversion of dvi to images
   my $useConvert = 0;
-  if (not -e $dvipngPath) {
-    if (not -e $convertPath) {
+  if (not IsFile($dvipngPath)) {
+    if (not IsFile($convertPath)) {
       return "[Error: dvipng binary and convert binary not found at $dvipngPath or $convertPath ]";
     }
     else {
@@ -155,12 +155,12 @@ sub MakeLaTeX {
   }
 
   # check cache
-  if (not -f "$LatexDir/$hash.png" or -z "$LatexDir/$hash.png") { #If file doesn't exist or is zero bytes
+  if (not IsFile("$LatexDir/$hash.png") or ZeroSize("$LatexDir/$hash.png")) {
     # Then create the image
 
     # read template and replace <math>
-    mkdir($LatexDir) unless -d $LatexDir;
-    if (not -f $LatexDefaultTemplateName) {
+    CreateDir($LatexDir);
+    if (not IsFile($LatexDefaultTemplateName)) {
       open (my $F, '>', $LatexDefaultTemplateName) or return '[Unable to write template]';
       print $F $LatexDefaultTemplate;
       close $F;
@@ -169,12 +169,12 @@ sub MakeLaTeX {
     $template =~ s/<math>/$latex/gi;
     #setup rendering directory
     my $dir = "$LatexDir/$hash";
-    if (-d $dir) {
-      unlink (bsd_glob('$dir/*'));
+    if (IsDir($dir)) {
+      Unlink((bsd_glob('$dir/*')));
     } else {
-      mkdir($dir) or return "[Unable to create $dir]";
+      CreateDir($dir);
     }
-    chdir ($dir) or return "[Unable to switch to $dir]";
+    ChangeDir($dir) or return "[Unable to switch to $dir]";
     WriteStringToFile ("srender.tex", $template);
     my $errorText = qx(latex srender.tex);
 
@@ -197,16 +197,16 @@ sub MakeLaTeX {
 	$error = "[dvipng error $? ($output)]" if $?;
       }
 
-      if (not $error and -f 'srender1.png' and not -z 'srender1.png') {
+      if (not $error and IsFile('srender1.png') and not ZeroSize('srender1.png')) {
 	my $png = ReadFileOrDie("srender1.png");
 	WriteStringToFile ("$LatexDir/$hash.png", $png);
       } else {
 	$error = "[Error retrieving image for $latex]";
       }
     }
-    unlink (glob('*'));
-    chdir ($LatexDir);
-    rmdir ($dir);
+    Unlink(glob('*'));
+    ChangeDir($LatexDir);
+    RemoveDir($dir);
 
     return $error if $error;
   }

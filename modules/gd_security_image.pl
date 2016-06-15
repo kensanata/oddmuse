@@ -211,7 +211,7 @@ sub GdSecurityImageDoImage {
   print $q->header(-type=>'image/png');
   print $data;
 
-  unlink(GdSecurityImageGetImageFile($id));
+  Unlink(GdSecurityImageGetImageFile($id));
 }
 
 sub GdSecurityImageCleanup {
@@ -221,8 +221,8 @@ sub GdSecurityImageCleanup {
   }
   my @files = (bsd_glob("$GdSecurityImageDir/*.png"), bsd_glob("$GdSecurityImageDir/*.ticket"));
   foreach my $file (@files) {
-    if ($Now - (stat $file)[9] > $GdSecurityImageDuration) {
-      unlink($file);
+    if ($Now - Modified($file) > $GdSecurityImageDuration) {
+      Unlink($file);
     }
   }
 }
@@ -255,7 +255,7 @@ sub GdSecurityImageCheck {
   }
 
   if (GdSecurityImageIsValidId($id)) {
-    unlink(GdSecurityImageGetTicketFile($id));
+    Unlink(GdSecurityImageGetTicketFile($id));
   }
 
   $GdSecurityImageId = GdSecurityImageGenerate();

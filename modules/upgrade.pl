@@ -62,8 +62,8 @@ sub DoUpgrade {
   print GetHeader('', T('Upgrading Database')),
     $q->start_div({-class=>'content upgrade'});
 
-  if (-e $IndexFile) {
-    unlink $IndexFile;
+  if (IsFile($IndexFile)) {
+    Unlink($IndexFile);
   }
 
   print "<p>Renaming files...";
@@ -92,7 +92,7 @@ sub DoUpgrade {
       }
       for my $subdir (grep(/\/([A-Z]|other)$/, bsd_glob("$dir/*"), bsd_glob("$dir/.*"))) {
 	next if substr($subdir, -2) eq '/.' or substr($subdir, -3) eq '/..';
-	rmdir $subdir; # ignore errors
+	RemoveDir($subdir); # ignore errors
       }
     }
   }
