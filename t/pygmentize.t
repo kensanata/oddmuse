@@ -1,4 +1,4 @@
-# Copyright (C) 2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2015-2016  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -18,8 +18,14 @@ use Test::More tests => 2;
 
 add_module('pygmentize.pl');
 
-$ENV{PATH} = '.'; # pygmentize is not installed in the current directory
-$page = apply_rules(newlines('{{{\ntest\n}}}\n'));
-test_page($page,
-           '\bsh\b.*\bpygmentize\b.*\bnot found\b',
-           '<pre>test</pre>');
+ SKIP: {
+   if (qx(pygmentize -V) !~ /Pygments version/) {
+     skip "pygmentize not found", 2;
+   }
+
+   $ENV{PATH} = '.'; # pygmentize is not installed in the current directory
+   $page = apply_rules(newlines('{{{\ntest\n}}}\n'));
+   test_page($page,
+	     '\bsh\b.*\bpygmentize\b.*\bnot found\b',
+	     '<pre>test</pre>');
+}
