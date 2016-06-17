@@ -305,7 +305,6 @@ sub InitVariables {  # Init global session variables for mod_perl!
   $LastUpdate = $ts;
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
-  ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR') unless -d $DataDir;
   @IndexOptions = (['pages', T('Include normal pages'), 1, \&AllPagesList]);
   foreach my $sub (@MyInitVariables) {
     my $result = $sub->();
