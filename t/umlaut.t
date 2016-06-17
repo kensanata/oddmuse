@@ -17,7 +17,10 @@ package OddMuse;
 use Test::More tests => 3;
 use utf8;
 
-$ENV{WikiDataDir} .= "-ä";
+my $dir = $ENV{WikiDataDir};
+$dir .= "-ä";
+utf8::encode($dir); # bytes
+$ENV{WikiDataDir} = $dir;
 
 # editing pages
 test_page(get_page('Test'),
