@@ -54,10 +54,10 @@ sub BisectAction {
 sub BisectInitialScreen {
   print GetFormStart(undef, 'get', 'bisect');
   print GetHiddenValue('action', 'bisect');
-  my @disabledFiles = bsd_glob("$ModuleDir/*.p[ml].disabled");
+  my @disabledFiles = Glob("$ModuleDir/*.p[ml].disabled");
   if (@disabledFiles == 0) {
     print T('Test / Always enabled / Always disabled'), $q->br();
-    my @files = bsd_glob("$ModuleDir/*.p[ml]");
+    my @files = Glob("$ModuleDir/*.p[ml]");
     for (my $i = 0; $i < @files; $i++) {
       my $moduleName = fileparse($files[$i]);
       my @disabled = ($moduleName eq 'module-bisect.pl' ? (-disabled=>'disabled') : ());
@@ -78,7 +78,7 @@ sub BisectProcess {
   my ($isGood) = @_;
   my $parameterHandover = '';
   BisectEnableAll();
-  my @files = bsd_glob("$ModuleDir/*.p[ml]");
+  my @files = Glob("$ModuleDir/*.p[ml]");
   for (my $i = @files - 1; $i >= 0; $i--) { # handle user choices
     if (GetParam("m$i") eq 'on') {
       $parameterHandover .= GetHiddenValue("m$i", GetParam("m$i"));
@@ -131,7 +131,7 @@ sub BisectProcess {
 }
 
 sub BisectEnableAll {
-  for (bsd_glob("$ModuleDir/*.p[ml].disabled")) { # reenable all modules
+  for (Glob("$ModuleDir/*.p[ml].disabled")) { # reenable all modules
     my $oldName = $_;
     s/\.disabled$//;
     print Ts('Enabling %s', (fileparse($_))[0]), '...', $q->br() if $_[0];

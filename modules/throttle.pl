@@ -52,7 +52,7 @@ sub NewDoBrowseRequest {
 
 # limit the script to a maximum of $InstanceThrottleLimit instances
 sub DoInstanceThrottle {
-  my @pids = bsd_glob($InstanceThrottleDir."/*");
+  my @pids = Glob($InstanceThrottleDir."/*");
   # Go over all pids: validate each pid by sending signal 0, unlink
   # pidfile if pid does not exist and return 0. Count the number of
   # zeros (= removed files = zombies) with grep.

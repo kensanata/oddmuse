@@ -35,7 +35,7 @@ $Action{clearcache} = \&DoClearCache;
 
 sub DoClearCache {
   print GetHeader('', QuoteHtml(T('Clearing Cache')), '');
-  Unlink((bsd_glob("$NotFoundHandlerDir/*")));
+  Unlink(Glob("$NotFoundHandlerDir/*"));
   print $q->p(T('Done.'));
   PrintFooter();
 }
@@ -107,7 +107,7 @@ sub NewNotFoundHandlerSave {
     NotFoundHandlerCacheUpdate($id);
   } else {
     # unlink PageName, PageName.en, PageName.de, etc.
-    Unlink(("$NotFoundHandlerDir/$id", bsd_glob("$NotFoundHandlerDir/$id.[a-z][a-z]")));
+    Unlink("$NotFoundHandlerDir/$id", Glob("$NotFoundHandlerDir/$id.[a-z][a-z]"));
   }
 }
 
@@ -132,7 +132,7 @@ sub NotFoundHandlerCacheUpdate {
   foreach my $source (keys %LinkDb) {
     warn "Examining $source\n";
     if (grep(/$target/, @{$LinkDb{$source}})) {
-      Unlink(("$NotFoundHandlerDir/$source", bsd_glob("$NotFoundHandlerDir/$source.[a-z][a-z]")));
+      Unlink("$NotFoundHandlerDir/$source", Glob("$NotFoundHandlerDir/$source.[a-z][a-z]"));
       warn "Unlinking $source\n";
     }
   }

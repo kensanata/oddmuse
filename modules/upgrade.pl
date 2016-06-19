@@ -75,7 +75,7 @@ sub DoUpgrade {
       next unless $dirname;
       my $dir = $dirname; # copy in order not to modify the original
       $dir =~ s/^$DataDir/$DataDir\/$ns/ if $ns;
-      for my $old (bsd_glob("$dir/*/*"), bsd_glob("$dir/*/.*")) {
+      for my $old (Glob("$dir/*/*"), Glob("$dir/*/.*")) {
 	next if $old =~ /\/\.\.?$/;
 	my $oldname = $old;
 	utf8::decode($oldname);
@@ -90,7 +90,7 @@ sub DoUpgrade {
 	  print " → $newname failed!";
 	}
       }
-      for my $subdir (grep(/\/([A-Z]|other)$/, bsd_glob("$dir/*"), bsd_glob("$dir/.*"))) {
+      for my $subdir (grep(/\/([A-Z]|other)$/, Glob("$dir/*"), Glob("$dir/.*"))) {
 	next if substr($subdir, -2) eq '/.' or substr($subdir, -3) eq '/..';
 	RemoveDir($subdir); # ignore errors
       }
