@@ -91,7 +91,7 @@ sub ProcessModule {
   my $diff = DoModuleDiff("$ModuleDir/$module", "$TempDir/$module");
   if (not $diff) {
     print $q->strong('This module is up to date, there is no need to update it.'), $q->br();
-    Unlink($TempDir/$module);
+    Unlink("$TempDir/$module");
     return;
   }
   print $q->strong('There is a newer version of this module. Here is a diff:'), $q->br();
