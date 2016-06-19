@@ -222,19 +222,21 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   # opening a rcfile, compare the first timestamp with the
   # starttime. If any rcfile exists with no timestamp before the
   # starttime, we need to open its rcoldfile.
-  foreach my $file (@rcfiles) {
+  foreach my $rcfile (@rcfiles) {
+    my $file = $rcfile;
+    utf8::encode($file);
     open(my $F, '<:encoding(UTF-8)', $file);
     my $line = <$F>;
     my ($ts) = split(/$FS/, $line); # the first timestamp in the regular rc file
     my @new;
     if (not $ts or $ts > $starttime) {	# we need to read the old rc file, too
-      push(@new, GetRcLinesFor($rcoldfiles{$file}, $starttime,\%match, \%following));
+      push(@new, GetRcLinesFor($rcoldfiles{$rcfile}, $starttime,\%match, \%following));
     }
-    push(@new, GetRcLinesFor($file, $starttime, \%match, \%following));
+    push(@new, GetRcLinesFor($rcfile, $starttime, \%match, \%following));
     # strip rollbacks in each namespace separately
     @new = StripRollbacks(@new);
     # prepend the namespace to both pagename and author
-    my $ns = $namespaces{$file};
+    my $ns = $namespaces{$rcfile};
     if ($ns) {
       for (my $i = $#new; $i >= 0; $i--) {
 	# page id

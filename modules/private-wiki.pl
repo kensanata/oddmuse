@@ -111,7 +111,9 @@ sub AppendStringToFile {
 sub NewPrivateWikiRefreshIndex {
   if (not IsFile($IndexFile)) { # Index file does not exist yet, this is a new wiki
     my $fh;
-    open($fh, '>', $IndexFile) or die "Unable to open file $IndexFile : $!"; # 'touch' equivalent
+    my $file = $IndexFile;
+    utf8::encode($file);
+    open($fh, '>', $file) or die "Unable to open file $IndexFile : $!"; # 'touch' equivalent
     close($fh) or die "Unable to close file : $IndexFile $!";
     return;
   }

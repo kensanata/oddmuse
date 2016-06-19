@@ -32,7 +32,9 @@ my $dummy = RelationRead();
 
 sub RelationRead {
 #   return scalar(@RelationLinking) if (scalar(@RelationLinking));
-   open (my $RRR, '<', "$DataDir/$referencefile") || return(0);
+   my $file = "$DataDir/$referencefile";
+   utf8::encode($file);
+   open (my $RRR, '<', $file) || return(0);
    while (<$RRR>) {
       chomp;
       my ($a,$b,$c) = split(';');
@@ -172,7 +174,9 @@ $Action{'updaterelates'} = sub {
   else {
         print "no new source<br />\n";
   }
-  open (my $RRR, '>', "$DataDir/$referencefile");
+  my $file = "$DataDir/$referencefile";
+  utf8::encode($file);
+  open (my $RRR, '>', $file);
   print "<br />\n";
   foreach my $t (@RelationLinking) {
       next unless (defined($t));

@@ -209,10 +209,10 @@ sub GenerateThumbNail {
 
 
      my $filename = $ThumbnailTempDir . "/odd" . $id . "_" . $size;
-
+     my $file = $filename;
+     utf8::encode($file);
      # Decode the original image to a temp file
-
-     open(my $FD, '>', $filename) or ReportError(Ts("Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.",$filename), '500 INTERNAL SERVER ERROR');
+     open(my $FD, '>', $file) or ReportError(Ts("Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.",$filename), '500 INTERNAL SERVER ERROR');
      binmode($FD);
      print $FD MIME::Base64::decode($data);
      close($FD);

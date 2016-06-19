@@ -33,7 +33,7 @@ $StaticUrl = '' unless defined $StaticUrl;	  # change this!
 $StaticAlways = 0 unless defined $StaticAlways;
 		# 1 = uploaded files only, 2 = all pages
 
-my $StaticMimeTypes = '/etc/http/mime.types';
+my $StaticMimeTypes = '/etc/http/mime.types'; # all-ASCII characters
 my %StaticFiles;
 
 my $StaticAction = 0;	# Are we doing action or not?
@@ -133,12 +133,13 @@ sub StaticWriteFile {
 	my $id = shift;
 	my $raw = GetParam('raw', 0);
 	my $html = GetParam('html', 1);
-	my $filename = StaticFileName($id);
-
 	OpenPage($id);
 	my ($mimetype, $data) = $Page{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s;
 	return unless $html or $data;
-	open(my $F, '>', "$StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
+	my $filename = StaticFileName($id);
+	my $file = "$StaticDir/$filename";
+	utf8::encode($file);
+	open(my $F, '>', $file) or ReportError(Ts('Cannot write %s', $filename));
 	if ($data) {
 		StaticFile($id, $mimetype, $data, $F);
 	} elsif ($html) {

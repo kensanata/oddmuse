@@ -22,7 +22,7 @@ use v5.10;
 AddModuleDescription('login.pl', 'Login Module');
 
 our ($q, %Action, $SiteName, @MyAdminCode, $IndexFile, $DataDir, $FullUrl);
-our ($RegistrationForm, $MinimumPasswordLength, $RegistrationsMustBeApproved, $LoginForm, $PasswordFile, $PasswordFileToUse, $PendingPasswordFile, $RequireLoginToEdit, $ConfirmEmailAddress, $UncomfirmedPasswordFile, $EmailSenderAddress, $EmailCommand, $EmailRegExp, $NotifyPendingRegistrations, $EmailConfirmationMessage, $ResetPasswordMessage, $LogoutForm, $ResetForm, $ChangePassForm, $RequireCamelUserName, $UsernameRegExp);
+our ($RegistrationForm, $MinimumPasswordLength, $RegistrationsMustBeApproved, $LoginForm, $PasswordFile, $PasswordFileToUse, $PendingPasswordFile, $RequireLoginToEdit, $ConfirmEmailAddress, $UnconfirmedPasswordFile, $EmailSenderAddress, $EmailCommand, $EmailRegExp, $NotifyPendingRegistrations, $EmailConfirmationMessage, $ResetPasswordMessage, $LogoutForm, $ResetForm, $ChangePassForm, $RequireCamelUserName, $UsernameRegExp);
 
 my $EncryptedPassword = "";
 
@@ -40,7 +40,7 @@ $RegistrationsMustBeApproved = 1 unless defined $RegistrationsMustBeApproved;
 $PendingPasswordFile = "$DataDir/pending" unless defined $PendingPasswordFile;
 
 $ConfirmEmailAddress = 1 unless defined $ConfirmEmailAddress;
-$UncomfirmedPasswordFile = "$DataDir/uncomfirmed" unless defined $UncomfirmedPasswordFile;
+$UnconfirmedPasswordFile = "$DataDir/uncomfirmed" unless defined $UnconfirmedPasswordFile;
 
 $EmailSenderAddress = "fletcher\@freeshell.org" unless defined $EmailSenderAddress;
 $EmailCommand = "/usr/sbin/sendmail -oi -t" unless defined $EmailCommand;
@@ -71,7 +71,7 @@ $PasswordFileToUse = $RegistrationsMustBeApproved
 		? $PendingPasswordFile : $PasswordFile;
 
 $PasswordFileToUse = $ConfirmEmailAddress
-		? $UncomfirmedPasswordFile : $PasswordFileToUse;
+		? $UnconfirmedPasswordFile : $PasswordFileToUse;
 
 $RegistrationForm = <<'EOT' unless defined $RegistrationForm;
 <p>Your Username should be a CamelCase form of your real name, e.g. JohnDoe.</p>
@@ -328,7 +328,9 @@ sub DoProcessLogout {
 
 sub UserExists {
 	my $username = shift;
-	if (open (my $PASSWD, '<', $PasswordFile)) {
+	my $file = $PasswordFile;
+	utf8::encode($file);
+	if (open (my $PASSWD, '<', $file)) {
 		while ( <$PASSWD> ) {
 			if ($_ =~ /^$username:/) {
 				return 1;
@@ -338,7 +340,9 @@ sub UserExists {
 	}
 
 	if ($RegistrationsMustBeApproved) {
-		if (open (my $PASSWD, '<', $PendingPasswordFile)) {
+		$file = $PendingPasswordFile;
+		utf8::encode($file);
+		if (open (my $PASSWD, '<', $file)) {
 			while ( <$PASSWD> ) {
 				if ($_ =~ /^$username:/) {
 					return 1;
@@ -349,7 +353,9 @@ sub UserExists {
 	}
 
 	if ($ConfirmEmailAddress) {
-		if (open (my $PASSWD, '<', $UncomfirmedPasswordFile)) {
+		$file = $UnconfirmedPasswordFile;
+		utf8::encode($file);
+		if (open (my $PASSWD, '<', $UnconfirmedPasswordFile)) {
 			while ( <$PASSWD> ) {
 				if ($_ =~ /^$username:/) {
 					return 1;
@@ -490,14 +496,15 @@ sub ConfirmUser {
 	my ($username, $key) = @_;
 	my $FileToUse = $RegistrationsMustBeApproved
 		? $PendingPasswordFile : $PasswordFileToUse;
-
-	if (open(my $PASSWD, '<', $UncomfirmedPasswordFile)) {
+	my $file = $UnconfirmedPasswordFile;
+	utf8::encode($file);
+	if (open(my $PASSWD, '<', $file)) {
 		while (<$PASSWD>) {
 			if ($_ =~ /^$username:(.*):(.*)/) {
 				if (crypt($1,$key) eq $key) {
 					AddUser($username,$1,$2,$FileToUse);
 					close $PASSWD;
-					RemoveUser($username,$UncomfirmedPasswordFile);
+					RemoveUser($username,$UnconfirmedPasswordFile);
 					if ($RegistrationsMustBeApproved) {
 						SendNotification($username);
 					}
@@ -515,7 +522,7 @@ sub RemoveUser {
 
 	my %passwords = ();
 	my %emails = ();
-
+	utf8::encode($FileToUse);
 	if (open (my $PASSWD, '<', $FileToUse)) {
 		while ( <$PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
@@ -599,8 +606,9 @@ sub ChangePassword {
 
 	my %passwords = ();
 	my %emails = ();
-
-	if (open (my $PASSWD, '<', $PasswordFile)) {
+	my $file = $PasswordFile;
+	utf8::encode($file);
+	if (open (my $PASSWD, '<', $file)) {
 		while ( <$PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
 				$passwords{$1}=$2;
@@ -612,7 +620,7 @@ sub ChangePassword {
 
 	$passwords{$user} = $hash;
 
-	open (my $PASSWD, '>', $PasswordFile);
+	open (my $PASSWD, '>', $file);
 	foreach my $key ( sort keys(%passwords)) {
 		print $PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
@@ -719,7 +727,9 @@ sub DoApprovePending {
 		}
 	} else {
 		print '<ul>';
-		if (open(my $PASSWD, '<', $PendingPasswordFile)) {
+		my $file = $PendingPasswordFile;
+		utf8::encode($file);
+		if (open(my $PASSWD, '<', $file)) {
 			while (<$PASSWD>) {
 				if ($_ =~ /^(.*):(.*):(.*)$/) {
 					print '<li>' . ScriptLink("action=approve_pending;user=$1;",$1) . ' - ' . $3 . '</li>';
@@ -740,8 +750,9 @@ sub DoApprovePending {
 
 sub ApproveUser {
 	my ($username) = @_;
-
-	if (open(my $PASSWD, '<', $PendingPasswordFile)) {
+	my $file = $PendingPasswordFile;
+	utf8::encode($file);
+	if (open(my $PASSWD, '<', $file)) {
 		while (<$PASSWD>) {
 			if ($_ =~ /^$username:(.*):(.*)/) {
 				AddUser($username,$1,$2,$PasswordFile);
