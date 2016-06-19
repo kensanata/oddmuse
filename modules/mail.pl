@@ -120,6 +120,7 @@ sub MailIsSubscribed {
   return 0 unless $mail;
   # open the DB file
   require DB_File;
+  utf8::encode($MailFile);
   tie my %h, "DB_File", $MailFile;
   my %subscribers = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($id)}));
   untie %h;
@@ -197,6 +198,7 @@ sub NewMailDeletePage {
 sub MailDeletePage {
   my $id = shift;
   require DB_File;
+  utf8::encode($MailFile);
   tie my %h, "DB_File", $MailFile;
   foreach my $mail (split(/$FS/, UrlDecode(delete $h{UrlEncode($id)}))) {
     my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
@@ -274,6 +276,7 @@ sub MailSubscription {
   my $mail = shift;
   return unless $mail;
   require DB_File;
+  utf8::encode($MailFile);
   tie my %h, "DB_File", $MailFile;
   my @result = split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
   untie %h;
@@ -303,7 +306,7 @@ sub DoMailSubscriptionList {
       '<ul>';
   }
   require DB_File;
-
+  utf8::encode($MailFile);
   tie my %h, "DB_File", $MailFile;
   foreach my $encodedkey (sort keys %h) {
     my @values = sort split(/$FS/, UrlDecode($h{$encodedkey}));
@@ -383,6 +386,7 @@ sub MailSubscribe {
   return unless $mail and @pages;
   # open the DB file
   require DB_File;
+  utf8::encode($MailFile);
   tie my %h, "DB_File", $MailFile;
   # add to the mail entry
   my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
@@ -442,6 +446,7 @@ sub MailUnsubscribe {
   my ($mail, @pages) = @_;
   return unless $mail and @pages;
   require DB_File;
+  utf8::encode($MailFile);
   tie my %h, "DB_File", $MailFile;
   my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
   foreach my $id (@pages) {
@@ -481,7 +486,7 @@ sub DoMailMigration {
     $q->start_div({-class=>'content mailmigrate'});
 
   require DB_File;
-
+  utf8::encode($MailFile);
   tie my %h, "DB_File", $MailFile;
   my $found = 0;
   foreach my $key (keys %h) {

@@ -131,11 +131,13 @@ sub StaticFileName {
 sub StaticWriteFile {
   my ($id, $html) = @_;
   my $raw = GetParam('raw', 0);
-  my $filename = StaticFileName($id);
   OpenPage($id);
   my ($mimetype, $encoding, $data) =
-    $Page{text} =~ /^\#FILE ([^ \n]+) ?([^ \n]*)\n(.*)/s;
-  open(my $fh, '>', "$StaticDir/$filename")
+      $Page{text} =~ /^\#FILE ([^ \n]+) ?([^ \n]*)\n(.*)/s;
+  my $filename = StaticFileName($id);
+  my $file = "$StaticDir/$filename";
+  utf8::encode($file);
+  open(my $fh, '>', $file)
     or ReportError(Ts('Cannot write %s', $filename));
   if ($data) {
     binmode($fh);

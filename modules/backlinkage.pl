@@ -44,8 +44,10 @@ sub BacklinksMenu {
 $Action{buildback} = \&BuildBacklinkDatabase;
 sub BuildBacklinkDatabase {
     print GetHttpHeader('text/plain');
-    Unlink($backfile); # Remove old database
-    tie my %backhash, 'MLDBM', $backfile or die "Cannot open file $backfile $!\n";
+    my $file = $backfile;
+    utf8::encode($file); # bytes
+    unlink($file); # Remove old database
+    tie my %backhash, 'MLDBM', $file or die "Cannot open file $backfile $!\n";
     log1("Starting Database Store Process ... please wait\n\n");
 
     foreach my $name (AllPagesList()) {
@@ -101,7 +103,9 @@ sub GetBackLink {
 
     our ($BacklinkBanned);
     $BacklinkBanned = "HomePage|ScratchPad" if !$BacklinkBanned;
-    tie my %backhash, 'MLDBM', $backfile, O_CREAT|O_RDWR, oct(644) or die "Cannot open file $backfile $!\n";
+    my $file = $backfile;
+    utf8::encode($file);
+    tie my %backhash, 'MLDBM', $file, O_CREAT|O_RDWR, oct(644) or die "Cannot open file $backfile $!\n";
 
     # Search database for matches
     while ( my ($source, $hashes) = each %backhash ) {

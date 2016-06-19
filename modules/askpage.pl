@@ -29,6 +29,7 @@ $NewQuestion = 'Write your question here:';
 
 sub IncrementInFile {
   my $filename = shift;
+  utf8::encode($filename);
   sysopen my $fh, $filename, O_RDWR|O_CREAT or die "can't open $filename: $!";
   flock $fh, LOCK_EX or die "can't flock $filename: $!";
   my $num = <$fh> || 1;

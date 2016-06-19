@@ -81,7 +81,9 @@ sub ProcessModule {
 		     . ' If this is your own module, please contribute it to Oddmuse!'), $q->br();
     return;
   }
-  open my $fh, ">", "$TempDir/$module" or die("Could not open file. $!");
+  my $file = "$TempDir/$module";
+  utf8::encode($file);
+  open my $fh, ">", $file or die("Could not open file $TempDir/$module: $!");
   utf8::encode($moduleData);
   print $fh $moduleData;
   close $fh;

@@ -1504,6 +1504,7 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   my @result = ();
   my $ts;
   # check the first timestamp in the default file, maybe read old log file
+  utf8::encode($RcFile);
   if (open(my $F, '<:encoding(UTF-8)', $RcFile)) {
     my $line = <$F>;
     ($ts) = split(/$FS/, $line); # the first timestamp in the regular rc file
@@ -1588,6 +1589,7 @@ sub GetRcLinesFor {
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
+  utf8::encode($file);
   open(my $F, '<:encoding(UTF-8)', $file) or return ();
   while (my $line = <$F>) {
     chomp($line);
@@ -2941,7 +2943,7 @@ sub Glob {
   my ($pattern) = @_;
   utf8::encode($pattern);
   return bsd_glob($pattern);
-}  
+}
 
 sub GetLockedPageFile {
   my $id = shift;
@@ -3501,7 +3503,8 @@ sub PageIsUploadedFile {
     my $file = GetPageFile($id);
     utf8::encode($file); # filenames are bytes!
     open(my $FILE, '<:encoding(UTF-8)', $file)
-      or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
+      or ReportError(Ts('Cannot open %s', GetPageFile($id))
+		     . ": $!", '500 INTERNAL SERVER ERROR');
     while (defined($_ = <$FILE>) and $_ !~ /^text: /) {
     }          # read lines until we get to the text key
     close $FILE;

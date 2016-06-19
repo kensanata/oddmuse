@@ -164,6 +164,7 @@ sub GdSecurityImageGenerate {
   my $ticketId = Digest::MD5::md5_hex(rand());
   CreateDir($GdSecurityImageDir);
   my $file = GdSecurityImageGetImageFile($ticketId);
+  utf8::encode($file);
   open my $fh, ">:raw", $file
     or ReportError(Ts('Image storing failed. (%s)', $!), '500 INTERNAL SERVER ERROR');
   print $fh $imgData;
