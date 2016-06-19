@@ -219,7 +219,7 @@ sub GdSecurityImageCleanup {
   if (!GdSecurityImageIsValidId($id)) {
     return;
   }
-  my @files = (bsd_glob("$GdSecurityImageDir/*.png"), bsd_glob("$GdSecurityImageDir/*.ticket"));
+  my @files = (Glob("$GdSecurityImageDir/*.png"), Glob("$GdSecurityImageDir/*.ticket"));
   foreach my $file (@files) {
     if ($Now - Modified($file) > $GdSecurityImageDuration) {
       Unlink($file);

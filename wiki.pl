@@ -228,7 +228,7 @@ sub Init {
 
 sub InitModules {
   if ($UseConfig and $ModuleDir and IsDir($ModuleDir)) {
-    foreach my $lib (bsd_glob("$ModuleDir/*.p[ml]")) {
+    foreach my $lib (Glob("$ModuleDir/*.p[ml]")) {
       do $lib unless $MyInc{$lib};
       $MyInc{$lib} = 1;   # Cannot use %INC in mod_perl settings
       $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
@@ -2125,7 +2125,7 @@ sub DoAdminPage {
   push(@menu, ScriptLink('action=maintain', T('Run maintenance'), 'maintain')) if $Action{maintain};
   my @locks;
   for my $pattern (@KnownLocks) {
-    for my $name (bsd_glob $pattern) {
+    for my $name (Glob($pattern)) {
       if (IsDir($LockDir . $name)) {
 	push(@locks, $name);
       }
@@ -2782,7 +2782,7 @@ sub GetKeepDir {
 }
 
 sub GetKeepFiles {
-  return bsd_glob(GetKeepDir(shift) . '/*.kp'); # files such as 1.kp, 2.kp, etc.
+  return Glob(GetKeepDir(shift) . '/*.kp'); # files such as 1.kp, 2.kp, etc.
 }
 
 sub GetKeepRevisions {
@@ -2937,6 +2937,12 @@ sub ChangeDir {
   chdir($dir);
 }
 
+sub Glob {
+  my ($pattern) = @_;
+  utf8::encode($pattern);
+  return bsd_glob($pattern);
+}  
+
 sub GetLockedPageFile {
   my $id = shift;
   return "$PageDir/$id.lck";
@@ -3001,7 +3007,7 @@ sub ReleaseLock {
 sub ForceReleaseLock {
   my $pattern = shift;
   my $forced;
-  foreach my $name (bsd_glob $pattern) {
+  foreach my $name (Glob($pattern)) {
     # First try to obtain lock (in case of normal edit lock)
     $forced = 1 unless RequestLockDir($name, 5, 3, 0);
     ReleaseLockDir($name); # Release the lock, even if we didn't get it. This should not happen.
@@ -3421,7 +3427,7 @@ sub RefreshIndex {
   %IndexHash = ();
   # If file exists and cannot be changed, error!
   my $locked = RequestLockDir('index', undef, undef, IsFile($IndexFile));
-  foreach (bsd_glob("$PageDir/*.pg"), bsd_glob("$PageDir/.*.pg")) {
+  foreach (Glob("$PageDir/*.pg"), Glob("$PageDir/.*.pg")) {
     next unless m|/.*/(.+)\.pg$|;
     my $id = $1;
     utf8::decode($id);

@@ -85,7 +85,7 @@ sub NamespacesInitVariables {
   # Do this before changing the $DataDir and $ScriptName
   if ($UsePathInfo) {
     $Namespaces{$NamespacesMain} = $ScriptName . '/';
-    foreach my $name (bsd_glob("$DataDir/*")) {
+    foreach my $name (Glob("$DataDir/*")) {
       utf8::decode($name);
       if (IsDir($name)
 	  and $name =~ m|/($InterSitePattern)$|

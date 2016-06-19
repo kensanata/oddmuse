@@ -170,7 +170,7 @@ sub MakeLaTeX {
     #setup rendering directory
     my $dir = "$LatexDir/$hash";
     if (IsDir($dir)) {
-      Unlink((bsd_glob('$dir/*')));
+      Unlink((Glob('$dir/*')));
     } else {
       CreateDir($dir);
     }
