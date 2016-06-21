@@ -135,9 +135,7 @@ sub StaticWriteFile {
   my ($mimetype, $encoding, $data) =
       $Page{text} =~ /^\#FILE ([^ \n]+) ?([^ \n]*)\n(.*)/s;
   my $filename = StaticFileName($id);
-  my $file = "$StaticDir/$filename";
-  utf8::encode($file);
-  open(my $fh, '>', $file)
+  open(my $fh, '>', encode_utf8("$StaticDir/$filename"))
     or ReportError(Ts('Cannot write %s', $filename));
   if ($data) {
     binmode($fh);

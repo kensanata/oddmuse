@@ -161,9 +161,7 @@ sub MakeLaTeX {
     # read template and replace <math>
     CreateDir($LatexDir);
     if (not IsFile($LatexDefaultTemplateName)) {
-      my $file = $LatexDefaultTemplateName;
-      utf8::encode($file);
-      open (my $F, '>', $file) or return '[Unable to write template]';
+      open (my $F, '>', encode_utf8($LatexDefaultTemplateName)) or return '[Unable to write template]';
       print $F $LatexDefaultTemplate;
       close $F;
     }

@@ -82,9 +82,7 @@ sub ProcessModule {
     return;
   }
   my $file = "$TempDir/$module";
-  utf8::encode($file);
-  open my $fh, ">", $file or die("Could not open file $TempDir/$module: $!");
-  utf8::encode($moduleData);
+  open my $fh, ">:utf8", encode_utf8($file) or die("Could not open file $TempDir/$module: $!");
   print $fh $moduleData;
   close $fh;
 
@@ -111,7 +109,6 @@ sub ProcessModule {
 }
 
 sub DoModuleDiff {
-  my $diff = `diff -U 3 -- \Q$_[0]\E \Q$_[1]\E`;
-  utf8::decode($diff); # needs decoding
+  my $diff = decode_utf8(`diff -U 3 -- \Q$_[0]\E \Q$_[1]\E`);
   return $diff;
 }

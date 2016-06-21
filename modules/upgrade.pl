@@ -77,17 +77,13 @@ sub DoUpgrade {
       $dir =~ s/^$DataDir/$DataDir\/$ns/ if $ns;
       for my $old (Glob("$dir/*/*"), Glob("$dir/*/.*")) {
 	next if $old =~ /\/\.\.?$/;
-	my $oldname = $old;
-	utf8::decode($oldname);
-	print "<br />\n$oldname";
+	print "<br />\n$old";
 	my $new = $old;
 	$new =~ s!/([A-Z]|other)/!/!;
 	if ($old eq $new) {
 	  print " does not fit the pattern!";
-	} elsif (not rename $old, $new) {
-	  my $newname = $new;
-	  utf8::decode($newname);
-	  print " → $newname failed!";
+	} elsif (not Rename($old, $new)) {
+	  print " → $new failed!";
 	}
       }
       for my $subdir (grep(/\/([A-Z]|other)$/, Glob("$dir/*"), Glob("$dir/.*"))) {
@@ -99,7 +95,7 @@ sub DoUpgrade {
 
   print $q->end_p();
 
-  if (rename "$ModuleDir/upgrade.pl", "$ModuleDir/upgrade.done") {
+  if (Rename("$ModuleDir/upgrade.pl", "$ModuleDir/upgrade.done")) {
     print $q->p(T("Upgrade complete."))
   } else {
     print $q->p(T("Upgrade complete. Please remove $ModuleDir/upgade.pl, now."))

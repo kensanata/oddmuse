@@ -191,12 +191,9 @@ sub GitCleanup {
     print $q->p('Git cleanup starting');
     AllPagesList();
     # delete all the files including all the files starting with a dot
-    my $dir = $GitRepo;
-    utf8::encode($dir);
-    opendir(DIR, $dir) or ReportError("cannot open directory $GitRepo: $!");
+    opendir(DIR, encode_utf8($GitRepo)) or ReportError("cannot open directory $GitRepo: $!");
     foreach my $file (readdir(DIR)) {
-      my $name = $file;
-      utf8::decode($name); # filenames are bytes
+      my $name = decode_utf8($file);
       next if $file eq '.git' or $file eq '.' or $file eq '..' or $IndexHash{$name};
       print $q->p("Deleting left over file $name");
       Unlink("$GitRepo/$file") or ReportError("cannot delete $GitRepo/$name: $!");

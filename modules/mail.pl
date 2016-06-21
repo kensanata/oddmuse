@@ -120,8 +120,7 @@ sub MailIsSubscribed {
   return 0 unless $mail;
   # open the DB file
   require DB_File;
-  utf8::encode($MailFile);
-  tie my %h, "DB_File", $MailFile;
+  tie my %h, "DB_File", encode_utf($MailFile);
   my %subscribers = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($id)}));
   untie %h;
   return $subscribers{$mail};
@@ -198,8 +197,7 @@ sub NewMailDeletePage {
 sub MailDeletePage {
   my $id = shift;
   require DB_File;
-  utf8::encode($MailFile);
-  tie my %h, "DB_File", $MailFile;
+  tie my %h, "DB_File", encode_utf8($MailFile);
   foreach my $mail (split(/$FS/, UrlDecode(delete $h{UrlEncode($id)}))) {
     my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
     delete $subscriptions{$id};
@@ -276,8 +274,7 @@ sub MailSubscription {
   my $mail = shift;
   return unless $mail;
   require DB_File;
-  utf8::encode($MailFile);
-  tie my %h, "DB_File", $MailFile;
+  tie my %h, "DB_File", encode_utf8($MailFile);
   my @result = split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
   untie %h;
   @result = sort @result;
@@ -306,8 +303,7 @@ sub DoMailSubscriptionList {
       '<ul>';
   }
   require DB_File;
-  utf8::encode($MailFile);
-  tie my %h, "DB_File", $MailFile;
+  tie my %h, "DB_File", encode_utf8($MailFile);
   foreach my $encodedkey (sort keys %h) {
     my @values = sort split(/$FS/, UrlDecode($h{$encodedkey}));
     my $key = UrlDecode($encodedkey);
@@ -386,8 +382,7 @@ sub MailSubscribe {
   return unless $mail and @pages;
   # open the DB file
   require DB_File;
-  utf8::encode($MailFile);
-  tie my %h, "DB_File", $MailFile;
+  tie my %h, "DB_File", encode_utf8($MailFile);
   # add to the mail entry
   my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
   for my $id (@pages) {
@@ -446,8 +441,7 @@ sub MailUnsubscribe {
   my ($mail, @pages) = @_;
   return unless $mail and @pages;
   require DB_File;
-  utf8::encode($MailFile);
-  tie my %h, "DB_File", $MailFile;
+  tie my %h, "DB_File", encode_utf8($MailFile);
   my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
   foreach my $id (@pages) {
     delete $subscriptions{$id};
@@ -486,8 +480,7 @@ sub DoMailMigration {
     $q->start_div({-class=>'content mailmigrate'});
 
   require DB_File;
-  utf8::encode($MailFile);
-  tie my %h, "DB_File", $MailFile;
+  tie my %h, "DB_File", encode_utf8($MailFile);
   my $found = 0;
   foreach my $key (keys %h) {
     if (index($key, '@') != -1) {

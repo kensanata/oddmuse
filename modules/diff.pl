@@ -77,8 +77,7 @@ sub DoUnifiedDiff { # copied from DoDiff
   RequestLockDir('diff') or return '';
   WriteStringToFile($oldName, $_[0]);
   WriteStringToFile($newName, $_[1]);
-  my $diff_out = `diff -U 99999 -- \Q$oldName\E \Q$newName\E | tail -n +7`; # should be +4, but we always add extra line # TODO that workaround is ugly, fix it!
-  utf8::decode($diff_out); # needs decoding
+  my $diff_out = decode_utf8(`diff -U 99999 -- \Q$oldName\E \Q$newName\E | tail -n +7`); # should be +4, but we always add extra line # TODO that workaround is ugly, fix it!
   $diff_out =~ s/\n\K\\ No newline.*\n//g; # Get rid of common complaint.
   ReleaseLockDir('diff');
   # No need to unlink temp files--next diff will just overwrite.

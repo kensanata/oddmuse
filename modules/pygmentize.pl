@@ -52,10 +52,8 @@ sub DoPygmentize {
 
   RequestLockDir('pygmentize') or return '';
   WriteStringToFile("$TempDir/pygmentize", $contents);
-  my $output = `pygmentize $lexer -f html -O encoding=utf8 $args -- \Q$TempDir/pygmentize\E  2>&1`;
+  my $output = decode_utf8(`pygmentize $lexer -f html -O encoding=utf8 $args -- \Q$TempDir/pygmentize\E  2>&1`);
   ReleaseLockDir('pygmentize');
-
-  utf8::decode($output);
 
   if ($?) {
     $output = $q->p($q->strong($output)) # "sh: pygmentize: command not found"
