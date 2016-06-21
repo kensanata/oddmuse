@@ -17,6 +17,7 @@ package OddMuse;
 use lib '.';
 use XML::LibXML;
 use utf8;
+use Encode qw(encode_utf8 decode_utf8);
 use vars qw($raw);
 
 # Test::More explains how to fix wide character in print issues
@@ -56,8 +57,7 @@ $| = 1; # no output buffering
 sub url_encode {
   my $str = shift;
   return '' unless $str;
-  utf8::encode($str); # turn to byte string
-  my @letters = split(//, $str);
+  my @letters = split(//, encode_utf8($str));
   my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.'); # shell metachars are unsafe
   foreach my $letter (@letters) {
     my $pattern = quotemeta($letter);
@@ -209,15 +209,8 @@ sub xpath_do {
     skip("Cannot parse ".name($page).": $@", $#tests + 1) if $@;
     foreach my $test (@tests) {
       my $nodelist;
-      my $bytes = $test;
-      # utf8::encode: Converts in-place the character sequence to the
-      # corresponding octet sequence in *UTF-X*. The UTF8 flag is
-      # turned off, so that after this operation, the string is a byte
-      # string. (I have no idea why this is necessary, but there you
-      # go. See encoding.t tests and make sure the page file is
-      # encoded correctly.)
-      utf8::encode($bytes);
-      eval { $nodelist = $doc->findnodes($bytes) };
+      # libxml2 is not aware of UTF8 flag
+      eval { $nodelist = $doc->findnodes(encode_utf8($test)) };
       if ($@) {
 	fail(&$check(1) ? "$test: $@" : "not $test: $@");
       } elsif (ok(&$check($nodelist->size()),
