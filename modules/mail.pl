@@ -120,7 +120,7 @@ sub MailIsSubscribed {
   return 0 unless $mail;
   # open the DB file
   require DB_File;
-  tie my %h, "DB_File", encode_utf($MailFile);
+  tie my %h, "DB_File", encode_utf8($MailFile);
   my %subscribers = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($id)}));
   untie %h;
   return $subscribers{$mail};
