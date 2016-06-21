@@ -434,8 +434,6 @@ sub NamespacesNewGetId {
   # In this case GetId() will have set the parameter Test to 1.
   # http://example.org/cgi-bin/wiki.pl/Test?rollback-1234=foo
   # This doesn't set the Test parameter.
-  if ($UsePathInfo and $id eq $NamespaceCurrent and not GetParam($id) and not GetParam('ns')) {
-    $id = undef;
-  }
+  return if $id and $UsePathInfo and $id eq $NamespaceCurrent and not GetParam($id) and not GetParam('ns');
   return $id;
 }
