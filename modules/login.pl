@@ -609,7 +609,7 @@ sub ChangePassword {
 
 	$passwords{$user} = $hash;
 
-	open (my $PASSWD, '>', $file);
+	open (my $PASSWD, '>', encode_utf8($PasswordFile));
 	foreach my $key ( sort keys(%passwords)) {
 		print $PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
