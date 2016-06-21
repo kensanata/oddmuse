@@ -64,9 +64,7 @@ You can change this expiry time by setting C<$LnCacheHours>.
 push (@MyMaintenance, \&LnMaintenance);
 
 sub LnMaintenance {
-  my $dir = $RssDir;
-  utf8::encode($dir);
-  if (opendir(DIR, $dir)) { # cleanup if they should expire anyway
+  if (opendir(DIR, encode_utf8($RssDir))) { # cleanup if they should expire anyway
     foreach my $file (readdir(DIR)) {
       unlink("$RssDir/$file") if -M $file > $LnCacheHours * 3600;
     }

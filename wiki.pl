@@ -38,6 +38,7 @@ use utf8; # in case anybody ever adds UTF8 characters to the source
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
+use Encode qw(encode_utf8 decode_utf8);
 use sigtrap 'handler' => \&HandleSignals, 'normal-signals', 'error-signals';
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
@@ -66,7 +67,7 @@ our $UseConfig //= 1;
 
 # Main wiki directory
 our $DataDir;
-$DataDir    ||= $ENV{WikiDataDir} if $UseConfig;
+$DataDir    ||= decode_utf8($ENV{WikiDataDir}) if $UseConfig;
 $DataDir    ||= '/tmp/oddmuse'; # FIXME: /var/opt/oddmuse/wiki ?
 
 our $ConfigFile;
@@ -229,9 +230,12 @@ sub Init {
 sub InitModules {
   if ($UseConfig and $ModuleDir and IsDir($ModuleDir)) {
     foreach my $lib (Glob("$ModuleDir/*.p[ml]")) {
-      do $lib unless $MyInc{$lib};
-      $MyInc{$lib} = 1;   # Cannot use %INC in mod_perl settings
-      $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
+      if (not $MyInc{$lib}) {
+	$MyInc{$lib} = 1;   # Cannot use %INC in mod_perl settings
+	my $file = encode_utf8($lib);
+	do $file;
+	$Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
+      }
     }
   }
 }
@@ -250,7 +254,6 @@ sub InitConfig {
 }
 
 sub InitDirConfig {
-  utf8::decode($DataDir); # just in case, eg. "WikiDataDir=/tmp/Zürich♥ perl wiki.pl"
   $PageDir     = "$DataDir/page";  # Stores page data
   $KeepDir     = "$DataDir/keep";  # Stores kept (old) page data
   $TempDir     = "$DataDir/temp";  # Temporary files and locks
@@ -360,8 +363,7 @@ sub CookieRollbackFix {
 
 sub GetParam {
   my ($name, $default) = @_;
-  utf8::encode($name); # turn to byte string
-  my $result = $q->param($name);
+  my $result = $q->param(encode_utf8($name));
   $result //= $default;
   return QuoteHtml($result); # you need to unquote anything that can have <tags>
 }
@@ -786,8 +788,7 @@ sub UnquoteHtml {
 sub UrlEncode {
   my $str = shift;
   return '' unless $str;
-  utf8::encode($str); # turn to byte string
-  my @letters = split(//, $str);
+  my @letters = split(//, encode_utf8($str));
   my %safe = map {$_ => 1} ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')', '#');
   foreach my $letter (@letters) {
     $letter = sprintf("%%%02x", ord($letter)) unless $safe{$letter};
@@ -798,8 +799,7 @@ sub UrlEncode {
 sub UrlDecode {
   my $str = shift;
   $str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/eg;
-  utf8::decode($str); # make internal string
-  return $str;
+  return decode_utf8($str); # make internal string
 }
 
 sub QuoteRegexp {
@@ -1263,9 +1263,8 @@ sub ToString {
   $sub_ref->();
   select $oldFH;
   close $outputFH;
-  my $output_fixed = $output;  # do not delete!
-  utf8::decode($output_fixed); # this is a workarond for perl bug
-  return $output_fixed;        # otherwise UTF8 characters are SOMETIMES not decoded.
+  my $output_fixed = $output;        # Do not delete! This is a workarond for a perl bug.
+  return decode_utf8($output_fixed); # Otherwise UTF8 characters are SOMETIMES not decoded.
 }
 
 sub PageHtml {
@@ -1300,16 +1299,10 @@ sub Tss {
 sub GetId {
   my $id = UnquoteHtml(GetParam('id', GetParam('title', ''))); # id=x or title=x -> x
   if (not $id) {
-    my @keywords = $q->keywords;
-    foreach my $keyword (@keywords) {
-      utf8::decode($keyword);
-    }
-    $id ||= join('_', @keywords); # script?p+q -> p_q
+    $id ||= decode_utf8(join('_', $q->keywords)); # script?p+q -> p_q
   }
   if ($UsePathInfo) {
-    my $path = $q->path_info;
-    utf8::decode($path);
-    my @path = split(/\//, $path);
+    my @path = map { decode_utf8($_) } split(/\//, $q->path_info);
     $id ||= pop(@path); # script/p/q -> q
     foreach my $p (@path) {
       SetParam($p, 1);    # script/p/q -> p=1
@@ -1504,8 +1497,7 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   my @result = ();
   my $ts;
   # check the first timestamp in the default file, maybe read old log file
-  utf8::encode($RcFile);
-  if (open(my $F, '<:encoding(UTF-8)', $RcFile)) {
+  if (open(my $F, '<:encoding(UTF-8)', encode_utf8($RcFile))) {
     my $line = <$F>;
     ($ts) = split(/$FS/, $line); # the first timestamp in the regular rc file
   }
@@ -1589,8 +1581,7 @@ sub GetRcLinesFor {
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
-  utf8::encode($file);
-  open(my $F, '<:encoding(UTF-8)', $file) or return ();
+  open(my $F, '<:encoding(UTF-8)', encode_utf8($file)) or return ();
   while (my $line = <$F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
@@ -2606,10 +2597,9 @@ sub DoDiff {      # Actualy call the diff program
   RequestLockDir('diff') or return '';
   WriteStringToFile($oldName, $_[0]);
   WriteStringToFile($newName, $_[1]);
-  my $diff_out = `diff -- \Q$oldName\E \Q$newName\E`;
-  utf8::decode($diff_out); # needs decoding
-  $diff_out =~ s/\n\K\\ No newline.*\n//g; # Get rid of common complaint.
+  my $diff_out = decode_utf8(`diff -- \Q$oldName\E \Q$newName\E`);
   ReleaseLockDir('diff');
+  $diff_out =~ s/\n\K\\ No newline.*\n//g; # Get rid of common complaint.
   # No need to unlink temp files--next diff will just overwrite.
   return $diff_out;
 }
@@ -2850,9 +2840,7 @@ sub ExpireKeepFiles {   # call with opened page
 }
 
 sub ReadFile {
-  my $file = shift;
-  utf8::encode($file); # filenames are bytes!
-  if (open(my $IN, '<:encoding(UTF-8)', $file)) {
+  if (open(my $IN, '<:encoding(UTF-8)', encode_utf8(shift))) {
     local $/ = undef; # Read complete files
     my $data=<$IN>;
     close $IN;
@@ -2873,8 +2861,7 @@ sub ReadFileOrDie  {
 
 sub WriteStringToFile {
   my ($file, $string) = @_;
-  utf8::encode($file);
-  open(my $OUT, '>:encoding(UTF-8)', $file)
+  open(my $OUT, '>:encoding(UTF-8)', encode_utf8($file))
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print $OUT  $string;
   close($OUT);
@@ -2882,67 +2869,26 @@ sub WriteStringToFile {
 
 sub AppendStringToFile {
   my ($file, $string) = @_;
-  utf8::encode($file);
-  open(my $OUT, '>>:encoding(UTF-8)', $file)
+  open(my $OUT, '>>:encoding(UTF-8)', encode_utf8($file))
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print $OUT  $string;
   close($OUT);
 }
 
-sub IsFile {
-  my $file = shift;
-  utf8::encode($file);
-  return -f $file;
-}
-
-sub IsDir {
-  my $dir = shift;
-  utf8::encode($dir);
-  return -d $dir;
-}
-
-sub ZeroSize {
-  my $file = shift;
-  utf8::encode($file);
-  return -z $file;
-}
-
-sub Unlink {
-  my @files = @_; # copy
-  map { utf8::encode($_) } @files;
-  return unlink(@files); # lower case!
-}
-
-sub Modified {
-  my $file = shift;
-  utf8::encode($file);
-  return (stat($file))[9];
-}
+sub IsFile    { return -f encode_utf8(shift); }
+sub IsDir     { return -d encode_utf8(shift); }
+sub ZeroSize  { return -z encode_utf8(shift); }
+sub Unlink    { return unlink(map { encode_utf8($_) } @_); }
+sub Modified  { return (stat(encode_utf8(shift)))[9]; }
+sub Glob      { return map { decode_utf8($_) } bsd_glob(encode_utf8(shift)); }
+sub RemoveDir { return rmdir(encode_utf8(shift)); }
+sub ChangeDir { return chdir(encode_utf8(shift)); }
 
 sub CreateDir {
   my ($newdir) = @_;
-  utf8::encode($newdir);
-  return if -d $newdir;
-  mkdir($newdir, 0775)
+  return if IsDir($newdir);
+  mkdir(encode_utf8($newdir), 0775)
     or ReportError(Ts('Cannot create %s', $newdir) . ": $!", '500 INTERNAL SERVER ERROR');
-}
-
-sub RemoveDir {
-  my ($dir) = @_;
-  utf8::encode($dir);
-  rmdir($dir);
-}
-
-sub ChangeDir {
-  my ($dir) = @_;
-  utf8::encode($dir);
-  chdir($dir);
-}
-
-sub Glob {
-  my ($pattern) = @_;
-  utf8::encode($pattern);
-  return bsd_glob($pattern);
 }
 
 sub GetLockedPageFile {
@@ -2956,9 +2902,10 @@ sub RequestLockDir {
   $wait ||= 2;
   CreateDir($TempDir);
   my $lock = $LockDir . $name;
-  utf8::encode($lock);
   my $n = 0;
-  while (mkdir($lock, 0555) == 0) {
+  # Cannot use CreateDir because we don't want to skip mkdir if the directory
+  # already exists.
+  while (mkdir(encode_utf8($lock), 0555) == 0) {
     if ($n++ >= $tries) {
       my $ts = Modified($lock);
       if ($Now - $ts > $LockExpiration and $LockExpires{$name} and not $retried) { # XXX should we remove this now?
@@ -3432,7 +3379,6 @@ sub RefreshIndex {
   foreach (Glob("$PageDir/*.pg"), Glob("$PageDir/.*.pg")) {
     next unless m|/.*/(.+)\.pg$|;
     my $id = $1;
-    utf8::decode($id);
     push(@IndexList, $id);
     $IndexHash{$id} = 1;
   }
@@ -3501,8 +3447,7 @@ sub PageIsUploadedFile {
   return if $OpenPageName eq $id;
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
-    utf8::encode($file); # filenames are bytes!
-    open(my $FILE, '<:encoding(UTF-8)', $file)
+    open(my $FILE, '<:encoding(UTF-8)', encode_utf8($file))
       or ReportError(Ts('Cannot open %s', GetPageFile($id))
 		     . ": $!", '500 INTERNAL SERVER ERROR');
     while (defined($_ = <$FILE>) and $_ !~ /^text: /) {
@@ -3899,8 +3844,7 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
   WriteStringToFile($name2, $file2);
   WriteStringToFile($name3, $file3);
   my ($you, $ancestor, $other) = (T('you'), T('ancestor'), T('other'));
-  my $output = `diff3 -m -L \Q$you\E -L \Q$ancestor\E -L \Q$other\E -- \Q$name1\E \Q$name2\E \Q$name3\E`;
-  utf8::decode($output); # needs decoding
+  my $output = decode_utf8(`diff3 -m -L \Q$you\E -L \Q$ancestor\E -L \Q$other\E -- \Q$name1\E \Q$name2\E \Q$name3\E`);
   ReleaseLockDir('merge'); # don't unlink temp files--next merge will just overwrite.
   return $output;
 }
