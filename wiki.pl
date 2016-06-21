@@ -2881,7 +2881,7 @@ sub ZeroSize  { return -z encode_utf8(shift); }
 sub Unlink    { return unlink(map { encode_utf8($_) } @_); }
 sub Modified  { return (stat(encode_utf8(shift)))[9]; }
 sub Glob      { return map { decode_utf8($_) } bsd_glob(encode_utf8(shift)); }
-sub Rename    { return rename(map { encode_utf8($_) } @_); }
+sub Rename    { return rename(encode_utf8($_[0]), encode_utf8($_[1])); }
 sub RemoveDir { return rmdir(encode_utf8(shift)); }
 sub ChangeDir { return chdir(encode_utf8(shift)); }
 
