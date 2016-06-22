@@ -66,7 +66,7 @@ push (@MyMaintenance, \&LnMaintenance);
 sub LnMaintenance {
   if (opendir(DIR, encode_utf8($RssDir))) { # cleanup if they should expire anyway
     foreach my $file (readdir(DIR)) {
-      unlink("$RssDir/$file") if -M $file > $LnCacheHours * 3600;
+      Unlink("$RssDir/$file") if $Now - Modified($file) > $LnCacheHours * 3600;
     }
     closedir DIR;
   }

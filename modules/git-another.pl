@@ -39,9 +39,9 @@ sub GitCommit {
 }
 
 sub GitInitRepository {
-  return if -d "$DataDir/page/.git";
+  return if IsDir("$DataDir/page/.git");
   capture {
-    system($GitBinary, qw(init -q --), "$DataDir/page");
+    system($GitBinary, qw(init -q --), encode_utf8("$DataDir/page"));
   };
   GitCommit('Initial import', 'Oddmuse');
 }

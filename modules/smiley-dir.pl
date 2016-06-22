@@ -24,14 +24,13 @@ AddModuleDescription('smiley-dir.pl', 'Smiley Directory Extension');
 our (@MyInitVariables, $ImageExtensions, %Smilies);
 our ($SmileyDir, $SmileyUrlPath);
 
-# $SmileyDir must be bytes! (use encode_utf8 if necessary)
 $SmileyDir = '/mnt/pics'; # directory with all the smileys
 $SmileyUrlPath = '/pics'; # path where all the smileys can be found (URL)
 
 push(@MyInitVariables, \&SmileyDirInit);
 
 sub SmileyDirInit {
-  if (opendir(DIR, $SmileyDir)) {
+  if (opendir(DIR, encode_utf8($SmileyDir))) {
     map {
       if (/^((.*)\.$ImageExtensions$)/ and IsFile("$SmileyDir/$_")) {
 	my $regexp = quotemeta("{$2}");
