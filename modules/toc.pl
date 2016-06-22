@@ -229,15 +229,10 @@ my $TocCommentPattern = qr~\Q<!-- toc\E.*?\Q -->\E~;
 # appropriate, and then printed at the very end.
 sub NewTocApplyRules {
   my ($html, $blocks, $flags);
-  {
-    local *STDOUT;
-    my $string;
-    open(  STDOUT, '>:encoding(UTF-8)', \$string) or die "Can't open memory file: $!";
-    ($blocks, $flags) = map { decode_utf8($_) } OldTocApplyRules(@_);
-    close STDOUT;
-    # do not delete!
-    $html = decode_utf8($string);
-  }
+  $html = ToString(sub{
+    # pass arguments on to OldTocApplyRules given that ToString takes a code ref
+    ($blocks, $flags) = OldTocApplyRules(@_);
+		   }, @_);
   # If there are at least two HTML headers on this page, insert a table of
   # contents.
   if ($TocHeaderNumber > 2) {
