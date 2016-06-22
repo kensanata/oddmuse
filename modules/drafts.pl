@@ -76,10 +76,7 @@ push(@MyMaintenance, \&DraftCleanup);
 
 sub DraftFiles {
   return map {
-    my $x = $_;
-    $x = substr($x, length($DraftDir) + 1);
-    utf8::decode($x);
-    $x;
+    substr($_, length($DraftDir) + 1);
   } Glob("$DraftDir/*"), Glob("$DraftDir/.*");
 }
 

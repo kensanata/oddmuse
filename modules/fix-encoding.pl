@@ -27,8 +27,7 @@ sub FixEncoding {
   ValidIdOrDie($id);
   RequestLockOrError();
   OpenPage($id);
-  my $text = $Page{text};
-  utf8::decode($text);
+  my $text = decode_utf8($Page{text});
   Save($id, $text, T('Fix character encoding'), 1) if $text ne $Page{text};
   ReleaseLock();
   ReBrowsePage($id);

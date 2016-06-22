@@ -29,8 +29,7 @@ $NewQuestion = 'Write your question here:';
 
 sub IncrementInFile {
   my $filename = shift;
-  utf8::encode($filename);
-  sysopen my $fh, $filename, O_RDWR|O_CREAT or die "can't open $filename: $!";
+  sysopen my $fh, encode_utf8($filename), O_RDWR|O_CREAT or die "can't open $filename: $!";
   flock $fh, LOCK_EX or die "can't flock $filename: $!";
   my $num = <$fh> || 1;
   seek $fh, 0, 0 or die "can't rewind $filename: $!";

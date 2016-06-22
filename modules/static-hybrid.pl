@@ -137,9 +137,7 @@ sub StaticWriteFile {
 	my ($mimetype, $data) = $Page{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s;
 	return unless $html or $data;
 	my $filename = StaticFileName($id);
-	my $file = "$StaticDir/$filename";
-	utf8::encode($file);
-	open(my $F, '>', $file) or ReportError(Ts('Cannot write %s', $filename));
+	open(my $F, '>', encode_utf8("$StaticDir/$filename")) or ReportError(Ts('Cannot write %s', $filename));
 	if ($data) {
 		StaticFile($id, $mimetype, $data, $F);
 	} elsif ($html) {

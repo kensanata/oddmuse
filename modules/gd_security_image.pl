@@ -163,9 +163,7 @@ sub GdSecurityImageGenerate {
   my ($imgData) = $img->out(force => 'png');
   my $ticketId = Digest::MD5::md5_hex(rand());
   CreateDir($GdSecurityImageDir);
-  my $file = GdSecurityImageGetImageFile($ticketId);
-  utf8::encode($file);
-  open my $fh, ">:raw", $file
+  open my $fh, ">:raw", encode_utf8(GdSecurityImageGetImageFile($ticketId))
     or ReportError(Ts('Image storing failed. (%s)', $!), '500 INTERNAL SERVER ERROR');
   print $fh $imgData;
   #print $fh $png; ### experimental ###
@@ -188,9 +186,7 @@ sub GdSecurityImageIsValidId {
 }
 
 sub GdSecurityImageReadImageFile {
-  my $file = shift;
-  utf8::encode($file); # filenames are bytes!
-  if (open(my $IN, '<:raw', $file)) {
+  if (open(my $IN, '<:raw', encode_utf8(shift))) {
     local $/ = undef;   # Read complete files
     my $data=<$IN>;
     close $IN;
