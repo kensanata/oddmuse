@@ -135,6 +135,7 @@ my %changes = (
 for my $re (sort keys %changes) {
   @badModules = grep {
     my $text = $text{$_};
+    $text =~s/#.*\n//g; # get rid of comments
     $text =~s/Tss?\([^\)]+//g; # getting rid of "rename" in strings
     $text =~s/\{\w+\}//g; # getting rid of "rename" in $Action{rename}
     $text =~s/'\w+'//g; # getting rid of "rename" in 'rename'
@@ -150,7 +151,7 @@ for my $re (sort keys %changes) {
   }
 }
 
-for my $fun (qw(open.*,.*[<>] sysopen tie opendir)) {
+for my $fun ('open.*,.*[<>]', 'sysopen', 'tie', 'opendir') {
   @badModules = grep {
     my @lines = map { s/#.*//; $_ } split(/\n/, $text{$_});
     grep(!/encode_utf8/, grep(/\b $fun \b/x, @lines));
