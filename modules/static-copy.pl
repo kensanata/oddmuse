@@ -136,20 +136,20 @@ sub StaticWriteFile {
       $Page{text} =~ /^\#FILE ([^ \n]+) ?([^ \n]*)\n(.*)/s;
   my $filename = StaticFileName($id);
   my $file = "$StaticDir/$filename";
-  utf8::encode($file);
-  open(my $fh, '>', $file)
-    or ReportError(Ts('Cannot write %s', $filename));
   if ($data) {
-    binmode($fh);
+    open(my $fh, '>', encode_utf8($file))
+	or ReportError(Ts('Cannot write %s', $filename));
     StaticFile($id, $fh, $mimetype, $data);
+    close($fh);
   } elsif ($html) {
-    binmode($fh, ':encoding(UTF-8)');
+    open(my $fh, '>:encoding(UTF-8)', encode_utf8($file))
+	or ReportError(Ts('Cannot write %s', $filename));
     StaticHtml($id, $fh);
+    close($fh);
   } else {
     print "no data for ";
   }
-  close($fh);
-  chmod 0644,"$StaticDir/$filename";
+  ChangeMod(0644,"$StaticDir/$filename");
   print $filename, $raw ? "\n" : $q->br();
 }
 
