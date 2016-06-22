@@ -231,15 +231,12 @@ sub NewTocApplyRules {
   my ($html, $blocks, $flags);
   {
     local *STDOUT;
-    my $html_unfixed;
-    open(  STDOUT, '>', \$html_unfixed) or die "Can't open memory file: $!";
-    binmode STDOUT, ":encoding(UTF-8)";
-    ($blocks, $flags) = OldTocApplyRules(@_);
-    close  STDOUT;
-    utf8::decode($blocks);
+    my $string;
+    open(  STDOUT, '>:encoding(UTF-8)', \$string) or die "Can't open memory file: $!";
+    ($blocks, $flags) = map { decode_utf8($_) } OldTocApplyRules(@_);
+    close STDOUT;
     # do not delete!
-    $html = $html_unfixed; # this is a workarond for perl bug
-    utf8::decode($html);   # otherwise UTF8 characters are SOMETIMES not decoded.
+    $html = decode_utf8($string);
   }
   # If there are at least two HTML headers on this page, insert a table of
   # contents.

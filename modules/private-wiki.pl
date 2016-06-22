@@ -41,7 +41,7 @@ sub PrivateWikiInit {
   }
 }
 
-sub PadTo16Bytes { # use this only on UTF-X strings (after utf8::encode)
+sub PadTo16Bytes { # use this only on bytes (after encode_utf8)
   my ($data, $minLength) = @_;
   my $endBytes = length($data) % 16;
   $data .= "\0" x (16 - $endBytes) if $endBytes != 0;
@@ -62,8 +62,7 @@ sub NewPrivateWikiReadFile {
 	      $q->p($errorMessage)) if not UserIsEditor();
   PrivateWikiInit();
   my $file = shift;
-  utf8::encode($file); # filenames are bytes!
-  if (open(my $IN, '<', $file)) {
+  if (open(my $IN, '<', encode_utf8($file))) {
     local $/ = undef; # Read complete files
     my $data = <$IN>;
     close $IN;
@@ -72,8 +71,7 @@ sub NewPrivateWikiReadFile {
     $data = $cipher->decrypt(substr $data, 16);
     my $copy = $data; # copying is required, see https://github.com/briandfoy/crypt-rijndael/issues/5
     $copy =~ s/\0+$//;
-    utf8::decode($copy);
-    return (1, $copy);
+    return (1, decode_utf8($copy));
   }
   return (0, '');
 }
@@ -86,13 +84,12 @@ sub NewPrivateWikiWriteStringToFile {
 	      $q->p($errorMessage)) if not UserIsEditor();
   PrivateWikiInit();
   my ($file, $string) = @_;
-  utf8::encode($file);
-  open(my $OUT, '>', $file) or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
-  utf8::encode($string);
+  open(my $OUT, '>', encode_utf8($file))
+      or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   my $iv = $random->random_bytes(16);
   $cipher->set_iv($iv);
   print $OUT $iv;
-  print $OUT $cipher->encrypt(PadTo16Bytes $string);
+  print $OUT $cipher->encrypt(PadTo16Bytes(encode_utf8($string)));
   close($OUT);
 }
 
@@ -111,9 +108,7 @@ sub AppendStringToFile {
 sub NewPrivateWikiRefreshIndex {
   if (not IsFile($IndexFile)) { # Index file does not exist yet, this is a new wiki
     my $fh;
-    my $file = $IndexFile;
-    utf8::encode($file);
-    open($fh, '>', $file) or die "Unable to open file $IndexFile : $!"; # 'touch' equivalent
+    open($fh, '>', encode_utf8($IndexFile)) or die "Unable to open file $IndexFile : $!"; # 'touch' equivalent
     close($fh) or die "Unable to close file : $IndexFile $!";
     return;
   }
@@ -165,8 +160,7 @@ sub GetPrivatePageFile {
   }
   $cipher->set_iv($iv);
   # We cannot use full byte range because of the filesystem limits
-  utf8::encode($id);
-  my $returnName = unpack "H*", $iv . $cipher->encrypt(PadTo16Bytes $id, 96); # to hex string
+  my $returnName = unpack "H*", $iv . $cipher->encrypt(PadTo16Bytes(encode_utf8($id), 96)); # to hex string
   return $returnName;
 }
 
@@ -221,8 +215,7 @@ sub DoDiff {      # Actualy call the diff program
   $LockCleaners{'diff'} = sub { Unlink($oldName) if IsFile($oldName); Unlink($newName) if IsFile($newName); };
   OldPrivateWikiWriteStringToFile($oldName, $_[0]); # CHANGED Here we use the old sub!
   OldPrivateWikiWriteStringToFile($newName, $_[1]); # CHANGED
-  my $diff_out = `diff -- \Q$oldName\E \Q$newName\E`;
-  utf8::decode($diff_out); # needs decoding
+  my $diff_out = decode_utf8(`diff -- \Q$oldName\E \Q$newName\E`);
   $diff_out =~ s/\n\K\\ No newline.*\n//g; # Get rid of common complaint.
   # CHANGED We have to unlink the files because we don't want to store them in plaintext!
   Unlink($oldName, $newName); # CHANGED
@@ -245,8 +238,7 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
   OldPrivateWikiWriteStringToFile($name2, $file2); # CHANGED
   OldPrivateWikiWriteStringToFile($name3, $file3); # CHANGED
   my ($you, $ancestor, $other) = (T('you'), T('ancestor'), T('other'));
-  my $output = `diff3 -m -L \Q$you\E -L \Q$ancestor\E -L \Q$other\E -- \Q$name1\E \Q$name2\E \Q$name3\E`;
-  utf8::decode($output); # needs decoding
+  my $output = decode_utf8(`diff3 -m -L \Q$you\E -L \Q$ancestor\E -L \Q$other\E -- \Q$name1\E \Q$name2\E \Q$name3\E`);
   Unlink($name1, $name2, $name3); # CHANGED unlink temp files -- we don't want to store them in plaintext!
   ReleaseLockDir('merge');
   return $output;

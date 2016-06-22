@@ -84,9 +84,7 @@ sub TagsGetLink {
 
 sub TagReadHash {
   require Storable;
-  my $file = $TagFile;
-  utf8::encode($file);
-  return %{ Storable::retrieve($file) } if -f $file;
+  return %{ Storable::retrieve(encode_utf8($TagFile)) } if IsFile($TagFile);
 }
 
 
@@ -94,9 +92,7 @@ sub TagReadHash {
 sub TagWriteHash {
   my $h = shift;
   require Storable;
-  my $file = $TagFile;
-  utf8::encode($file);
-  return Storable::store($h, $file);
+  return Storable::store($h, encode_utf8($TagFile));
 }
 
 push(@MyRules, \&TagsRule);

@@ -56,14 +56,12 @@ sub MacFixEncoding {
   return unless %Namespaces;
   my %hash = ();
   for my $key (keys %Namespaces) {
-    utf8::decode($key);
     $key = NFC($key);
     $hash{$key} = $NamespaceRoot . '/' . $key . '/';
   }
   %Namespaces = %hash;
   %hash = ();
   for my $key (keys %InterSite) {
-    utf8::decode($key);
     $key = NFC($key);
     $hash{$key} = $Namespaces{$key} if $Namespaces{$key};
   }

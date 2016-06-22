@@ -328,9 +328,7 @@ sub DoProcessLogout {
 
 sub UserExists {
 	my $username = shift;
-	my $file = $PasswordFile;
-	utf8::encode($file);
-	if (open (my $PASSWD, '<', $file)) {
+	if (open (my $PASSWD, '<', encode_utf8($PasswordFile))) {
 		while ( <$PASSWD> ) {
 			if ($_ =~ /^$username:/) {
 				return 1;
@@ -340,9 +338,7 @@ sub UserExists {
 	}
 
 	if ($RegistrationsMustBeApproved) {
-		$file = $PendingPasswordFile;
-		utf8::encode($file);
-		if (open (my $PASSWD, '<', $file)) {
+		if (open (my $PASSWD, '<', encode_utf8($PendingPasswordFile))) {
 			while ( <$PASSWD> ) {
 				if ($_ =~ /^$username:/) {
 					return 1;
@@ -353,9 +349,7 @@ sub UserExists {
 	}
 
 	if ($ConfirmEmailAddress) {
-		$file = $UnconfirmedPasswordFile;
-		utf8::encode($file);
-		if (open (my $PASSWD, '<', $UnconfirmedPasswordFile)) {
+		if (open (my $PASSWD, '<', encode_utf8($UnconfirmedPasswordFile))) {
 			while ( <$PASSWD> ) {
 				if ($_ =~ /^$username:/) {
 					return 1;
@@ -496,9 +490,7 @@ sub ConfirmUser {
 	my ($username, $key) = @_;
 	my $FileToUse = $RegistrationsMustBeApproved
 		? $PendingPasswordFile : $PasswordFileToUse;
-	my $file = $UnconfirmedPasswordFile;
-	utf8::encode($file);
-	if (open(my $PASSWD, '<', $file)) {
+	if (open(my $PASSWD, '<', encode_utf8($UnconfirmedPasswordFile))) {
 		while (<$PASSWD>) {
 			if ($_ =~ /^$username:(.*):(.*)/) {
 				if (crypt($1,$key) eq $key) {
@@ -522,8 +514,7 @@ sub RemoveUser {
 
 	my %passwords = ();
 	my %emails = ();
-	utf8::encode($FileToUse);
-	if (open (my $PASSWD, '<', $FileToUse)) {
+	if (open (my $PASSWD, '<', encode_utf8($FileToUse))) {
 		while ( <$PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
 				next if ($1 eq $username);
@@ -606,9 +597,7 @@ sub ChangePassword {
 
 	my %passwords = ();
 	my %emails = ();
-	my $file = $PasswordFile;
-	utf8::encode($file);
-	if (open (my $PASSWD, '<', $file)) {
+	if (open (my $PASSWD, '<', encode_utf8($PasswordFile))) {
 		while ( <$PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
 				$passwords{$1}=$2;
@@ -620,7 +609,7 @@ sub ChangePassword {
 
 	$passwords{$user} = $hash;
 
-	open (my $PASSWD, '>', $file);
+	open (my $PASSWD, '>', encode_utf8($PasswordFile));
 	foreach my $key ( sort keys(%passwords)) {
 		print $PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
@@ -727,9 +716,7 @@ sub DoApprovePending {
 		}
 	} else {
 		print '<ul>';
-		my $file = $PendingPasswordFile;
-		utf8::encode($file);
-		if (open(my $PASSWD, '<', $file)) {
+		if (open(my $PASSWD, '<', encode_utf8($PendingPasswordFile))) {
 			while (<$PASSWD>) {
 				if ($_ =~ /^(.*):(.*):(.*)$/) {
 					print '<li>' . ScriptLink("action=approve_pending;user=$1;",$1) . ' - ' . $3 . '</li>';
@@ -750,9 +737,7 @@ sub DoApprovePending {
 
 sub ApproveUser {
 	my ($username) = @_;
-	my $file = $PendingPasswordFile;
-	utf8::encode($file);
-	if (open(my $PASSWD, '<', $file)) {
+	if (open(my $PASSWD, '<', encode_utf8($PendingPasswordFile))) {
 		while (<$PASSWD>) {
 			if ($_ =~ /^$username:(.*):(.*)/) {
 				AddUser($username,$1,$2,$PasswordFile);
