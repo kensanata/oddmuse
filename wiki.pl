@@ -1256,11 +1256,11 @@ sub PrintPageDiff {   # print diff for open page
 }
 
 sub ToString {
-  my ($sub_ref) = @_;
+  my $sub_ref = shift;
   my $output;
   open(my $outputFH, '>:encoding(UTF-8)', \$output) or die "Can't open memory file: $!";
   my $oldFH = select $outputFH;
-  $sub_ref->();
+  $sub_ref->(@_);
   select $oldFH;
   close $outputFH;
   return decode_utf8($output);
