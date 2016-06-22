@@ -150,7 +150,7 @@ for my $re (sort keys %changes) {
   }
 }
 
-for my $fun (qw(open.*,.*[<>] sysopen tie opendir)) {
+for my $fun ('open.*,.*[<>]', 'sysopen', 'tie', 'opendir') {
   @badModules = grep {
     my @lines = map { s/#.*//; $_ } split(/\n/, $text{$_});
     grep(!/encode_utf8/, grep(/\b $fun \b/x, @lines));
