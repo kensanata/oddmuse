@@ -86,7 +86,6 @@ sub NamespacesInitVariables {
   if ($UsePathInfo) {
     $Namespaces{$NamespacesMain} = $ScriptName . '/';
     foreach my $name (Glob("$DataDir/*")) {
-      utf8::decode($name);
       if (IsDir($name)
 	  and $name =~ m|/($InterSitePattern)$|
 	  and $name ne $NamespacesMain
@@ -98,12 +97,8 @@ sub NamespacesInitVariables {
   $NamespaceRoot = $ScriptName; # $ScriptName may be changed below
   $NamespaceCurrent = '';
   my $ns = GetParam('ns', '');
-  if ($ns) {
-    # GetParam quotes HTML but we don't care
-    utf8::decode($ns); # don't forget non-ASCII
-  } elsif (not $ns and $UsePathInfo) {
-    my $path_info = $q->path_info();
-    utf8::decode($path_info);
+  if (not $ns and $UsePathInfo) {
+    my $path_info = decode_utf8($q->path_info());
     # make sure ordinary page names are not matched!
     if ($path_info =~ m|^/($InterSitePattern)(/.*)?|
 	and ($2 or $q->keywords or NamespaceRequiredByParameter())) {
@@ -223,9 +218,7 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   # starttime. If any rcfile exists with no timestamp before the
   # starttime, we need to open its rcoldfile.
   foreach my $rcfile (@rcfiles) {
-    my $file = $rcfile;
-    utf8::encode($file);
-    open(my $F, '<:encoding(UTF-8)', $file);
+    open(my $F, '<:encoding(UTF-8)', encode_utf8($rcfile));
     my $line = <$F>;
     my ($ts) = split(/$FS/, $line); # the first timestamp in the regular rc file
     my @new;
@@ -441,8 +434,6 @@ sub NamespacesNewGetId {
   # In this case GetId() will have set the parameter Test to 1.
   # http://example.org/cgi-bin/wiki.pl/Test?rollback-1234=foo
   # This doesn't set the Test parameter.
-  if ($UsePathInfo and $id eq $NamespaceCurrent and not GetParam($id) and not GetParam('ns')) {
-    $id = undef;
-  }
+  return if $id and $UsePathInfo and $id eq $NamespaceCurrent and not GetParam($id) and not GetParam('ns');
   return $id;
 }
