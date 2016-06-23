@@ -1,8 +1,10 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
+use Mojo::Cache;
 use Archive::Tar;
 use File::Basename;
 my $dir = "/home/alex/oddmuse.org/releases";
+my $cache = Mojo::Cache->new(max_keys => 50);
 
 get '/' => sub {
   my $c = shift;
@@ -13,22 +15,36 @@ get '/' => sub {
   $c->render(template => 'index', tarballs => \@tarballs);
 } => 'main';
 
-get '/release/#tarball' => sub {
+get '/#tarball' => sub {
   my $c = shift;
-  my $tar = Archive::Tar->new;
   my $tarball = $c->param('tarball');
-  $tar->read("$dir/$tarball.tar.gz");
-  my @files = sort grep /./, map { my @e = split('/', $_->name); $e[1] } $tar->get_files();
-  $c->render(template => 'release', tarball=> $tarball, files => \@files);
+  my $files = $cache->get($tarball);
+  if (not $files) {
+    $c->app->log->info("Reading $tarball.tar.gz");
+    my $tar = Archive::Tar->new;
+    $tar->read("$dir/$tarball.tar.gz");
+    my @files = sort grep /./, map {
+      my @e = split('/', $_->name);
+      $e[1];
+    } $tar->get_files();
+    $files = \@files;
+    $cache->set($tarball => $files);
+  }
+  $c->render(template => 'release', tarball=> $tarball, files => $files);
 } => 'release';
 
-get '/release/#tarball/#file' => sub {
+get '/#tarball/#file' => sub {
   my $c = shift;
-  my $tar = Archive::Tar->new;
   my $tarball = $c->param('tarball');
-  $tar->read("$dir/$tarball.tar.gz");
   my $file = $c->param('file');
-  my $text = $tar->get_content("$tarball/$file");
+  my $text = $cache->get("$tarball/$file");
+  if (not $text) {
+    $c->app->log->info("Reading $tarball/$file");
+    my $tar = Archive::Tar->new;
+    $tar->read("$dir/$tarball.tar.gz");
+    $text = $tar->get_content("$tarball/$file");
+    $cache->set("$tarball/$file" => $text);
+  }
   $c->render(template => 'file', format => 'txt', content => $text);
 } => 'file';
 
@@ -38,8 +54,8 @@ __DATA__
 
 @@ index.html.ep
 % layout 'default';
-% title 'Releases';
-<h1>Releases</h1>
+% title 'Oddmuse Releases';
+<h1>Oddmuse Releases</h1>
 
 <p>Welcome! This is where you get access to tarballs and files in released
 versions of Oddmuse.</p>
@@ -47,9 +63,10 @@ versions of Oddmuse.</p>
 <ul>
 % for my $tarball (@$tarballs) {
 <li>
-%= link_to release => {tarball => $tarball} => begin
-%= $tarball
-% end
+<a href="https://oddmuse.org/releases/<%= $tarball %>.tar.gz"><%= $tarball %>.tar.gz</a>
+(files for <%= link_to release => {tarball => $tarball} => begin %>\
+<%= $tarball =%><%= end %>)
+</li>
 % }
 </ul>
 
@@ -57,9 +74,14 @@ versions of Oddmuse.</p>
 @@ release.html.ep
 % layout 'default';
 % title 'Release';
-<h1><%= $tarball %></h1>
+<h1>Files for <%= $tarball %></h1>
 <p>
-Back to the <%= link_to 'main page' => 'main' %>.
+Back to the list of <%= link_to 'releases' => 'main' %>.
+Remember,
+%= link_to file => {file => 'wiki.pl'} => begin
+wiki.pl
+% end
+is the main script.
 
 <ul>
 % for my $file (@$files) {
@@ -72,7 +94,7 @@ Back to the <%= link_to 'main page' => 'main' %>.
 
 @@ file.txt.ep
 %layout 'file';
-<%= $content %>
+<%== $content %>
 
 @@ layouts/default.html.ep
 <!DOCTYPE html>
@@ -92,6 +114,8 @@ body {
 <%= content %>
 <hr>
 <p>
-<%= link_to 'Releases' => 'main' %>&#x2003;<a href="https://alexschroeder.ch/wiki/Contact">Alex Schroeder</a>&#x2003;<a href="https://oddmuse.org/">Oddmuse</a>
+<a href="https://oddmuse.org/">Oddmuse</a>&#x2003;
+<%= link_to 'Releases' => 'main' %>&#x2003;
+<a href="https://alexschroeder.ch/wiki/Contact">Alex Schroeder</a>
 </body>
 </html>
