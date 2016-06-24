@@ -3,6 +3,7 @@ use Mojolicious::Lite;
 use Mojo::Cache;
 use Archive::Tar;
 use File::Basename;
+use Encode qw(decode_utf8);
 my $dir = "/home/alex/oddmuse.org/releases";
 my $cache = Mojo::Cache->new(max_keys => 50);
 
@@ -42,7 +43,7 @@ get '/#tarball/#file' => sub {
     $c->app->log->info("Reading $tarball/$file");
     my $tar = Archive::Tar->new;
     $tar->read("$dir/$tarball.tar.gz");
-    $text = $tar->get_content("$tarball/$file");
+    $text = decode_utf8($tar->get_content("$tarball/$file"));
     $cache->set("$tarball/$file" => $text);
   }
   $c->render(template => 'file', format => 'txt', content => $text);
