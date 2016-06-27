@@ -75,9 +75,9 @@ sub LoadLanguage {
     my $file = $TranslationsLibrary{$Lang{$_}};
     next unless $file; # file is not listed, eg. there is no file for "de-ch"
     $file = "$LoadLanguageDir/$file" if defined $LoadLanguageDir;
-    if (-r $file) {
+    if (IsFile($file)) {
       do $file;
-      do "$ConfigFile-$Lang{$_}" if -r "$ConfigFile-$Lang{$_}";
+      do "$ConfigFile-$Lang{$_}" if IsFile("$ConfigFile-$Lang{$_}");
       $CurrentLanguage = $Lang{$_};
       last;
     }
