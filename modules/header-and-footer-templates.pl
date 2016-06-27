@@ -43,7 +43,7 @@ sub HtmlTemplate {
   my $type = shift;
   # return header.de.html, or header.html, or error.html, or report an error...
   foreach my $f ((map { "$type.$_" } HtmlTemplateLanguage()), $type, "error") {
-    return "$HtmlTemplateDir/$f.html" if -r "$HtmlTemplateDir/$f.html";
+    return "$HtmlTemplateDir/$f.html" if IsFile("$HtmlTemplateDir/$f.html");
   }
   ReportError(Tss('Could not find %1.html template in %2', $type, $HtmlTemplateDir),
 	      '500 INTERNAL SERVER ERROR');

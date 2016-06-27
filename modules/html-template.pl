@@ -87,7 +87,7 @@ sub GetActionHtmlTemplate {
   my $action = GetParam('action', 'browse');
   # return browse.de.html, or browse.html, or error.html, or report an error...
   foreach my $f ((map { "$action.$_" } HtmlTemplateLanguage()), $action, "error") {
-    return "$HtmlTemplateDir/$f.html" if -r "$HtmlTemplateDir/$f.html";
+    return "$HtmlTemplateDir/$f.html" if IsFile("$HtmlTemplateDir/$f.html");
   }
   ReportError(Tss('Could not find %1.html template in %2', $action, $HtmlTemplateDir),
 	      '500 INTERNAL SERVER ERROR');

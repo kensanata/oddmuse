@@ -20,7 +20,7 @@ use utf8;
 
 package OddMuse;
 require 't/test.pl';
-use Test::More tests => 27;
+use Test::More tests => 29;
 use File::Basename;
 use Pod::Strip;
 use Pod::Simple::TextContent;
@@ -119,6 +119,8 @@ unless (ok(@badModules == 0, 'modules are syntatically correct')) {
 
 my %changes = (
   '-f' => 'IsFile',
+  '-e' => 'IsFile',
+  '-r' => 'IsFile',
   '-d' => 'IsDir',
   '-z' => 'ZeroSize',
   '-M' => '$Now - Modified',
