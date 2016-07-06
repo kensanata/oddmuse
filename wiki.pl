@@ -3683,7 +3683,7 @@ sub DoPost {
   # Banned Content
   my $summary = GetSummary();
   if (not UserIsEditor()) {
-    my $rule = BannedContent($string) || BannedContent($summary);
+    my $rule = BannedContent(NormalToFree($id)) || BannedContent($string) || BannedContent($summary);
     ReportError(T('Edit Denied'), '403 FORBIDDEN', undef, $q->p(T('The page contains banned text.')),
 		$q->p(T('Contact the wiki administrator for more information.')), $q->p($rule)) if $rule;
   }
