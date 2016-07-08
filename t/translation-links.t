@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 41;
+use Test::More tests => 43;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('translation-links.pl');
@@ -114,6 +114,12 @@ xpath_test(get_page('サイトマップ'),
 	   '//a[@class="translation en"][text()="English"]');
 xpath_test(get_page('action=rc showedit=1'),
 	   '//li/a[@class="local"][text()="サイトマップ"]/following-sibling::strong[text()="Added translation: SiteMap (English)"]');
+
+# locking the site and testing
+WriteStringToFile($NoEditFile, 'editing locked.');
+test_page(update_page('Testing', 'This is spam.'), 'This page does not exist');
+test_page(update_page('Spam', 'Trying again.'), 'This page does not exist');
+Unlink($NoEditFile);
 
 # testing some vandalism
 add_module('banned-regexps.pl');
