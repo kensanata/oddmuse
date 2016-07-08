@@ -1,4 +1,4 @@
-# Copyright (C) 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2008–2016  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 33;
+use Test::More tests => 41;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('translation-links.pl');
@@ -114,3 +114,17 @@ xpath_test(get_page('サイトマップ'),
 	   '//a[@class="translation en"][text()="English"]');
 xpath_test(get_page('action=rc showedit=1'),
 	   '//li/a[@class="local"][text()="サイトマップ"]/following-sibling::strong[text()="Added translation: SiteMap (English)"]');
+
+# testing some vandalism
+add_module('banned-regexps.pl');
+
+test_page(update_page('BannedRegexps', 'spam', undef, undef, 1), 'spam');
+test_page(update_page('Testing', 'This is spam.'), 'This page does not exist');
+test_page(update_page('Spam', 'Trying again.'), 'This page does not exist');
+test_page(get_page('action=translate id=Spam target=Harmless translation=en'),
+	  'Edit Denied',
+	  'Regular expression "spam" matched on this page');
+test_page(get_page('Spam'), 'This page does not exist');
+test_page(get_page('action=translate id=Harmless target=Spam translation=en'),
+	  'Edit Denied',
+	  'Regular expression "spam" matched on this page');

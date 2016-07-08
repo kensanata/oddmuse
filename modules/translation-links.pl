@@ -176,6 +176,11 @@ sub DoTranslationLink {
     || ($source eq $target and T("Please provide a different page name for the translation."));
   my $lang = GetParam('translation', '');
   if (not $error and $lang) {
+    # make sure the translation target cannot contain spam if using banning-regexps.pl
+    if (my $rule = BannedContent(NormalToFree($source)) || BannedContent(NormalToFree($target))) {
+      ReportError(T('Edit Denied'), '403 FORBIDDEN', undef, $q->p(T('The page contains banned text.')),
+		  $q->p(T('Contact the wiki administrator for more information.')), $q->p($rule));
+    }
     OpenPage(FreeToNormal($source));
     Save($OpenPageName, "[[$lang:$target]]\n" . $Page{text},
 	 Tss('Added translation: %1 (%2)',
