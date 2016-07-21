@@ -1301,7 +1301,7 @@ sub GetId {
     $id = decode_utf8(join('_', $q->keywords)); # script?p+q -> p_q
   }
   if ($UsePathInfo and $q->path_info) {
-    my @path = map { decode_utf8($_) } split(/\//, $q->path_info);
+    my @path = split(/\//, $q->path_info);
     $id ||= pop(@path); # script/p/q -> q
     foreach my $p (@path) {
       SetParam($p, 1);    # script/p/q -> p=1
