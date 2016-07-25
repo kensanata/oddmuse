@@ -1,4 +1,4 @@
-# Copyright (C) 2013  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2013-2016  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,9 +14,10 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 21;
+use Test::More tests => 27;
 
 add_module('ban-contributors.pl');
+
 $localhost = '127.0.0.1';
 $ENV{'REMOTE_ADDR'} = $localhost;
 
@@ -24,7 +25,7 @@ update_page('Test', 'insults');
 test_page_negative(get_page('action=admin id=Test'), 'Ban contributors');
 test_page(get_page('action=admin id=Test pwd=foo'), 'Ban contributors');
 test_page(get_page('action=ban id=Test pwd=foo'), $localhost, 'Ban!');
-test_page(get_page("action=ban id=Test host=$localhost pwd=foo"),
+test_page(get_page("action=ban id=Test regexp=$localhost pwd=foo"),
 	  'Location: http://localhost/wiki.pl/BannedHosts');
 test_page(get_page('BannedHosts'), $localhost, 'Test');
 
@@ -51,3 +52,17 @@ $page = get_page("action=rollback id=Test to=$to pwd=foo");
 test_page($page, 'Rolling back changes', 'These URLs were rolled back',
 	  'doxycycline');
 test_page_negative($page, 'amoxil');
+
+test_page(get_page("action=ban id=Test"),
+	  'Ban Contributors to Test',
+	  quotemeta('^127\.'));
+
+$ENV{'REMOTE_ADDR'} = '46.101.109.194';
+update_page('Test', "this is phone number spam");
+test_page(get_page("action=ban id=Test"),
+	  'Ban Contributors to Test',
+	  quotemeta('^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])'));
+test_page(get_page('action=ban id=Test regexp="^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])" recent_edit=on pwd=foo'),
+	  'Location: http://localhost/wiki.pl/BannedHosts');
+test_page(get_page('BannedHosts'),
+	  quotemeta('^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7]) # ' . CalcDay($Now) . ' Test'));
