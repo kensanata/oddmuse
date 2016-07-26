@@ -146,6 +146,7 @@ sub IsItBanned {
 sub DoBanHosts {
   my $id = shift;
   my $content = GetParam('content', '');
+  my $range = GetParam('range', '');
   my $regexp = GetParam('regexp', '');
   if ($content) {
     SetParam('text', GetPageContent($BannedContent)
@@ -155,7 +156,8 @@ sub DoBanHosts {
     DoPost($BannedContent);
   } elsif ($regexp) {
     SetParam('text', GetPageContent($BannedHosts)
-	     . $regexp . " # " . CalcDay($Now) . " "
+	     . $regexp . " # " . CalcDay($Now)
+	     . " $range "
 	     . NormalToFree($id) . "\n");
     SetParam('summary', NormalToFree($id));
     DoPost($BannedHosts);
@@ -183,10 +185,14 @@ sub DoBanHosts {
       if (IsItBanned($_, \@regexps)) {
 	print $q->p(Ts("%s is banned", $name));
       } else {
+	my ($start, $end) = BanContributors::get_range($_);
+	$range = "[$start - $end]";
+	$name .= " " . $range;
 	print GetFormStart(undef, 'get', 'ban'),
 	  GetHiddenValue('action', 'ban'),
 	  GetHiddenValue('id', $id),
-	  GetHiddenValue('regexp', BanContributors::get_regexp_ip(BanContributors::get_range($_))),
+	  GetHiddenValue('range', $range),
+	  GetHiddenValue('regexp', BanContributors::get_regexp_ip($start, $end)),
 	  GetHiddenValue('recent_edit', 'on'),
 	  $q->p($name, $q->submit(T('Ban!'))), $q->end_form();
       }
