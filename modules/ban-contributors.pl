@@ -105,6 +105,12 @@ sub get_regexp_ip {
       $regexp .= $start[$i];
     } elsif ($start[$i] eq '0' and $end[$i] eq '255') {
       last;
+    } elsif ($start[$i + 1] > 0) {
+      $regexp .= '(' . $start[$i] . '\.('
+	  . get_regexp_range($start[$i + 1], '255') . ')|'
+	  . get_regexp_range($start[$i] + 1, $end[$i + 1]) . ')';
+      $regexp .= '\.';
+      last;
     } else {
       $regexp .= '(' . get_regexp_range($start[$i], $end[$i]) . ')$';
       last;

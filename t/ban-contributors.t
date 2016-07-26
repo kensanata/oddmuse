@@ -14,9 +14,13 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 28;
+use Test::More tests => 29;
 
 add_module('ban-contributors.pl');
+
+is(BanContributors::get_regexp_ip('77.56.180.0', '77.57.70.255'),
+   '^77\.(56\.(1[8-9][0-9]|2[0-4][0-9]|25[0-5])|5[7-9]|6[0-9]|70)\.',
+   '77.56.180.0 - 77.57.70.255');
 
 $localhost = '127.0.0.1';
 $ENV{'REMOTE_ADDR'} = $localhost;
