@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 27;
+use Test::More tests => 28;
 
 add_module('ban-contributors.pl');
 
@@ -55,6 +55,7 @@ test_page_negative($page, 'amoxil');
 
 test_page(get_page("action=ban id=Test"),
 	  'Ban Contributors to Test',
+	  '127.0.0.0 - 127.255.255.255',
 	  quotemeta('^127\.'));
 
 $ENV{'REMOTE_ADDR'} = '46.101.109.194';
@@ -62,7 +63,8 @@ update_page('Test', "this is phone number spam");
 test_page(get_page("action=ban id=Test"),
 	  'Ban Contributors to Test',
 	  quotemeta('^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])'));
-test_page(get_page('action=ban id=Test regexp="^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])" recent_edit=on pwd=foo'),
+test_page(get_page('action=ban id=Test regexp="^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])" range="[46.101.0.0 - 46.101.127.255]" recent_edit=on pwd=foo'),
 	  'Location: http://localhost/wiki.pl/BannedHosts');
 test_page(get_page('BannedHosts'),
-	  quotemeta('^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7]) # ' . CalcDay($Now) . ' Test'));
+	  quotemeta('^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7]) # '
+		    . CalcDay($Now) . ' [46.101.0.0 - 46.101.127.255] Test'));
