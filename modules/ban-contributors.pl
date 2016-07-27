@@ -166,11 +166,11 @@ sub NewBanContributorsWriteRcLog {
 }
 
 package BanContributors;
-use Net::Whois::IP qw/whoisip_query/;
+use Net::Whois::Parser qw/parse_whois/;
 
 sub get_range {
   my $ip = shift;
-  my $response = whoisip_query($ip);
+  my $response = parse_whois(domain => $ip);
   my ($start, $end);
   my $ip_regexp = '(?:[0-9]{1,3}\.){3}[0-9]{1,3}';
   for (sort keys(%{$response})) {
