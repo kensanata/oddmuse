@@ -111,10 +111,10 @@ unless (ok(@badModules == 0, 'AddModuleDescription is used in every module')) {
 }
 
 # we have to use shell to redirect the output :(
-@badModules = grep { system("perl -cT \Q$_\E > /dev/null 2>&1") != 0 } @modules;
+@badModules = grep { system("perl -c \Q$_\E > /dev/null 2>&1") != 0 } @modules;
 unless (ok(@badModules == 0, 'modules are syntatically correct')) {
   diag(qq{$_ has syntax errors}) for @badModules;
-  diag("▶▶▶ Use this command to see the problems: for f in @badModules; do perl -cT \$f; done");
+  diag("▶▶▶ Use this command to see the problems: for f in @badModules; do perl -c \$f; done");
 }
 
 my %changes = (
