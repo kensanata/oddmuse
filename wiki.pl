@@ -2596,7 +2596,8 @@ sub DoDiff {      # Actualy call the diff program
   RequestLockDir('diff') or return '';
   WriteStringToFile($oldName, $_[0]);
   WriteStringToFile($newName, $_[1]);
-  my $diff_out = decode_utf8(`diff -- \Q$oldName\E \Q$newName\E`);
+  my $command = encode_utf8("diff -- \Q$oldName\E \Q$newName\E");
+  my $diff_out = decode_utf8(qx($command));
   ReleaseLockDir('diff');
   $diff_out =~ s/\n\K\\ No newline.*\n//g; # Get rid of common complaint.
   # No need to unlink temp files--next diff will just overwrite.
