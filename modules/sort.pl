@@ -33,18 +33,23 @@ my %SortCreation;
 *SearchMenu = \&NewSortSearchMenu;
 
 sub NewSortSearchMenu {
+  my $sort = GetParam('sort');
   my $html = OldSortSearchMenu(@_);
   my $sort = GetParam('sort');
   my $string = UrlEncode(shift);
-  $html .= ' ' . ScriptLink("search=$string",
-			    T('Sort alphabetically'))
-      if $sort;
-  $html .= ' ' . ScriptLink("search=$string;sort=update",
-			    T('Sort by last update'))
-      if $sort ne 'update';
-  $html .= ' ' . ScriptLink("search=$string;sort=creation",
-			    T('Sort by creation date'))
-      if defined(&CreationDateOpenPage) and $sort ne 'creation';
+  $html .= ' ' . ($sort
+		  ? ScriptLink("search=$string", T('Sort alphabetically'))
+		  : $q->b(T('Sorted alphabetically')));
+  $html .= ' ' . ($sort eq 'update'
+		  ? $q->b(T('Sorted by last update first'))
+		  : ScriptLink("search=$string;sort=update",
+			       T('Sort by last update')));
+  if (defined(&CreationDateOpenPage)) {
+    $html .= ' ' . ($sort eq 'creation'
+		    ? $q->b(T('Sorted by creation date'))
+		    : ScriptLink("search=$string;sort=creation",
+				 T('Sort by creation date')));
+  }
   return $html;
 }
 
