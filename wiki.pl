@@ -3455,6 +3455,7 @@ sub PageIsUploadedFile {
     while (defined($_ = <$FILE>) and $_ !~ /^text: /) {
     }          # read lines until we get to the text key
     close $FILE;
+    return unless length($_) > 6;
     return TextIsFile(substr($_, 6)); # pass "#FILE image/png\n" to the test
   }
 }
@@ -4065,7 +4066,7 @@ sub WriteRecentVisitors {
   WriteStringToFile($VisitorFile, $data);
 }
 
-sub TextIsFile { $_[0] =~ /^#FILE (\S+) ?(\S+)?\n/ }
+sub TextIsFile { $_[0] =~ /^#FILE (\S+) ?(\S+)?\n/; }
 
 sub AddModuleDescription { # cannot use $q here because this is module init time
   my ($filename, $page, $dir, $tag) = @_;
