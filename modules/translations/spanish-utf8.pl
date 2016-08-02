@@ -715,6 +715,11 @@ Compilación para %s
 Compilation tag is missing a regular expression.
 La etiqueta de compilación omite una expresión regular.
 ################################################################################
+# modules/creationdate.pl
+################################################################################
+Add creation date to page files
+
+################################################################################
 # modules/css-install.pl
 ################################################################################
 Install CSS
@@ -869,7 +874,7 @@ Esta página muestra las últimas veinte entradas del diario y sus botones +1.
 # modules/gravatar.pl
 ################################################################################
 Email:
-Correo electrónico:
+Correo:
 ################################################################################
 # modules/header-and-footer-templates.pl
 ################################################################################
@@ -1198,8 +1203,8 @@ All mail subscriptions
 Todas las suscripciones de correo
 Subscriptions
 Suscripciones
-Email:
-Correo:
+Email: 
+
 Show
 Mostrar
 Subscriptions for %s:
@@ -1243,8 +1248,8 @@ Test / Always enabled / Always disabled
 Probar / Siempre habilitado / Siempre deshabilitado
 Start
 Empezar
-Bisection proccess is already active.
-El proceso de bisección ya está activo.
+Bisecting proccess is already active.
+
 Stop
 Parar
 It seems like module %s is causing your problem.
@@ -1468,6 +1473,21 @@ Lista de páginas para %s
 Index of all small pages
 Índice de todas las páginas breves o pequeñas
 ################################################################################
+# modules/sort.pl
+################################################################################
+Sort alphabetically
+
+Sorted alphabetically
+
+Sorted by last update first
+
+Sort by last update
+
+Sorted by creation date
+
+Sort by creation date
+
+################################################################################
 # modules/static-copy.pl
 ################################################################################
 Static Copy
@@ -1622,47 +1642,49 @@ http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
 alternate
-alternativo
+alternate
+
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
-buscar
+
 ################################################################################
 # modules/wanted.pl
 ################################################################################
 Wanted Pages
-Páginas Wanted
+
 %s pages
-% páginas
+
 %s, referenced from:
-%s, referenciada desde:
+
 ################################################################################
 # modules/webapp.pl
 ################################################################################
 Web application for offline browsing
-Aplicación web para navegación fuera de línea
+
 ################################################################################
 # modules/webdav.pl
 ################################################################################
 Upload of %s file
-Subida del archivo %s
+
 ################################################################################
 # modules/weblog-1.pl
 ################################################################################
 Blog
-Blog
+Matching pages:
 ################################################################################
 # modules/weblog-3.pl
 ################################################################################
 Matching pages:
-Páginas encontradas:
+
 New
-Nuevo
+
 Edit %s.
-Editar %s.
+
 ################################################################################
 # modules/weblog-4.pl
 ################################################################################
 Tags:
-Etiquetas:
+
+#
 END_OF_TRANSLATION

@@ -70,7 +70,7 @@ RSS parsing failed for %s
 
 No items found in %s.
 Kirjeid %s ei leitud
- . . . . 
+ . . . .
 
 Click to edit this page
 Lehekülje redigeerimiseks kliki
@@ -226,7 +226,7 @@ from %s
 
 redirected from %s
 
-%s: 
+%s:
 
 [Home]
 
@@ -328,7 +328,7 @@ Cannot save a nameless page.
 
 Cannot save a page without revision.
 
-not deleted: 
+not deleted:
 
 deleted
 kustutatud
@@ -384,8 +384,8 @@ Replace this file with text
 Asenda see fail tekstiga
 Replace this text with a file
 Asenda see tekst failiga
-File to upload: 
-Fail üleslaadimiseks
+File to upload:
+
 Files of type %s are not allowed.
 Sellist %s tüüpi failid pole lubatud
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -404,8 +404,8 @@ Your password does not match any of the administrator or editor passwords.
 
 Password:
 Salasõna
-Return to 
-Mine tagasi
+Return to %s
+
 This operation is restricted to site editors only...
 
 This operation is restricted to administrators only...
@@ -520,7 +520,7 @@ Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-, see 
+, see
 
 The two revisions are the same.
 
@@ -578,7 +578,7 @@ Archive:
 ################################################################################
 Rebuild BackLink database
 
-Internal Page: 
+Internal Page: %s
 
 Pages that link to this page
 
@@ -604,7 +604,7 @@ Regulaaravaldis:
 
 These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
-Consider banning the IP number as well: 
+Consider banning the IP number as well:
 
 ################################################################################
 # modules/banned-regexps.pl
@@ -699,9 +699,9 @@ Kommentaarid:
 ################################################################################
 # modules/commentcount.pl
 ################################################################################
-Comments on 
+Comments on
 
-Comment on 
+Comment on
 
 ################################################################################
 # modules/compilation.pl
@@ -709,6 +709,11 @@ Comment on
 Compilation for %s
 
 Compilation tag is missing a regular expression.
+
+################################################################################
+# modules/creationdate.pl
+################################################################################
+Add creation date to page files
 
 ################################################################################
 # modules/css-install.pl
@@ -864,7 +869,7 @@ This page lists the twenty last diary entries and their +1 buttons.
 ################################################################################
 # modules/gravatar.pl
 ################################################################################
-Email: 
+Email:
 
 ################################################################################
 # modules/header-and-footer-templates.pl
@@ -917,8 +922,6 @@ The username must be valid page name.
 Confirmation email will be sent to the email address.
 
 Repeat Password:
-
-Email:
 
 Bad email address format.
 
@@ -1077,13 +1080,13 @@ The template %s is either empty or does not exist.
 ################################################################################
 # modules/localnames.pl
 ################################################################################
-Name: 
-Nimi:
-URL: 
+Name:
+
+URL:
 
 Define Local Names
 
-Define external redirect: 
+Define external redirect:
 
  -- defined on %s
 
@@ -1196,6 +1199,8 @@ All mail subscriptions
 
 Subscriptions
 
+Email: 
+
 Show
 
 Subscriptions for %s:
@@ -1239,7 +1244,7 @@ Test / Always enabled / Always disabled
 
 Start
 
-Bisection proccess is already active.
+Bisecting proccess is already active.
 
 Stop
 
@@ -1249,7 +1254,7 @@ Please note that this module does not handle situations when your problem is cau
 
 Good luck fixing your problem! ;)
 
-Module count (only testable modules): 
+Module count (only testable modules):
 
 Current module statuses:
 
@@ -1364,7 +1369,7 @@ Orphan List
 ################################################################################
 # modules/page-trail.pl
 ################################################################################
-Trail: 
+Trail:
 
 ################################################################################
 # modules/page-type.pl
@@ -1464,6 +1469,21 @@ Page list for %s
 Index of all small pages
 
 ################################################################################
+# modules/sort.pl
+################################################################################
+Sort alphabetically
+
+Sorted alphabetically
+
+Sorted by last update first
+
+Sort by last update
+
+Sorted by creation date
+
+Sort by creation date
+
+################################################################################
 # modules/static-copy.pl
 ################################################################################
 Static Copy
@@ -1480,7 +1500,7 @@ Editing not allowed for %s.
 ################################################################################
 Edit image in the browser
 
-Summary of your changes: 
+Summary of your changes:
 
 ################################################################################
 # modules/sync.pl
@@ -1497,8 +1517,6 @@ Tag
 Feed for this tag
 
 Tag Cloud
-
- ... 
 
 Rebuilding index not done.
 
@@ -1527,7 +1545,7 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 ################################################################################
 thumb
 
-Error creating thumbnail from non existant page %s.
+Error creating thumbnail from nonexisting page %s.
 
 Can not create thumbnail for file type %s.
 
@@ -1585,14 +1603,14 @@ Please indicate a page name for the translation of %s.
 
 More help may be available here: %s.
 
-Translated page: 
+Translated page:
 
 Please provide a different page name for the translation.
 
 ################################################################################
 # modules/translations.pl
 ################################################################################
-This page is a translation of %s. 
+This page is a translation of %s.
 
 The translation is up to date.
 
@@ -1662,8 +1680,7 @@ Edit %s.
 ################################################################################
 # modules/weblog-4.pl
 ################################################################################
-Title: 
+Tags:
 
-Tags: 
-
+#
 END_OF_TRANSLATION
