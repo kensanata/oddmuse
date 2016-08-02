@@ -21,7 +21,7 @@ This extension allows you to sort search results based on last update date and
 based on creation date (if you have installed creationdate.pl).
 
 =cut
-    
+
 AddModuleDescription('sort.pl', 'Sort Extension');
 
 our ($q, @InitVariables, %Action, %Page, $OpenPageName);
