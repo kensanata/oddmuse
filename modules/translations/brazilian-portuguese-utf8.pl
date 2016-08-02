@@ -714,6 +714,11 @@ Compilação para %s
 Compilation tag is missing a regular expression.
 Falta expressão regular na etiqueta de compilação.
 ################################################################################
+# modules/creationdate.pl
+################################################################################
+Add creation date to page files
+
+################################################################################
 # modules/css-install.pl
 ################################################################################
 Install CSS
@@ -1242,7 +1247,7 @@ Test / Always enabled / Always disabled
 
 Start
 
-Bisection proccess is already active.
+Bisecting proccess is already active.
 
 Stop
 
@@ -1467,6 +1472,21 @@ Page list for %s
 Index of all small pages
 Índice de todas as páginas pequenas
 ################################################################################
+# modules/sort.pl
+################################################################################
+Sort alphabetically
+
+Sorted alphabetically
+
+Sorted by last update first
+
+Sort by last update
+
+Sorted by creation date
+
+Sort by creation date
+
+################################################################################
 # modules/static-copy.pl
 ################################################################################
 Static Copy
@@ -1665,4 +1685,5 @@ Editar %s.
 ################################################################################
 Tags:
 Etiquetas:
+#
 END_OF_TRANSLATION
