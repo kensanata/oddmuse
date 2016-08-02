@@ -70,6 +70,7 @@ sub AddCreationDate {
       next unless $revision == 1;
       print $q->li(NormalToFree($id));
       OpenPage($id);
+      next unless $Page{revision}; # skip if page no longer exists
       next if $Page{created} and $Page{originalAuthor};
       $Page{created} = $ts unless $Page{created};
       $Page{originalAuthor} = $username unless $Page{originalAuthor};
