@@ -44,7 +44,7 @@ sub CreationDateOpenPage{
 # Allow administrators to add the 'created' item to page files, based on rc log
 # files.
 
-push(@MyAdminCode, \&Menu);
+push(@MyAdminCode, \&CreationDateMenu);
 
 sub CreationDateMenu {
   my ($id, $menuref, $restref) = @_;
