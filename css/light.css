@@ -49,7 +49,8 @@ textarea, pre, code, tt {
 /* hide the buttons but don't use display:none because of
    http://stackoverflow.com/questions/5665203/getting-iphone-go-button-to-submit-form
 .header input[type="submit"] { position: absolute; visibility: hidden; } */
-.header input { width: 5em; font-size: 80%; }
+.header input { width: 6em; font-size: 80%; }
+.header input[type="checkbox"] { width: 1em; }
 .footer { clear:both; font-size: 90%; }
 .content input { font-size: 80%; line-height: 125%; }
 
