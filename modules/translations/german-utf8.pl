@@ -711,6 +711,11 @@ Zusammenstellung für %s
 Compilation tag is missing a regular expression.
 Der tag für die Zusammenstellung benötigt noch ein Suchmuster.
 ################################################################################
+# modules/creationdate.pl
+################################################################################
+Add creation date to page files
+Erstellungsdatum zu den Seiten hinzufügen
+################################################################################
 # modules/css-install.pl
 ################################################################################
 Install CSS
@@ -1239,8 +1244,8 @@ Test / Always enabled / Always disabled
 Test / Immer aktiv / Immer deaktiviert
 Start
 Start
-Bisection proccess is already active.
-Der Bisektionsprozess ist schon aktiv.
+Bisecting proccess is already active.
+Bisektion findet schon statt
 Stop
 Stop
 It seems like module %s is causing your problem.
@@ -1464,6 +1469,21 @@ Seitenliste für %s
 Index of all small pages
 Verzeichnis aller kleinen Seiten
 ################################################################################
+# modules/sort.pl
+################################################################################
+Sort alphabetically
+Alphabetisch sortieren
+Sorted alphabetically
+Alphabetisch sortiert
+Sorted by last update first
+Nach Änderungsdatum sortiert
+Sort by last update
+Nach Änderungsdatum sortieren
+Sorted by creation date
+Nach Erstellungsdatum sortiert
+Sort by creation date
+Nach Erstellungsdatum sortieren
+################################################################################
 # modules/static-copy.pl
 ################################################################################
 Static Copy
@@ -1662,4 +1682,5 @@ Edit %s.
 ################################################################################
 Tags:
 Tags:
+#
 END_OF_TRANSLATION
