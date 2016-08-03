@@ -46,7 +46,11 @@ get '/#tarball/#file' => sub {
     $text = decode_utf8($tar->get_content("$tarball/$file"));
     $cache->set("$tarball/$file" => $text);
   }
-  $c->render(template => 'file', format => 'txt', content => $text);
+  if ($text) {
+    $c->render(template => 'file', format => 'txt', content => $text);
+  } else {
+    $c->render(template => 'missing');
+  }
 } => 'file';
 
 app->start;
@@ -96,6 +100,15 @@ is the main script.
 @@ file.txt.ep
 %layout 'file';
 <%== $content %>
+
+@@ missing.html.ep
+% layout 'default';
+% title 'Missing File';
+<h1><%= $tarball %> is missing <%= $file %></h1>
+<p>
+You can go back to the list of <%= link_to 'releases' => 'main' %>,
+or you can try to find <%= $file %> in the
+<a href="https://raw.githubusercontent.com/kensanata/oddmuse/master/modules/<%= $file %>">unstable modules</a> section on GitHub.
 
 @@ layouts/default.html.ep
 <!DOCTYPE html>
