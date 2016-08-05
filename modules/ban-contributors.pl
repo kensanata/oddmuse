@@ -172,13 +172,8 @@ sub get_range {
   my $ip = shift;
   my $response = parse_whois(domain => $ip);
   my ($start, $end);
-  my $ip_regexp = '(?:[0-9]{1,3}\.){3}[0-9]{1,3}';
-  for (sort keys(%{$response})) {
-    if (($start, $end)
-	= $response->{$_} =~ /($ip_regexp) *- *($ip_regexp)/) {
-      last;
-    }
-  }
+  my $re = '(?:[0-9]{1,3}\.){3}[0-9]{1,3}';
+  my ($start, $end) = $response->{inetnum} =~ /($re) *- *($re)/;
   return $start, $end;
 }
 
