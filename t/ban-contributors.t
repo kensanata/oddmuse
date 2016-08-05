@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 29;
+use Test::More tests => 28;
 
 add_module('ban-contributors.pl');
 
@@ -57,10 +57,10 @@ test_page($page, 'Rolling back changes', 'These URLs were rolled back',
 	  'doxycycline');
 test_page_negative($page, 'amoxil');
 
+# 127.0.0.1 has no inetnum
 test_page(get_page("action=ban id=Test"),
 	  'Ban Contributors to Test',
-	  '127.0.0.0 - 127.255.255.255',
-	  quotemeta('^127\.'));
+	  quotemeta('127.0.0.1 () [ - ]'));
 
 $ENV{'REMOTE_ADDR'} = '46.101.109.194';
 update_page('Test', "this is phone number spam");
