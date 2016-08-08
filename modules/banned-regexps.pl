@@ -45,7 +45,8 @@ This extension works with logbannedcontent.pl.
 
 =cut
 
-our (%AdminPages, %LockOnCreation, @MyInitVariables, %PlainTextPages, $BannedContent, $BannedFile);
+our (%AdminPages, %LockOnCreation, @MyInitVariables, %PlainTextPages, $BannedContent, $BannedFile,
+    $FullUrlPattern);
 our ($BannedRegexps);
 
 $BannedRegexps = 'BannedRegexps';
@@ -61,6 +62,8 @@ push(@MyInitVariables, sub {
 
 sub RegexpNewBannedContent {
   my $str = shift;
+  # remove URLs as they are controlled by $BannedContent
+  $str =~ s/$FullUrlPattern//g;
   my $rule = RegexpOldBannedContent($str, @_);
   if (not $rule) {
     foreach (split(/\n/, GetPageContent($BannedRegexps))) {
