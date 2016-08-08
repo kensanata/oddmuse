@@ -1,4 +1,4 @@
-#!/usr/bin/perl -T
+#!/usr/bin/perl
 # Copyright (C) 2014  Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
 
 # This program is free software: you can redistribute it and/or modify it under
