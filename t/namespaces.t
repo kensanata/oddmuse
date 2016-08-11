@@ -1,4 +1,4 @@
-# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2016  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 77;
+use Test::More tests => 78;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('namespaces.pl');
@@ -122,19 +122,22 @@ test_page(get_page('action=rss'),
 	  '<wiki:history>http://localhost/wiki.pl/Muu\?action=history;id=Mu</wiki:history>',
 	  '<wiki:diff>http://localhost/wiki.pl/Muu\?action=browse;diff=1;id=Mu</wiki:diff>');
 # Test Unicode characters in namespaces (BLACK HEART SUIT)
-test_page(update_page('Umlaute', 'namespace mit herz',
+test_page(update_page('Ümlaute', 'namespace mit herz',
 		      'wo steckt das ü', undef, undef,
 		      'ns=Zürich♥'), 'namespace mit herz');
 xpath_test(get_page('action=rc'),
 	   # the exact result depends on filesystem encoding!
-	   '//a[@class="local"][@href="http://localhost/wiki.pl/Z%c3%bcrich%e2%99%a5/Umlaute"]');
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Z%c3%bcrich%e2%99%a5/%c3%9cmlaute"]');
 # Test potential Latin-1 characters in namespaces (LATIN SMALL LETTER U DIAERESIS)
-test_page(update_page('Umlaute', 'namespace mit umlaut',
+test_page(update_page('Ümlaute', 'namespace mit umlaut',
 		      'wo steckt das ü', undef, undef,
 		      'ns=Zürich'), 'namespace mit umlaut');
 xpath_test(get_page('action=rc'),
 	   # the exact result depends on filesystem encoding!
-	   '//a[@class="local"][@href="http://localhost/wiki.pl/Z%c3%bcrich/Umlaute"]');
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Z%c3%bcrich/%c3%9cmlaute"]');
+# And using path_info
+test_page(get_page('/Zürich/Ümlaute?'),
+	  'namespace mit umlaut');
 
 # Test rollbacks
 test_page(get_page('action=browse ns=Muu id=Test'),
