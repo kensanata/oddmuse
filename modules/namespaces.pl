@@ -80,6 +80,21 @@ $NamespaceSlashing = 0;   # affects : decoding NamespaceRcLines
 # variables (eg. localnames.pl)
 unshift(@MyInitVariables, \&NamespacesInitVariables);
 
+sub GetNamespace {
+  my $ns = GetParam('ns', '');
+  if (not $ns and $UsePathInfo) {
+    my $path_info = decode_utf8($q->path_info());
+    # make sure ordinary page names are not matched!
+    if ($path_info =~ m|^/($InterSitePattern)(/.*)?|
+	and ($2 or $q->keywords or NamespaceRequiredByParameter())) {
+      $ns = $1;
+    }
+  }
+  ReportError(Ts('%s is not a legal name for a namespace', $ns))
+    if $ns and $ns !~ m/^($InterSitePattern)$/;
+  return $ns;
+}
+
 sub NamespacesInitVariables {
   %Namespaces = ();
   # Do this before changing the $DataDir and $ScriptName
@@ -96,17 +111,7 @@ sub NamespacesInitVariables {
   }
   $NamespaceRoot = $ScriptName; # $ScriptName may be changed below
   $NamespaceCurrent = '';
-  my $ns = GetParam('ns', '');
-  if (not $ns and $UsePathInfo) {
-    my $path_info = decode_utf8($q->path_info());
-    # make sure ordinary page names are not matched!
-    if ($path_info =~ m|^/($InterSitePattern)(/.*)?|
-	and ($2 or $q->keywords or NamespaceRequiredByParameter())) {
-      $ns = $1;
-    }
-  }
-  ReportError(Ts('%s is not a legal name for a namespace', $ns))
-    if $ns and $ns !~ m/^($InterSitePattern)$/;
+  my $ns = GetNamespace();
   if ($ns
       and $ns ne $NamespacesMain
       and $ns ne $NamespacesSelf) {
