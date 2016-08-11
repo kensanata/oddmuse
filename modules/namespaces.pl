@@ -98,7 +98,7 @@ sub NamespacesInitVariables {
   $NamespaceCurrent = '';
   my $ns = GetParam('ns', '');
   if (not $ns and $UsePathInfo) {
-    my $path_info = $q->path_info();
+    my $path_info = decode_utf8($q->path_info());
     # make sure ordinary page names are not matched!
     if ($path_info =~ m|^/($InterSitePattern)(/.*)?|
 	and ($2 or $q->keywords or NamespaceRequiredByParameter())) {
