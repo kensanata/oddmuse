@@ -13,6 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+use v5.10;
+
 AddModuleDescription('linktagmap.pl', 'LinkTagMap Module');
 
 our (%Action, %Page, $OpenPageName, $ModuleDir, @MyRules, $ScriptName);
