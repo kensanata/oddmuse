@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 28;
+use Test::More;
 
 add_module('ban-contributors.pl');
 
@@ -69,6 +69,13 @@ test_page(get_page("action=ban id=Test"),
 	  quotemeta('^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])'));
 test_page(get_page('action=ban id=Test regexp="^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7])" range="[46.101.0.0 - 46.101.127.255]" recent_edit=on pwd=foo'),
 	  'Location: http://localhost/wiki.pl/BannedHosts');
-test_page(get_page('BannedHosts'),
-	  quotemeta('^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7]) # '
-		    . CalcDay($Now) . ' [46.101.0.0 - 46.101.127.255] Test'));
+
+SKIP: {
+  skip "Net::Whois::Parser doesn't always return the same result", 1;
+  test_page(get_page('BannedHosts'),
+	    quotemeta('^46\.101\.([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-7]) # '
+		      . CalcDay($Now)
+		      . ' [46.101.0.0 - 46.101.127.255] Test'));
+}
+
+done_testing();
