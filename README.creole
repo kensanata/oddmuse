@@ -23,12 +23,21 @@ usermod -a -G sudo alex
 Now you can login as {{{alex}}} and do everything else using {{{sudo}}}.
 
 You need to copy wiki.pl into your cgi-bin directory, and you need to
-make the script executable.
+make the script executable. You might also have to change its owner to
+an appropriate user on your system.
 
 {{{
 sudo wget -O /usr/lib/cgi-bin/wiki.pl \
   http://git.savannah.gnu.org/cgit/oddmuse.git/plain/wiki.pl
 sudo chmod +x /usr/lib/cgi-bin/wiki.pl
+sudo chown www-data.www-data /usr/lib/cgi-bin/wiki.pl
+}}}
+
+If you're on SUSE, the user might not be {{{www-data}}} but
+{{{wwwrun}}} without appropriate group:
+
+{{{
+sudo chown wwwrun.root /usr/lib/cgi-bin/wiki.pl
 }}}
 
 You should be able to test it right now! Visit
@@ -119,7 +128,7 @@ The default site is configured in
 sudo a2ensite default
 }}}
 
-This file also lists the directories we've used in out instructions
+This file also lists the directories we've used in our instructions
 above.
 
 {{{
