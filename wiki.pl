@@ -275,7 +275,7 @@ sub InitRequest { # set up $q
 }
 
 sub InitVariables {  # Init global session variables for mod_perl!
-  $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
+  $WikiDescription = $q->p($q->a({-href=>'https://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $HeaderIsPrinted = 0; # print HTTP headers only once
@@ -4071,7 +4071,7 @@ sub TextIsFile { $_[0] =~ /^#FILE (\S+) ?(\S+)?\n/; }
 sub AddModuleDescription { # cannot use $q here because this is module init time
   my ($filename, $page, $dir, $tag) = @_;
   my $src = "http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/$dir" . UrlEncode($filename) . ($tag ? '?' . $tag : '');
-  my $doc = 'http://www.oddmuse.org/cgi-bin/oddmuse/' . UrlEncode(FreeToNormal($page));
+  my $doc = 'https://www.oddmuse.org/cgi-bin/oddmuse/' . UrlEncode(FreeToNormal($page));
   $ModulesDescription .= "<p><a href=\"$src\">" . QuoteHtml($filename) . "</a>" . ($tag ? " ($tag)" : '');
   $ModulesDescription .= T(', see') . " <a href=\"$doc\">" . QuoteHtml($page) . "</a>" if $page;
   $ModulesDescription .= "</p>";
