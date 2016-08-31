@@ -23,6 +23,7 @@ our ($q, %Page, %Action, $Now, $OpenPageName, $CollectingJournal, $FreeLinkPatte
 our ($CalendarOnEveryPage, $CalAsTable, $CalStartMonday);
 
 $CalendarOnEveryPage = 0;   # 1=on every page is a month-div situated in the header, use css to control
+                            # 2=this month and the previous month; 3=this, previous and next month
 $CalAsTable = 0;            # 0=every month-div is "free", 1=every month-div is caught in a table, use css to control
 $CalStartMonday = 0;        # 0=week starts with Su, 1=week starts with Mo
 
@@ -34,8 +35,22 @@ sub NewCalendarGetHeader {
   return $header unless $CalendarOnEveryPage;
   my $action = GetParam('action', 'browse');
   return $header if grep(/^$action$/, ('calendar', 'edit'));
-  my $cal = Cal();
-  $header =~ s/<div class="header">/$cal<div class="header">/;
+  my $cal;
+  my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
+  $year += 1900;
+  # $mon is 0 based and thus good for previous month
+  if ($mon < 1) { $year -= 1; $mon += 12; };
+  $cal .= Cal($year, $mon) if $CalendarOnEveryPage > 1;
+  # the current month
+  $mon += 1;
+  if ($mon > 12) { $year += 1; $mon -= 12; };
+  $cal .= Cal($year, $mon) if $CalendarOnEveryPage;
+  # the next month
+  $mon += 1;
+  if ($mon > 12) { $year += 1; $mon -= 12; };
+  $cal .= Cal($year, $mon) if $CalendarOnEveryPage > 2;
+  # insert calendars before header div
+  $header =~ s!<div class="header">!<div class="cal">$cal</div><div class="header">!;
   return $header;
 }
 
@@ -85,7 +100,7 @@ sub Cal {
 			    $year_text,  'local collection year'));
     }
   }}e;
-  return "<div class=\"cal month\"><pre>$cal</pre></div>";
+  return "<div class=\"month\"><pre>$cal</pre></div>";
 }
 
 $Action{collect} = \&DoCollect;
@@ -126,7 +141,7 @@ sub CalendarRule {
     my $oldpos = pos;
     Clean(CloseHtmlEnvironments());
     Dirty($1);
-    print Cal($2, $3);
+    print $q->div({-class => 'cal'}, Cal($2, $3));
     pos = $oldpos;
     return AddHtmlEnvironment('p');
   } elsif (/\G(month:([+-]\d\d?))/cg
@@ -141,7 +156,7 @@ sub CalendarRule {
     $mon += 1 + $delta;
     while ($mon < 1) { $year -= 1; $mon += 12; };
     while ($mon > 12) { $year += 1; $mon -= 12; };
-    print Cal($year, $mon, undef, $id);
+    print $q->div({-class => 'cal'}, Cal($year, $mon, undef, $id));
     pos = $oldpos;
     return AddHtmlEnvironment('p');
   }

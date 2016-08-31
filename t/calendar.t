@@ -34,18 +34,18 @@ test_page(update_page("with_cal", "zulu\n\ncalendar:2006\n\nwarrior\n"),
 	  '</pre></div><p>warrior</p></div><div class="wrapper close"></div></div><div class="footer">');
 
 test_page(update_page("with_cal", "zulu\n\nmonth:2006-09\n\nwarrior\n"),
-	  '<p>zulu</p><div class="cal month"><pre>',
-	  '</pre></div><p>warrior</p></div><div class="wrapper close"></div></div><div class="footer">');
+	  '<p>zulu</p><div class="cal"><div class="month"><pre>',
+	  '</pre></div></div><p>warrior</p></div><div class="wrapper close"></div></div><div class="footer">');
 
 test_page(update_page("with_cal", "zulu\n\nmonth:+0\n\nwarrior\n"),
-	  '<p>zulu</p><div class="cal month"><pre>',
-	  '</pre></div><p>warrior</p></div><div class="wrapper close"></div></div><div class="footer">');
+	  '<p>zulu</p><div class="cal"><div class="month"><pre>',
+	  '</pre></div></div><p>warrior</p></div><div class="wrapper close"></div></div><div class="footer">');
 
 xpath_test(get_page('action=calendar'),
 	   # yearly navigation
 	  '//div[@class="content cal year"]/p[@class="nav"]/a[@href="http://localhost/wiki.pl?action=calendar;year=' . $year_prev . '"][text()="Previous"]/following-sibling::text()[string()=" | "]/following-sibling::a[@href="http://localhost/wiki.pl?action=calendar;year=' . $year_next . '"][text()="Next"]',
 	   # monthly collection
-	  '//div[@class="cal month"]/pre/span[@class="title"]/a[@class="local collection month"][@href="http://localhost/wiki.pl?action=collect;match=%5e' . sprintf("%d-%02d", $year, $mon)  . '"]',
+	  '//div[contains(@class,"cal")]/div[@class="month"]/pre/span[@class="title"]/a[@class="local collection month"][@href="http://localhost/wiki.pl?action=collect;match=%5e' . sprintf("%d-%02d", $year, $mon)  . '"]',
 	  # today day edit
 	  '//a[@class="edit today"][@href="http://localhost/wiki.pl?action=edit;id=' . $today . '"][normalize-space(text())="' . $mday . '"]',
 	  # other day edit
