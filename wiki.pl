@@ -1985,26 +1985,30 @@ sub DoHtmlHistory {
   my ($id) = @_;
   print GetHeader('', Ts('History of %s', NormalToFree($id)));
   my $row = 0;
-  my $rollback = UserCanEdit($id, 0) && (GetParam('username', '')
-					 or UserIsEditor());
+  my $rollback = UserCanEdit($id, 0) && (GetParam('username', '') or UserIsEditor());
   my $date = CalcDay($Page{ts});
-  my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, $date, 1));
+  my @html = (GetFormStart(undef, 'get', 'history'));
+  push(@html, $q->p({-class => 'documentation'}, T('Using the ｢Rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.'))) if $rollback;
+  push(@html, $q->p(# don't use $q->hidden here!
+		    $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
+		    $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
+		    $q->input({-type=>'hidden', -name=>'id', -value=>$id})));
+  # list of rows with revisions, starting with current revision
+  push(@html, $q->p($q->submit({-name=>T('Compare')}))) if $UseDiff;
+  my @rows = (GetHistoryLine($id, \%Page, $row++, $rollback, $date, 1));
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my $keep = GetKeptRevision($revision);
     my $new = CalcDay($keep->{ts});
-    push(@html, GetHistoryLine($id, $keep, $row++, $rollback,
-			       $new, $new ne $date));
+    push(@rows, GetHistoryLine($id, $keep, $row++, $rollback, $new, $new ne $date));
     $date = $new;
   }
-  @html = (GetFormStart(undef, 'get', 'history'),
-	   $q->p($q->submit({-name=>T('Compare')}),
-		 # don't use $q->hidden here!
-		 $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
-		 $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
-		 $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
-	   $q->table({-class=>'history'}, @html),
-	   $q->p($q->submit({-name=>T('Compare')})),
-	   $q->end_form()) if $UseDiff;
+  # if we can use diff, add radio-buttons and compare buttons if $UseDiff
+  if ($UseDiff) {
+    push(@html, $q->table({-class=>'history'}, @rows),
+	 $q->p($q->submit({-name=>T('Compare')})), $q->end_form());
+  } else {
+    push(@html, @rows);
+  }
   if ($KeepDays and $rollback and $Page{revision}) {
     push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text='
 				 . UrlEncode($DeletedPage) . ';summary='
