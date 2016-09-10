@@ -1685,8 +1685,7 @@ sub RcHeader {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=1",
 			   T('Include minor changes')));
   }
-  return $html .
-    $q->p(join(' | ', (map { ScriptLink("$action;days=$_;all=$all;showedit=$edits", $_); } @RcDays)),
+  $html .= $q->p(join(' | ', (map { ScriptLink("$action;days=$_;all=$all;showedit=$edits", $_); } @RcDays)),
           T('days'), $q->br(), @menu, $q->br(),
 	  ScriptLink($action . ';from=' . ($LastUpdate + 1)
 		     . ";all=$all;showedit=$edits", T('List later changes')),
@@ -1694,6 +1693,8 @@ sub RcHeader {
 	  ScriptLink("$rss;full=1", T('RSS with pages'), 'rss pages nodiff'),
 	  ScriptLink("$rss;full=1;diff=1", T('RSS with pages and diff'),
 		     'rss pages diff'));
+  $html .= $q->p({-class => 'documentation'}, T('Using the ｢Rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.')) if UserIsAdmin() and GetParam('all', $ShowAll);
+  return $html;
 }
 
 sub GetScriptUrlWithRcParameters {
