@@ -140,6 +140,8 @@ RSS with pages
 
 RSS with pages and diff
 
+Using the ｢rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.
+
 Filters
 Sålla
 Title:
@@ -168,6 +170,8 @@ This page is too big to send over RSS.
 Denna sida är för stor för att sändas över RSS.
 History of %s
 Historik för %s
+Using the ｢rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.
+
 Compare
 Jämför
 Deleted

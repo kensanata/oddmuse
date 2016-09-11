@@ -136,6 +136,8 @@ RSS with pages
 
 RSS with pages and diff
 
+Using the ｢rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.
+
 Filters
 Filtre
 Title:
@@ -164,6 +166,8 @@ This page is too big to send over RSS.
 
 History of %s
 Istorcul %s
+Using the ｢rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.
+
 Compare
 Compară
 Deleted
