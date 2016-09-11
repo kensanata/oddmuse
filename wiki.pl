@@ -1693,7 +1693,7 @@ sub RcHeader {
 	  ScriptLink("$rss;full=1", T('RSS with pages'), 'rss pages nodiff'),
 	  ScriptLink("$rss;full=1;diff=1", T('RSS with pages and diff'),
 		     'rss pages diff'));
-  $html .= $q->p({-class => 'documentation'}, T('Using the ｢Rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.')) if UserIsAdmin() and GetParam('all', $ShowAll);
+  $html .= $q->p({-class => 'documentation'}, T('Using the ｢rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.')) if UserIsAdmin() and GetParam('all', $ShowAll);
   return $html;
 }
 
@@ -1988,7 +1988,7 @@ sub DoHtmlHistory {
   my $rollback = UserCanEdit($id, 0) && (GetParam('username', '') or UserIsEditor());
   my $date = CalcDay($Page{ts});
   my @html = (GetFormStart(undef, 'get', 'history'));
-  push(@html, $q->p({-class => 'documentation'}, T('Using the ｢Rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.'))) if $rollback;
+  push(@html, $q->p({-class => 'documentation'}, T('Using the ｢rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.'))) if $rollback;
   push(@html, $q->p(# don't use $q->hidden here!
 		    $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
 		    $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),

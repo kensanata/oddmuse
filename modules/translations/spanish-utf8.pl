@@ -140,6 +140,8 @@ RSS with pages
 RSS con páginas
 RSS with pages and diff
 RSS con páginas y diff
+Using the ｢rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.
+
 Filters
 Filtros
 Title:
@@ -168,6 +170,8 @@ This page is too big to send over RSS.
 Esta página es demasiado grande para enviar a través de RSS
 History of %s
 Historia de %s
+Using the ｢rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.
+
 Compare
 Comparar
 Deleted
