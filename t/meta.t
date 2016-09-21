@@ -97,7 +97,10 @@ unless (ok(@badModules == 0, 'no trailing whitespace in modules (and other perl 
   diag(q{▶▶▶ Use this command to do automatic trailing whitespace removal: perl -pi -e 's/[ \t]+$//g' } . "@badModules");
 }
 
-@badModules = grep { $text{$_} =~ / This (program|file) is free software /x } @modules;
+@badModules = grep {
+     $text{$_} =~ / This (program|file) is free software /x
+  && $text{$_} =~ / http:\/\/www.gnu.org\/licenses\/ /x
+} @modules;
 unless (ok(@badModules == 0, 'license is specified in every module')) {
   diag(qq{$_ has no license specified}) for @badModules;
 }
