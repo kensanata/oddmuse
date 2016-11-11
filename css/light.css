@@ -27,6 +27,10 @@ textarea, pre, code, tt {
 		font-family: Times, serif;
 		font-size:10pt;
 	}
+	/* Printing from Firefox */
+	svg {
+	    transform: translate(-1.5cm, -1cm);
+	}
 }
 
 /* iPhone */
