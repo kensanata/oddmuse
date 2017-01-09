@@ -38,10 +38,9 @@
 ;;; Code:
 
 (eval-when-compile
-  '(progn
-     (require 'cl)
-     (require 'sgml-mode)
-     (require 'skeleton)))
+  (require 'cl)
+  (require 'sgml-mode)
+  (require 'skeleton))
 
 (require 'goto-addr); URL regexp
 (require 'info); link face
@@ -258,6 +257,24 @@ Example:
 (defvar oddmuse-revision nil
   "A variable to bind dynamically when calling `oddmuse-format-command'.")
 
+(defun oddmuse-revision-put (wiki page rev)
+  "Store REV for WIKI and PAGE in `oddmuse-revisions'."
+  (let ((w (assoc wiki oddmuse-revisions)))
+    (unless w
+      (setq w (list wiki)
+	    oddmuse-revisions (cons w oddmuse-revisions)))
+    (let ((p (assoc page w)))
+      (unless p
+	(setq p (list page))
+	(setcdr w (cons p (cdr w))))
+      (setcdr p rev))))
+
+(defun oddmuse-revision-get (wiki page)
+  "Get revision for WIKI and PAGE in `oddmuse-revisions'."
+  (let ((w (assoc wiki oddmuse-revisions)))
+    (when w
+      (cdr (assoc page w)))))
+
 ;;; Helpers
 
 (defsubst oddmuse-page-name (file)
@@ -339,7 +356,7 @@ default:
                      nil require nil
                      'oddmuse-wiki-history default)))
 
-(defun oddmuse-pagename (&optional arg)
+(defun oddmuse-pagename ()
   "Return the wiki and pagename the user wants to edit or follow.
 This cannot be the current pagename!  If given the optional
 argument ARG, read it from the minibuffer.  Otherwise, try to get
@@ -350,7 +367,8 @@ too. The pagename returned does not necessarily exist!
 Use this function when following links in regular wiki buffers,
 in Recent Changes, History Buffers, and also in text files and
 the like."
-  (let* ((wiki (or (and (not arg) oddmuse-wiki)
+  (let* ((arg current-prefix-arg)
+	 (wiki (or (and (not arg) oddmuse-wiki)
                    (oddmuse-read-wiki)))
 	 (pagename (or (and arg (oddmuse-read-pagename wiki))
 		       (oddmuse-pagename-at-point)
@@ -812,8 +830,9 @@ Requires all the variables to be bound for
   (with-temp-buffer
     (oddmuse-run "Determining latest revision" oddmuse-get-history-command wiki pagename)
     (if (re-search-forward "^revision: \\([0-9]+\\)$" nil t)
-	(prog1 (match-string 1)
-	  (message "Determining latest revision...done"))
+	(let ((revision (match-string 1)))
+	  (message "Latest revision is %s" revision)
+	  revision)
       (message "This is a new page")
       "new")))
 
@@ -837,8 +856,11 @@ people have been editing the wiki in the mean time."
       (set-buffer (get-buffer-create name))
       (erase-buffer); in case of current-prefix-arg
       (oddmuse-run "Loading" oddmuse-get-command wiki pagename)
+      (oddmuse-revision-put wiki pagename (oddmuse-get-latest-revision wiki pagename))
+      ;; fix mode-line for VC in the new buffer because this is not a vc-checkout
       (setq buffer-file-name (concat oddmuse-directory "/" wiki "/" pagename))
-      (vc-working-revision buffer-file-name 'oddmuse)
+      (vc-mode-line buffer-file-name 'oddmuse)
+      (pop-to-buffer (current-buffer))
       ;; check for a diff (this ends with display-buffer) and bury the
       ;; buffer if there are no hunks
       (when (file-exists-p buffer-file-name)
