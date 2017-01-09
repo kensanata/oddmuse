@@ -27,7 +27,7 @@ our ($GotobarName);
 $GotobarName = 'GotoBar';
 
 our ($GotobarSetHome, $GotobarSetRC);
-# 0 does set home-link and/or rc-link automatically, 1 doesn't  
+# 0 does set home-link and/or rc-link automatically, 1 doesn't
 
 # do this later so that the user can customize $GotobarName
 push(@MyInitVariables, \&GotobarInit);
