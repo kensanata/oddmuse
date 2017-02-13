@@ -136,6 +136,8 @@ RSS with pages
 RSS με σελίδες
 RSS with pages and diff
 RSS με σελίδες και διαφορές
+Using the ｢rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.
+
 Filters
 Φίλτρα
 Title:
@@ -164,6 +166,8 @@ This page is too big to send over RSS.
 Αυτή η σελίδα είναι πολύ μεγάλη για αποστολή μέσω RSS.
 History of %s
 Ιστορικό του %s
+Using the ｢rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.
+
 Compare
 Σύγκριση
 Deleted
