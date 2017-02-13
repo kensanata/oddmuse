@@ -1,4 +1,5 @@
 # Copyright (C) 2006-2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2016  Ingo Belka
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -24,6 +25,9 @@ our ($GotobarName);
 # Include this page on every page:
 
 $GotobarName = 'GotoBar';
+
+our ($GotobarSetHome, $GotobarSetRC);
+# 0 does set home-link and/or rc-link automatically, 1 doesn't
 
 # do this later so that the user can customize $GotobarName
 push(@MyInitVariables, \&GotobarInit);
@@ -53,10 +57,10 @@ sub GotobarInit {
 	# is the list of recent changes.
 	$count++;
 	if ($count == 1) {
-	  $HomePage = FreeToNormal($page);
-	} elsif ($count == 2) {
-	  $RCName = FreeToNormal($page);
-	}
+        unless ($GotobarSetHome) {$HomePage = FreeToNormal($page)};
+    } elsif ($count == 2) {
+        unless ($GotobarSetRC) {$RCName = FreeToNormal($page);}
+    }
       }
     }
   }

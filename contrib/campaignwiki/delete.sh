@@ -7,7 +7,7 @@ fi
 username=$1
 wiki=$2
 
-for p in $(curl "https://campaignwiki.org/wiki/$wiki?action=index;raw=1"); do
+for p in $(curl --silent "https://campaignwiki.org/wiki/$wiki?action=index;raw=1"); do
     echo "Deleting: $p"
     curl -F frodo=1 -F "title=$p" -F text=DeletedPage -F summary=Deleted -F username="$username" "https://campaignwiki.org/wiki/$wiki"
     sleep 5

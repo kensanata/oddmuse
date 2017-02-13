@@ -47,7 +47,7 @@ SKIP: {
   $GitResult = '';
 
   GitRun(qw(status));
-  test_page($GitResult, 'nothing to commit', 'working directory clean');
+  test_page($GitResult, 'nothing to commit', 'working (directory|tree) clean');
   
   GitRun(qw(log -- Test));
   test_page($GitResult,

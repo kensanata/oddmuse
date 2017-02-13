@@ -139,6 +139,8 @@ RSS with pages
 
 RSS with pages and diff
 
+Using the ｢rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.
+
 Filters
 過濾器
 Title:
@@ -167,6 +169,8 @@ This page is too big to send over RSS.
 此頁面太大無法透過 RSS 傳送
 History of %s
 %s 的歷史記錄
+Using the ｢rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.
+
 Compare
 比較
 Deleted

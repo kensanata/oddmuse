@@ -46,7 +46,7 @@ test_page($page,
 test_page_negative($page,
 		   'No other revisions available',
 		   'View other revisions',
-		   'rollback');
+		   'value\="rollback"');
 
 test_page(update_page('hist', 'Tesla', 'Power'),
 	  'Tesla',
@@ -60,7 +60,7 @@ test_page($page,
 	  'View current revision',
 	  'View all changes',
 	  'current',
-	  'rollback',
+	  'value\="rollback"',
 	  'name="rollback-\d+"',
 	  'Mark this page for deletion');
 test_page_negative($page,

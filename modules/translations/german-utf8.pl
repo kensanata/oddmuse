@@ -136,6 +136,8 @@ RSS with pages
 RSS mit ganzen Seiten
 RSS with pages and diff
 RSS mit ganzen Seiten und Unterschieden zur Vorversion
+Using the ｢rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.
+Mit der Schaltfläche ｢zurück setzen｣ wird die gesamte Wiki auf den damals aktuellen Stand zurück gesetzt. Alle nachfolgenden Änderungen auf allen Seiten werden rückgängig gemacht.
 Filters
 Filter
 Title:
@@ -164,6 +166,8 @@ This page is too big to send over RSS.
 Diese Seite ist zu gross für RSS.
 History of %s
 Andere Versionen von %s
+Using the ｢rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.
+Mit der Schaltfläche ｢zurück setzen｣ wird diese Seite auf den damals aktuellen Stand zurück gesetzt. Alle nachfolgenden Änderungen werden rückgängig gemacht.
 Compare
 Vergleichen
 Deleted
