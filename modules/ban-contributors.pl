@@ -252,3 +252,7 @@ sub get_regexp_ip {
   }
   return $regexp;
 }
+
+# this is required in case we concatenate other modules to this one
+package OddMuse;
+
