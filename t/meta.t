@@ -78,7 +78,10 @@ ok(@badModules == 0, 'utf8 in modules');
    }
 }
 
-@badModules = grep { $text{$_} =~ / ^ package \s+ OddMuse; /imx } @modules;
+@badModules = grep {
+  $text{$_} =~ / ^ package \s+ OddMuse; /imx
+  && $_ ne 'modules/ban-contributors.pl'
+} @modules;
 unless (ok(@badModules == 0, 'no "package OddMuse;" in modules')) {
   diag(qq{$_ has "package OddMuse;"}) for @badModules;
   diag(q{When we do "do 'somemodule.pl';" it ends up being in the same namespace of a caller, so there is no need to use "package OddMuse;"});
