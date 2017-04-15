@@ -20,7 +20,6 @@ AddModuleDescription('styled-pages.pl', 'Styled Pages Extension');
 
 our (@MyRules);
 our ($StyledPagesPrefix);
-our (%RuleOrder);
 
 $StyledPagesPrefix = 'style_';
 
