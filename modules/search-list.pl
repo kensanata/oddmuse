@@ -2,7 +2,7 @@
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,15 +11,12 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
 use v5.10;
 
-AddModuleDescription('search-list.pl', 'Search List Extension', undef, '2.3.7');
+AddModuleDescription('search-list.pl', 'Search List Extension');
 
 our ($q, $bol, %Action, %Page, $OpenPageName, @MyRules);
 
@@ -57,13 +54,8 @@ sub SearchListRule {
       @found = sort(@found);
     }
     @found = map { $q->li(GetPageLink($_)) } @found;
-    if ($variation eq 'list') {
-      print $q->start_div({-class=>'search list'});
-    }
-    if ($variation eq 'titlelist') {
-      print $q->start_div({-class=>'search titlelist'});
-    }
-    print $q->ul(@found), $q->end_div;
+    print $q->start_div({-class=>"search $variation"}),
+      $q->ul(@found), $q->end_div;
     Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
     ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
     return '';
@@ -100,4 +92,3 @@ my $search = GetParam('search', '');
       $q->ul(@found), $q->end_div;
   PrintFooter();
 }
-
