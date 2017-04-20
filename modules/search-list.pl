@@ -33,7 +33,7 @@ sub SearchListRule {
     my $variation = $2;
     my $term = $3;
     if ($term eq "") {
-        $term = GetId();
+      $term = GetId();
     }
     local ($OpenPageName, %Page);
     my %hash = ();
@@ -45,7 +45,7 @@ sub SearchListRule {
     if ($variation eq 'titlelist') {
       foreach my $id (grep(/$term/, AllPagesList())) {
         $hash{$id} = 1 unless $id eq $original; # skip the page with the query
-        }
+      }
     }
     my @found = keys %hash;
     if (defined &PageSort) {
