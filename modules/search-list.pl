@@ -23,20 +23,29 @@ our ($q, $bol, %Action, %Page, $OpenPageName, @MyRules);
 push(@MyRules, \&SearchListRule);
 
 sub SearchListRule {
-  if ($bol && /\G(&lt;list (.*?)&gt;)/cgis) {
-    # <list regexp> (search page titles and pages bodies)
+  if ($bol && /\G(&lt;(list|titlelist) (.*?)&gt;)/cgis) {
+    # <list regexp> (search page titles and page bodies)
+    # <titlelist regexp> (search page titles only)
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     my ($oldpos, $old_) = (pos, $_);
     my $original = $OpenPageName;
-    my $term = $2;
+    my $variation = $2;
+    my $term = $3;
     if ($term eq "") {
         $term = GetId();
     }
     local ($OpenPageName, %Page);
     my %hash = ();
-    foreach my $id (SearchTitleAndBody($term)) {
-      $hash{$id} = 1 unless $id eq $original; # skip the page with the query
+    if ($variation eq 'list') {
+      foreach my $id (SearchTitleAndBody($term)) {
+        $hash{$id} = 1 unless $id eq $original; # skip the page with the query
+      }
+    }
+    if ($variation eq 'titlelist') {
+      foreach my $id (grep(/$term/, AllPagesList())) {
+        $hash{$id} = 1 unless $id eq $original; # skip the page with the query
+        }
     }
     my @found = keys %hash;
     if (defined &PageSort) {
@@ -45,35 +54,7 @@ sub SearchListRule {
       @found = sort(@found);
     }
     @found = map { $q->li(GetPageLink($_)) } @found;
-    print $q->start_div({-class=>'search list'}),
-      $q->ul(@found), $q->end_div;
-    Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
-    ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
-    return '';
-  }
-  if ($bol && /\G(&lt;titlelist (.*?)&gt;)/cgis) {
-    # <titlelist regexp> (search page titles)
-    Clean(CloseHtmlEnvironments());
-    Dirty($1);
-    my ($oldpos, $old_) = (pos, $_);
-    my $original = $OpenPageName;
-    my $term = $2;
-    if ($term eq "") {
-        $term = GetId();
-    }
-    local ($OpenPageName, %Page);
-    my %hash = ();
-    foreach my $id (grep(/$term/, AllPagesList())) {
-      $hash{$id} = 1 unless $id eq $original; # skip the page with the query
-    }
-    my @found = keys %hash;
-    if (defined &PageSort) {
-      @found = sort PageSort @found;
-    } else {
-      @found = sort(@found);
-    }
-    @found = map { $q->li(GetPageLink($_)) } @found;
-    print $q->start_div({-class=>'search titlelist'}),
+    print $q->start_div({-class=>"search $variation"}),
       $q->ul(@found), $q->end_div;
     Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
     ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
