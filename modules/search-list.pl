@@ -24,7 +24,7 @@ push(@MyRules, \&SearchListRule);
 
 sub SearchListRule {
   if ($bol && /\G(&lt;list (.*?)&gt;)/cgis) {
-    # <list regexp>
+    # <list regexp> (search page titles and pages bodies)
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     my ($oldpos, $old_) = (pos, $_);
@@ -46,6 +46,34 @@ sub SearchListRule {
     }
     @found = map { $q->li(GetPageLink($_)) } @found;
     print $q->start_div({-class=>'search list'}),
+      $q->ul(@found), $q->end_div;
+    Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
+    ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
+    return '';
+  }
+  if ($bol && /\G(&lt;titlelist (.*?)&gt;)/cgis) {
+    # <titlelist regexp> (search page titles)
+    Clean(CloseHtmlEnvironments());
+    Dirty($1);
+    my ($oldpos, $old_) = (pos, $_);
+    my $original = $OpenPageName;
+    my $term = $2;
+    if ($term eq "") {
+        $term = GetId();
+    }
+    local ($OpenPageName, %Page);
+    my %hash = ();
+    foreach my $id (grep(/$term/, AllPagesList())) {
+      $hash{$id} = 1 unless $id eq $original; # skip the page with the query
+    }
+    my @found = keys %hash;
+    if (defined &PageSort) {
+      @found = sort PageSort @found;
+    } else {
+      @found = sort(@found);
+    }
+    @found = map { $q->li(GetPageLink($_)) } @found;
+    print $q->start_div({-class=>'search titlelist'}),
       $q->ul(@found), $q->end_div;
     Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
     ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
