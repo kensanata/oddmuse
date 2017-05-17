@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Copyright (C) 2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2-17  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -18,7 +18,7 @@ use v5.10;
 
 AddModuleDescription('markdown-rule.pl', 'Markdown Rule Extension');
 
-our ($q, $bol, %RuleOrder, @MyRules, $UrlProtocols, $FullUrlPattern);
+our ($q, $bol, %RuleOrder, @MyRules, $UrlProtocols, $FullUrlPattern, @HtmlStack);
 
 push(@MyRules, \&MarkdownRule);
 # Since we want this package to be a simple add-on, we try and avoid
@@ -31,8 +31,12 @@ $RuleOrder{\&MarkdownRule} = 200;
 # https://help.github.com/articles/github-flavored-markdown
 
 sub MarkdownRule {
+  # \escape
+  if (m/\G\\([-#>*`=])/cg) {
+    return $1;
+  }
   # atx headers
-  if ($bol and m~\G(\s*\n)*(#{1,6})[ \t]*~cg) {
+  elsif ($bol and m~\G(\s*\n)*(#{1,6})[ \t]*~cg) {
     my $header_depth = length($2);
     return CloseHtmlEnvironments()
       . AddHtmlEnvironment("h" . $header_depth);
@@ -56,6 +60,15 @@ sub MarkdownRule {
     return CloseHtmlEnvironments()
       . AddHtmlEnvironment('blockquote');
   }
+  # ``` = code
+  elsif ($bol and m/\G```[ \t]*\n(.*?)\n```[ \t]*(\n|$)/cgs) {
+    return CloseHtmlEnvironments() . $q->pre($1)
+      . AddHtmlEnvironment("p");
+  }
+  # ` = code
+  elsif (m/\G`([^`].*?)`/cg) {
+    return $q->code($1);
+  }
   # ***bold and italic***
   elsif (not InElement('strong') and not InElement('em') and m/\G\*\*\*/cg) {
     return AddHtmlEnvironment('em') . AddHtmlEnvironment('strong');
@@ -65,8 +78,11 @@ sub MarkdownRule {
     return AddOrCloseHtmlEnvironment('strong');
   }
   # *italic*
-  elsif (m/\G\*/cg) {
-    return AddOrCloseHtmlEnvironment('em');
+  elsif ($bol and m/\G\*/cg or m/\G(?<=\s)\*/cg) {
+    return AddHtmlEnvironment('em');
+  }
+  elsif (InElement('em') and m/\G\*/cg) {
+    return CloseHtmlEnvironment('em');
   }
   # ~~strikethrough~~ (deleted)
   elsif (m/\G~~/cg) {
@@ -124,11 +140,6 @@ sub MarkdownRule {
     }
     return OpenHtmlEnvironment('pre',1) . $str; # always level 1
   }
-  # ``` = code
-  elsif ($bol and m/\G```[ \t]*\n(.*?)\n```[ \t]*(\n|$)/cgs) {
-    return CloseHtmlEnvironments() . $q->pre($1)
-      . AddHtmlEnvironment("p");
-  }
   # [an example](http://example.com/ "Title")
   elsif (m/\G\[(.+?)\]\($FullUrlPattern(\s+"(.+?)")?\)/cg) {
     my ($text, $url, $title) = ($1, $2, $4);
@@ -138,6 +149,31 @@ sub MarkdownRule {
     $params{-class} = "url $1";
     $params{-title} = $title if $title;
     return $q->a(\%params, $text);
+  }
+  return;
+}
+
+push(@MyRules, \&MarkdownExtraRule);
+
+sub MarkdownExtraRule {
+  # __italic underline__
+  if (m/\G__/cg) {
+    return AddOrCloseHtmlEnvironment('em', 'style="font-style: italic; text-decoration: underline"');
+  }
+  # _underline_
+  elsif (m/\G_/cg) {
+    return AddOrCloseHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline";');
+  }
+  # //italic//
+  elsif (m/\G\/\//cg) {
+    return AddOrCloseHtmlEnvironment('em');
+  }
+  # /italic/
+  elsif ($bol and m/\G\//cg or m/\G(?<=\s)\//cg) {
+    return AddHtmlEnvironment('em');
+  }
+  elsif (InElement('em') and m/\G\//cg) {
+    return CloseHtmlEnvironment('em');
   }
   return;
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2017  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 34;
+use Test::More tests => 35;
 
 add_module('markdown-rule.pl');
 
@@ -78,6 +78,8 @@ bar <h2>foo</h2><p>bar</p>
 <pre>foo</pre>
 ```\nfoo\n``` bar
 ``` foo ``` bar
+`bar`
+<code>bar</code>
 |a|b|\n|c|d|\nbar
 <table><tr><th>a</th><th>b</th></tr><tr><td>c</td><td>d</td></tr></table><p>bar</p>
 |a|b|\n|c|d|
