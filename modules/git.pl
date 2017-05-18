@@ -196,7 +196,7 @@ sub GitCleanup {
       my $name = decode_utf8($file);
       next if $file eq '.git' or $file eq '.' or $file eq '..' or $IndexHash{$name};
       print $q->p("Deleting left over file $name");
-      Unlink("$GitRepo/$file") or ReportError("cannot delete $GitRepo/$name: $!");
+      Unlink("$GitRepo/$file") or print $q->p("Cannot delete $GitRepo/$name: $!");
     }
     closedir DIR;
     # write all the files again, just to be sure
