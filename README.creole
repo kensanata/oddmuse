@@ -94,7 +94,7 @@ Enjoy your wiki experience.
 Visit https://www.oddmuse.org/ to learn more about the translation
 files and modules that are part of this package.
 
-== Apache
+== Checking the Apache Setup
 
 If you think this information doesn't work for you, here are some things
 to check.
@@ -143,6 +143,32 @@ simply restart it all:
 
 {{{
 sudo service apache2 graceful
+}}}
+
+== Using just Perl
+
+You can use Mojolicious as your web server. There is a simple
+##server.pl## which you can use. Here's how you might start it:
+
+{{{
+mkdir ~/oddmuse
+WikiDataDir=$HOME/oddmuse perl server.pl daemon
+}}}
+
+This makes the server available on {{{http://localhost:3000/wiki}}}.
+
+If it works for you, feel free to upgrade to Hypnotoad.
+
+{{{
+WikiDataDir=$HOME/oddmuse hypnotoad server.pl
+}}}
+
+Note: Hypnotoad uses a different default port. The above makes the
+server available on {{{http://localhost:8080/wiki}}}. Hypnotoad will
+keep forking new processes. To stop it, use the {{{-s}}} flag.
+
+{{{
+hypnotoad -s server.pl
 }}}
 
 == License
