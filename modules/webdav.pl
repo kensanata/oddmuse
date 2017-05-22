@@ -25,8 +25,6 @@ our ($WebDavCache);
 $WebDavCache = "$DataDir/webdav";
 push(@KnownLocks, 'webdav');
 
-use CGI;
-
 *DavOldDoBrowseRequest = \&DoBrowseRequest;
 *DoBrowseRequest = \&DavNewDoBrowseRequest;
 
