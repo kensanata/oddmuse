@@ -158,11 +158,11 @@ push(@MyRules, \&MarkdownExtraRule);
 sub MarkdownExtraRule {
   # __italic underline__
   if (m/\G__/cg) {
-    return AddOrCloseHtmlEnvironment('em', 'style="font-style: italic; text-decoration: underline"');
+    return AddOrCloseHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline"');
   }
   # _underline_
   elsif (m/\G_/cg) {
-    return AddOrCloseHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline";');
+    return AddOrCloseHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline"');
   }
   # //italic//
   elsif (m/\G\/\//cg) {
