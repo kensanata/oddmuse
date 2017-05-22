@@ -44,6 +44,10 @@ this is <strong>bold</strong>
 <strong>bold</strong>
 *italic*
 <em>italic</em>
+__underline__
+<em style="font-style: normal; text-decoration: underline">underline</em>
+_underline_
+<em style="font-style: normal; text-decoration: underline">underline</em>
 foo\nbar
 foo bar
 foo\n===\nbar
