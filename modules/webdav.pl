@@ -138,7 +138,8 @@ sub put {
   my ($self, $q) = @_;
   my $id = OddMuse::GetId();
   my $type = $ENV{'CONTENT_TYPE'};
-  my $text = body();
+  my $text = $q->param('PUTDATA'); # CGI.pm does that!
+  # warn "text: $text\n";
   # hard coded magic based on the specs
   if (not $type) {
     if (substr($text,0,4) eq "\377\330\377\340"
@@ -167,13 +168,6 @@ sub put {
   OddMuse::DoPost($id); # do the real posting
 }
 
-sub body {
-  local $/; # slurp
-  my $data = <STDIN>; # can only be read once!
-  # warn $data;
-  return $data;
-}
-
 sub no_content {
   warn "RESPONSE: 204\n\n" if $verbose;
   print CGI::header( -status         => "204 No Content", );
@@ -189,8 +183,11 @@ sub propfind {
   my $depth = $q->http('depth') || "infinity";
   warn "depth: $depth\n" if $verbose;
 
-  my $content = body();
-  # warn "content: $content\n";
+  # only PUT and POST are handled by CGI; for PROPFIND we need to read the body
+  # ourselves
+  local $/; # slurp
+  my $content = <STDIN>;
+  warn "PROFIND $content\n" if $verbose;
 
   my $parser = XML::LibXML->new;
   my $req;
