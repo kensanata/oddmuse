@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 39;
+use Test::More tests => 42;
 
 add_module('markdown-rule.pl');
 
@@ -94,6 +94,12 @@ bar <h2>foo</h2><p>bar</p>
 <table><tr><th>a</th><th>b</th></tr><tr><td>c</td><td>d</td></tr></table>
 |a
 <table><tr><th>a</th></tr></table>
+|*foo*
+<table><tr><th><em>foo</em></th></tr></table>
+|/foo/
+<table><tr><th><em>foo</em></th></tr></table>
+|_foo_
+<table><tr><th><em style="font-style: normal; text-decoration: underline">foo</em></th></tr></table>
 foo ~~bar~~
 foo <del>bar</del>
 EOT

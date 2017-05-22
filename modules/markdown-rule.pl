@@ -73,12 +73,15 @@ sub MarkdownRule {
   elsif (not InElement('strong') and not InElement('em') and m/\G\*\*\*/cg) {
     return AddHtmlEnvironment('em') . AddHtmlEnvironment('strong');
   }
+  elsif (InElement('strong') and InElement('em') and m/\G\*\*\*/cg) {
+    return CloseHtmlEnvironment('strong') . CloseHtmlEnvironment('em');
+  }
   # **bold**
   elsif (m/\G\*\*/cg) {
     return AddOrCloseHtmlEnvironment('strong');
   }
   # *italic*
-  elsif ($bol and m/\G\*/cg or m/\G(?<=\s)\*/cg) {
+  elsif ($bol and m/\G\*/cg or m/\G(?<=\P{Word})\*/cg) {
     return AddHtmlEnvironment('em');
   }
   elsif (InElement('em') and m/\G\*/cg) {
@@ -169,7 +172,7 @@ sub MarkdownExtraRule {
     return AddOrCloseHtmlEnvironment('em');
   }
   # /italic/
-  elsif ($bol and m/\G\//cg or m/\G(?<=\s)\//cg) {
+  elsif ($bol and m/\G\//cg or m/\G(?<=\P{Word})\//cg) {
     return AddHtmlEnvironment('em');
   }
   elsif (InElement('em') and m/\G\//cg) {
