@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 35;
+use Test::More tests => 39;
 
 add_module('markdown-rule.pl');
 
@@ -48,6 +48,10 @@ __underline__
 <em style="font-style: normal; text-decoration: underline">underline</em>
 _underline_
 <em style="font-style: normal; text-decoration: underline">underline</em>
+//italic//
+<em>italic</em>
+/italic/
+<em>italic</em>
 foo\nbar
 foo bar
 foo\n===\nbar
