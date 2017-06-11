@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Copyright (C) 2014–2-17  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2017  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -164,8 +164,11 @@ sub MarkdownExtraRule {
     return AddOrCloseHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline"');
   }
   # _underline_
-  elsif (m/\G_/cg) {
-    return AddOrCloseHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline"');
+  elsif ($bol and m/\G_/cg or m/\G(?<=\P{Word})_/cg) {
+    return AddHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline"');
+  }
+  elsif (InElement('em', 'style="font-style: normal; text-decoration: underline"') and m/\G_/cg) {
+    return CloseHtmlEnvironment('em');
   }
   # //italic//
   elsif (m/\G\/\//cg) {
