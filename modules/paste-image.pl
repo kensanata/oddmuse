@@ -18,23 +18,37 @@ use v5.10;
 
 AddModuleDescription('paste-image.pl', 'Paste Files to Upload');
 
-our (@MyInitVariables, %IndexHash, $ScriptName, $HtmlHeaders);
+our (@MyInitVariables, $ScriptName, $HtmlHeaders);
 
 push(@MyInitVariables, \&PasteImageScript);
 
 sub PasteImageScript {
   my $id = GetId();
   return unless $id;
-  AllPagesList(); # init %IndexHash
   OpenPage($id);
   my $username = GetParam('username', '');
-  my $n = 1;
-  my $pic;
-  $n++ while ($IndexHash{$pic = "Image_${n}_for_$id"});
-  my $title = NormalToFree($pic);
+  my $template = "Image_{n}_for_$id";
   if ($HtmlHeaders !~ /PasteImage/) {
     $HtmlHeaders .= << "EOT";
 <script type="text/javascript">
+if (!HTMLTextAreaElement.prototype.insertAtCaret) {
+  HTMLTextAreaElement.prototype.insertAtPoint = function (text) {
+    text = text || '';
+    if (this.selectionStart || this.selectionStart === 0) {
+      // Others
+      var startPos = this.selectionStart;
+      var endPos = this.selectionEnd;
+      this.value = this.value.substring(0, startPos) +
+	text +
+	this.value.substring(endPos, this.value.length);
+      this.selectionStart = startPos + text.length;
+      this.selectionEnd = startPos + text.length;
+    } else {
+      this.value += text;
+    }
+  };
+};
+
 var PasteImage = {
 
   init: function() {
@@ -52,7 +66,7 @@ var PasteImage = {
           let blob = items[i].getAsFile();
           let reader = new window.FileReader();
           reader.onloadend = function() {
-            PasteImage.process(reader.result);
+            PasteImage.process(reader.result, "$template", 1);
           }
           reader.readAsDataURL(blob);
         }
@@ -60,14 +74,34 @@ var PasteImage = {
     }
   },
 
-  process: function(dataUrl) {
+  process: function(dataUrl, template, n) {
+    let name = template.replace('{n}', n);
+    var xhr = new XMLHttpRequest();
+    xhr.open("HEAD", "$ScriptName/" + name, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+          PasteImage.process(dataUrl, template, n+1);
+        } else if (xhr.status == 404) {
+          PasteImage.post(dataUrl, name);
+        } else {
+          let re = /<h1>(.*)<\\/h1>/g;
+          let match = re.exec(xhr.responseText);
+          alert(match[1]);
+        }
+      }
+    };
+    xhr.send(null);
+  },
+
+  post: function(dataUrl, name) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "$ScriptName", true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {
           let e = document.getElementById('text') || document.getElementById('aftertext');
-          e.value += '[[image:$title]]';
+          e.insertAtPoint("[[image:" + name + "]]");
         } else {
           let re = /<h1>(.*)<\\/h1>/g;
           let match = re.exec(xhr.responseText);
@@ -78,8 +112,8 @@ var PasteImage = {
 
     let mimeType = dataUrl.split(',')[0].split(':')[1].split(';')[0];
     let content = encodeURIComponent(dataUrl.split(',')[1]);
-    let params = "title=" + encodeURIComponent("$pic");
-    params += "&summary=" + encodeURIComponent("$title");
+    let params = "title=" + encodeURIComponent(name);
+    params += "&summary=" + encodeURIComponent(name);
     params += "&username=" + encodeURIComponent("$username");
     params += "&recent_edit=on";
     params += "&question=1";
