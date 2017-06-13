@@ -172,7 +172,7 @@ var PasteImage = {
     let jpg = canvas.toDataURL('image/jpeg');
     return png <= jpg ? png : jpg;
   },
-  
+
   process: function(dataUrl, templatePage, templateText, n) {
     let name = templatePage.replace('{n}', n);
     let text = templateText.replace('{n}', n);
