@@ -35,7 +35,8 @@ sub PasteImageScript {
   return unless $id;
   OpenPage($id);
   my $username = GetParam('username', '');
-  my $template = "Image_{n}_for_$id";
+  my $templatePage = "Image_{n}_for_$id";
+  my $templateText = "Image {n}";
   if ((GetParam('action', 'browse') eq 'edit'
        or $CommentsPattern and $id =~ /$CommentsPattern/
        or $PageImageOnBrowse and GetParam('action', 'browse') eq 'browse')
@@ -81,7 +82,7 @@ var PasteImage = {
             let n = 1;
             while (n++ < 4 && $MaxPost > 0 && dataUrl.length > $MaxPost)
               dataUrl = PasteImage.shrink(dataUrl);
-            PasteImage.process(dataUrl, "$template", 1);
+            PasteImage.process(dataUrl, "$templatePage", "$templateText", 1);
           }
           reader.readAsDataURL(blob);
         }
@@ -170,16 +171,17 @@ var PasteImage = {
     return png <= jpg ? png : jpg;
   },
   
-  process: function(dataUrl, template, n) {
-    let name = template.replace('{n}', n);
+  process: function(dataUrl, templatePage, templateText, n) {
+    let name = templatePage.replace('{n}', n);
+    let text = templateText.replace('{n}', n);
     let xhr = new XMLHttpRequest();
     xhr.open("HEAD", "$ScriptName/" + name, true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {
-          PasteImage.process(dataUrl, template, n+1);
+          PasteImage.process(dataUrl, templatePage, templateText, n+1);
         } else if (xhr.status == 404) {
-          PasteImage.post(dataUrl, name);
+          PasteImage.post(dataUrl, name, text);
         } else {
           let re = /<h1>(.*)<\\/h1>/g;
           let match = re.exec(xhr.responseText);
@@ -190,14 +192,14 @@ var PasteImage = {
     xhr.send(null);
   },
 
-  post: function(dataUrl, name) {
+  post: function(dataUrl, name, text) {
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "$ScriptName", true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {
           let e = document.getElementById('text') || document.getElementById('aftertext');
-          e.insertAtPoint("[[image:" + name + "]]");
+          e.insertAtPoint("[[image:" + name + "|" + text + "]]");
         } else {
           let re = /<h1>(.*)<\\/h1>/g;
           let match = re.exec(xhr.responseText);
