@@ -18,7 +18,8 @@ use v5.10;
 
 AddModuleDescription('paste-image.pl', 'Paste Files to Upload');
 
-our (@MyInitVariables, $ScriptName, $HtmlHeaders, $MaxPost, $CommentsPattern);
+our (@MyInitVariables, $ScriptName, $HtmlHeaders, $MaxPost, $CommentsPattern,
+     $QuestionaskerSecretKey);
 
 our ($PageImageOnBrowse);
 
@@ -37,6 +38,7 @@ sub PasteImageScript {
   my $username = GetParam('username', '');
   my $templatePage = "Image_{n}_for_$id";
   my $templateText = "Image {n}";
+  my $question = $QuestionaskerSecretKey || 'question';
   if ((GetParam('action', 'browse') eq 'edit'
        or $CommentsPattern and $id =~ /$CommentsPattern/
        or $PageImageOnBrowse and GetParam('action', 'browse') eq 'browse')
@@ -214,7 +216,7 @@ var PasteImage = {
     params += "&summary=" + encodeURIComponent(name);
     params += "&username=" + encodeURIComponent("$username");
     params += "&recent_edit=on";
-    params += "&question=1";
+    params += "&$question=1";
     params += "&text=#FILE " + mimeType + "%0A" + content;
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(params);
