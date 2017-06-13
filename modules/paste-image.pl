@@ -21,9 +21,9 @@ AddModuleDescription('paste-image.pl', 'Paste Files to Upload');
 our (@MyInitVariables, $ScriptName, $HtmlHeaders, $MaxPost, $CommentsPattern,
      $QuestionaskerSecretKey);
 
-our ($PageImageOnBrowse);
+our ($PasteImageOnBrowse);
 
-$PageImageOnBrowse = 0;
+$PasteImageOnBrowse = 0;
 
 push(@MyInitVariables, \&PasteImageScript);
 
@@ -41,7 +41,7 @@ sub PasteImageScript {
   my $question = $QuestionaskerSecretKey || 'question';
   if ((GetParam('action', 'browse') eq 'edit'
        or $CommentsPattern and $id =~ /$CommentsPattern/
-       or $PageImageOnBrowse and GetParam('action', 'browse') eq 'browse')
+       or $PasteImageOnBrowse and GetParam('action', 'browse') eq 'browse')
       and $HtmlHeaders !~ /PasteImage/) {
     $HtmlHeaders .= << "EOT";
 <script type="text/javascript">
