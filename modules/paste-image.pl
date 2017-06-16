@@ -105,8 +105,8 @@ var PasteImage = {
 
     let width_source = canvas.width;
     let height_source = canvas.height;
-    let width = Math.round(width_source * 0.8);
-    let height = Math.round(height_source * 0.8);
+    let width = Math.round(width_source * 0.5);
+    let height = Math.round(height_source * 0.5);
 
     let ratio_w = width_source / width;
     let ratio_h = height_source / height;
