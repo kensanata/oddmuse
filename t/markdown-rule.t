@@ -32,6 +32,8 @@ run_tests(split(/\n/,<<'EOT'));
 <ol><li>one</li><li>two</li></ol>
 1. one\n    2. two\n    3. three
 <ol><li>one<ol><li>two</li><li>three</li></ol></li></ol>
+1. one\n\n    2. two\n\n    3. three
+<ol><li>one<ol><li>two</li><li>three</li></ol></li></ol>
 -  one
 <ul><li>one</li></ul>
 - one\n-- Alex
