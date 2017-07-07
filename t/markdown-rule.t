@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 42;
+use Test::More tests => 46;
 
 add_module('markdown-rule.pl');
 
@@ -30,12 +30,20 @@ run_tests(split(/\n/,<<'EOT'));
 <ol><li>one</li><li>two</li></ol>
 1. one\n\n2. two
 <ol><li>one</li><li>two</li></ol>
+1. one\n    2. two\n    3. three
+<ol><li>one<ol><li>two</li><li>three</li></ol></li></ol>
 -  one
 <ul><li>one</li></ul>
 - one\n-- Alex
 <ul><li>one</li><li>- Alex</li></ul>
 - one\n\n- Alex
 <ul><li>one</li><li>Alex</li></ul>
+* one\n    * two
+<ul><li>one<ul><li>two</li></ul></li></ul>
+* one\n    * two\n* three
+<ul><li>one<ul><li>two</li></ul></li><li>three</li></ul>
+1. one\n- two
+<ol><li>one</li></ol><ul><li>two</li></ul>
 this is ***bold italic*** yo!
 this is <em><strong>bold italic</strong></em> yo!
 this is **bold**
