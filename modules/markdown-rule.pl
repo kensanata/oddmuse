@@ -43,8 +43,8 @@ sub MarkdownRule {
   }
   # end atx header at a newline
   elsif ((InElement('h1') or InElement('h2') or InElement('h3') or
-	  InElement('h4') or InElement('h5') or InElement('h6'))
-	 and m/\G\n/cg) {
+  	  InElement('h4') or InElement('h5') or InElement('h6'))
+  	 and m/\G\n/cg) {
     return CloseHtmlEnvironments()
       . AddHtmlEnvironment("p");
   }
@@ -91,17 +91,40 @@ sub MarkdownRule {
   elsif (m/\G~~/cg) {
     return AddOrCloseHtmlEnvironment('del');
   }
-  # - bullet list
-  elsif ($bol and m/\G(\s*\n)*-[ \t]*/cg
-	   or InElement('li') and m/\G(\s*\n)+-[ \t]*/cg) {
-    return CloseHtmlEnvironment('li')
-      . OpenHtmlEnvironment('ul',1) . AddHtmlEnvironment('li');
-  }
-  # 1. numbered list
-  elsif ($bol and m/\G(\s*\n)*\d+\.[ \t]*/cg
-	   or InElement('li') and m/\G(\s*\n)+\d+\.[ \t]*/cg) {
-    return CloseHtmlEnvironment('li')
-      . OpenHtmlEnvironment('ol',1) . AddHtmlEnvironment('li');
+  # indented lists = nested lists
+  elsif ($bol and m/\G(\s*\n)*()([*-]|\d+\.)[ \t]*/cg
+      or InElement('li') && m/\G(\s*\n)+( *)([*-]|\d+\.)[ \t]*/cg) {
+    my $nesting_goal = int(length($2)/4) + 1;
+    my $tag = ($3 eq '*' or $3 eq '-') ? 'ul' : 'ol';
+    my $nesting_current = 0;
+    my @nesting = grep(/^[uo]l$/, @HtmlStack);
+    my $html = CloseHtmlEnvironmentUntil('li'); # but don't close li element
+    # warn "\@nesting is (@nesting)\n";
+    # warn "    goal is $nesting_goal\n";
+    # warn "     tag is $3 > $tag\n";
+    while (@nesting > $nesting_goal) {
+      $html .= CloseHtmlEnvironment(pop(@nesting));
+      # warn "      pop\n";
+    }
+    # if have the correct nesting level, but the wrong type, close it
+    if (@nesting == $nesting_goal
+	and $nesting[$#nesting] ne $tag) {
+      $html .= CloseHtmlEnvironment(pop(@nesting));
+      # warn "   switch\n";
+    }
+    # now add a list of the appropriate type
+    if (@nesting < $nesting_goal) {
+      $html .= AddHtmlEnvironment($tag);
+      # warn "       add $tag\n";
+    }
+    # and a new list item
+    if (InElement('li')) {
+      $html .= CloseHtmlEnvironmentUntil($nesting[$#nesting]);
+      # warn "     close li\n";
+    }
+    $html .= AddHtmlEnvironment('li');
+      # warn "       add li\n";
+    return $html;
   }
   # beginning of a table
   elsif ($bol and !InElement('table') and m/\G\|/cg) {
