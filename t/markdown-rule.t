@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 46;
+use Test::More tests => 47;
 
 add_module('markdown-rule.pl');
 
