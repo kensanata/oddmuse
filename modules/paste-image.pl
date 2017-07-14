@@ -40,6 +40,7 @@ sub PasteImageScript {
   my $templateText = "Image {n}";
   my $question = $QuestionaskerSecretKey || 'question';
   if ((GetParam('action', 'browse') eq 'edit'
+       or GetParam('action', 'browse') eq 'new'
        or $CommentsPattern and $id =~ /$CommentsPattern/
        or $PasteImageOnBrowse and GetParam('action', 'browse') eq 'browse')
       and $HtmlHeaders !~ /PasteImage/) {
