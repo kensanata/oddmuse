@@ -40,7 +40,7 @@ sub DoStatic {
   CreateDir($StaticDir);
   %StaticFiles = ();
   print '<p>' unless $raw;
-  StaticWriteFiles();
+  StaticWriteFiles(1);
   print '</p>' unless $raw;
   PrintFooter() unless $raw;
 }
@@ -60,6 +60,7 @@ sub StaticMimeTypes {
 }
 
 sub StaticWriteFiles {
+  my $verbose = shift;
   my $raw = GetParam('raw', 0);
   my $html = GetParam('html', 0);
   local *ScriptLink = \&StaticScriptLink;
@@ -68,7 +69,7 @@ sub StaticWriteFiles {
     if ($StaticAlways > 1
 	or $html
 	or PageIsUploadedFile($id)) {
-      StaticWriteFile($id, $html);
+      StaticWriteFile($id, $html, $verbose);
     }
   }
   if ($StaticAlways > 1 or $html) {
@@ -129,7 +130,7 @@ sub StaticFileName {
 }
 
 sub StaticWriteFile {
-  my ($id, $html) = @_;
+  my ($id, $html, $verbose) = @_;
   my $raw = GetParam('raw', 0);
   OpenPage($id);
   my ($mimetype, $encoding, $data) =
@@ -147,10 +148,10 @@ sub StaticWriteFile {
     StaticHtml($id, $fh);
     close($fh);
   } else {
-    print "no data for ";
+    print "no data for " if $verbose;
   }
   ChangeMod(0644,"$StaticDir/$filename");
-  print $filename, $raw ? "\n" : $q->br();
+  print $filename, $raw ? "\n" : $q->br() if $verbose;
 }
 
 sub StaticFile {
