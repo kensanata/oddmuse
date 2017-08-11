@@ -33,30 +33,33 @@ EOT
 
 my $min = version->parse(shift || "2.3.0");
 
-my @tags = grep { /\d+\.\d+\.\d+/ and version->parse($_) > $min } 
+my @tags = grep { /\d+\.\d+\.\d+/ and version->parse($_) >= $min } 
            split(/\n/, qx{git tag --list});
 
 unless (@tags) {
-  die "git tag --list produced no list of tags\n";
+  die "git tag --list produced no list of tags >= $min\n";
 }
 
 for my $tag (@tags) {
   my $fname = "$dir/oddmuse-$tag.tar.gz";
-  unless (-f $fname) {
-    
-    system("git", "checkout", $tag) == 0
-	or die "Failed to git checkout $tag\n";
-    system("make", "prepare") == 0
-	or die "Failed to run make prepare for tag $tag\n";
-    system("mv", "build", "oddmuse-$tag") == 0
-	or die "Failed to rename the build directory to oddmuse-$tag\n";
-    system("tar", "czf", "oddmuse-$tag.tar.gz", "oddmuse-$tag") == 0
-	or die "Failed to build tarball oddmuse-$tag.tar.gz\n";
-    system("mv", "oddmuse-$tag.tar.gz", $fname) == 0
-	or die "Failed to move the tarball oddmuse-$tag.tar.gz\n";
-    system("rm", "-rf", "oddmuse-$tag") == 0
-	or die "Failed to remove the directory oddmuse-$tag\n";
+  if (-f $fname) {
+    warn "Skipping $tag as $fname already exists\n";
+    next;
   }
+  print "Preparing $tag\n";
+  
+  system("git", "checkout", $tag) == 0
+      or die "Failed to git checkout $tag\n";
+  system("make", "prepare") == 0
+      or die "Failed to run make prepare for tag $tag\n";
+  system("mv", "build", "oddmuse-$tag") == 0
+      or die "Failed to rename the build directory to oddmuse-$tag\n";
+  system("tar", "czf", "oddmuse-$tag.tar.gz", "oddmuse-$tag") == 0
+      or die "Failed to build tarball oddmuse-$tag.tar.gz\n";
+  system("mv", "oddmuse-$tag.tar.gz", $fname) == 0
+      or die "Failed to move the tarball oddmuse-$tag.tar.gz\n";
+  system("rm", "-rf", "oddmuse-$tag") == 0
+      or die "Failed to remove the directory oddmuse-$tag\n";
 }
 
 system("git", "checkout", "master") == 0
