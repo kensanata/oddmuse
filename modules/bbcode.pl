@@ -19,7 +19,7 @@ AddModuleDescription('bbcode.pl', 'bbCode Extension');
 
 our ($q, @HtmlStack, @MyRules, %RuleOrder, $UrlProtocols, $FullUrlPattern);
 push(@MyRules, \&bbCodeRule);
-$RuleOrder{\&bbCodeRule} = 100; # must come after PortraitSupportRule
+$RuleOrder{\&bbCodeRule} = 300; # must come after PortraitSupportRule, MarkdownRule
 
 our ($bbBlock);
 my %bbTitle = qw(h1 1 h2 1 h3 1 h4 1 h5 1 h6 1);

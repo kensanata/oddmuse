@@ -16,9 +16,10 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 47;
+use Test::More tests => 48;
 
 add_module('markdown-rule.pl');
+add_module('bbcode.pl');
 
 # ApplyRules strips trailing newlines, so write tests accordingly.
 run_tests(split(/\n/,<<'EOT'));
@@ -115,8 +116,10 @@ foo <del>bar</del>
 EOT
 
 xpath_run_tests(split('\n',<<'EOT'));
-[an example](http://example.com/ "Title")
-//a[@class="url http"][@href="http://example.com/"][@title="Title"][text()="an example"]
+[example](http://example.com/)
+//a[@class="url http"][@href="http://example.com/"][text()="example"]
 [an example](http://example.com/)
 //a[@class="url http"][@href="http://example.com/"][text()="an example"]
+[an example](http://example.com/ "Title")
+//a[@class="url http"][@href="http://example.com/"][@title="Title"][text()="an example"]
 EOT
