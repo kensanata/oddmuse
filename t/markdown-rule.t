@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 48;
+use Test::More tests => 52;
 
 add_module('markdown-rule.pl');
 add_module('bbcode.pl');
@@ -55,14 +55,22 @@ this is <strong>bold</strong>
 <strong>bold</strong>
 *italic*
 <em>italic</em>
+*italic* less.
+<em>italic</em> less.
+*italic.* more.
+<em>italic.</em> more.
 __underline__
 <em style="font-style: normal; text-decoration: underline">underline</em>
 _underline_
 <em style="font-style: normal; text-decoration: underline">underline</em>
+_italic._ more.
+<em style="font-style: normal; text-decoration: underline">italic.</em> more.
 //italic//
 <em>italic</em>
 /italic/
 <em>italic</em>
+/italic./ more.
+<em>italic.</em> more.
 foo\nbar
 foo bar
 foo\n===\nbar

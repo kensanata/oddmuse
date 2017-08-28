@@ -80,12 +80,12 @@ sub MarkdownRule {
   elsif (m/\G\*\*/cg) {
     return AddOrCloseHtmlEnvironment('strong');
   }
-  # *italic*
-  elsif ($bol and m/\G\*/cg or m/\G(?<=\P{Word})\*/cg) {
-    return AddHtmlEnvironment('em');
-  }
+  # *italic* (closing before adding environment!)
   elsif (InElement('em') and m/\G\*/cg) {
     return CloseHtmlEnvironment('em');
+  }
+  elsif ($bol and m/\G\*/cg or m/\G(?<=\P{Word})\*/cg) {
+    return AddHtmlEnvironment('em');
   }
   # ~~strikethrough~~ (deleted)
   elsif (m/\G~~/cg) {
@@ -186,23 +186,23 @@ sub MarkdownExtraRule {
   if (m/\G__/cg) {
     return AddOrCloseHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline"');
   }
-  # _underline_
-  elsif ($bol and m/\G_/cg or m/\G(?<=\P{Word})_/cg) {
-    return AddHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline"');
-  }
+  # _underline_ (closing before adding environment!)
   elsif (InElement('em', 'style="font-style: normal; text-decoration: underline"') and m/\G_/cg) {
     return CloseHtmlEnvironment('em');
+  }
+  elsif ($bol and m/\G_/cg or m/\G(?<=\P{Word})_/cg) {
+    return AddHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline"');
   }
   # //italic//
   elsif (m/\G\/\//cg) {
     return AddOrCloseHtmlEnvironment('em');
   }
-  # /italic/
-  elsif ($bol and m/\G\//cg or m/\G(?<=\P{Word})\//cg) {
-    return AddHtmlEnvironment('em');
-  }
+  # /italic/ (closing before adding environment!)
   elsif (InElement('em') and m/\G\//cg) {
     return CloseHtmlEnvironment('em');
+  }
+  elsif ($bol and m/\G\//cg or m/\G(?<=\P{Word})\//cg) {
+    return AddHtmlEnvironment('em');
   }
   return;
 }
