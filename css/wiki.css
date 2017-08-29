@@ -51,13 +51,13 @@ a.image:hover img {
 }
 
 /* a.definition soll aussehen wie h2 */
-h2, p a.definition {
+h2, p > a.definition {
     display: block;
     clear: both;
 }
 
 /* Such Link im h1 soll nicht auffallen. */
-h1, h2, h3, h4, h1 a, h1 a:visited, p a.definition {
+h1, h2, h3, h4, h1 a, h1 a:visited, p > a.definition {
     color: #666;
     font-size: 30pt;
     font-weight: normal;
