@@ -405,7 +405,7 @@ $Action{namespaces} = \&DoNamespacesList;
 sub DoNamespacesList {
   if (GetParam('raw', 0)) {
     print GetHttpHeader('text/plain');
-    print join("\n", keys %Namespaces), "\n";
+    print join("\n", sort keys %Namespaces), "\n";
   } else {
     print GetHeader('', T('Namespaces')),
       $q->start_div({-class=>'content namespaces'}),
@@ -413,7 +413,7 @@ sub DoNamespacesList {
 	  GetHiddenValue('id', $HomePage);
     my $new = $q->textfield('ns') . ' ' . $q->submit('donamespace', T('Go!'));
     print $q->ul($q->li([map { $q->a({-href => $Namespaces{$_} . $HomePage},
-				     $_); } keys %Namespaces]), $q->li($new));
+				     $_); } sort keys %Namespaces]), $q->li($new));
     print $q->end_form() . $q->end_div();
     PrintFooter();
   }
