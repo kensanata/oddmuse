@@ -86,6 +86,7 @@ sub PermanentAnchorsRule {
     } else {
       print $q->span({-class=>'permanentanchor'}, $2);
     }
+    return '';
   }
   return;
 }
