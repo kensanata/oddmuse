@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 25;
+use Test::More tests => 27;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('permanent-anchors.pl');
@@ -79,3 +79,14 @@ xpath_test(get_page('action=history id=Jack_DeJohnette'),
 # create an anchored object
 update_page('TheGame', qq{The game has rules and props. [::TheRules] Simple and elegant. [::TheProps] Expensive and brittle.\n----\nThat's how not to do it!});
 update_page('TheTest', qq{The rules are supposed to be\n<include "TheRules">});
+
+# conflict
+add_module('creole.pl');
+InitVariables(); # need to call MarkupInit!
+
+run_tests(split('\n',<<'EOT'));
+**bold** and **bold**
+<strong>bold</strong> and <strong>bold</strong>
+**[::bold]** and **bold**
+<strong><span class="permanentanchor">bold</span></strong> and <strong>bold</strong>
+EOT
