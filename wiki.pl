@@ -1368,7 +1368,7 @@ sub BrowseResolvedPage {
     ReBrowsePage($resolved);
   } elsif (not $resolved and $NotFoundPg and $id !~ /$CommentsPattern/) { # custom page-not-found message
     BrowsePage($NotFoundPg);
-  } elsif ($resolved or $id =~ /$CommentsPattern/ and $IndexHash{$1}) { # an existing page
+  } elsif ($resolved or $id =~ /$CommentsPattern/ and $1 and $IndexHash{$1}) { # an existing page
     BrowsePage($resolved, GetParam('raw', 0));
   } else {      # new page!
     BrowsePage($id, GetParam('raw', 0), undef, '404 NOT FOUND') if ValidIdOrDie($id);
