@@ -405,8 +405,7 @@ sub CreoleRule {
          if ($is_left_justified and
              $is_right_justified) { $attributes .= 'align="center"' }
       elsif ($is_right_justified) { $attributes .= 'align="right"' }
-      # this is the default:
-      # elsif ($is_left_justified) { $attributes .= 'align="left"' }
+      elsif ($is_left_justified) { $attributes .= 'align="left"' }
 
       return
          (InElement('td') || InElement('th') ? CloseHtmlEnvironmentUntil('tr') : '')
