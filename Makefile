@@ -57,6 +57,7 @@ translations: $(TRANSLATIONS)
 # race conditions!
 
 jobs ?= 4
+PERL5LIB ?= .
 test:
 	prove t/setup.pl
-	PERL5LIB=. prove --jobs=$(jobs) --state=slow,save t
+	PERL5LIB=$(PERL5LIB) prove --jobs=$(jobs) --state=slow,save t
