@@ -15,7 +15,7 @@
 
 # Create a UseModWiki first.
 $_ = 'nocgi';
-require 't/usemod-1.0.4.pl';
+require './t/usemod-1.0.4.pl';
 
 # wipe /tmp/mywikidb!
 use File::Path qw(remove_tree);

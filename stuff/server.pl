@@ -25,7 +25,7 @@ $ENV{WikiDataDir} = $dir if $dir;
   use base qw(HTTP::Server::Simple::CGI);
 
   $OddMuse::RunCGI = 0;
-  do $wiki; # load just once
+  do "./$wiki"; # load just once
 
   sub handle_request {
     my $self = shift;
