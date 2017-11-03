@@ -403,6 +403,9 @@ sub start_mojolicious_server {
     my $secure_perl_path = $Config{perlpath};
     exec($secure_perl_path, "server.pl", "daemon", "-l", $listen)
 	or die "Cannot exec: $!";
+  } else {
+    # give the server some time to start up
+    sleep 1;
   }
 }
 
