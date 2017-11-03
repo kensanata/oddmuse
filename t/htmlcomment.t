@@ -9,7 +9,7 @@
 
 # $Id: htmlcomment.t,v 1.1 2008/02/22 09:24:27 weakish Exp $
 
-require 't/test.pl';
+require './t/test.pl';
 package OddMuse;
 use Test::More tests => 6;
 

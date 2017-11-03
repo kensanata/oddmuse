@@ -233,7 +233,7 @@ sub InitModules {
       if (not $MyInc{$lib}) {
 	$MyInc{$lib} = 1;   # Cannot use %INC in mod_perl settings
 	my $file = encode_utf8($lib);
-	do $file;
+	do "./$file";
 	$Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
       }
     }
@@ -242,7 +242,7 @@ sub InitModules {
 
 sub InitConfig {
   if ($UseConfig and $ConfigFile and not $INC{$ConfigFile} and IsFile($ConfigFile)) {
-    do $ConfigFile; # these options must be set in a wrapper script or via the environment
+    do "./$ConfigFile"; # these options must be set in a wrapper script or via the environment
     $Message .= CGI::p("$ConfigFile: $@") if $@; # remember, no $q exists, yet
   }
   if ($ConfigPage) { # $FS and $MaxPost must be set in config file!

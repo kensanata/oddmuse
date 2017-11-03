@@ -9,7 +9,7 @@
 
 # $Id: emailquote.t,v 1.7 2008/07/12 13:43:48 as Exp $
 
-require 't/test.pl';
+require './t/test.pl';
 package OddMuse;
 use Test::More tests => 4;
 

@@ -2,7 +2,7 @@
 # ====================[ crossbar.t                          ]====================
 
 # ....................{ INITIALIZATION                     }....................
-require 't/test.pl';
+require './t/test.pl';
 package OddMuse;
 use Test::More tests => 22;
 

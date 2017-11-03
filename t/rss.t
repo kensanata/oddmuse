@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-require 't/test.pl';
+require './t/test.pl';
 package OddMuse;
 use Test::More tests => 126;
 use utf8; # tests contain UTF-8 characters and it matters
