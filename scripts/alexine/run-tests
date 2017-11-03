@@ -15,10 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 set -e
 
-# Just in case Alexine can't find t/test.pl and the like.
-# See http://www.perlmonks.org/?node_id=1076113
-export PERL5LIB=.
-
 WORKING_DIRECTORY='../data/'
 TEST_LOCK="$WORKING_DIRECTORY/testlock"
 TEST_LOG="$WORKING_DIRECTORY/log"
@@ -33,6 +29,10 @@ STATUS_PAGE='Test Status'
 OUT_PAGE='https://github.com/AlexDaniel/oddmuse-alexine-data/blob/master/output'
 WIKI_LOCATION='https://oddmuse.org/wiki/'
 USER_NAME='Alexine'
+
+# Just in case Alexine can't find t/test.pl and the like.
+# See http://www.perlmonks.org/?node_id=1076113
+export PERL5LIB="$ODDMUSE_TEST_LOCATION"
 
 clean() {
   while popd &> /dev/null; do :; done # change directory back
