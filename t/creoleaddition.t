@@ -11,7 +11,7 @@
 
 # $Id: creoleaddition.t,v 1.15 2009/02/27 09:56:05 as Exp $
 
-require 't/test.pl';
+require './t/test.pl';
 package OddMuse;
 use Test::More tests => 29;
 

@@ -17,7 +17,7 @@ package OddMuse;
 use Test::More;
 use Test::Mojo;
 
-require 't/test.pl';
+require './t/test.pl';
 
 start_mojolicious_server();
 sleep(1);

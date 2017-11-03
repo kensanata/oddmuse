@@ -36,7 +36,7 @@ $q->param('summary', 'Last UseModWiki edit');
   DoOtherRequest();
 }
 
-require 't/test.pl';
+require './t/test.pl';
 package OddMuse;
 $DataDir = $UseModWiki::DataDir;
 $ENV{WikiDataDir} = $DataDir;

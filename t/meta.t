@@ -19,8 +19,8 @@ use v5.10;
 use utf8;
 
 package OddMuse;
-require 't/test.pl';
-use Test::More tests => 29;
+require './t/test.pl';
+use Test::More tests => 30;
 use File::Basename;
 use Pod::Strip;
 use Pod::Simple::TextContent;

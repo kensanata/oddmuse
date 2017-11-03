@@ -18,7 +18,7 @@ use Test::More;
 use Test::Mojo;
 use utf8; # tests contain UTF-8 characters and it matters
 
-require 't/test.pl';
+require './t/test.pl';
 
 add_module('namespaces.pl');
 
