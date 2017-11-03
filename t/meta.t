@@ -20,7 +20,7 @@ use utf8;
 
 package OddMuse;
 require './t/test.pl';
-use Test::More tests => 30;
+use Test::More tests => 29;
 use File::Basename;
 use Pod::Strip;
 use Pod::Simple::TextContent;
