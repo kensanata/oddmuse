@@ -15,6 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 set -e
 
+# Just in case Alexine can't find t/test.pl and the like.
+# See http://www.perlmonks.org/?node_id=1076113
+use lib '.';
+
 WORKING_DIRECTORY='../data/'
 TEST_LOCK="$WORKING_DIRECTORY/testlock"
 TEST_LOG="$WORKING_DIRECTORY/log"
