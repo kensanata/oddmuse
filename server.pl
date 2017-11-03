@@ -33,7 +33,7 @@ plugin CGI => {
     # WikiDataDir and falls back to the following
     # $OddMuse::DataDir = '/tmp/oddmuse';
     use warnings;
-    require 'wiki.pl' unless defined &OddMuse::DoWikiRequest;
+    require './wiki.pl' unless defined &OddMuse::DoWikiRequest;
   },
   env => {},
   # path to where STDERR from cgi script goes

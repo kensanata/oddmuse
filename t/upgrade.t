@@ -17,6 +17,10 @@ require './t/test.pl';
 package OddMuse;
 use Test::More tests => 47;
 
+# Perl 5.26 removed . from @INC but we don't want to change oddmuse-2.2.6.pl, if
+# possible.
+$ENV{'PERL5LIB'} = '.';
+
 # Create a 2.2.6 wiki first.
 $page = qx(perl t/oddmuse-2.2.6.pl title=Test text=Hello);
 test_page($page, "Status: 302 Found");
