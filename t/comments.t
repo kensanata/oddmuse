@@ -1,4 +1,4 @@
-# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2017  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 43;
+use Test::More tests => 44;
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
@@ -33,6 +33,13 @@ xpath_test($page,
 	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
 	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Comments_on_Test"][text()="Edit this page"]',
 	   '//textarea[@name="aftertext"]');
+
+# There used to be a bug where we returned status 200 for a non-existing comment
+# page if the corresponding page existed. The bug meant that we browsed a page
+# with no title.
+update_page('Yes', 'test');
+test_page(get_page('Comments_on_Yes'),
+          'There are no comments, yet. Be the first to leave a comment!');
 
 AppendStringToFile($ConfigFile, "\$EditAllowed = 0;\n");
 
