@@ -59,4 +59,4 @@ translations: $(TRANSLATIONS)
 jobs ?= 4
 test:
 	prove t/setup.pl
-	prove --jobs=$(jobs) --state=slow,save t
+	PERL5LIB=. prove --jobs=$(jobs) --state=slow,save t
