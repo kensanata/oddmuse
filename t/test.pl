@@ -384,7 +384,7 @@ sub start_server {
   } elsif ($pid == 0) {
     use Config;
     my $secure_perl_path = $Config{perlpath};
-    exec($secure_perl_path, "stuff/server.pl", "wiki.pl", $port) or die "Cannot exec: $!";
+    exec($secure_perl_path, "stuff/server.pl", "./wiki.pl", $port) or die "Cannot exec: $!";
   }
 }
 
