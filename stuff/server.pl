@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-my $wiki = $ARGV[0] || 'wiki.pl';
+my $wiki = $ARGV[0] || './wiki.pl';
 my $port = $ARGV[1] || 8080;
 my $dir  = $ARGV[2];
 $ENV{WikiDataDir} = $dir if $dir;
@@ -25,7 +25,7 @@ $ENV{WikiDataDir} = $dir if $dir;
   use base qw(HTTP::Server::Simple::CGI);
 
   $OddMuse::RunCGI = 0;
-  do "./$wiki"; # load just once
+  do $wiki; # load just once
 
   sub handle_request {
     my $self = shift;
