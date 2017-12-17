@@ -48,12 +48,6 @@ sub MarkdownRule {
     return CloseHtmlEnvironments()
       . AddHtmlEnvironment("p");
   }
-  # setext headers
-  elsif ($bol and m/\G((\s*\n)*(.+?)[ \t]*\n(-+|=+)[ \t]*\n)/cg) {
-    return CloseHtmlEnvironments()
-      . (substr($4,0,1) eq '=' ? $q->h2($3) : $q->h3($3))
-      . AddHtmlEnvironment('p');
-  }
   # > blockquote
   # with continuation
   elsif ($bol and m/\G&gt;/cg) {
@@ -175,6 +169,12 @@ sub MarkdownRule {
     $params{-class} = "url $1";
     $params{-title} = $title if $title;
     return $q->a(\%params, $text);
+  }
+  # setext headers (must come after block quotes)
+  elsif ($bol and m/\G((\s*\n)*(.+?)[ \t]*\n(-+|=+)[ \t]*\n)/cg) {
+    return CloseHtmlEnvironments()
+      . (substr($4,0,1) eq '=' ? $q->h2($3) : $q->h3($3))
+      . AddHtmlEnvironment('p');
   }
   return;
 }
