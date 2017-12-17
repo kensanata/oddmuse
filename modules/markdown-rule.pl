@@ -201,7 +201,7 @@ sub MarkdownExtraRule {
   elsif (InElement('em') and m/\G\//cg) {
     return CloseHtmlEnvironment('em');
   }
-  elsif ($bol and m/\G\//cg or m/\G(?<=\P{Word})\//cg) {
+  elsif ($bol and m/\G\//cg or m/\G(?<=[|[:space:]])\//cg) {
     return AddHtmlEnvironment('em');
   }
   return;
