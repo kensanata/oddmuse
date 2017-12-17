@@ -16,7 +16,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 52;
+use Test::More tests => 53;
 
 add_module('markdown-rule.pl');
 add_module('bbcode.pl');
@@ -121,6 +121,8 @@ bar <h2>foo</h2><p>bar</p>
 <table><tr><th><em style="font-style: normal; text-decoration: underline">foo</em></th></tr></table>
 foo ~~bar~~
 foo <del>bar</del>
+pay 1.-/month
+pay 1.-/month
 EOT
 
 xpath_run_tests(split('\n',<<'EOT'));
