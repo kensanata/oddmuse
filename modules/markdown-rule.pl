@@ -59,8 +59,8 @@ sub MarkdownRule {
     return CloseHtmlEnvironments() . $q->pre($1)
       . AddHtmlEnvironment("p");
   }
-  # ` = code
-  elsif (m/\G`([^`].*?)`/cg) {
+  # ` = code may not start with a newline
+  elsif (m/\G`([^\n`][^`]*)`/cg) {
     return $q->code($1);
   }
   # ***bold and italic***
