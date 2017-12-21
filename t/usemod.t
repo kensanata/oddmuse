@@ -1,4 +1,4 @@
-# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2017  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 47;
+use Test::More tests => 48;
 
 add_module('usemod.pl');
 
@@ -73,6 +73,8 @@ This is <strong>strong text containing <em>emph</em> text</strong>.
 <table class="user"><tr class="odd first"><td align="center">one <em>two</em></td></tr></table>
 || one two ||
 <table class="user"><tr class="odd first"><td align="center">one two </td></tr></table>
+||'''''foo''''' || '''''bar''''' ||\n||baz || quux ||
+<table class="user"><tr class="odd first"><td align="left"><strong><em>foo</em></strong></td><td align="center"><strong><em>bar</em></strong></td></tr><tr class="even"><td align="left">baz </td><td align="center">quux </td></tr></table>
 introduction\n\n||one||two||three||\n||||one two||three||
 introduction<table class="user"><tr class="odd first"><td>one</td><td>two</td><td>three</td></tr><tr class="even"><td colspan="2">one two</td><td>three</td></tr></table>
 ||one||two||three||\n||||one two||three||\n\nfooter
