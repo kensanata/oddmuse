@@ -687,10 +687,10 @@ sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p
 }
 
 sub CloseHtmlEnvironment {  # close environments up to and including $html_tag
-  my $html = (@_ and InElement(@_)) ? CloseHtmlEnvironmentUntil(@_) : '';
+  my $html = (@_ and InElement(@_)) ? CloseHtmlEnvironmentUntil(@_) : undef;
   if (@HtmlStack and (not(@_) or defined $html)) {
     shift(@HtmlAttrStack);
-    return $html . '</' . shift(@HtmlStack) . '>';
+    $html .= '</' . shift(@HtmlStack) . '>';
   }
   return $html || ''; # avoid returning undefined
 }
