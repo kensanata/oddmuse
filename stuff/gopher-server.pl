@@ -1,4 +1,4 @@
-#!/bin/env perl
+#!/usr/bin/env perl
 # Copyright (C) 2017  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
@@ -32,16 +32,32 @@ wiki_dir - this is the path to the Oddmuse data directory
 
 Example invocation:
 
-/usr/bin/perl /home/alex/src/oddmuse/stuff/gopher-server.pl \
-    --port=7070 \
-    --pid_file=/home/alex/alexschroeder-gopher-server.pid \
-    --wiki=/home/alex/farm/wiki.pl \
-    --wiki_dir=/home/alex/alexschroeder
+/home/alex/src/oddmuse/stuff/gopher-server.pl \
+    --port=localhost:7070 \
+    --wiki=/home/alex/src/oddmuse/wiki.pl \
+    --pid_file=/tmp/oddmuse/gopher.pid \
+    --wiki_dir=/tmp/oddmuse
 
 Run the script and test it:
 
 telnet localhost 7070
 lynx gopher://localhost:7070
+
+Make changes to the script and reload:
+
+kill -s SIGHUP `cat /tmp/oddmuse/gopher.pid`
+
+The list of all pages:
+
+lynx gopher://localhost:7070/1/index
+
+Edit a page from the command line:
+
+perl src/oddmuse/wiki.pl title=HomePage text="Welcome!"
+
+Visit it:
+
+lynx gopher://localhost:7070/0HomePage
 
 EOT
 }
@@ -49,6 +65,7 @@ EOT
 sub process_request {
   my $self = shift;
 
+  binmode(STDIN, ':encoding(UTF-8)');
   binmode(STDOUT, ':encoding(UTF-8)');
   binmode(STDERR, ':encoding(UTF-8)');
   
@@ -63,8 +80,28 @@ sub process_request {
     alarm(10); # timeout
     my $id = <STDIN>; # no loop
     $id =~ s/\s+//g;
-    if (not $id or $id eq '/') {
+    if (not $id) {
       $self->log(1, "Serving menu\n");
+      print "Welcome to the Gopher version of this wiki.\n";
+      print "Here are some interesting starting points:\n";
+      my @pages = sort { $b cmp $a } grep(m!^\d\d\d\d-\d\d-\d\d!, @OddMuse::IndexList);
+      for my $id (@OddMuse::UserGotoBarPages, @pages[0..9]) {
+	last unless $id;
+	print join("\t",
+		   "0" . OddMuse::NormalToFree($id),
+		   "$id",
+		   $self->{server}->{sockaddr},
+		   $self->{server}->{sockport})
+	    . "\r\n";
+      }
+      print join("\t",
+		 "1" . "Index of all pages",
+		 "/index",
+		 $self->{server}->{sockaddr},
+		 $self->{server}->{sockport})
+	  . "\r\n";
+    } elsif ($id eq "/index") {
+      $self->log(1, "Serving $id\n");
       for my $id (@OddMuse::IndexList) {
 	print join("\t",
 		   "0" . OddMuse::NormalToFree($id),
@@ -73,18 +110,16 @@ sub process_request {
 		   $self->{server}->{sockport})
 	    . "\r\n";
       }
-      # use Data::Dumper;
-      # $self->log(1, Dumper($self->{server}));
-    } elsif ($OddMuse::IndexHash{$id}) {
+    } elsif (not $OddMuse::IndexHash{$id}) {
+      $self->log(1, "Unknown page: $id\n");
+      print "3\tUnknown page: $id\n";
+    } else {
       $self->log(1, "Serving $id\n");
       OddMuse::OpenPage($id);
       my $text = $OddMuse::Page{text};
       $text =~ s/^\./../mg;
       print $text;
       print ".\r\n";
-    } else {
-      $self->log(1, "Unknown page: $id\n");
-      print "3\tUnknown page: $id\n";
     }
   };
   
@@ -118,7 +153,14 @@ sub post_configure_hook {
   $OddMuse::DataDir = $self->{server}->{wiki_dir};
   $self->log(1, "Running " . $self->{server}->{wiki} . "\n");
   do $self->{server}->{wiki}; # do it once
+  # do the init code without CGI (no $q)
   OddMuse::InitDirConfig();
+  $OddMuse::FS = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
+  # $Message = ''; # Warnings and non-fatal errors.
+  OddMuse::InitLinkPatterns(); # Link pattern can be changed in config files
+  OddMuse::InitModules(); # Modules come first so that users can change module variables in config
+  OddMuse::InitConfig(); # Config comes as early as possible; remember $q is not available here
+  # InitRequest(); # get $q with $MaxPost; set these in the config file
+  # OddMuse::InitCookie(); # After InitRequest, because $q is used
+  # OddMuse::InitVariables(); # After config, to change variables, after InitCookie for GetParam
 }
-
-1;
