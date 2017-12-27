@@ -22,26 +22,35 @@ Oddmuse::Gopher::Server->run;
  
 sub usage {
   die <<'EOT';
-Usage: perl gopher-server.pl
+This server serves a wiki as a gopher site.
 
-Example: perl gopher-server.pl wiki.pl ~/src/oddmuse/test-data
+It implements Net::Server and thus all the options available to Net::Server are
+also available here. Two additional options are available:
 
-You may provide the Oddmuse wiki script on the command line. If you do not
-provide it, WIKI will default to 'wiki.pl'.
+wiki     - this is the path to the Oddmuse script
+wiki_dir - this is the path to the Oddmuse data directory
 
-You may provide a data directory on the command line. It will be used to set the
-environment variable 'WikiDataDir'. If it is not not set, Oddmuse will default
-to '/tmp/oddmuse'.
+Example invocation:
 
-Run the script and one way to test it is to use telnet:
+/usr/bin/perl /home/alex/src/oddmuse/stuff/gopher-server.pl \
+    --port=7070 \
+    --pid_file=/home/alex/alexschroeder-gopher-server.pid \
+    --wiki=/home/alex/farm/wiki.pl \
+    --wiki_dir=/home/alex/alexschroeder
 
-telnet localhost 7070 /
-telnet localhost 7070 /HomePage
+Run the script and test it:
+
+telnet localhost 7070
+lynx gopher://localhost:7070
+
 EOT
 }
 
 sub process_request {
   my $self = shift;
+
+  binmode(STDOUT, ':encoding(UTF-8)');
+  binmode(STDERR, ':encoding(UTF-8)');
   
   if (OddMuse::IsFile($OddMuse::IndexFile) and OddMuse::ReadIndex()) {
     # we're good
@@ -80,7 +89,7 @@ sub process_request {
   };
   
   if ($@ =~ /timed out/i) {
-    $self->log(1, "Timed Out.\r\n");
+    $self->log(1, "Timed Out.\n");
     return;
   }
 }
@@ -94,16 +103,19 @@ sub options {
   $self->SUPER::options($template);
   
   # add a single value option
-  $prop->{wiki} ||= './wiki.pl';
+  $prop->{wiki} ||= undef;
   $template->{wiki} = \ $prop->{wiki};
+
+  $prop->{wiki_dir} ||= undef;
+  $template->{wiki_dir} = \ $prop->{wiki_dir};
 }
 
 sub post_configure_hook {
   my $self = shift;
-  usage() unless $self->{server}->{wiki};
-  die "Must set evironment variable WikiDataDir\n" unless $ENV{WikiDataDir};
-  $self->log(1, "Wiki data dir is $ENV{WikiDataDir}\n");
+  usage() unless $self->{server}->{wiki} and $self->{server}->{wiki_dir};
+  $self->log(1, "Wiki data dir is " . $self->{server}->{wiki_dir} . "\n");
   $OddMuse::RunCGI = 0;
+  $OddMuse::DataDir = $self->{server}->{wiki_dir};
   $self->log(1, "Running " . $self->{server}->{wiki} . "\n");
   do $self->{server}->{wiki}; # do it once
   OddMuse::InitDirConfig();
