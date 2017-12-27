@@ -24,11 +24,14 @@ sub usage {
   die <<'EOT';
 This server serves a wiki as a gopher site.
 
-It implements Net::Server and thus all the options available to Net::Server are
-also available here. Two additional options are available:
+It implements Net::Server and thus all the options available to
+Net::Server are also available here. Additional options are available:
 
-wiki     - this is the path to the Oddmuse script
-wiki_dir - this is the path to the Oddmuse data directory
+wiki       - this is the path to the Oddmuse script
+wiki_dir   - this is the path to the Oddmuse data directory
+wiki_pages - this is a page to show on the entry menu
+
+You can use multiple instances of wiki_pages.
 
 Example invocation:
 
@@ -36,7 +39,9 @@ Example invocation:
     --port=localhost:7070 \
     --wiki=/home/alex/src/oddmuse/wiki.pl \
     --pid_file=/tmp/oddmuse/gopher.pid \
-    --wiki_dir=/tmp/oddmuse
+    --wiki_dir=/tmp/oddmuse \
+    --wiki_pages=Homepage \
+    --wiki_pages=Gopher_News
 
 Run the script and test it:
 
@@ -85,7 +90,7 @@ sub process_request {
       print "Welcome to the Gopher version of this wiki.\n";
       print "Here are some interesting starting points:\n";
       my @pages = sort { $b cmp $a } grep(m!^\d\d\d\d-\d\d-\d\d!, @OddMuse::IndexList);
-      for my $id (@OddMuse::UserGotoBarPages, @pages[0..9]) {
+      for my $id (@{$self->{server}->{wiki_pages}}, @pages[0..9]) {
 	last unless $id;
 	print join("\t",
 		   "0" . OddMuse::NormalToFree($id),
@@ -143,6 +148,9 @@ sub options {
 
   $prop->{wiki_dir} ||= undef;
   $template->{wiki_dir} = \ $prop->{wiki_dir};
+
+  $prop->{wiki_pages} ||= [];
+  $template->{wiki_pages} = $prop->{wiki_pages};
 }
 
 sub post_configure_hook {
