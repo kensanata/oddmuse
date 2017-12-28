@@ -73,7 +73,7 @@ sub serve_main_menu {
   print "iWelcome to the Gopher version of this wiki.\r\n";
   print "iHere are some interesting starting points:\r\n";
   my @pages = sort { $b cmp $a } grep(m!^\d\d\d\d-\d\d-\d\d!, @OddMuse::IndexList);
-  for my $id (@{$self->{server}->{wiki_pages}}, @pages[0..9]) {
+  for my $id (@{$self->{server}->{wiki_pages}}, @pages[0..29]) {
     last unless $id;
     print join("\t",
 	       "1" . OddMuse::NormalToFree($id),
