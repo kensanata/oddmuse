@@ -16,7 +16,7 @@
 package Oddmuse::Gopher::Server;
 use strict;
 use 5.10.0;
-use base qw(Net::Server::PreFork); # any personality will do
+use base qw(Net::Server::Fork); # any personality will do
 
 Oddmuse::Gopher::Server->run;
  
