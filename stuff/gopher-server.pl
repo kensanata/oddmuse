@@ -86,6 +86,7 @@ sub process_request {
     my $id = <STDIN>; # no loop
     $id =~ s/\s+//g;
     if (not $id) {
+      # no page requested
       $self->log(1, "Serving menu\n");
       print "Welcome to the Gopher version of this wiki.\n";
       print "Here are some interesting starting points:\n";
@@ -93,8 +94,8 @@ sub process_request {
       for my $id (@{$self->{server}->{wiki_pages}}, @pages[0..9]) {
 	last unless $id;
 	print join("\t",
-		   "0" . OddMuse::NormalToFree($id),
-		   "$id",
+		   "1" . OddMuse::NormalToFree($id),
+		   "$id/menu",
 		   $self->{server}->{sockaddr},
 		   $self->{server}->{sockport})
 	    . "\r\n";
@@ -106,25 +107,61 @@ sub process_request {
 		 $self->{server}->{sockport})
 	  . "\r\n";
     } elsif ($id eq "/index") {
+      # index requested
       $self->log(1, "Serving $id\n");
       for my $id (@OddMuse::IndexList) {
 	print join("\t",
-		   "0" . OddMuse::NormalToFree($id),
-		   "$id",
+		   "1" . OddMuse::NormalToFree($id),
+		   "$id/menu",
 		   $self->{server}->{sockaddr},
 		   $self->{server}->{sockport})
 	    . "\r\n";
       }
-    } elsif (not $OddMuse::IndexHash{$id}) {
-      $self->log(1, "Unknown page: $id\n");
-      print "3\tUnknown page: $id\n";
-    } else {
+    } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
+      # page text was requested
+      $self->log(1, "Serving $id\n");
+      $id = substr($id, 0, -5);
+      my $text = "The text of this page:\r\n";
+      $text .= join("\t",
+		    "0" . OddMuse::NormalToFree($id),
+		    $id,
+		    $self->{server}->{sockaddr},
+		    $self->{server}->{sockport})
+	  . "\r\n";
+      OddMuse::OpenPage($id);
+      my @links;
+      while ($OddMuse::Page{text} =~ /\[\[([^\]|]*)(?:|([^\]]*))\]\]/g) {
+	push(@links, [$1, $2||$1]);
+      }
+      if (@links) {
+	$text .= "\r\n";
+	$text .= "Links leaving " . OddMuse::NormalToFree($id) . ":\r\n";
+	for my $link (@links) {
+	  $text .= join("\t",
+			"1" . OddMuse::NormalToFree($link->[1]),
+			OddMuse::FreeToNormal($link->[0]) . "/menu",
+			$self->{server}->{sockaddr},
+			$self->{server}->{sockport})
+	      . "\r\n";
+	}
+      } else {
+	$text .= "\r\n";
+	$text .= "There are no links leaving this page.";
+      }
+      print $text;
+      print ".\r\n";
+    } elsif ($OddMuse::IndexHash{$id}) {
+      # existing page requested
       $self->log(1, "Serving $id\n");
       OddMuse::OpenPage($id);
       my $text = $OddMuse::Page{text};
       $text =~ s/^\./../mg;
       print $text;
       print ".\r\n";
+    } else {
+      # page does not exist
+      $self->log(1, "Unknown page: $id\n");
+      print "Unknown page: $id\n";
     }
   };
   
@@ -163,11 +200,11 @@ sub post_configure_hook {
   do $self->{server}->{wiki}; # do it once
   # do the init code without CGI (no $q)
   OddMuse::InitDirConfig();
-  $OddMuse::FS = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
+  # $OddMuse::FS = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
   # $Message = ''; # Warnings and non-fatal errors.
-  OddMuse::InitLinkPatterns(); # Link pattern can be changed in config files
-  OddMuse::InitModules(); # Modules come first so that users can change module variables in config
-  OddMuse::InitConfig(); # Config comes as early as possible; remember $q is not available here
+  # OddMuse::InitLinkPatterns(); # Link pattern can be changed in config files
+  # OddMuse::InitModules(); # Modules come first so that users can change module variables in config
+  # OddMuse::InitConfig(); # Config comes as early as possible; remember $q is not available here
   # InitRequest(); # get $q with $MaxPost; set these in the config file
   # OddMuse::InitCookie(); # After InitRequest, because $q is used
   # OddMuse::InitVariables(); # After config, to change variables, after InitCookie for GetParam
