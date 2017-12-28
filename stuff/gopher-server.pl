@@ -115,9 +115,13 @@ sub serve_page_menu {
 		$self->{server}->{sockport})
       . "\r\n";
   OddMuse::OpenPage($id);
-  my @links;
+  my @links; # ["page name", "display text"]
   while ($OddMuse::Page{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g) {
-    push(@links, [$1, $2||$1]);
+    if (substr($1, 0, 4) eq 'tag:') {
+      push(@links, [substr($1, 4) . "/tag", $2||substr($1, 4)]);
+    } else {
+      push(@links, [$1 . "/menu", $2||$1]);
+    }
   }
   if (@links) {
     $text .= "\r\n";
@@ -125,7 +129,7 @@ sub serve_page_menu {
     for my $link (@links) {
       $text .= join("\t",
 		    "1" . OddMuse::NormalToFree($link->[1]),
-		    OddMuse::FreeToNormal($link->[0]) . "/menu",
+		    OddMuse::FreeToNormal($link->[0]),
 		    $self->{server}->{sockaddr},
 		    $self->{server}->{sockport})
 	  . "\r\n";
@@ -145,6 +149,25 @@ sub serve_page_text {
   my $text = $OddMuse::Page{text};
   $text =~ s/^\./../mg;
   print $text;
+}
+
+sub serve_tag {
+  my $self = shift;
+  my $tag = shift;
+  $self->log(1, "Serving tag $tag\n");
+  if ($OddMuse::IndexHash{$tag}) {
+    print "This page is about the tag $tag.\r\n";
+    $self->serve_page_text($tag);
+  }
+  print "Search result for tag $tag:\r\n";
+  for my $id (OddMuse::TagFind($tag)) {
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($id),
+	       "$id/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  }
 }
 
 sub serve_unknown {
@@ -178,6 +201,8 @@ sub process_request {
       $self->serve_index();
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
       $self->serve_page_menu(substr($id, 0, -5));
+    } elsif (substr($id, -4) eq '/tag') {
+      $self->serve_tag(substr($id, 0, -4));
     } elsif ($OddMuse::IndexHash{$id}) {
       $self->serve_page_text($id);
     } else {
@@ -220,13 +245,5 @@ sub post_configure_hook {
   $self->log(1, "Running " . $self->{server}->{wiki} . "\n");
   do $self->{server}->{wiki}; # do it once
   # do the init code without CGI (no $q)
-  OddMuse::InitDirConfig();
-  # $OddMuse::FS = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
-  # $Message = ''; # Warnings and non-fatal errors.
-  # OddMuse::InitLinkPatterns(); # Link pattern can be changed in config files
-  # OddMuse::InitModules(); # Modules come first so that users can change module variables in config
-  # OddMuse::InitConfig(); # Config comes as early as possible; remember $q is not available here
-  # InitRequest(); # get $q with $MaxPost; set these in the config file
-  # OddMuse::InitCookie(); # After InitRequest, because $q is used
-  # OddMuse::InitVariables(); # After config, to change variables, after InitCookie for GetParam
+  OddMuse::Init();
 }
