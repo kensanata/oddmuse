@@ -19,7 +19,7 @@ use 5.10.0;
 use base qw(Net::Server::Fork); # any personality will do
 
 Oddmuse::Gopher::Server->run;
- 
+
 sub usage {
   die <<'EOT';
 This server serves a wiki as a gopher site.
@@ -72,8 +72,8 @@ sub serve_main_menu {
   $self->log(1, "Serving main menu\n");
   print "iWelcome to the Gopher version of this wiki.\r\n";
   print "iHere are some interesting starting points:\r\n";
-  my @pages = sort { $b cmp $a } grep(m!^\d\d\d\d-\d\d-\d\d!, @OddMuse::IndexList);
-  for my $id (@{$self->{server}->{wiki_pages}}, @pages[0..29]) {
+
+  for my $id (@{$self->{server}->{wiki_pages}}) {
     last unless $id;
     print join("\t",
 	       "1" . OddMuse::NormalToFree($id),
@@ -82,12 +82,33 @@ sub serve_main_menu {
 	       $self->{server}->{sockport})
 	. "\r\n";
   }
+
   print join("\t",
 	     "1" . "Index of all pages",
 	     "do/index",
 	     $self->{server}->{sockaddr},
 	     $self->{server}->{sockport})
       . "\r\n";
+
+  if ($OddMuse::TagFile) {
+    print join("\t",
+	       "1" . "Index of all tags",
+	       "do/tags",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  }
+
+  my @pages = sort { $b cmp $a } grep(m!^\d\d\d\d-\d\d-\d\d!, @OddMuse::IndexList);
+  for my $id (@{$self->{server}->{wiki_pages}}, @pages) {
+    last unless $id;
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($id),
+	       "$id/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  }
 }
 
 sub serve_index {
@@ -97,6 +118,25 @@ sub serve_index {
     print join("\t",
 	       "1" . OddMuse::NormalToFree($id),
 	       "$id/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  }
+}
+
+sub serve_tags {
+  my $self = shift;
+  $self->log(1, "Serving tag cloud\n");
+  # open the DB file
+  my %h = OddMuse::TagReadHash();
+  my %count = ();
+  foreach my $tag (grep !/^_/, keys %h) {
+    $count{$tag} = @{$h{$tag}};
+  }
+  foreach my $id (sort { $count{$b} <=> $count{$a} } keys %count) {
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($id),
+	       "$id/tag",
 	       $self->{server}->{sockaddr},
 	       $self->{server}->{sockport})
 	. "\r\n";
@@ -121,18 +161,19 @@ sub serve_text_page_menu {
   my $self = shift;
   my $id = shift;
   $self->log(1, "Serving text page menu for $id\n");
-  my $text = "iThe text of this page:\r\n";
-  $text .= join("\t",
-		"0" . OddMuse::NormalToFree($id),
-		$id,
-		$self->{server}->{sockaddr},
-		$self->{server}->{sockport})
+
+  print "iThe text of this page:\r\n";
+  print join("\t",
+	     "0" . OddMuse::NormalToFree($id),
+	     $id,
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
       . "\r\n";
-  $text .= join("\t",
-		"h" . OddMuse::NormalToFree($id),
-		"$id/html",
-		$self->{server}->{sockaddr},
-		$self->{server}->{sockport})
+  print join("\t",
+	     "h" . OddMuse::NormalToFree($id),
+	     "$id/html",
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
       . "\r\n";
 
   my @links; # ["page name", "display text"]
@@ -145,22 +186,26 @@ sub serve_text_page_menu {
   }
 
   if (@links) {
-    $text .= "i\r\n";
-    $text .= "iLinks leaving " . OddMuse::NormalToFree($id) . ":\r\n";
+    print "i\r\n";
+    print "iLinks leaving " . OddMuse::NormalToFree($id) . ":\r\n";
     for my $link (@links) {
-      $text .= join("\t",
-		    "1" . OddMuse::NormalToFree($link->[1]),
-		    OddMuse::FreeToNormal($link->[0]),
-		    $self->{server}->{sockaddr},
-		    $self->{server}->{sockport})
+      print join("\t",
+		 "1" . OddMuse::NormalToFree($link->[1]),
+		 OddMuse::FreeToNormal($link->[0]),
+		 $self->{server}->{sockaddr},
+		 $self->{server}->{sockport})
 	  . "\r\n";
     }
   } else {
-    $text .= "i\r\n";
-    $text .= "iThere are no links leaving this page.";
+    print "i\r\n";
+    print "iThere are no links leaving this page.\r\n";
   }
 
-  print $text;
+  if ($OddMuse::Page{text} =~ m/<journal search tag:(\S+)>\s*/) {
+    my $tag = $1;
+    print "i\r\n";
+    $self->serve_tag_list($tag);
+  }
 }
 
 sub serve_page_menu {
@@ -224,20 +269,9 @@ sub newest_first {
   $A cmp $B;
 }
 
-sub serve_tag {
+sub serve_tag_list {
   my $self = shift;
   my $tag = shift;
-  $self->log(1, "Serving tag $tag\n");
-  if ($OddMuse::IndexHash{$tag}) {
-    print "iThis page is about the tag $tag.\r\n";
-    print join("\t",
-	       "1" . OddMuse::NormalToFree($tag),
-	       "$tag/menu",
-	       $self->{server}->{sockaddr},
-	       $self->{server}->{sockport})
-	. "\r\n";
-    print "i\r\n";
-  }
   print "iSearch result for tag $tag:\r\n";
   for my $id (sort newest_first OddMuse::TagFind($tag)) {
     print join("\t",
@@ -247,6 +281,23 @@ sub serve_tag {
 	       $self->{server}->{sockport})
 	. "\r\n";
   }
+}
+
+sub serve_tag {
+  my $self = shift;
+  my $tag = shift;
+  $self->log(1, "Serving tag $tag\n");
+  if ($OddMuse::IndexHash{$tag}) {
+  print "iThis page is about the tag $tag.\r\n";
+  print join("\t",
+	     "1" . OddMuse::NormalToFree($tag),
+	     "$tag/menu",
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
+      . "\r\n";
+  print "i\r\n";
+  }
+  $self->serve_tag_list($tag);
 }
 
 sub serve_unknown {
@@ -262,7 +313,7 @@ sub process_request {
   binmode(STDIN, ':encoding(UTF-8)');
   binmode(STDOUT, ':encoding(UTF-8)');
   binmode(STDERR, ':encoding(UTF-8)');
-  
+
   if (OddMuse::IsFile($OddMuse::IndexFile) and OddMuse::ReadIndex()) {
     # we're good
   } else {
@@ -279,6 +330,8 @@ sub process_request {
       $self->serve_main_menu();
     } elsif ($id eq "do/index") {
       $self->serve_index();
+    } elsif ($id eq "do/tags") {
+      $self->serve_tags();
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
       $self->serve_page_menu(substr($id, 0, -5));
     } elsif (substr($id, -4) eq '/tag') {
@@ -292,7 +345,7 @@ sub process_request {
     }
   };
   print ".\r\n";
-  
+
   if ($@ =~ /timed out/i) {
     $self->log(1, "Timed Out.\n");
     return;
@@ -303,10 +356,10 @@ sub options {
   my $self     = shift;
   my $prop     = $self->{'server'};
   my $template = shift;
-  
+
   # setup options in the parent classes
   $self->SUPER::options($template);
-  
+
   # add a single value option
   $prop->{wiki} ||= undef;
   $template->{wiki} = \ $prop->{wiki};
