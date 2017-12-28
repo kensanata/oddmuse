@@ -157,7 +157,13 @@ sub serve_tag {
   $self->log(1, "Serving tag $tag\n");
   if ($OddMuse::IndexHash{$tag}) {
     print "This page is about the tag $tag.\r\n";
-    $self->serve_page_text($tag);
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($tag),
+	       "$tag/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+    print "\r\n";
   }
   print "Search result for tag $tag:\r\n";
   for my $id (OddMuse::TagFind($tag)) {
