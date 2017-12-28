@@ -151,6 +151,15 @@ sub serve_page_text {
   print $text;
 }
 
+sub newest_first {
+  my ($A, $B) = ($a, $b);
+  if ($A =~ /^\d\d\d\d-\d\d-\d\d/ and $B =~ /^\d\d\d\d-\d\d-\d\d/) {
+    return $B cmp $A;
+  }
+  $A cmp $B;
+}
+
+
 sub serve_tag {
   my $self = shift;
   my $tag = shift;
@@ -166,7 +175,7 @@ sub serve_tag {
     print "\r\n";
   }
   print "Search result for tag $tag:\r\n";
-  for my $id (OddMuse::TagFind($tag)) {
+  for my $id (sort newest_first OddMuse::TagFind($tag)) {
     print join("\t",
 	       "1" . OddMuse::NormalToFree($id),
 	       "$id/menu",
