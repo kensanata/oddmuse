@@ -103,10 +103,24 @@ sub serve_index {
   }
 }
 
-sub serve_page_menu {
+sub serve_file_page_menu {
   my $self = shift;
   my $id = shift;
-  $self->log(1, "Serving page menu for $id\n");
+  my $type = shift;
+  my $code = substr($type, 0, 6) eq 'image/' ? 'I' : '9';
+  $self->log(1, "Serving file page menu for $id\n");
+  print join("\t",
+	     $code . OddMuse::NormalToFree($id),
+	     $id,
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
+      . "\r\n";
+}
+
+sub serve_text_page_menu {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Serving text page menu for $id\n");
   my $text = "The text of this page:\r\n";
   $text .= join("\t",
 		"0" . OddMuse::NormalToFree($id),
@@ -114,7 +128,13 @@ sub serve_page_menu {
 		$self->{server}->{sockaddr},
 		$self->{server}->{sockport})
       . "\r\n";
-  OddMuse::OpenPage($id);
+  $text .= join("\t",
+		"h" . OddMuse::NormalToFree($id),
+		"$id/html",
+		$self->{server}->{sockaddr},
+		$self->{server}->{sockport})
+      . "\r\n";
+
   my @links; # ["page name", "display text"]
   while ($OddMuse::Page{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g) {
     if (substr($1, 0, 4) eq 'tag:') {
@@ -123,6 +143,7 @@ sub serve_page_menu {
       push(@links, [$1 . "/menu", $2||$1]);
     }
   }
+
   if (@links) {
     $text .= "\r\n";
     $text .= "Links leaving " . OddMuse::NormalToFree($id) . ":\r\n";
@@ -138,17 +159,59 @@ sub serve_page_menu {
     $text .= "\r\n";
     $text .= "There are no links leaving this page.";
   }
+
   print $text;
 }
 
-sub serve_page_text {
+sub serve_page_menu {
   my $self = shift;
   my $id = shift;
-  $self->log(1, "Serving $id\n");
   OddMuse::OpenPage($id);
+  if (my ($type) = OddMuse::TextIsFile($OddMuse::Page{text})) {
+    $self->serve_file_page_menu($id, $type);
+  } else {
+    $self->serve_text_page_menu($id);
+  }
+}
+
+sub serve_file_page {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Serving $id as file\n");
+  binmode(STDOUT, ':pop:raw');
+  require MIME::Base64;
+  my ($data) = $OddMuse::Page{text} =~ /^[^\n]*\n(.*)/s;
+  print MIME::Base64::decode($data);
+  # do not append a dot, just close the connection
+  exit;
+}
+
+sub serve_text_page {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Serving $id as text\n");
   my $text = $OddMuse::Page{text};
   $text =~ s/^\./../mg;
   print $text;
+}
+
+sub serve_page {
+  my $self = shift;
+  my $id = shift;
+  OddMuse::OpenPage($id);
+  if (my ($type) = OddMuse::TextIsFile($OddMuse::Page{text})) {
+    $self->serve_file_page($id);
+  } else {
+    $self->serve_text_page($id);
+  }
+}
+
+sub serve_page_html {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Serving $id as HTML\n");
+  OddMuse::OpenPage($id);
+  OddMuse::PrintPageHtml();
 }
 
 sub serve_tag {
@@ -210,7 +273,9 @@ sub process_request {
     } elsif (substr($id, -4) eq '/tag') {
       $self->serve_tag(substr($id, 0, -4));
     } elsif ($OddMuse::IndexHash{$id}) {
-      $self->serve_page_text($id);
+      $self->serve_page($id);
+    } elsif (substr($id, -5) eq '/html') {
+      $self->serve_page_html(substr($id, 0, -5));
     } else {
       $self->serve_unknown($id);
     }
