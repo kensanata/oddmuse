@@ -67,6 +67,93 @@ lynx gopher://localhost:7070/0HomePage
 EOT
 }
 
+sub serve_main_menu {
+  my $self = shift;
+  $self->log(1, "Serving main menu\n");
+  print "Welcome to the Gopher version of this wiki.\n";
+  print "Here are some interesting starting points:\n";
+  my @pages = sort { $b cmp $a } grep(m!^\d\d\d\d-\d\d-\d\d!, @OddMuse::IndexList);
+  for my $id (@{$self->{server}->{wiki_pages}}, @pages[0..9]) {
+    last unless $id;
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($id),
+	       "$id/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  }
+  print join("\t",
+	     "1" . "Index of all pages",
+	     "/index",
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
+      . "\r\n";
+}
+
+sub serve_index {
+  my $self = shift;
+  $self->log(1, "Serving index of all pages\n");
+  for my $id (@OddMuse::IndexList) {
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($id),
+	       "$id/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  }
+}
+
+sub serve_page_menu {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Serving page menu for $id\n");
+  my $text = "The text of this page:\r\n";
+  $text .= join("\t",
+		"0" . OddMuse::NormalToFree($id),
+		$id,
+		$self->{server}->{sockaddr},
+		$self->{server}->{sockport})
+      . "\r\n";
+  OddMuse::OpenPage($id);
+  my @links;
+  while ($OddMuse::Page{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g) {
+    push(@links, [$1, $2||$1]);
+  }
+  if (@links) {
+    $text .= "\r\n";
+    $text .= "Links leaving " . OddMuse::NormalToFree($id) . ":\r\n";
+    for my $link (@links) {
+      $text .= join("\t",
+		    "1" . OddMuse::NormalToFree($link->[1]),
+		    OddMuse::FreeToNormal($link->[0]) . "/menu",
+		    $self->{server}->{sockaddr},
+		    $self->{server}->{sockport})
+	  . "\r\n";
+    }
+  } else {
+    $text .= "\r\n";
+    $text .= "There are no links leaving this page.";
+  }
+  print $text;
+}
+
+sub serve_page_text {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Serving $id\n");
+  OddMuse::OpenPage($id);
+  my $text = $OddMuse::Page{text};
+  $text =~ s/^\./../mg;
+  print $text;
+}
+
+sub serve_unknown {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Unknown page: $id\n");
+  print "Unknown page: $id\n";
+}
+
 sub process_request {
   my $self = shift;
 
@@ -86,84 +173,18 @@ sub process_request {
     my $id = <STDIN>; # no loop
     $id =~ s/\s+//g;
     if (not $id) {
-      # no page requested
-      $self->log(1, "Serving menu\n");
-      print "Welcome to the Gopher version of this wiki.\n";
-      print "Here are some interesting starting points:\n";
-      my @pages = sort { $b cmp $a } grep(m!^\d\d\d\d-\d\d-\d\d!, @OddMuse::IndexList);
-      for my $id (@{$self->{server}->{wiki_pages}}, @pages[0..9]) {
-	last unless $id;
-	print join("\t",
-		   "1" . OddMuse::NormalToFree($id),
-		   "$id/menu",
-		   $self->{server}->{sockaddr},
-		   $self->{server}->{sockport})
-	    . "\r\n";
-      }
-      print join("\t",
-		 "1" . "Index of all pages",
-		 "/index",
-		 $self->{server}->{sockaddr},
-		 $self->{server}->{sockport})
-	  . "\r\n";
+      $self->serve_main_menu();
     } elsif ($id eq "/index") {
-      # index requested
-      $self->log(1, "Serving $id\n");
-      for my $id (@OddMuse::IndexList) {
-	print join("\t",
-		   "1" . OddMuse::NormalToFree($id),
-		   "$id/menu",
-		   $self->{server}->{sockaddr},
-		   $self->{server}->{sockport})
-	    . "\r\n";
-      }
+      $self->serve_index();
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
-      # page text was requested
-      $self->log(1, "Serving $id\n");
-      $id = substr($id, 0, -5);
-      my $text = "The text of this page:\r\n";
-      $text .= join("\t",
-		    "0" . OddMuse::NormalToFree($id),
-		    $id,
-		    $self->{server}->{sockaddr},
-		    $self->{server}->{sockport})
-	  . "\r\n";
-      OddMuse::OpenPage($id);
-      my @links;
-      while ($OddMuse::Page{text} =~ /\[\[([^\]|]*)(?:|([^\]]*))\]\]/g) {
-	push(@links, [$1, $2||$1]);
-      }
-      if (@links) {
-	$text .= "\r\n";
-	$text .= "Links leaving " . OddMuse::NormalToFree($id) . ":\r\n";
-	for my $link (@links) {
-	  $text .= join("\t",
-			"1" . OddMuse::NormalToFree($link->[1]),
-			OddMuse::FreeToNormal($link->[0]) . "/menu",
-			$self->{server}->{sockaddr},
-			$self->{server}->{sockport})
-	      . "\r\n";
-	}
-      } else {
-	$text .= "\r\n";
-	$text .= "There are no links leaving this page.";
-      }
-      print $text;
-      print ".\r\n";
+      $self->serve_page_menu(substr($id, 0, -5));
     } elsif ($OddMuse::IndexHash{$id}) {
-      # existing page requested
-      $self->log(1, "Serving $id\n");
-      OddMuse::OpenPage($id);
-      my $text = $OddMuse::Page{text};
-      $text =~ s/^\./../mg;
-      print $text;
-      print ".\r\n";
+      $self->serve_page_text($id);
     } else {
-      # page does not exist
-      $self->log(1, "Unknown page: $id\n");
-      print "Unknown page: $id\n";
+      $self->serve_unknown($id);
     }
   };
+  print ".\r\n";
   
   if ($@ =~ /timed out/i) {
     $self->log(1, "Timed Out.\n");
