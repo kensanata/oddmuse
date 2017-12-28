@@ -70,8 +70,8 @@ EOT
 sub serve_main_menu {
   my $self = shift;
   $self->log(1, "Serving main menu\n");
-  print "Welcome to the Gopher version of this wiki.\n";
-  print "Here are some interesting starting points:\n";
+  print "iWelcome to the Gopher version of this wiki.\r\n";
+  print "iHere are some interesting starting points:\r\n";
   my @pages = sort { $b cmp $a } grep(m!^\d\d\d\d-\d\d-\d\d!, @OddMuse::IndexList);
   for my $id (@{$self->{server}->{wiki_pages}}, @pages[0..9]) {
     last unless $id;
@@ -84,7 +84,7 @@ sub serve_main_menu {
   }
   print join("\t",
 	     "1" . "Index of all pages",
-	     "/index",
+	     "do/index",
 	     $self->{server}->{sockaddr},
 	     $self->{server}->{sockport})
       . "\r\n";
@@ -121,7 +121,7 @@ sub serve_text_page_menu {
   my $self = shift;
   my $id = shift;
   $self->log(1, "Serving text page menu for $id\n");
-  my $text = "The text of this page:\r\n";
+  my $text = "iThe text of this page:\r\n";
   $text .= join("\t",
 		"0" . OddMuse::NormalToFree($id),
 		$id,
@@ -145,8 +145,8 @@ sub serve_text_page_menu {
   }
 
   if (@links) {
-    $text .= "\r\n";
-    $text .= "Links leaving " . OddMuse::NormalToFree($id) . ":\r\n";
+    $text .= "i\r\n";
+    $text .= "iLinks leaving " . OddMuse::NormalToFree($id) . ":\r\n";
     for my $link (@links) {
       $text .= join("\t",
 		    "1" . OddMuse::NormalToFree($link->[1]),
@@ -156,8 +156,8 @@ sub serve_text_page_menu {
 	  . "\r\n";
     }
   } else {
-    $text .= "\r\n";
-    $text .= "There are no links leaving this page.";
+    $text .= "i\r\n";
+    $text .= "iThere are no links leaving this page.";
   }
 
   print $text;
@@ -212,6 +212,8 @@ sub serve_page_html {
   $self->log(1, "Serving $id as HTML\n");
   OddMuse::OpenPage($id);
   OddMuse::PrintPageHtml();
+  # do not append a dot, just close the connection
+  exit;
 }
 
 sub serve_tag {
@@ -219,16 +221,16 @@ sub serve_tag {
   my $tag = shift;
   $self->log(1, "Serving tag $tag\n");
   if ($OddMuse::IndexHash{$tag}) {
-    print "This page is about the tag $tag.\r\n";
+    print "iThis page is about the tag $tag.\r\n";
     print join("\t",
 	       "1" . OddMuse::NormalToFree($tag),
 	       "$tag/menu",
 	       $self->{server}->{sockaddr},
 	       $self->{server}->{sockport})
 	. "\r\n";
-    print "\r\n";
+    print "i\r\n";
   }
-  print "Search result for tag $tag:\r\n";
+  print "iSearch result for tag $tag:\r\n";
   for my $id (OddMuse::TagFind($tag)) {
     print join("\t",
 	       "1" . OddMuse::NormalToFree($id),
@@ -243,7 +245,7 @@ sub serve_unknown {
   my $self = shift;
   my $id = shift;
   $self->log(1, "Unknown page: $id\n");
-  print "Unknown page: $id\n";
+  print "3Unknown page: $id\n";
 }
 
 sub process_request {
@@ -263,10 +265,11 @@ sub process_request {
     local $SIG{'ALRM'} = sub { die "Timed Out!\n" };
     alarm(10); # timeout
     my $id = <STDIN>; # no loop
-    $id =~ s/\s+//g;
+    $id =~ s/^\/.//; # strip leading slash and type, if any
+    $id =~ s/\s+//g; # no whitespace in page names
     if (not $id) {
       $self->serve_main_menu();
-    } elsif ($id eq "/index") {
+    } elsif ($id eq "do/index") {
       $self->serve_index();
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
       $self->serve_page_menu(substr($id, 0, -5));
