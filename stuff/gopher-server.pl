@@ -217,6 +217,7 @@ sub serve_rc {
 	       $self->{server}->{sockport})
 	. "\r\n";
   }
+
   OddMuse::ProcessRcLines(
     sub {
       my $date = shift;
@@ -245,10 +246,12 @@ sub serve_file_page_menu {
   my $self = shift;
   my $id = shift;
   my $type = shift;
+  my $revision = shift;
   my $code = substr($type, 0, 6) eq 'image/' ? 'I' : '9';
   $self->log(1, "Serving file page menu for $id\n");
   print join("\t",
-	     $code . OddMuse::NormalToFree($id),
+	     $code . OddMuse::NormalToFree($id)
+	     . ($revision ? "/$revision" : ""),
 	     $id,
 	     $self->{server}->{sockaddr},
 	     $self->{server}->{sockport})
@@ -258,17 +261,22 @@ sub serve_file_page_menu {
 sub serve_text_page_menu {
   my $self = shift;
   my $id = shift;
-  $self->log(1, "Serving text page menu for $id\n");
+  my $revision = shift;
+  $self->log(1, "Serving text page menu for $id"
+	     . ($revision ? "/$revision" : "")
+	     . "\n");
 
   print "iThe text of this page:\r\n";
   print join("\t",
-	     "0" . OddMuse::NormalToFree($id),
+	     "0" . OddMuse::NormalToFree($id)
+	     . ($revision ? "/$revision" : ""),
 	     $id,
 	     $self->{server}->{sockaddr},
 	     $self->{server}->{sockport})
       . "\r\n";
   print join("\t",
-	     "h" . OddMuse::NormalToFree($id),
+	     "h" . OddMuse::NormalToFree($id)
+	     . ($revision ? "/$revision" : ""),
 	     "$id/html",
 	     $self->{server}->{sockaddr},
 	     $self->{server}->{sockport})
@@ -306,6 +314,39 @@ sub serve_text_page_menu {
   }
 }
 
+sub serve_page_history {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Serving history of $id\n");
+  OddMuse::OpenPage($id);
+  foreach my $revision (OddMuse::GetKeepRevisions($OddMuse::OpenPageName)) {
+    my $keep = OddMuse::GetKeptRevision($revision);
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($id) . " ($keep->{revision})",
+	       "$id/$keep->{revision}/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+    print "i" . OddMuse::CalcTime($keep->{ts})
+	. " by " . OddMuse::GetAuthor($keep->{host}, $keep->{username})
+	. ($keep->{summary} ? ": $keep->{summary}" : "")
+	. ($keep->{minor} ? " (minor)" : "")
+	. "\r\n";
+  }
+}
+
+sub serve_page_revision_menu {
+  my $self = shift;
+  my $id = shift;
+  my $revision = shift;
+  OddMuse::OpenPage($id);
+  if (my ($type) = OddMuse::TextIsFile($OddMuse::Page{text})) {
+    $self->serve_file_page_menu($id, $type, $revision);
+  } else {
+    $self->serve_text_page_menu($id, $revision);
+  }
+}
+
 sub serve_page_menu {
   my $self = shift;
   my $id = shift;
@@ -315,6 +356,13 @@ sub serve_page_menu {
   } else {
     $self->serve_text_page_menu($id);
   }
+  print "i\r\n";
+  print join("\t",
+	     "1" . "Page History",
+	     "$id/history",
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
+      . "\r\n";
 }
 
 sub serve_file_page {
@@ -386,14 +434,14 @@ sub serve_tag {
   my $tag = shift;
   $self->log(1, "Serving tag $tag\n");
   if ($OddMuse::IndexHash{$tag}) {
-  print "iThis page is about the tag $tag.\r\n";
-  print join("\t",
-	     "1" . OddMuse::NormalToFree($tag),
-	     "$tag/menu",
-	     $self->{server}->{sockaddr},
-	     $self->{server}->{sockport})
-      . "\r\n";
-  print "i\r\n";
+    print "iThis page is about the tag $tag.\r\n";
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($tag),
+	       "$tag/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+    print "i\r\n";
   }
   $self->serve_tag_list($tag);
 }
@@ -438,14 +486,18 @@ sub process_request {
       $self->serve_rc(0);
     } elsif ($id eq "do/rc/showedits") {
       $self->serve_rc(1);
+    } elsif ($id =~ m!^([^/]*)/(\d+)/menu$!) {
+      $self->serve_page_revision_menu($1, $2);
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
       $self->serve_page_menu(substr($id, 0, -5));
     } elsif (substr($id, -4) eq '/tag') {
       $self->serve_tag(substr($id, 0, -4));
-    } elsif ($OddMuse::IndexHash{$id}) {
-      $self->serve_page($id);
     } elsif (substr($id, -5) eq '/html') {
       $self->serve_page_html(substr($id, 0, -5));
+    } elsif (substr($id, -8) eq '/history') {
+      $self->serve_page_history(substr($id, 0, -8));
+    } elsif ($OddMuse::IndexHash{$id}) {
+      $self->serve_page($id);
     } else {
       $self->serve_unknown($id);
     }
@@ -495,6 +547,5 @@ sub post_configure_hook {
 sub NewGopherFiltered {
   my @pages = OddMuse::OldGopherFiltered(@_);
   @pages = sort newest_first @pages;
-  warn("Sorted @pages\n");
   return @pages;
 }
