@@ -84,6 +84,13 @@ sub serve_main_menu {
   }
 
   print join("\t",
+	     "1" . "Recent Changes",
+	     "do/rc",
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
+      . "\r\n";
+
+  print join("\t",
 	     "7" . "Find matching page titles",
 	     "do/match",
 	     $self->{server}->{sockaddr},
@@ -113,8 +120,8 @@ sub serve_main_menu {
 	. "\r\n";
   }
 
-  my @pages = sort { $b cmp $a } grep(m!^\d\d\d\d-\d\d-\d\d!, @OddMuse::IndexList);
-  for my $id (@{$self->{server}->{wiki_pages}}, @pages) {
+  my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @OddMuse::IndexList);
+  for my $id (@pages) {
     last unless $id;
     print join("\t",
 	       "1" . OddMuse::NormalToFree($id),
@@ -187,6 +194,33 @@ sub serve_tags {
 	       $self->{server}->{sockport})
 	. "\r\n";
   }
+}
+
+sub serve_rc {
+  my $self = shift;
+  $self->log(1, "Serving recent changes\n");
+  print("iRecent Changes\r\n");
+  OddMuse::ProcessRcLines(
+    sub {
+      my $date = shift;
+      print "i\r\n";
+      print "i$date\r\n";
+    },
+    sub {
+        my($id, $ts, $host, $username, $summary, $minor, $revision,
+	   $languages, $cluster, $last) = @_;
+	print "i" . OddMuse::CalcTime($ts)
+	    . " by " . OddMuse::GetAuthor($host, $username)
+	    . ($summary ? ": $summary" : "")
+	    . ($minor ? " (minor)" : "")
+	    . "\r\n";
+	print join("\t",
+		   "1" . OddMuse::NormalToFree($id),
+		   "$id/menu",
+		   $self->{server}->{sockaddr},
+		   $self->{server}->{sockport})
+	    . "\r\n";
+    });
 }
 
 sub serve_file_page_menu {
@@ -382,6 +416,8 @@ sub process_request {
       $self->serve_search(substr($id, 10));
     } elsif ($id eq "do/tags") {
       $self->serve_tags();
+    } elsif ($id eq "do/rc") {
+      $self->serve_rc();
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
       $self->serve_page_menu(substr($id, 0, -5));
     } elsif (substr($id, -4) eq '/tag') {
