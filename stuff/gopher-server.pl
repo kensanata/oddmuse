@@ -128,7 +128,7 @@ sub serve_main_menu {
 sub serve_index {
   my $self = shift;
   $self->log(1, "Serving index of all pages\n");
-  for my $id (@OddMuse::IndexList) {
+  for my $id (sort newest_first @OddMuse::IndexList) {
     print join("\t",
 	       "1" . OddMuse::NormalToFree($id),
 	       "$id/menu",
@@ -144,7 +144,7 @@ sub serve_match {
   $self->log(1, "Serving pages matching $match\n");
   print("iUse a regular expression to match page titles.\r\n");
   print("iNote that spaces in page titles are actually underlines, '_'.\r\n");
-  for my $id (grep(/$match/i, @OddMuse::IndexList)) {
+  for my $id (sort newest_first grep(/$match/i, @OddMuse::IndexList)) {
     print join("\t",
 	       "1" . OddMuse::NormalToFree($id),
 	       "$id/menu",
@@ -431,4 +431,14 @@ sub post_configure_hook {
   do $self->{server}->{wiki}; # do it once
   # do the init code without CGI (no $q)
   OddMuse::Init();
+  # make sure search is sorted newest first because NewTagFiltered resorts
+  *OddMuse::OldGopherFiltered = \&OddMuse::Filtered;
+  *OddMuse::Filtered = \&NewGopherFiltered;
+}
+
+sub NewGopherFiltered {
+  my @pages = OddMuse::OldGopherFiltered(@_);
+  @pages = sort newest_first @pages;
+  warn("Sorted @pages\n");
+  return @pages;
 }
