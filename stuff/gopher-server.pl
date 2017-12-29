@@ -198,27 +198,45 @@ sub serve_tags {
 
 sub serve_rc {
   my $self = shift;
+  my $showedit = shift;
+  OddMuse::SetParam('showedit', $showedit);
   $self->log(1, "Serving recent changes\n");
   print("iRecent Changes\r\n");
+  if ($showedit) {
+    print join("\t",
+	       "1" . "Skip minor edits",
+	       "do/rc",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  } else {
+    print join("\t",
+	       "1" . "Show minor edits",
+	       "do/rc/showedits",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  }
   OddMuse::ProcessRcLines(
     sub {
       my $date = shift;
       print "i\r\n";
       print "i$date\r\n";
+      print "i\r\n";
     },
     sub {
         my($id, $ts, $host, $username, $summary, $minor, $revision,
 	   $languages, $cluster, $last) = @_;
-	print "i" . OddMuse::CalcTime($ts)
-	    . " by " . OddMuse::GetAuthor($host, $username)
-	    . ($summary ? ": $summary" : "")
-	    . ($minor ? " (minor)" : "")
-	    . "\r\n";
 	print join("\t",
 		   "1" . OddMuse::NormalToFree($id),
 		   "$id/menu",
 		   $self->{server}->{sockaddr},
 		   $self->{server}->{sockport})
+	    . "\r\n";
+	print "i" . OddMuse::CalcTime($ts)
+	    . " by " . OddMuse::GetAuthor($host, $username)
+	    . ($summary ? ": $summary" : "")
+	    . ($minor ? " (minor)" : "")
 	    . "\r\n";
     });
 }
@@ -417,7 +435,9 @@ sub process_request {
     } elsif ($id eq "do/tags") {
       $self->serve_tags();
     } elsif ($id eq "do/rc") {
-      $self->serve_rc();
+      $self->serve_rc(0);
+    } elsif ($id eq "do/rc/showedits") {
+      $self->serve_rc(1);
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
       $self->serve_page_menu(substr($id, 0, -5));
     } elsif (substr($id, -4) eq '/tag') {
