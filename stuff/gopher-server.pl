@@ -54,7 +54,7 @@ kill -s SIGHUP `cat /tmp/oddmuse/gopher.pid`
 
 The list of all pages:
 
-lynx gopher://localhost:7070/1/index
+lynx gopher://localhost:7070/1do/index
 
 Edit a page from the command line:
 
@@ -82,6 +82,20 @@ sub serve_main_menu {
 	       $self->{server}->{sockport})
 	. "\r\n";
   }
+
+  print join("\t",
+	     "7" . "Find matching page titles",
+	     "do/match",
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
+      . "\r\n";
+
+  print join("\t",
+	     "7" . "Full text search",
+	     "do/search",
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
+      . "\r\n";
 
   print join("\t",
 	     "1" . "Index of all pages",
@@ -122,6 +136,38 @@ sub serve_index {
 	       $self->{server}->{sockport})
 	. "\r\n";
   }
+}
+
+sub serve_match {
+  my $self = shift;
+  my $match = shift;
+  $self->log(1, "Serving pages matching $match\n");
+  print("iUse a regular expression to match page titles.\r\n");
+  print("iNote that spaces in page titles are actually underlines, '_'.\r\n");
+  for my $id (grep(/$match/i, @OddMuse::IndexList)) {
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($id),
+	       "$id/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  }
+}
+
+sub serve_search {
+  my $self = shift;
+  my $str = shift;
+  $self->log(1, "Serving search result for $str\n");
+  print("iUse regular expressions separated by space to search.\r\n");
+  OddMuse::SearchTitleAndBody($str, sub {
+    my $id = shift;
+    print join("\t",
+	       "1" . OddMuse::NormalToFree($id),
+	       "$id/menu",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  });
 }
 
 sub serve_tags {
@@ -325,11 +371,15 @@ sub process_request {
     alarm(10); # timeout
     my $id = <STDIN>; # no loop
     $id =~ s/^\/.//; # strip leading slash and type, if any
-    $id =~ s/\s+//g; # no whitespace in page names
+    $id =~ s/\s+$//g; # no trailing whitespace
     if (not $id) {
       $self->serve_main_menu();
     } elsif ($id eq "do/index") {
       $self->serve_index();
+    } elsif (substr($id, 0, 9) eq "do/match\t") {
+      $self->serve_match(substr($id, 9));
+    } elsif (substr($id, 0, 10) eq "do/search\t") {
+      $self->serve_search(substr($id, 10));
     } elsif ($id eq "do/tags") {
       $self->serve_tags();
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
