@@ -20,6 +20,46 @@ use base qw(Net::Server::Fork); # any personality will do
 
 Oddmuse::Gopher::Server->run;
 
+sub options {
+  my $self     = shift;
+  my $prop     = $self->{'server'};
+  my $template = shift;
+
+  # setup options in the parent classes
+  $self->SUPER::options($template);
+
+  # add a single value option
+  $prop->{wiki} ||= undef;
+  $template->{wiki} = \ $prop->{wiki};
+
+  $prop->{wiki_dir} ||= undef;
+  $template->{wiki_dir} = \ $prop->{wiki_dir};
+
+  $prop->{wiki_pages} ||= [];
+  $template->{wiki_pages} = $prop->{wiki_pages};
+}
+
+sub post_configure_hook {
+  my $self = shift;
+  usage() unless $self->{server}->{wiki} and $self->{server}->{wiki_dir};
+  $self->log(1, "Wiki data dir is " . $self->{server}->{wiki_dir} . "\n");
+  $OddMuse::RunCGI = 0;
+  $OddMuse::DataDir = $self->{server}->{wiki_dir};
+  $self->log(1, "Running " . $self->{server}->{wiki} . "\n");
+  do $self->{server}->{wiki}; # do it once
+  # do the init code without CGI (no $q)
+  OddMuse::Init();
+  # make sure search is sorted newest first because NewTagFiltered resorts
+  *OddMuse::OldGopherFiltered = \&OddMuse::Filtered;
+  *OddMuse::Filtered = \&NewGopherFiltered;
+}
+
+sub NewGopherFiltered {
+  my @pages = OddMuse::OldGopherFiltered(@_);
+  @pages = sort newest_first @pages;
+  return @pages;
+}
+
 sub usage {
   die <<'EOT';
 This server serves a wiki as a gopher site.
@@ -198,9 +238,11 @@ sub serve_tags {
 
 sub serve_rc {
   my $self = shift;
-  my $showedit = shift;
-  OddMuse::SetParam('showedit', $showedit);
-  $self->log(1, "Serving recent changes\n");
+  my $showedit = $OddMuse::ShowEdits = shift;
+  $self->log(1, "Serving recent changes"
+	     . ($showedit ? " including minor changes" : "")
+	     . "\n");
+
   print("iRecent Changes\r\n");
   if ($showedit) {
     print join("\t",
@@ -261,6 +303,7 @@ sub serve_file_page_menu {
 sub serve_text_page_menu {
   my $self = shift;
   my $id = shift;
+  my $page = shift;
   my $revision = shift;
   $self->log(1, "Serving text page menu for $id"
 	     . ($revision ? "/$revision" : "")
@@ -268,16 +311,14 @@ sub serve_text_page_menu {
 
   print "iThe text of this page:\r\n";
   print join("\t",
-	     "0" . OddMuse::NormalToFree($id)
-	     . ($revision ? "/$revision" : ""),
-	     $id,
+	     "0" . OddMuse::NormalToFree($id),
+	     $id . ($revision ? "/$revision" : ""),
 	     $self->{server}->{sockaddr},
 	     $self->{server}->{sockport})
       . "\r\n";
   print join("\t",
-	     "h" . OddMuse::NormalToFree($id)
-	     . ($revision ? "/$revision" : ""),
-	     "$id/html",
+	     "h" . OddMuse::NormalToFree($id),
+	     $id . ($revision ? "/$revision" : "") . "/html",
 	     $self->{server}->{sockaddr},
 	     $self->{server}->{sockport})
       . "\r\n";
@@ -319,6 +360,19 @@ sub serve_page_history {
   my $id = shift;
   $self->log(1, "Serving history of $id\n");
   OddMuse::OpenPage($id);
+
+  print join("\t",
+	     "1" . OddMuse::NormalToFree($id) . " (current)",
+	     "$id/menu",
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
+      . "\r\n";
+  print "i" . OddMuse::CalcTime($OddMuse::Page{ts})
+      . " by " . OddMuse::GetAuthor($OddMuse::Page{host}, $OddMuse::Page{username})
+      . ($OddMuse::Page{summary} ? ": $OddMuse::Page{summary}" : "")
+      . ($OddMuse::Page{minor} ? " (minor)" : "")
+      . "\r\n";
+
   foreach my $revision (OddMuse::GetKeepRevisions($OddMuse::OpenPageName)) {
     my $keep = OddMuse::GetKeptRevision($revision);
     print join("\t",
@@ -335,43 +389,53 @@ sub serve_page_history {
   }
 }
 
-sub serve_page_revision_menu {
-  my $self = shift;
+sub get_page {
   my $id = shift;
   my $revision = shift;
-  OddMuse::OpenPage($id);
-  if (my ($type) = OddMuse::TextIsFile($OddMuse::Page{text})) {
-    $self->serve_file_page_menu($id, $type, $revision);
+  my $page;
+  
+  if ($revision) {
+    $OddMuse::OpenPageName = $id;
+    $page = OddMuse::GetKeptRevision($revision);
   } else {
-    $self->serve_text_page_menu($id, $revision);
+    OddMuse::OpenPage($id);
+    $page = \%OddMuse::Page;
   }
+
+  return $page;
 }
 
 sub serve_page_menu {
   my $self = shift;
   my $id = shift;
-  OddMuse::OpenPage($id);
-  if (my ($type) = OddMuse::TextIsFile($OddMuse::Page{text})) {
-    $self->serve_file_page_menu($id, $type);
+  my $revision = shift;
+  my $page = get_page($id, $revision);
+
+  if (my ($type) = OddMuse::TextIsFile($page->{text})) {
+    $self->serve_file_page_menu($id, $type, $revision);
   } else {
-    $self->serve_text_page_menu($id);
+    $self->serve_text_page_menu($id, $page, $revision);
   }
-  print "i\r\n";
-  print join("\t",
-	     "1" . "Page History",
-	     "$id/history",
-	     $self->{server}->{sockaddr},
-	     $self->{server}->{sockport})
-      . "\r\n";
+
+  if (not $revision) {
+    print "i\r\n";
+    print join("\t",
+	       "1" . "Page History",
+	       "$id/history",
+	       $self->{server}->{sockaddr},
+	       $self->{server}->{sockport})
+	. "\r\n";
+  }
 }
 
 sub serve_file_page {
   my $self = shift;
   my $id = shift;
+  my $page = shift;
   $self->log(1, "Serving $id as file\n");
   binmode(STDOUT, ':pop:raw');
   require MIME::Base64;
-  my ($data) = $OddMuse::Page{text} =~ /^[^\n]*\n(.*)/s;
+  my ($data) = $page->{text} =~ /^[^\n]*\n(.*)/s;
   print MIME::Base64::decode($data);
   # do not append a dot, just close the connection
   exit;
@@ -380,8 +444,9 @@ sub serve_file_page {
 sub serve_text_page {
   my $self = shift;
   my $id = shift;
+  my $page = shift;
   $self->log(1, "Serving $id as text\n");
-  my $text = $OddMuse::Page{text};
+  my $text = $page->{text};
   $text =~ s/^\./../mg;
   print $text;
 }
@@ -389,20 +454,29 @@ sub serve_text_page {
 sub serve_page {
   my $self = shift;
   my $id = shift;
-  OddMuse::OpenPage($id);
-  if (my ($type) = OddMuse::TextIsFile($OddMuse::Page{text})) {
-    $self->serve_file_page($id);
+  my $revision = shift;
+  my $page = get_page($id, $revision);
+
+  if (my ($type) = OddMuse::TextIsFile($page->{text})) {
+    $self->serve_file_page($id, $page);
   } else {
-    $self->serve_text_page($id);
+    $self->serve_text_page($id, $page);
   }
 }
 
 sub serve_page_html {
   my $self = shift;
   my $id = shift;
+  my $revision = shift;
+  my $page = get_page($id, $revision);
+
   $self->log(1, "Serving $id as HTML\n");
-  OddMuse::OpenPage($id);
-  OddMuse::PrintPageHtml();
+  # kept pages have no HTML cache
+  if ($revision) {
+    OddMuse::PrintWikiToHTML($page->{text}, 1); # no lock
+  } else {
+    OddMuse::PrintPageHtml();
+  }
   # do not append a dot, just close the connection
   exit;
 }
@@ -486,18 +560,18 @@ sub process_request {
       $self->serve_rc(0);
     } elsif ($id eq "do/rc/showedits") {
       $self->serve_rc(1);
-    } elsif ($id =~ m!^([^/]*)/(\d+)/menu$!) {
-      $self->serve_page_revision_menu($1, $2);
+    } elsif ($id =~ m!^([^/]*)/(\d+)/menu$! and $OddMuse::IndexHash{$1}) {
+      $self->serve_page_menu($1, $2);
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
       $self->serve_page_menu(substr($id, 0, -5));
     } elsif (substr($id, -4) eq '/tag') {
       $self->serve_tag(substr($id, 0, -4));
-    } elsif (substr($id, -5) eq '/html') {
-      $self->serve_page_html(substr($id, 0, -5));
-    } elsif (substr($id, -8) eq '/history') {
+    } elsif ($id =~ m!^([^/]*)(?:/(\d+))?/html! and $OddMuse::IndexHash{$1}) {
+      $self->serve_page_html($1, $2);
+    } elsif (substr($id, -8) eq '/history' and $OddMuse::IndexHash{substr($id, 0, -8)}) {
       $self->serve_page_history(substr($id, 0, -8));
-    } elsif ($OddMuse::IndexHash{$id}) {
-      $self->serve_page($id);
+    } elsif ($id =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$! and $OddMuse::IndexHash{$1}) {
+      $self->serve_page($1, $2);
     } else {
       $self->serve_unknown($id);
     }
@@ -508,44 +582,4 @@ sub process_request {
     $self->log(1, "Timed Out.\n");
     return;
   }
-}
-
-sub options {
-  my $self     = shift;
-  my $prop     = $self->{'server'};
-  my $template = shift;
-
-  # setup options in the parent classes
-  $self->SUPER::options($template);
-
-  # add a single value option
-  $prop->{wiki} ||= undef;
-  $template->{wiki} = \ $prop->{wiki};
-
-  $prop->{wiki_dir} ||= undef;
-  $template->{wiki_dir} = \ $prop->{wiki_dir};
-
-  $prop->{wiki_pages} ||= [];
-  $template->{wiki_pages} = $prop->{wiki_pages};
-}
-
-sub post_configure_hook {
-  my $self = shift;
-  usage() unless $self->{server}->{wiki} and $self->{server}->{wiki_dir};
-  $self->log(1, "Wiki data dir is " . $self->{server}->{wiki_dir} . "\n");
-  $OddMuse::RunCGI = 0;
-  $OddMuse::DataDir = $self->{server}->{wiki_dir};
-  $self->log(1, "Running " . $self->{server}->{wiki} . "\n");
-  do $self->{server}->{wiki}; # do it once
-  # do the init code without CGI (no $q)
-  OddMuse::Init();
-  # make sure search is sorted newest first because NewTagFiltered resorts
-  *OddMuse::OldGopherFiltered = \&OddMuse::Filtered;
-  *OddMuse::Filtered = \&NewGopherFiltered;
-}
-
-sub NewGopherFiltered {
-  my @pages = OddMuse::OldGopherFiltered(@_);
-  @pages = sort newest_first @pages;
-  return @pages;
 }

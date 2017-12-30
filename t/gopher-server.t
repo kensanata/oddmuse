@@ -46,6 +46,7 @@ if (!defined $pid) {
        "stuff/gopher-server.pl",
        "--port=localhost:$port",
        "--pid_file=$DataDir/gopher-server.pid",
+       "--log_level=0", # set  to 2 for logging
        "--wiki=./wiki.pl",
        "--wiki_dir=$DataDir",
        "--wiki_pages=Alex",
@@ -58,11 +59,12 @@ if (!defined $pid) {
 update_page('Alex', "My best friend is [[Berta]].\n\nTags: [[tag:Friends]]\n");
 update_page('Berta', "This is me.\n\nTags: [[tag:Friends]]\n");
 update_page('Chris', "I'm Chris.\n\nTags: [[tag:Friends]]\n");
-update_page('Friends', "News about friends:\n\n<journal search tag:friends>\n");
-update_page('2017-12-25', 'It was a Moonday.');
-update_page('2017-12-25', 'It was a Monday.\n\nTags: [[tag:Day]]', 'typo', 1); # minor change
+update_page('Friends', "Some friends.\n");
+update_page('2017-12-25', 'It was a Monday.\n\nTags: [[tag:Day]]');
 update_page('2017-12-26', 'It was a Tuesday.\n\nTags: [[tag:Day]]');
 update_page('2017-12-27', 'It was a Wednesday.\n\nTags: [[tag:Day]]');
+update_page('Friends', "News about friends.\n", 'rewrite', 1); # minor change
+update_page('Friends', "News about friends:\n\n<journal search tag:friends>\n", 'add journal tag', 1); # minor change
 
 # enable uploads
 AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
@@ -83,35 +85,36 @@ sub query_gopher {
   return <$socket>;
 }
 
-# get main menu
+# main menu
 my $page = query_gopher("");
 for my $item(qw(Alex Berta Chris 2017-12-25 2017-12-26 2017-12-27)) {
   like($page, qr/^1$item\t$item\/menu\t/m, "main menu contains $item");
 }
 
-# get page menu
+# page menu
 $page = query_gopher("Alex/menu");
 like($page, qr/^0Alex\tAlex\t/m, "Alex menu links to plain text");
 like($page, qr/^hAlex\tAlex\/html\t/m, "Alex menu links to HTML");
+like($page, qr/^1Page History\tAlex\/history\t/m, "Alex menu links to page history");
 like($page, qr/^1Berta\tBerta\/menu\t/m, "Alex menu links to Berta menu");
 like($page, qr/^1Friends\tFriends\/tag\t/m, "Alex menu links to Friends tag");
 
-# get plain text
+# plain text
 $page = query_gopher("Alex");
 like($page, qr/^My best friend is \[\[Berta\]\]/, "Alex plain text");
 
-# get HTML
+# HTML
 $page = query_gopher("Alex/html");
 like($page, qr/^<p>My best friend is <a.*?>Berta<\/a>/, "Alex HTML");
 
-# get tags
+# tags
 $page = query_gopher("Friends/tag");
 like($page, qr/iThis page is about the tag Friends/, "tag menu intro");
 for my $item(qw(Friends Alex Berta Chris)) {
   like($page, qr/^1$item\t$item\/menu\t/m, "tag menu contains $item");
 }
 
-# get tags
+# tags
 $page = query_gopher("Day/tag");
 like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s, "tag menu sorted newest first");
 
@@ -128,5 +131,35 @@ for my $item(qw(2017-12-25 2017-12-26 2017-12-27)) {
   like($page, qr/^1$item\t$item\/menu\t/m, "serch menu contains $item");
 }
 like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s, "search menu sorted newest first");
+
+# rc
+$page = query_gopher("do/rc");
+like($page, qr/Picture.*2017-12-27.*2017-12-26.*2017-12-25.*Friends.*Chris.*Berta.*Alex/s, "rc in the right order");
+
+$page = query_gopher("do/rc/showedits");
+like($page, qr/Friends.*2017-12-27.*2017-12-26.*2017-12-25.*Chris.*Berta.*Alex/s, "rc in the right order");
+
+# history
+$page = query_gopher("Friends/history");
+like($page, qr/^1Friends \(1\)\tFriends\/1\/menu\t/m, "Friends (1)");
+like($page, qr/^1Friends \(2\)\tFriends\/2\/menu\t/m, "Friends (2)");
+like($page, qr/^1Friends \(current\)\tFriends\/menu\t/m, "Friends (current)");
+like($page, qr/Friends\/menu.*Friends\/2\/menu.*Friends\/1\/menu/s, "history in the right order");
+
+# revision menu
+$page = query_gopher("Friends/1/menu");
+like($page, qr/^0Friends\tFriends\/1\t/m, "Friends/1 menu links to plain text");
+like($page, qr/^hFriends\tFriends\/1\/html\t/m, "Friends/1 menu links to HTML");
+unlike($page, qr/Search result for tag/, "Friends/1 has no journal and thus no tag search");
+
+# revision plain text
+$page = query_gopher("Friends/1");
+like($page, qr/^Some friends/m, "Friends/1 plain text");
+
+# revision html
+$page = query_gopher("Friends/1/html");
+like($page, qr/^<p>Some friends/m, "Friends/1 html");
+
+# uploaded images
 
 done_testing();
