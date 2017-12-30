@@ -527,6 +527,51 @@ sub serve_unknown {
   print "3Unknown page: $id\n";
 }
 
+sub write_help {
+  print("iThis is how your document should start:\r\n");
+  print("i```\r\n");
+  print("iusername: Alex Schroeder\r\n");
+  print("isummary: typo fixed\r\n");
+  print("i```\r\n");
+  print("iThis is the text of your document.\r\n");
+  print("iJust write whatever.\r\n");
+  print("i\r\n");
+  print("iNote the space after the colon for metadata fields.\r\n");
+  print("iMore metadata fields are allowed:\r\n");
+  print("i`minor` is 1 if this is a minor edit. The default is 0.\r\n");
+}
+
+sub write_page_ok {
+  print("iPage was saved.\r\n");
+}
+
+sub write_page {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Posting to page $id\n");
+  local $/ = \$OddMuse::MaxPost; # limited reading
+  my $buf = <STDIN>;
+  $self->log(1, "Received " . length($buf) . " bytes");
+
+  my ($lead, $meta, $text) = split(/^```\s*(?:meta)?\n/m, $buf, 3);
+  if (not $lead) {
+    while ($meta =~ /^([a-z-]+): (.*)/mg) {
+      if ($1 eq 'minor' and $2) {
+	OddMuse::SetParam('recent_edit', 'on'); # legacy UseMod parameter name
+      } else {
+	OddMuse::SetParam($1, $2);
+      }
+    }
+    OddMuse::SetParam('text', $text);
+  } else {
+    # no meta data
+    OddMuse::SetParam('text', $buf);
+  }
+
+  local *OddMuse::ReBrowsePage = \&write_page_ok;
+  OddMuse::DoPost($id);
+}
+
 sub process_request {
   my $self = shift;
 
@@ -570,6 +615,8 @@ sub process_request {
       $self->serve_page_html($1, $2);
     } elsif ($id =~ m!^([^/]*)/history$! and $OddMuse::IndexHash{$1}) {
       $self->serve_page_history($1);
+    } elsif ($id =~ m!^([^/]*)/write$!) { # this also works if the tag page is missing
+      $self->write_page($1);
     } elsif ($id =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$! and $OddMuse::IndexHash{$1}) {
       $self->serve_page($1, $2);
     } else {

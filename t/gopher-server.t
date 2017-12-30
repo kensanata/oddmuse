@@ -46,7 +46,7 @@ if (!defined $pid) {
        "stuff/gopher-server.pl",
        "--port=localhost:$port",
        "--pid_file=$DataDir/gopher-server.pid",
-       "--log_level=0", # set  to 2 for logging
+       "--log_level=2", # set  to 2 for logging
        "--wiki=./wiki.pl",
        "--wiki_dir=$DataDir",
        "--wiki_pages=Alex",
@@ -72,6 +72,7 @@ update_page('Picture', "#FILE image/png\niVBORw0KGgoAAAA");
 
 sub query_gopher {
   my $query = shift;
+  my $text = shift;
 
   # create client
   socket(my $socket,PF_INET,SOCK_STREAM,(getprotobyname('tcp'))[2]);
@@ -80,7 +81,9 @@ sub query_gopher {
   $socket->autoflush(1);
 
   print $socket "$query\r\n";
-
+  print $socket $text;
+  shutdown($socket,SHUT_WR);
+  
   undef $/; # slurp
   return <$socket>;
 }
@@ -160,6 +163,49 @@ like($page, qr/^Some friends/m, "Friends/1 plain text");
 $page = query_gopher("Friends/1/html");
 like($page, qr/^<p>Some friends/m, "Friends/1 html");
 
-# uploaded images
+# download images
+# FIXME
+
+# upload text
+my $haiku = <<EOT;
+Quiet disk ratling
+Keyboard clicking, then it stops.
+Rain falls and I think
+EOT
+
+$page = query_gopher("Haiku/write", "$haiku");
+like($page, qr/^iPage was saved./m, "Write haiku");
+
+my $haiku_re = quotemeta($haiku);
+$page = query_gopher("Haiku");
+like($page, qr/^$haiku_re/, "Haiku saved");
+
+$haiku = <<"EOT";
+```
+username: Alex
+minor: 1
+summary: typos
+```
+Quiet disk rattling
+Keyboard clicking, then it stops.
+Rain falls and I think.
+EOT
+
+$page = query_gopher("Haiku/write", "$haiku");
+like($page, qr/^iPage was saved./m, "Write haiku");
+
+$haiku_re = quotemeta(<<"EOT");
+Quiet disk rattling
+Keyboard clicking, then it stops.
+Rain falls and I think.
+EOT
+
+$page = query_gopher("Haiku");
+like($page, qr/^$haiku_re/, "Haiku updated");
+
+$page = query_gopher("Haiku/history");
+like($page, qr/^1Haiku \(current\)\tHaiku\/menu\t/m, "Haiku (current)");
+like($page, qr/^i\d\d:\d\d UTC by Alex from \S+: typos \(minor\)/m, "Metadata recorded");
+like($page, qr/^1Haiku \(1\)\tHaiku\/1\/menu\t/m, "Haiku (1)");
 
 done_testing();
