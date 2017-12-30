@@ -564,12 +564,12 @@ sub process_request {
       $self->serve_page_menu($1, $2);
     } elsif (substr($id, -5) eq '/menu' and $OddMuse::IndexHash{substr($id, 0, -5)}) {
       $self->serve_page_menu(substr($id, 0, -5));
-    } elsif (substr($id, -4) eq '/tag') {
-      $self->serve_tag(substr($id, 0, -4));
+    } elsif ($id =~ m!^([^/]*)/tag$!) { # this also works if the tag page is missing
+      $self->serve_tag($1);
     } elsif ($id =~ m!^([^/]*)(?:/(\d+))?/html! and $OddMuse::IndexHash{$1}) {
       $self->serve_page_html($1, $2);
-    } elsif (substr($id, -8) eq '/history' and $OddMuse::IndexHash{substr($id, 0, -8)}) {
-      $self->serve_page_history(substr($id, 0, -8));
+    } elsif ($id =~ m!^([^/]*)/history$! and $OddMuse::IndexHash{$1}) {
+      $self->serve_page_history($1);
     } elsif ($id =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$! and $OddMuse::IndexHash{$1}) {
       $self->serve_page($1, $2);
     } else {
