@@ -16,6 +16,7 @@
 package Oddmuse::Gopher::Server;
 use strict;
 use 5.10.0;
+use MIME::Base64;
 use base qw(Net::Server::Fork); # any personality will do
 
 Oddmuse::Gopher::Server->run;
@@ -322,6 +323,12 @@ sub serve_text_page_menu {
 	     $self->{server}->{sockaddr},
 	     $self->{server}->{sockport})
       . "\r\n";
+  print join("\t",
+	     "w" . OddMuse::NormalToFree($id),
+	     $id . "/write/text",
+	     $self->{server}->{sockaddr},
+	     $self->{server}->{sockport})
+      . "\r\n";
 
   my @links; # ["page name", "display text"]
   while ($OddMuse::Page{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g) {
@@ -545,10 +552,24 @@ sub write_page_ok {
   print("iPage was saved.\r\n");
 }
 
-sub write_page {
+sub write_file_page {
   my $self = shift;
   my $id = shift;
-  $self->log(1, "Posting to page $id\n");
+  my $type = shift || 'application/octet-stream';
+  $self->log(1, "Posting $type file to page $id");
+  local $/ = \$OddMuse::MaxPost; # limited reading
+  my $buf = <STDIN>;
+  $self->log(1, "Received " . length($buf) . " bytes");
+  # no metadata
+  OddMuse::SetParam('text', "#FILE $type\n" . MIME::Base64::encode($buf));
+  local *OddMuse::ReBrowsePage = \&write_page_ok;
+  OddMuse::DoPost($id);
+}
+
+sub write_text_page {
+  my $self = shift;
+  my $id = shift;
+  $self->log(1, "Posting text to page $id");
   local $/ = \$OddMuse::MaxPost; # limited reading
   my $buf = <STDIN>;
   $self->log(1, "Received " . length($buf) . " bytes");
@@ -575,7 +596,7 @@ sub write_page {
 sub process_request {
   my $self = shift;
 
-  binmode(STDIN, ':encoding(UTF-8)');
+  binmode(STDIN, ':raw');
   binmode(STDOUT, ':encoding(UTF-8)');
   binmode(STDERR, ':encoding(UTF-8)');
 
@@ -589,6 +610,7 @@ sub process_request {
     local $SIG{'ALRM'} = sub { die "Timed Out!\n" };
     alarm(10); # timeout
     my $id = <STDIN>; # no loop
+    utf8::decode($id); # only the selector is assumed to be UTF8
     $id =~ s/^\/.//; # strip leading slash and type, if any
     $id =~ s/\s+$//g; # no trailing whitespace
     if (not $id) {
@@ -615,8 +637,10 @@ sub process_request {
       $self->serve_page_html($1, $2);
     } elsif ($id =~ m!^([^/]*)/history$! and $OddMuse::IndexHash{$1}) {
       $self->serve_page_history($1);
-    } elsif ($id =~ m!^([^/]*)/write$!) { # this also works if the tag page is missing
-      $self->write_page($1);
+    } elsif ($id =~ m!^([^/]*)/write/text$!) {
+      $self->write_text_page($1);
+    } elsif ($id =~ m!^([^/]*)(?:/([a-z]+/[-a-z]+))?/write/file$!) {
+      $self->write_file_page($1, $2);
     } elsif ($id =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$! and $OddMuse::IndexHash{$1}) {
       $self->serve_page($1, $2);
     } else {

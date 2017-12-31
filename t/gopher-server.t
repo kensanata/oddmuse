@@ -24,10 +24,11 @@ require './t/test.pl';
 
 add_module('tags.pl');
 
-our($DataDir, $ConfigFile);
+# enable uploads
+our($ConfigFile);
+AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 
 my $port = random_port();
-
 my $pid = fork();
 
 END {
@@ -37,6 +38,7 @@ END {
   }  
 }
 
+our ($DataDir);
 if (!defined $pid) {
   die "Cannot fork: $!";
 } elsif ($pid == 0) {
@@ -66,9 +68,9 @@ update_page('2017-12-27', 'It was a Wednesday.\n\nTags: [[tag:Day]]');
 update_page('Friends', "News about friends.\n", 'rewrite', 1); # minor change
 update_page('Friends', "News about friends:\n\n<journal search tag:friends>\n", 'add journal tag', 1); # minor change
 
-# enable uploads
-AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
-update_page('Picture', "#FILE image/png\niVBORw0KGgoAAAA");
+# file created using convert NULL: test.png && base64 test.png
+update_page('Picture', "#FILE image/png\niVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQAAAAA3bvkkAAAACklEQVQI12NoAAAAggCB3UNq9AAA
+AABJRU5ErkJggg==");
 
 sub query_gopher {
   my $query = shift;
@@ -81,6 +83,7 @@ sub query_gopher {
   $socket->autoflush(1);
 
   print $socket "$query\r\n";
+  binmode($socket, ':pop:raw');
   print $socket $text;
   shutdown($socket,SHUT_WR);
   
@@ -163,9 +166,6 @@ like($page, qr/^Some friends/m, "Friends/1 plain text");
 $page = query_gopher("Friends/1/html");
 like($page, qr/^<p>Some friends/m, "Friends/1 html");
 
-# download images
-# FIXME
-
 # upload text
 my $haiku = <<EOT;
 Quiet disk ratling
@@ -173,7 +173,7 @@ Keyboard clicking, then it stops.
 Rain falls and I think
 EOT
 
-$page = query_gopher("Haiku/write", "$haiku");
+$page = query_gopher("Haiku/write/text", "$haiku");
 like($page, qr/^iPage was saved./m, "Write haiku");
 
 my $haiku_re = quotemeta($haiku);
@@ -191,7 +191,7 @@ Keyboard clicking, then it stops.
 Rain falls and I think.
 EOT
 
-$page = query_gopher("Haiku/write", "$haiku");
+$page = query_gopher("Haiku/write/text", "$haiku");
 like($page, qr/^iPage was saved./m, "Write haiku");
 
 $haiku_re = quotemeta(<<"EOT");
@@ -207,5 +207,21 @@ $page = query_gopher("Haiku/history");
 like($page, qr/^1Haiku \(current\)\tHaiku\/menu\t/m, "Haiku (current)");
 like($page, qr/^i\d\d:\d\d UTC by Alex from \S+: typos \(minor\)/m, "Metadata recorded");
 like($page, qr/^1Haiku \(1\)\tHaiku\/1\/menu\t/m, "Haiku (1)");
+
+# Image download
+my $image = query_gopher("Picture");
+like($image, qr/\211PNG\r\n/, "Image download");
+
+# Image upload
+$page = query_gopher("PictureCopy/write/file", "$image");
+like($page, qr/Files of type application\/octet-stream are not allowed/m, "MIME type check");
+
+$page = query_gopher("PictureCopy/image/png/write/file", "$image");
+like($page, qr/^iPage was saved./m, "Image upload");
+
+my $copy = query_gopher("PictureCopy");
+like($copy, qr/\211PNG\r\n/, "Image copy download");
+
+is($copy, $image, "Image and copy are identical");
 
 done_testing();
