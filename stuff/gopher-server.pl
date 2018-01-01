@@ -28,12 +28,9 @@ our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile,
 my $address;
 my $port;
 my $pid_file = 'gopher-server.pid';
-my $log_file;
-my $log_level;
 my @wiki_pages;
 my $help;
-
-my $log = Mojo::Log->new;
+my $log;
 
 my $usage = << 'EOT';
 This server serves a wiki as a gopher site.
@@ -103,6 +100,8 @@ run();
 sub run {
   my $wiki_dir = '/tmp/oddmuse';
   my $wiki_lib = './wiki.pl';
+  my $log_file;
+  my $log_level;
   GetOptions ("address=s" => \$address,
 	      "port=i"   => \$port,
 	      "pid_file=s"  => \$pid_file,
@@ -116,6 +115,11 @@ sub run {
       or die("Error in command line arguments\n");
 
   die $usage if $help;
+
+  $log = Mojo::Log->new;
+  $log->path($log_file) if $log_file;
+  $log->level($log_level) if $log_level;
+  
   $log->info("Wiki data dir is " . $wiki_dir);
   $RunCGI = 0;
   $DataDir = $wiki_dir;
