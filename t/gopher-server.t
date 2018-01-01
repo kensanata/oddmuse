@@ -17,7 +17,7 @@ package OddMuse;
 use strict;
 use 5.10.0;
 use Test::More;
-use Socket;
+use IO::Socket::IP;
 use utf8; # tests contain UTF-8 characters and it matters
 
 require './t/test.pl';
@@ -46,10 +46,10 @@ if (!defined $pid) {
   my $secure_perl_path = $Config{perlpath};
   exec($secure_perl_path,
        "stuff/gopher-server.pl",
-       "--port=localhost:$port",
-       "--pid_file=$DataDir/gopher-server.pid",
-       "--log_level=2", # set  to 2 for logging
-       "--wiki=./wiki.pl",
+       "--address=localhost",
+       "--port=$port",
+       "--log_level=debug", # set to debug for logging
+       "--wiki_lib=./wiki.pl",
        "--wiki_dir=$DataDir",
        "--wiki_pages=Alex",
        "--wiki_pages=Berta",
@@ -57,7 +57,6 @@ if (!defined $pid) {
       or die "Cannot exec: $!";
 }
 
-# create some pages while the server is starting
 update_page('Alex', "My best friend is [[Berta]].\n\nTags: [[tag:Friends]]\n");
 update_page('Berta', "This is me.\n\nTags: [[tag:Friends]]\n");
 update_page('Chris', "I'm Chris.\n\nTags: [[tag:Friends]]\n");
@@ -77,15 +76,14 @@ sub query_gopher {
   my $text = shift;
 
   # create client
-  socket(my $socket,PF_INET,SOCK_STREAM,(getprotobyname('tcp'))[2]);
-  connect($socket, pack_sockaddr_in($port, inet_aton("localhost")))
-      or die "Can't connect to gopher-server on localhost:$port\n";
-  $socket->autoflush(1);
+  my $socket = IO::Socket::IP->new(
+    PeerHost => "localhost",
+    PeerPort => $port,
+    Type     => SOCK_STREAM, )
+      or die "Cannot construct client socket: $@";
 
-  print $socket "$query\r\n";
-  binmode($socket, ':pop:raw');
-  print $socket $text;
-  shutdown($socket,SHUT_WR);
+  $socket->print("$query\r\n");
+  $socket->print($text);
   
   undef $/; # slurp
   return <$socket>;
@@ -218,6 +216,7 @@ like($page, qr/Files of type application\/octet-stream are not allowed/m, "MIME 
 
 $page = query_gopher("PictureCopy/image/png/write/file", "$image");
 like($page, qr/^iPage was saved./m, "Image upload");
+unlike($page, qr/^3Page was not saved/, "Messages are correct");
 
 my $copy = query_gopher("PictureCopy");
 like($copy, qr/\211PNG\r\n/, "Image copy download");
