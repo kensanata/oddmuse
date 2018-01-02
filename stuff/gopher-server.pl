@@ -25,9 +25,8 @@ use Getopt::Long;
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks);
 
-my $address;
+my $host;
 my $port;
-my $pid_file = 'gopher-server.pid';
 my @wiki_pages;
 my $help;
 my $log;
@@ -37,14 +36,13 @@ This server serves a wiki as a gopher site.
 
 Options:
 
---address=127.0.0.1
-    The address to listen on, defaults to 0.0.0.0
+--host=alexschroeder.ch
+    The host we are serving from. This defaults to localhost, meaning
+    that only clients on the same host will be able to follow links.
 --port=3000
-    The port to listen to, defaults to a random port
---pid_file=/var/run/oddmuse/gopher_server.pid
-    The PID file to write, defaults to none
+    The port to listen to, defaults to a random port.
 --log_file=/var/log/oddmuse/gopher_server.log
-    The log file to write, defaults to STDERR
+    The log file to write, defaults to STDERR.
 --log_level=error
     The log level to use, defaults to "debug". The available log levels
     are "debug", "info", "warn", "error" and "fatal", in that order.
@@ -68,17 +66,16 @@ Man pages of interest:
 Example invocation:
 
 /home/alex/src/oddmuse/stuff/gopher-server.pl \
-    --address=localhost \
+    --host=alexschroeder.ch \
     --port=7070 \
     --wiki=/home/alex/src/oddmuse/wiki.pl \
-    --pid_file=/tmp/oddmuse/gopher.pid \
     --wiki_dir=/tmp/oddmuse \
     --wiki_pages=Homepage \
     --wiki_pages=Gopher_News
 
 Run the script and test it:
 
-telnet localhost 7070
+echo | nc localhost 7070
 lynx gopher://localhost:7070
 
 The list of all pages:
@@ -93,6 +90,17 @@ Visit it:
 
 lynx gopher://localhost:7070/0HomePage
 
+To daemonize it, I recommend using an external tool:
+
+daemonize -p /tmp/oddmuse/gopher-server.pid \
+    /home/alex/src/oddmuse/stuff/gopher-server.pl \
+    --host alexschroeder.ch \
+    --port 7070 \
+    --wiki_lib /home/alex/src/oddmuse/wiki.pl \
+    --wiki_dir /tmp/oddmuse \
+    --wiki_pages Homepage \
+    --wiki_pages Gopher_News
+
 EOT
 
 run();
@@ -102,9 +110,10 @@ sub run {
   my $wiki_lib = './wiki.pl';
   my $log_file;
   my $log_level;
-  GetOptions ("address=s" => \$address,
+  $host = 'localhost';
+  
+  GetOptions ("host=s" => \$host,
 	      "port=i"   => \$port,
-	      "pid_file=s"  => \$pid_file,
 	      "log=s" => \$log,
 	      "log_file=s" => \$log_file,
 	      "log_level=s" => \$log_level,
@@ -136,18 +145,9 @@ sub run {
   *Filtered = \&NewGopherFiltered;
 
   my $id = Mojo::IOLoop->server({
-    address => $address,
     port => $port} => \&process_request);
 
-  $log->info("PID $$");
-  if ($pid_file) {
-    if (open(my $fh, '>', $pid_file)) {
-      print $fh $$;
-    } else {
-      $log->error("Cannot open $pid_file: $!");
-    }
-  }
-
+  $log->info("Linking to $host");
   $log->info("Listening on port " . Mojo::IOLoop->acceptor($id)->port);
 
   Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
@@ -170,7 +170,7 @@ sub serve_main_menu {
     $stream->write(join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   }
@@ -178,28 +178,28 @@ sub serve_main_menu {
   $stream->write(join("\t",
 	     "1" . "Recent Changes",
 	     "do/rc",
-	     $address,
+	     $host,
 	     $port)
       . "\r\n");
 
   $stream->write(join("\t",
 	     "7" . "Find matching page titles",
 	     "do/match",
-	     $address,
+	     $host,
 	     $port)
       . "\r\n");
 
   $stream->write(join("\t",
 	     "7" . "Full text search",
 	     "do/search",
-	     $address,
+	     $host,
 	     $port)
       . "\r\n");
 
   $stream->write(join("\t",
 	     "1" . "Index of all pages",
 	     "do/index",
-	     $address,
+	     $host,
 	     $port)
       . "\r\n");
 
@@ -207,7 +207,7 @@ sub serve_main_menu {
     $stream->write(join("\t",
 	       "1" . "Index of all tags",
 	       "do/tags",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   }
@@ -218,7 +218,7 @@ sub serve_main_menu {
     $stream->write(join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   }
@@ -231,7 +231,7 @@ sub serve_index {
     $stream->write(join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   }
@@ -247,7 +247,7 @@ sub serve_match {
     $stream->write(join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   }
@@ -263,7 +263,7 @@ sub serve_search {
     $stream->write(join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   });
@@ -282,7 +282,7 @@ sub serve_tags {
     $stream->write(join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/tag",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   }
@@ -299,14 +299,14 @@ sub serve_rc {
     $stream->write(join("\t",
 	       "1" . "Skip minor edits",
 	       "do/rc",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   } else {
     $stream->write(join("\t",
 	       "1" . "Show minor edits",
 	       "do/rc/showedits",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   }
@@ -324,7 +324,7 @@ sub serve_rc {
 	$stream->write(join("\t",
 		   "1" . NormalToFree($id),
 		   "$id/menu",
-		   $address,
+		   $host,
 		   $port)
 	    . "\r\n");
 	$stream->write("i" . CalcTime($ts)
@@ -346,7 +346,7 @@ sub serve_file_page_menu {
 	     $code . NormalToFree($id)
 	     . ($revision ? "/$revision" : ""),
 	     $id,
-	     $address,
+	     $host,
 	     $port)
       . "\r\n");
 }
@@ -363,19 +363,19 @@ sub serve_text_page_menu {
   $stream->write(join("\t",
 	     "0" . NormalToFree($id),
 	     $id . ($revision ? "/$revision" : ""),
-	     $address,
+	     $host,
 	     $port)
       . "\r\n");
   $stream->write(join("\t",
 	     "h" . NormalToFree($id),
 	     $id . ($revision ? "/$revision" : "") . "/html",
-	     $address,
+	     $host,
 	     $port)
       . "\r\n");
   $stream->write(join("\t",
 	     "w" . NormalToFree($id),
 	     $id . "/write/text",
-	     $address,
+	     $host,
 	     $port)
       . "\r\n");
 
@@ -395,7 +395,7 @@ sub serve_text_page_menu {
       $stream->write(join("\t",
 		 "1" . NormalToFree($link->[1]),
 		 FreeToNormal($link->[0]),
-		 $address,
+		 $host,
 		 $port)
 	  . "\r\n");
     }
@@ -420,7 +420,7 @@ sub serve_page_history {
   $stream->write(join("\t",
 	     "1" . NormalToFree($id) . " (current)",
 	     "$id/menu",
-	     $address,
+	     $host,
 	     $port)
       . "\r\n");
   $stream->write("i" . CalcTime($Page{ts})
@@ -434,7 +434,7 @@ sub serve_page_history {
     $stream->write(join("\t",
 	       "1" . NormalToFree($id) . " ($keep->{revision})",
 	       "$id/$keep->{revision}/menu",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
     $stream->write("i" . CalcTime($keep->{ts})
@@ -478,7 +478,7 @@ sub serve_page_menu {
     $stream->write(join("\t",
 	       "1" . "Page History",
 	       "$id/history",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   }
@@ -554,7 +554,7 @@ sub serve_tag_list {
     $stream->write(join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
   }
@@ -569,7 +569,7 @@ sub serve_tag {
     $stream->write(join("\t",
 	       "1" . NormalToFree($tag),
 	       "$tag/menu",
-	       $address,
+	       $host,
 	       $port)
 	. "\r\n");
     $stream->write("i\r\n");
