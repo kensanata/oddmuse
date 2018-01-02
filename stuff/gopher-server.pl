@@ -147,6 +147,7 @@ sub run {
   my $id = Mojo::IOLoop->server({
     port => $port} => \&process_request);
 
+  $log->info("PID $$");
   $log->info("Linking to $host");
   $log->info("Listening on port " . Mojo::IOLoop->acceptor($id)->port);
 
@@ -159,15 +160,22 @@ sub NewGopherFiltered {
   return @pages;
 }
 
+sub print_text {
+  my $stream = shift;
+  my $text = shift;
+  utf8::encode($text);
+  $stream->write($text); # bytes
+}
+
 sub serve_main_menu {
   my $stream = shift;
   $log->info("Serving main menu");
-  $stream->write("iWelcome to the Gopher version of this wiki.\r\n");
-  $stream->write("iHere are some interesting starting points:\r\n");
+  print_text($stream, "iWelcome to the Gopher version of this wiki.\r\n");
+  print_text($stream, "iHere are some interesting starting points:\r\n");
 
   for my $id (@wiki_pages) {
     last unless $id;
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
 	       $host,
@@ -175,28 +183,28 @@ sub serve_main_menu {
 	. "\r\n");
   }
 
-  $stream->write(join("\t",
+  print_text($stream, join("\t",
 	     "1" . "Recent Changes",
 	     "do/rc",
 	     $host,
 	     $port)
       . "\r\n");
 
-  $stream->write(join("\t",
+  print_text($stream, join("\t",
 	     "7" . "Find matching page titles",
 	     "do/match",
 	     $host,
 	     $port)
       . "\r\n");
 
-  $stream->write(join("\t",
+  print_text($stream, join("\t",
 	     "7" . "Full text search",
 	     "do/search",
 	     $host,
 	     $port)
       . "\r\n");
 
-  $stream->write(join("\t",
+  print_text($stream, join("\t",
 	     "1" . "Index of all pages",
 	     "do/index",
 	     $host,
@@ -204,7 +212,7 @@ sub serve_main_menu {
       . "\r\n");
 
   if ($TagFile) {
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . "Index of all tags",
 	       "do/tags",
 	       $host,
@@ -215,7 +223,7 @@ sub serve_main_menu {
   my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @IndexList);
   for my $id (@pages) {
     last unless $id;
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
 	       $host,
@@ -228,7 +236,7 @@ sub serve_index {
   my $stream = shift;
   $log->info("Serving index of all pages");
   for my $id (sort newest_first @IndexList) {
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
 	       $host,
@@ -241,10 +249,10 @@ sub serve_match {
   my $stream = shift;
   my $match = shift;
   $log->info("Serving pages matching $match");
-  $stream->write("iUse a regular expression to match page titles.\r\n");
-  $stream->write("iNote that spaces in page titles are actually underlines, '_'.\r\n");
+  print_text($stream, "iUse a regular expression to match page titles.\r\n");
+  print_text($stream, "iNote that spaces in page titles are actually underlines, '_'.\r\n");
   for my $id (sort newest_first grep(/$match/i, @IndexList)) {
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
 	       $host,
@@ -257,10 +265,10 @@ sub serve_search {
   my $stream = shift;
   my $str = shift;
   $log->info("Serving search result for $str");
-  $stream->write("iUse regular expressions separated by space to search.\r\n");
+  print_text($stream, "iUse regular expressions separated by space to search.\r\n");
   SearchTitleAndBody($str, sub {
     my $id = shift;
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
 	       $host,
@@ -279,7 +287,7 @@ sub serve_tags {
     $count{$tag} = @{$h{$tag}};
   }
   foreach my $id (sort { $count{$b} <=> $count{$a} } keys %count) {
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/tag",
 	       $host,
@@ -294,16 +302,16 @@ sub serve_rc {
   $log->info("Serving recent changes"
 	     . ($showedit ? " including minor changes" : ""));
 
-  $stream->write("iRecent Changes\r\n");
+  print_text($stream, "iRecent Changes\r\n");
   if ($showedit) {
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . "Skip minor edits",
 	       "do/rc",
 	       $host,
 	       $port)
 	. "\r\n");
   } else {
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . "Show minor edits",
 	       "do/rc/showedits",
 	       $host,
@@ -314,20 +322,20 @@ sub serve_rc {
   ProcessRcLines(
     sub {
       my $date = shift;
-      $stream->write("i\r\n");
-      $stream->write("i$date\r\n");
-      $stream->write("i\r\n");
+      print_text($stream, "i\r\n");
+      print_text($stream, "i$date\r\n");
+      print_text($stream, "i\r\n");
     },
     sub {
         my($id, $ts, $host, $username, $summary, $minor, $revision,
 	   $languages, $cluster, $last) = @_;
-	$stream->write(join("\t",
+	print_text($stream, join("\t",
 		   "1" . NormalToFree($id),
 		   "$id/menu",
 		   $host,
 		   $port)
 	    . "\r\n");
-	$stream->write("i" . CalcTime($ts)
+	print_text($stream, "i" . CalcTime($ts)
 	    . " by " . GetAuthor($host, $username)
 	    . ($summary ? ": $summary" : "")
 	    . ($minor ? " (minor)" : "")
@@ -342,7 +350,7 @@ sub serve_file_page_menu {
   my $revision = shift;
   my $code = substr($type, 0, 6) eq 'image/' ? 'I' : '9';
   $log->info("Serving file page menu for $id");
-  $stream->write(join("\t",
+  print_text($stream, join("\t",
 	     $code . NormalToFree($id)
 	     . ($revision ? "/$revision" : ""),
 	     $id,
@@ -359,20 +367,20 @@ sub serve_text_page_menu {
   $log->info("Serving text page menu for $id"
 	     . ($revision ? "/$revision" : ""));
 
-  $stream->write("iThe text of this page:\r\n");
-  $stream->write(join("\t",
+  print_text($stream, "iThe text of this page:\r\n");
+  print_text($stream, join("\t",
 	     "0" . NormalToFree($id),
 	     $id . ($revision ? "/$revision" : ""),
 	     $host,
 	     $port)
       . "\r\n");
-  $stream->write(join("\t",
+  print_text($stream, join("\t",
 	     "h" . NormalToFree($id),
 	     $id . ($revision ? "/$revision" : "") . "/html",
 	     $host,
 	     $port)
       . "\r\n");
-  $stream->write(join("\t",
+  print_text($stream, join("\t",
 	     "w" . NormalToFree($id),
 	     $id . "/write/text",
 	     $host,
@@ -389,10 +397,10 @@ sub serve_text_page_menu {
   }
 
   if (@links) {
-    $stream->write("i\r\n");
-    $stream->write("iLinks leaving " . NormalToFree($id) . ":\r\n");
+    print_text($stream, "i\r\n");
+    print_text($stream, "iLinks leaving " . NormalToFree($id) . ":\r\n");
     for my $link (@links) {
-      $stream->write(join("\t",
+      print_text($stream, join("\t",
 		 "1" . NormalToFree($link->[1]),
 		 FreeToNormal($link->[0]),
 		 $host,
@@ -400,13 +408,13 @@ sub serve_text_page_menu {
 	  . "\r\n");
     }
   } else {
-    $stream->write("i\r\n");
-    $stream->write("iThere are no links leaving this page.\r\n");
+    print_text($stream, "i\r\n");
+    print_text($stream, "iThere are no links leaving this page.\r\n");
   }
 
   if ($page->{text} =~ m/<journal search tag:(\S+)>\s*/) {
     my $tag = $1;
-    $stream->write("i\r\n");
+    print_text($stream, "i\r\n");
     serve_tag_list($stream, $tag);
   }
 }
@@ -417,13 +425,13 @@ sub serve_page_history {
   $log->info("Serving history of $id");
   OpenPage($id);
 
-  $stream->write(join("\t",
+  print_text($stream, join("\t",
 	     "1" . NormalToFree($id) . " (current)",
 	     "$id/menu",
 	     $host,
 	     $port)
       . "\r\n");
-  $stream->write("i" . CalcTime($Page{ts})
+  print_text($stream, "i" . CalcTime($Page{ts})
       . " by " . GetAuthor($Page{host}, $Page{username})
       . ($Page{summary} ? ": $Page{summary}" : "")
       . ($Page{minor} ? " (minor)" : "")
@@ -431,13 +439,13 @@ sub serve_page_history {
 
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my $keep = GetKeptRevision($revision);
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . NormalToFree($id) . " ($keep->{revision})",
 	       "$id/$keep->{revision}/menu",
 	       $host,
 	       $port)
 	. "\r\n");
-    $stream->write("i" . CalcTime($keep->{ts})
+    print_text($stream, "i" . CalcTime($keep->{ts})
 	. " by " . GetAuthor($keep->{host}, $keep->{username})
 	. ($keep->{summary} ? ": $keep->{summary}" : "")
 	. ($keep->{minor} ? " (minor)" : "")
@@ -474,8 +482,8 @@ sub serve_page_menu {
   }
 
   if (not $revision) {
-    $stream->write("i\r\n");
-    $stream->write(join("\t",
+    print_text($stream, "i\r\n");
+    print_text($stream, join("\t",
 	       "1" . "Page History",
 	       "$id/history",
 	       $host,
@@ -489,7 +497,6 @@ sub serve_file_page {
   my $id = shift;
   my $page = shift;
   $log->info("Serving $id as file");
-  binmode(STDOUT, ':pop:raw');
   require MIME::Base64;
   my ($data) = $page->{text} =~ /^[^\n]*\n(.*)/s;
   $stream->write(MIME::Base64::decode($data));
@@ -504,7 +511,7 @@ sub serve_text_page {
   $log->info("Serving $id as text");
   my $text = $page->{text};
   $text =~ s/^\./../mg;
-  $stream->write($text);
+  print_text($stream, $text);
 }
 
 sub serve_page {
@@ -530,9 +537,9 @@ sub serve_page_html {
   # kept pages have no HTML cache
   local *STDIN = \$stream;
   if ($revision) {
-    $stream->write(ToString(\&PrintWikiToHTML, $page->{text}, 1)); # no lock
+    print_text($stream, ToString(\&PrintWikiToHTML, $page->{text}, 1)); # no lock
   } else {
-    $stream->write(ToString(\&PrintPageHtml));
+    print_text($stream, ToString(\&PrintPageHtml));
   }
   # do not append a dot, just close the connection
   goto LOOP_END;
@@ -549,9 +556,9 @@ sub newest_first {
 sub serve_tag_list {
   my $stream = shift;
   my $tag = shift;
-  $stream->write("iSearch result for tag $tag:\r\n");
+  print_text($stream, "iSearch result for tag $tag:\r\n");
   for my $id (sort newest_first TagFind($tag)) {
-    $stream->write(join("\t",
+    print_text($stream, join("\t",
 	       "1" . NormalToFree($id),
 	       "$id/menu",
 	       $host,
@@ -565,14 +572,14 @@ sub serve_tag {
   my $tag = shift;
   $log->info("Serving tag $tag");
   if ($IndexHash{$tag}) {
-    $stream->write("iThis page is about the tag $tag.\r\n");
-    $stream->write(join("\t",
+    print_text($stream, "iThis page is about the tag $tag.\r\n");
+    print_text($stream, join("\t",
 	       "1" . NormalToFree($tag),
 	       "$tag/menu",
 	       $host,
 	       $port)
 	. "\r\n");
-    $stream->write("i\r\n");
+    print_text($stream, "i\r\n");
   }
   serve_tag_list($stream, $tag);
 }
@@ -581,12 +588,12 @@ sub serve_unknown {
   my $stream = shift;
   my $id = shift;
   $log->info("Unknown page: '$id'");
-  $stream->write("3Unknown page: $id\r\n");
+  print_text($stream, "3Unknown page: $id\r\n");
 }
 
 sub write_help {
   my $stream = shift;
-  $stream->write(<<"EOF");
+  print_text($stream, <<"EOF");
 iThis is how your document should start:\r
 i```\r
 iusername: Alex Schroeder\r
@@ -603,13 +610,13 @@ EOF
 
 sub write_page_ok {
   my $stream = shift;
-  $stream->write("iPage was saved.\r\n");
+  print_text($stream, "iPage was saved.\r\n");
 }
 
 sub write_page_error {
   my $stream = shift;
   my $error = shift;
-  $stream->write("3Page was not saved: $error\r\n");
+  print_text($stream, "3Page was not saved: $error\r\n");
   map { ReleaseLockDir($_); } keys %Locks;
 }
 
@@ -717,7 +724,7 @@ sub process_request {
     }
 
     # Write final dot for almost everything
-    $stream->write(".\r\n");
+    print_text($stream, ".\r\n");
   LOOP_END:
     $stream->close_gracefully();
     $log->debug("Done");
