@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
 package OddMuse;
 use strict;
 use 5.10.0;
@@ -24,7 +23,7 @@ use Getopt::Long;
 
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
-    $CommentsPrefix);
+    $CommentsPrefix, $EditAllowed, $NoEditFile);
 
 my $host;
 my $port;
@@ -217,6 +216,15 @@ sub serve_main_menu {
     print_text($stream, join("\t",
 	       "1" . "Index of all tags",
 	       "do/tags",
+	       $host,
+	       $port)
+	. "\r\n");
+  }
+
+  if ($EditAllowed and not IsFile($NoEditFile)) {
+    print_text($stream, join("\t",
+	       "w" . "New page",
+	       "do/new",
 	       $host,
 	       $port)
 	. "\r\n");
@@ -714,6 +722,11 @@ sub process_request {
       serve_rc($stream, 0);
     } elsif ($id eq "do/rc/showedits") {
       serve_rc($stream, 1);
+    } elsif ($id eq "do/new") {
+      # second line is page title
+      ($id, $data) = split(/\r?\n/, $data, 2);
+      utf8::decode($id);
+      write_text_page($stream, $id, $data);
     } elsif ($id =~ m!^([^/]*)/(\d+)/menu$! and $IndexHash{$1}) {
       serve_page_menu($stream, $1, $2);
     } elsif (substr($id, -5) eq '/menu' and $IndexHash{substr($id, 0, -5)}) {

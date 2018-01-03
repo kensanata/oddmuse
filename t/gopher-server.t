@@ -206,6 +206,12 @@ like($page, qr/^1Haiku \(current\)\tHaiku\/menu\t/m, "Haiku (current)");
 like($page, qr/^i\d\d:\d\d UTC by Alex from \S+: typos \(minor\)/m, "Metadata recorded");
 like($page, qr/^1Haiku \(1\)\tHaiku\/1\/menu\t/m, "Haiku (1)");
 
+# new page
+$page = query_gopher("do/new", "Haiku_Copy\n$haiku");
+like($page, qr/^iPage was saved./m, "Write copy of haiku");
+$page = query_gopher("Haiku_Copy");
+like($page, qr/^$haiku_re/, "New copy of haiku created");
+
 # Image download
 my $image = query_gopher("Picture");
 like($image, qr/\211PNG\r\n/, "Image download");
