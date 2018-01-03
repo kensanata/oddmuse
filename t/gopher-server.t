@@ -46,7 +46,7 @@ if (!defined $pid) {
   my $secure_perl_path = $Config{perlpath};
   exec($secure_perl_path,
        "stuff/gopher-server.pl",
-       "--address=localhost",
+       "--host=localhost",
        "--port=$port",
        "--log_level=debug", # set to debug for logging
        "--wiki_lib=./wiki.pl",
