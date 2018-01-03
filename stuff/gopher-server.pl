@@ -111,7 +111,7 @@ sub run {
   my $log_file;
   my $log_level;
   $host = 'localhost';
-  
+
   GetOptions ("host=s" => \$host,
 	      "port=i"   => \$port,
 	      "log=s" => \$log,
@@ -128,7 +128,7 @@ sub run {
   $log = Mojo::Log->new;
   $log->path($log_file) if $log_file;
   $log->level($log_level) if $log_level;
-  
+
   $log->info("Wiki data dir is " . $wiki_dir);
   $RunCGI = 0;
   $DataDir = $wiki_dir;
@@ -414,7 +414,7 @@ sub serve_text_page_menu {
       push(@links, [$comments . "/menu", $comments]);
     }
   }
-  
+
   if (@links) {
     print_text($stream, "i\r\n");
     print_text($stream, "iLinks leaving " . NormalToFree($id) . ":\r\n");
@@ -603,11 +603,12 @@ sub serve_tag {
   serve_tag_list($stream, $tag);
 }
 
-sub serve_unknown {
+sub serve_error {
   my $stream = shift;
   my $id = shift;
-  $log->info("Unknown page: '$id'");
-  print_text($stream, "3Unknown page: $id\r\n");
+  my $error = shift;
+  $log->info("Error ('$id'): $error");
+  print_text($stream, "3Error ('$id'): $error\r\n");
 }
 
 sub write_help {
@@ -730,24 +731,24 @@ sub process_request {
       serve_rc($stream, 1);
     } elsif ($id eq "do/new") {
       write_text_page($stream, undef, $data);
-    } elsif ($id =~ m!^([^/]*)/(\d+)/menu$! and $IndexHash{$1}) {
+    } elsif ($id =~ m!^([^/]*)/(\d+)/menu$!) {
       serve_page_menu($stream, $1, $2);
-    } elsif (substr($id, -5) eq '/menu' and $IndexHash{substr($id, 0, -5)}) {
+    } elsif (substr($id, -5) eq '/menu') {
       serve_page_menu($stream, substr($id, 0, -5));
-    } elsif ($id =~ m!^([^/]*)/tag$!) { # this also works if the tag page is missing
+    } elsif ($id =~ m!^([^/]*)/tag$!) {
       serve_tag($stream, $1);
-    } elsif ($id =~ m!^([^/]*)(?:/(\d+))?/html! and $IndexHash{$1}) {
+    } elsif ($id =~ m!^([^/]*)(?:/(\d+))?/html!) {
       serve_page_html($stream, $1, $2);
-    } elsif ($id =~ m!^([^/]*)/history$! and $IndexHash{$1}) {
+    } elsif ($id =~ m!^([^/]*)/history$!) {
       serve_page_history($stream, $1);
     } elsif ($id =~ m!^([^/]*)/write/text$!) {
       write_text_page($stream, $1, $data);
     } elsif ($id =~ m!^([^/]*)(?:/([a-z]+/[-a-z]+))?/write/file$!) {
       write_file_page($stream, $1, $data, $2);
-    } elsif ($id =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$! and $IndexHash{$1}) {
+    } elsif ($id =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$!) {
       serve_page($stream, $1, $2);
     } else {
-      serve_unknown($stream, $id);
+      serve_error($stream, $id, ValidId($id)||'Cause unknown');
     }
 
     # Write final dot for almost everything
