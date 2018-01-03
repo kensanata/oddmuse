@@ -146,11 +146,12 @@ sub run {
 
   my $id = Mojo::IOLoop->server({
     port => $port} => \&process_request);
+  # if it's a random port, we need to know
+  $port = Mojo::IOLoop->acceptor($id)->port;
 
   $log->info("PID $$");
   $log->info("Linking to $host");
-  $log->info("Listening on port " . Mojo::IOLoop->acceptor($id)->port);
-
+  $log->info("Listening on port $port");
   Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 };
 
@@ -327,7 +328,7 @@ sub serve_rc {
       print_text($stream, "i\r\n");
     },
     sub {
-        my($id, $ts, $host, $username, $summary, $minor, $revision,
+        my($id, $ts, $author_host, $username, $summary, $minor, $revision,
 	   $languages, $cluster, $last) = @_;
 	print_text($stream, join("\t",
 		   "1" . NormalToFree($id),
@@ -336,7 +337,7 @@ sub serve_rc {
 		   $port)
 	    . "\r\n");
 	print_text($stream, "i" . CalcTime($ts)
-	    . " by " . GetAuthor($host, $username)
+	    . " by " . GetAuthor($author_host, $username)
 	    . ($summary ? ": $summary" : "")
 	    . ($minor ? " (minor)" : "")
 	    . "\r\n");
