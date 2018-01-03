@@ -23,7 +23,8 @@ use Mojo::Log;
 use Getopt::Long;
 
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile,
-    %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks);
+    %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
+    $CommentsPrefix);
 
 my $host;
 my $port;
@@ -397,6 +398,15 @@ sub serve_text_page_menu {
     }
   }
 
+  if (not $revision and $CommentsPattern) {
+    if ($id =~ /$CommentsPattern/) {
+      push(@links, [$1 . "/menu", $1]) if $1;
+    } else {
+      my $comments = $CommentsPrefix . $id;
+      push(@links, [$comments . "/menu", $comments]);
+    }
+  }
+  
   if (@links) {
     print_text($stream, "i\r\n");
     print_text($stream, "iLinks leaving " . NormalToFree($id) . ":\r\n");
