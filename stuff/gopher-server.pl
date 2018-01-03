@@ -672,6 +672,7 @@ sub write_file_page {
   my $id = shift;
   my $data = shift;
   my $type = shift || 'application/octet-stream';
+  write_page_error($stream, "page title is missing") unless $id;
   $log->info("Posting " . length($data) . " bytes of $type to page $id");
   # no metadata
   write_data($stream, $id, "#FILE $type\n" . MIME::Base64::encode($data));
@@ -688,12 +689,18 @@ sub write_text {
 	     . " " . length($data) . " characters to page $id");
 
   my ($lead, $meta, $text) = split(/^```\s*(?:meta)?\n/m, $data, 3);
+  $log->info("Posting " . length($text) . " characters to page $id") if $id;
+
   if (not $lead) {
     while ($meta =~ /^([a-z-]+): (.*)/mg) {
       if ($1 eq 'minor' and $2) {
 	SetParam('recent_edit', 'on'); # legacy UseMod parameter name
       } else {
 	SetParam($1, $2);
+	if ($1 eq "title") {
+	  $id = $2;
+	  $log->info("Posting " . length($data) . " characters to page $2");
+	}
       }
     }
     write_data($stream, $id, $text, $param);
@@ -745,10 +752,7 @@ sub process_request {
     } elsif ($id eq "do/rc/showedits") {
       serve_rc($stream, 1);
     } elsif ($id eq "do/new") {
-      # second line is page title
-      ($id, $data) = split(/\r?\n/, $data, 2);
-      utf8::decode($id);
-      write_text_page($stream, $id, $data);
+      write_text_page($stream, undef, $data);
     } elsif ($id =~ m!^([^/]*)/(\d+)/menu$! and $IndexHash{$1}) {
       serve_page_menu($stream, $1, $2);
     } elsif (substr($id, -5) eq '/menu' and $IndexHash{substr($id, 0, -5)}) {
