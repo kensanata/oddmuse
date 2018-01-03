@@ -391,12 +391,22 @@ sub serve_text_page_menu {
 	     $port)
       . "\r\n");
   print_text($stream, join("\t",
-	     "w" . NormalToFree($id),
+	     "wReplace " . NormalToFree($id),
 	     $id . "/write/text",
 	     $host,
 	     $port)
-      . "\r\n");
-
+	     . "\r\n");
+  if (not $revision
+      and $CommentsPattern
+      and $id =~ /$CommentsPattern/) {
+    print_text($stream, join("\t",
+	       "wAdd to " . NormalToFree($id),
+	       $id . "/append/text",
+	       $host,
+	       $port)
+	       . "\r\n");
+  }
+  
   my @links; # ["page name", "display text"]
   while ($page->{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g) {
     if (substr($1, 0, 4) eq 'tag:') {
@@ -643,7 +653,8 @@ sub write_data {
   my $stream = shift;
   my $id = shift;
   my $data = shift;
-  SetParam('text', $data);
+  my $param = shift||'text';
+  SetParam($param, $data);
   local *ReBrowsePage = sub {
     write_page_ok($stream);
   };
@@ -666,12 +677,15 @@ sub write_file_page {
   write_data($stream, $id, "#FILE $type\n" . MIME::Base64::encode($data));
 }
 
-sub write_text_page {
+sub write_text {
   my $stream = shift;
   my $id = shift;
   my $data = shift;
+  my $param = shift;
+
   utf8::decode($data);
-  $log->info("Posting " . length($data) . " characters to page $id");
+  $log->info(($param eq 'text' ? "Posting" : "Append")
+	     . " " . length($data) . " characters to page $id");
 
   my ($lead, $meta, $text) = split(/^```\s*(?:meta)?\n/m, $data, 3);
   if (not $lead) {
@@ -682,11 +696,19 @@ sub write_text_page {
 	SetParam($1, $2);
       }
     }
-    write_data($stream, $id, $text);
+    write_data($stream, $id, $text, $param);
   } else {
     # no meta data
-    write_data($stream, $id, $data);
+    write_data($stream, $id, $data, $param);
   }
+}
+
+sub write_text_page {
+  write_text(@_, 'text');
+}
+
+sub append_text_page {
+  write_text(@_, 'aftertext');
 }
 
 sub process_request {
@@ -739,6 +761,8 @@ sub process_request {
       serve_page_history($stream, $1);
     } elsif ($id =~ m!^([^/]*)/write/text$!) {
       write_text_page($stream, $1, $data);
+    } elsif ($id =~ m!^([^/]*)/append/text$!) {
+      append_text_page($stream, $1, $data);
     } elsif ($id =~ m!^([^/]*)(?:/([a-z]+/[-a-z]+))?/write/file$!) {
       write_file_page($stream, $1, $data, $2);
     } elsif ($id =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$! and $IndexHash{$1}) {

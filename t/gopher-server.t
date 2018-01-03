@@ -165,6 +165,7 @@ $page = query_gopher("Friends/1/html");
 like($page, qr/^<p>Some friends/m, "Friends/1 html");
 
 # upload text
+our ($q);
 my $haiku = <<EOT;
 Quiet disk ratling
 Keyboard clicking, then it stops.
@@ -190,6 +191,8 @@ Rain falls and I think.
 EOT
 
 $page = query_gopher("Haiku/write/text", "$haiku");
+$q = new CGI; # clear metadata
+unlike(GetParam('username'), 'Alex', 'Metadata was cleared');
 like($page, qr/^iPage was saved./m, "Write haiku");
 
 $haiku_re = quotemeta(<<"EOT");
@@ -208,9 +211,18 @@ like($page, qr/^1Haiku \(1\)\tHaiku\/1\/menu\t/m, "Haiku (1)");
 
 # new page
 $page = query_gopher("do/new", "Haiku_Copy\n$haiku");
+$q = new CGI; # clear metadata
 like($page, qr/^iPage was saved./m, "Write copy of haiku");
 $page = query_gopher("Haiku_Copy");
 like($page, qr/^$haiku_re/, "New copy of haiku created");
+
+# append
+$page = query_gopher("Haiku_Copy/append/text", "This is a comment by me!");
+$q = new CGI; # clear metadata
+like($page, qr/^iPage was saved./m, "Append to copy of haiku");
+$page = query_gopher("Haiku_Copy");
+like($page, qr/^$haiku_re/, "Copy of haiku still there");
+like($page, qr/^----\n\nThis is a comment by me!\n\n--Anonymous/, "Comment is also there");
 
 # Image download
 my $image = query_gopher("Picture");
@@ -218,6 +230,7 @@ like($image, qr/\211PNG\r\n/, "Image download");
 
 # Image upload
 $page = query_gopher("PictureCopy/write/file", "$image");
+$q = new CGI; # clear metadata
 like($page, qr/Files of type application\/octet-stream are not allowed/m, "MIME type check");
 
 $page = query_gopher("PictureCopy/image/png/write/file", "$image");
