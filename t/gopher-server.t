@@ -210,8 +210,16 @@ like($page, qr/^i\d\d:\d\d UTC by Alex from \S+: typos \(minor\)/m, "Metadata re
 like($page, qr/^1Haiku \(1\)\tHaiku\/1\/menu\t/m, "Haiku (1)");
 
 # new page
-$page = query_gopher("do/new", "Haiku_Copy\n$haiku");
-$q = new CGI; # clear metadata
+$page = query_gopher("do/new", <<"EOT");
+```
+username: Alex
+summary: copy
+title: Haiku_Copy
+```
+Quiet disk rattling
+Keyboard clicking, then it stops.
+Rain falls and I think.
+EOT
 like($page, qr/^iPage was saved./m, "Write copy of haiku");
 $page = query_gopher("Haiku_Copy");
 like($page, qr/^$haiku_re/, "New copy of haiku created");
