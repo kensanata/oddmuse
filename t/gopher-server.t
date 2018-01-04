@@ -48,7 +48,7 @@ if (!defined $pid) {
        "stuff/gopher-server.pl",
        "--host=localhost",
        "--port=$port",
-       "--log_level=debug", # set to debug for logging
+       "--log_level=error", # set to debug for logging
        "--wiki_lib=./wiki.pl",
        "--wiki_dir=$DataDir",
        "--wiki_pages=Alex",
