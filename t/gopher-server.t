@@ -65,11 +65,13 @@ update_page('2017-12-25', 'It was a Monday.\n\nTags: [[tag:Day]]');
 update_page('2017-12-26', 'It was a Tuesday.\n\nTags: [[tag:Day]]');
 update_page('2017-12-27', 'It was a Wednesday.\n\nTags: [[tag:Day]]');
 update_page('Friends', "News about friends.\n", 'rewrite', 1); # minor change
-update_page('Friends', "News about friends:\n\n<journal search tag:friends>\n", 'add journal tag', 1); # minor change
+update_page('Friends', "News about friends:\n\n<journal search tag:friends>\n",
+	    'add journal tag', 1); # minor change
 
 # file created using convert NULL: test.png && base64 test.png
-update_page('Picture', "#FILE image/png\niVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQAAAAA3bvkkAAAACklEQVQI12NoAAAAggCB3UNq9AAA
-AABJRU5ErkJggg==");
+update_page('Picture',
+	    "#FILE image/png\niVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQAAAAA3bv"
+	    . "kkAAAACklEQVQI12NoAAAAggCB3UNq9AAAAABJRU5ErkJggg==");
 
 sub query_gopher {
   my $query = shift;
@@ -97,11 +99,16 @@ for my $item(qw(Alex Berta Chris 2017-12-25 2017-12-26 2017-12-27)) {
 
 # page menu
 $page = query_gopher("Alex/menu");
-like($page, qr/^0Alex\tAlex\t/m, "Alex menu links to plain text");
-like($page, qr/^hAlex\tAlex\/html\t/m, "Alex menu links to HTML");
-like($page, qr/^1Page History\tAlex\/history\t/m, "Alex menu links to page history");
-like($page, qr/^1Berta\tBerta\/menu\t/m, "Alex menu links to Berta menu");
-like($page, qr/^1Friends\tFriends\/tag\t/m, "Alex menu links to Friends tag");
+like($page, qr/^0Alex\tAlex\t/m,
+     "Alex menu links to plain text");
+like($page, qr/^hAlex\tAlex\/html\t/m,
+     "Alex menu links to HTML");
+like($page, qr/^1Page History\tAlex\/history\t/m,
+     "Alex menu links to page history");
+like($page, qr/^1Berta\tBerta\/menu\t/m,
+     "Alex menu links to Berta menu");
+like($page, qr/^1Friends\tFriends\/tag\t/m,
+     "Alex menu links to Friends tag");
 
 # plain text
 $page = query_gopher("Alex");
@@ -120,41 +127,55 @@ for my $item(qw(Friends Alex Berta Chris)) {
 
 # tags
 $page = query_gopher("Day/tag");
-like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s, "tag menu sorted newest first");
+like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s,
+     "tag menu sorted newest first");
 
 # match
 $page = query_gopher("do/match\t2017");
 for my $item(qw(2017-12-25 2017-12-26 2017-12-27)) {
   like($page, qr/^1$item\t$item\/menu\t/m, "match menu contains $item");
 }
-like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s, "match menu sorted newest first");
+like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s,
+     "match menu sorted newest first");
 
 # search
 $page = query_gopher("do/search\ttag:day");
 for my $item(qw(2017-12-25 2017-12-26 2017-12-27)) {
   like($page, qr/^1$item\t$item\/menu\t/m, "serch menu contains $item");
 }
-like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s, "search menu sorted newest first");
+like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s,
+     "search menu sorted newest first");
 
 # rc
 $page = query_gopher("do/rc");
-like($page, qr/Picture.*2017-12-27.*2017-12-26.*2017-12-25.*Friends.*Chris.*Berta.*Alex/s, "rc in the right order");
+my $re = join(".*", "Picture", "2017-12-27", "2017-12-26", "2017-12-25",
+	      "Friends", "Chris", "Berta", "Alex");
+like($page, qr/$re/s, "rc in the right order");
 
 $page = query_gopher("do/rc/showedits");
-like($page, qr/Friends.*2017-12-27.*2017-12-26.*2017-12-25.*Chris.*Berta.*Alex/s, "rc in the right order");
+
+$re = join(".*", "Friends", "2017-12-27", "2017-12-26", "2017-12-25");
+like($page, qr/$re/s, "rc in the right order");
 
 # history
 $page = query_gopher("Friends/history");
-like($page, qr/^1Friends \(1\)\tFriends\/1\/menu\t/m, "Friends (1)");
-like($page, qr/^1Friends \(2\)\tFriends\/2\/menu\t/m, "Friends (2)");
-like($page, qr/^1Friends \(current\)\tFriends\/menu\t/m, "Friends (current)");
-like($page, qr/Friends\/menu.*Friends\/2\/menu.*Friends\/1\/menu/s, "history in the right order");
+like($page, qr/^1Friends \(1\)\tFriends\/1\/menu\t/m,
+     "Friends (1)");
+like($page, qr/^1Friends \(2\)\tFriends\/2\/menu\t/m,
+     "Friends (2)");
+like($page, qr/^1Friends \(current\)\tFriends\/menu\t/m,
+     "Friends (current)");
+like($page, qr/Friends\/menu.*Friends\/2\/menu.*Friends\/1\/menu/s,
+     "history in the right order");
 
 # revision menu
 $page = query_gopher("Friends/1/menu");
-like($page, qr/^0Friends\tFriends\/1\t/m, "Friends/1 menu links to plain text");
-like($page, qr/^hFriends\tFriends\/1\/html\t/m, "Friends/1 menu links to HTML");
-unlike($page, qr/Search result for tag/, "Friends/1 has no journal and thus no tag search");
+like($page, qr/^0Friends\tFriends\/1\t/m,
+     "Friends/1 menu links to plain text");
+like($page, qr/^hFriends\tFriends\/1\/html\t/m,
+     "Friends/1 menu links to HTML");
+unlike($page, qr/Search result for tag/,
+       "Friends/1 has no journal and thus no tag search");
 
 # revision plain text
 $page = query_gopher("Friends/1");
@@ -191,8 +212,6 @@ Rain falls and I think.
 EOT
 
 $page = query_gopher("Haiku/write/text", "$haiku");
-$q = new CGI; # clear metadata
-unlike(GetParam('username'), 'Alex', 'Metadata was cleared');
 like($page, qr/^iPage was saved./m, "Write haiku");
 
 $haiku_re = quotemeta(<<"EOT");
@@ -206,7 +225,8 @@ like($page, qr/^$haiku_re/, "Haiku updated");
 
 $page = query_gopher("Haiku/history");
 like($page, qr/^1Haiku \(current\)\tHaiku\/menu\t/m, "Haiku (current)");
-like($page, qr/^i\d\d:\d\d UTC by Alex from \S+: typos \(minor\)/m, "Metadata recorded");
+like($page, qr/^i\d\d:\d\d UTC by Alex from \S+: typos \(minor\)/m,
+     "Metadata recorded");
 like($page, qr/^1Haiku \(1\)\tHaiku\/1\/menu\t/m, "Haiku (1)");
 
 # new page
@@ -226,11 +246,11 @@ like($page, qr/^$haiku_re/, "New copy of haiku created");
 
 # append
 $page = query_gopher("Haiku_Copy/append/text", "This is a comment by me!");
-$q = new CGI; # clear metadata
 like($page, qr/^iPage was saved./m, "Append to copy of haiku");
 $page = query_gopher("Haiku_Copy");
 like($page, qr/^$haiku_re/, "Copy of haiku still there");
-like($page, qr/^----\n\nThis is a comment by me!\n\n--Anonymous/, "Comment is also there");
+like($page, qr/\n\n----\n\nThis is a comment by me!\n\n-- Anonymous/,
+     "Comment is also there");
 
 # Image download
 my $image = query_gopher("Picture");
@@ -238,8 +258,8 @@ like($image, qr/\211PNG\r\n/, "Image download");
 
 # Image upload
 $page = query_gopher("PictureCopy/write/file", "$image");
-$q = new CGI; # clear metadata
-like($page, qr/Files of type application\/octet-stream are not allowed/m, "MIME type check");
+like($page, qr/Files of type application\/octet-stream are not allowed/m,
+     "MIME type check");
 
 $page = query_gopher("PictureCopy/image/png/write/file", "$image");
 like($page, qr/^iPage was saved./m, "Image upload");

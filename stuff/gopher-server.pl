@@ -21,7 +21,7 @@ use Mojo::IOLoop;
 use Mojo::Log;
 use Getopt::Long;
 
-our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile,
+our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
     $CommentsPrefix, $EditAllowed, $NoEditFile);
 
@@ -168,6 +168,13 @@ sub print_text {
   $stream->write($text); # bytes
 }
 
+sub print_menu {
+  my $stream = shift;
+  my $selector = shift;
+  my $display = shift;
+  print_text($stream, join("\t", $selector, $display, $host, $port) . "\r\n");
+}
+
 sub serve_main_menu {
   my $stream = shift;
   $log->info("Serving main menu");
@@ -176,69 +183,26 @@ sub serve_main_menu {
 
   for my $id (@wiki_pages) {
     last unless $id;
-    print_text($stream, join("\t",
-	       "1" . NormalToFree($id),
-	       "$id/menu",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
   }
 
-  print_text($stream, join("\t",
-	     "1" . "Recent Changes",
-	     "do/rc",
-	     $host,
-	     $port)
-      . "\r\n");
-
-  print_text($stream, join("\t",
-	     "7" . "Find matching page titles",
-	     "do/match",
-	     $host,
-	     $port)
-      . "\r\n");
-
-  print_text($stream, join("\t",
-	     "7" . "Full text search",
-	     "do/search",
-	     $host,
-	     $port)
-      . "\r\n");
-
-  print_text($stream, join("\t",
-	     "1" . "Index of all pages",
-	     "do/index",
-	     $host,
-	     $port)
-      . "\r\n");
+  print_menu($stream, "1" . "Recent Changes", "do/rc");
+  print_menu($stream, "7" . "Find matching page titles", "do/match");
+  print_menu($stream, "7" . "Full text search", "do/search");
+  print_menu($stream, "1" . "Index of all pages", "do/index");
 
   if ($TagFile) {
-    print_text($stream, join("\t",
-	       "1" . "Index of all tags",
-	       "do/tags",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . "Index of all tags", "do/tags");
   }
 
   if ($EditAllowed and not IsFile($NoEditFile)) {
-    print_text($stream, join("\t",
-	       "w" . "New page",
-	       "do/new",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "w" . "New page", "do/new");
   }
 
   my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @IndexList);
   for my $id (@pages) {
     last unless $id;
-    print_text($stream, join("\t",
-	       "1" . NormalToFree($id),
-	       "$id/menu",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
   }
 }
 
@@ -246,12 +210,7 @@ sub serve_index {
   my $stream = shift;
   $log->info("Serving index of all pages");
   for my $id (sort newest_first @IndexList) {
-    print_text($stream, join("\t",
-	       "1" . NormalToFree($id),
-	       "$id/menu",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
   }
 }
 
@@ -259,15 +218,11 @@ sub serve_match {
   my $stream = shift;
   my $match = shift;
   $log->info("Serving pages matching $match");
-  print_text($stream, "iUse a regular expression to match page titles.\r\n");
-  print_text($stream, "iNote that spaces in page titles are actually underlines, '_'.\r\n");
+  print_text($stream,
+	     "iUse a regular expression to match page titles.\r\n"
+	     . "iSpaces in page titles are underlines, '_'.\r\n");
   for my $id (sort newest_first grep(/$match/i, @IndexList)) {
-    print_text($stream, join("\t",
-	       "1" . NormalToFree($id),
-	       "$id/menu",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream,  "1" . NormalToFree($id), "$id/menu");
   }
 }
 
@@ -275,15 +230,10 @@ sub serve_search {
   my $stream = shift;
   my $str = shift;
   $log->info("Serving search result for $str");
-  print_text($stream, "iUse regular expressions separated by space to search.\r\n");
+  print_text($stream, "iUse regular expressions separated by spaces.\r\n");
   SearchTitleAndBody($str, sub {
     my $id = shift;
-    print_text($stream, join("\t",
-	       "1" . NormalToFree($id),
-	       "$id/menu",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
   });
 }
 
@@ -297,12 +247,7 @@ sub serve_tags {
     $count{$tag} = @{$h{$tag}};
   }
   foreach my $id (sort { $count{$b} <=> $count{$a} } keys %count) {
-    print_text($stream, join("\t",
-	       "1" . NormalToFree($id),
-	       "$id/tag",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . NormalToFree($id), "$id/tag");
   }
 }
 
@@ -314,19 +259,9 @@ sub serve_rc {
 
   print_text($stream, "iRecent Changes\r\n");
   if ($showedit) {
-    print_text($stream, join("\t",
-	       "1" . "Skip minor edits",
-	       "do/rc",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . "Skip minor edits", "do/rc");
   } else {
-    print_text($stream, join("\t",
-	       "1" . "Show minor edits",
-	       "do/rc/showedits",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . "Show minor edits", "do/rc/showedits");
   }
 
   ProcessRcLines(
@@ -339,12 +274,7 @@ sub serve_rc {
     sub {
         my($id, $ts, $author_host, $username, $summary, $minor, $revision,
 	   $languages, $cluster, $last) = @_;
-	print_text($stream, join("\t",
-		   "1" . NormalToFree($id),
-		   "$id/menu",
-		   $host,
-		   $port)
-	    . "\r\n");
+	print_menu($stream, "1" . NormalToFree($id), "$id/menu");
 	print_text($stream, "i" . CalcTime($ts)
 	    . " by " . GetAuthor($author_host, $username)
 	    . ($summary ? ": $summary" : "")
@@ -360,13 +290,8 @@ sub serve_file_page_menu {
   my $revision = shift;
   my $code = substr($type, 0, 6) eq 'image/' ? 'I' : '9';
   $log->info("Serving file page menu for $id");
-  print_text($stream, join("\t",
-	     $code . NormalToFree($id)
-	     . ($revision ? "/$revision" : ""),
-	     $id,
-	     $host,
-	     $port)
-      . "\r\n");
+  print_menu($stream, $code . NormalToFree($id)
+	     . ($revision ? "/$revision" : ""), $id);
 }
 
 sub serve_text_page_menu {
@@ -378,33 +303,17 @@ sub serve_text_page_menu {
 	     . ($revision ? "/$revision" : ""));
 
   print_text($stream, "iThe text of this page:\r\n");
-  print_text($stream, join("\t",
-	     "0" . NormalToFree($id),
-	     $id . ($revision ? "/$revision" : ""),
-	     $host,
-	     $port)
-      . "\r\n");
-  print_text($stream, join("\t",
-	     "h" . NormalToFree($id),
-	     $id . ($revision ? "/$revision" : "") . "/html",
-	     $host,
-	     $port)
-      . "\r\n");
-  print_text($stream, join("\t",
-	     "wReplace " . NormalToFree($id),
-	     $id . "/write/text",
-	     $host,
-	     $port)
-	     . "\r\n");
+  print_menu($stream, "0" . NormalToFree($id),
+	     $id . ($revision ? "/$revision" : ""));
+  print_menu($stream, "h" . NormalToFree($id),
+	     $id . ($revision ? "/$revision" : "") . "/html");
+  print_menu($stream, "w" . "Replace " . NormalToFree($id),
+	     $id . "/write/text");
   if (not $revision
       and $CommentsPattern
       and $id =~ /$CommentsPattern/) {
-    print_text($stream, join("\t",
-	       "wAdd to " . NormalToFree($id),
-	       $id . "/append/text",
-	       $host,
-	       $port)
-	       . "\r\n");
+    print_menu($stream, "w" . "Add to " . NormalToFree($id),
+	       $id . "/append/text");
   }
   
   my @links; # ["page name", "display text"]
@@ -429,12 +338,8 @@ sub serve_text_page_menu {
     print_text($stream, "i\r\n");
     print_text($stream, "iLinks leaving " . NormalToFree($id) . ":\r\n");
     for my $link (@links) {
-      print_text($stream, join("\t",
-		 "1" . NormalToFree($link->[1]),
-		 FreeToNormal($link->[0]),
-		 $host,
-		 $port)
-	  . "\r\n");
+      print_menu($stream, "1" . NormalToFree($link->[1]),
+		 FreeToNormal($link->[0]));
     }
   } else {
     print_text($stream, "i\r\n");
@@ -454,12 +359,7 @@ sub serve_page_history {
   $log->info("Serving history of $id");
   OpenPage($id);
 
-  print_text($stream, join("\t",
-	     "1" . NormalToFree($id) . " (current)",
-	     "$id/menu",
-	     $host,
-	     $port)
-      . "\r\n");
+  print_menu($stream, "1" . NormalToFree($id) . " (current)", "$id/menu");
   print_text($stream, "i" . CalcTime($Page{ts})
       . " by " . GetAuthor($Page{host}, $Page{username})
       . ($Page{summary} ? ": $Page{summary}" : "")
@@ -468,12 +368,8 @@ sub serve_page_history {
 
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my $keep = GetKeptRevision($revision);
-    print_text($stream, join("\t",
-	       "1" . NormalToFree($id) . " ($keep->{revision})",
-	       "$id/$keep->{revision}/menu",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . NormalToFree($id) . " ($keep->{revision})",
+	       "$id/$keep->{revision}/menu");
     print_text($stream, "i" . CalcTime($keep->{ts})
 	. " by " . GetAuthor($keep->{host}, $keep->{username})
 	. ($keep->{summary} ? ": $keep->{summary}" : "")
@@ -512,12 +408,7 @@ sub serve_page_menu {
 
   if (not $revision) {
     print_text($stream, "i\r\n");
-    print_text($stream, join("\t",
-	       "1" . "Page History",
-	       "$id/history",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . "Page History", "$id/history");
   }
 }
 
@@ -566,7 +457,8 @@ sub serve_page_html {
   # kept pages have no HTML cache
   local *STDIN = \$stream;
   if ($revision) {
-    print_text($stream, ToString(\&PrintWikiToHTML, $page->{text}, 1)); # no lock
+    # no locking of the file, no updating of the cache
+    print_text($stream, ToString(\&PrintWikiToHTML, $page->{text}, 1));
   } else {
     print_text($stream, ToString(\&PrintPageHtml));
   }
@@ -587,12 +479,7 @@ sub serve_tag_list {
   my $tag = shift;
   print_text($stream, "iSearch result for tag $tag:\r\n");
   for my $id (sort newest_first TagFind($tag)) {
-    print_text($stream, join("\t",
-	       "1" . NormalToFree($id),
-	       "$id/menu",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
   }
 }
 
@@ -602,12 +489,7 @@ sub serve_tag {
   $log->info("Serving tag $tag");
   if ($IndexHash{$tag}) {
     print_text($stream, "iThis page is about the tag $tag.\r\n");
-    print_text($stream, join("\t",
-	       "1" . NormalToFree($tag),
-	       "$tag/menu",
-	       $host,
-	       $port)
-	. "\r\n");
+    print_menu($stream, "1" . NormalToFree($tag), "$tag/menu");
     print_text($stream, "i\r\n");
   }
   serve_tag_list($stream, $tag);
@@ -725,6 +607,10 @@ sub process_request {
   $stream->on(read => sub {
     my ($stream, $bytes) = @_;
 
+    # clear cookie and all that
+    $q = undef;
+    Init();
+    
     # refresh list of pages
     if (IsFile($IndexFile) and ReadIndex()) {
       # we're good
