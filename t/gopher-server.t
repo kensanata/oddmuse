@@ -194,7 +194,8 @@ Rain falls and I think
 EOT
 
 $page = query_gopher("Haiku/write/text", "$haiku");
-like($page, qr/^iPage was saved./m, "Write haiku");
+like($page, qr/^iPage was saved./m, "Write Haiku");
+like($page, qr/^1Haiku\tHaiku\/menu/m, "Link back to Haiku");
 
 my $haiku_re = quotemeta($haiku);
 $page = query_gopher("Haiku");

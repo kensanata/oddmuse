@@ -522,7 +522,9 @@ EOF
 
 sub write_page_ok {
   my $stream = shift;
+  my $id = shift;
   print_text($stream, "iPage was saved.\r\n");
+  print_menu($stream, "1" . NormalToFree($id), "$id/menu");
 }
 
 sub write_page_error {
@@ -539,7 +541,7 @@ sub write_data {
   my $param = shift||'text';
   SetParam($param, $data);
   local *ReBrowsePage = sub {
-    write_page_ok($stream);
+    write_page_ok($stream, $id);
   };
   local *ReportError = sub {
     write_page_error($stream, @_);
