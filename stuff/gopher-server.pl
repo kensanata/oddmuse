@@ -309,14 +309,31 @@ sub serve_text_page_menu {
 	     $id . ($revision ? "/$revision" : "") . "/html");
   print_menu($stream, "w" . "Replace " . NormalToFree($id),
 	     $id . "/write/text");
-  if (not $revision
-      and $CommentsPattern
-      and $id =~ /$CommentsPattern/) {
-    print_menu($stream, "w" . "Add to " . NormalToFree($id),
-	       $id . "/append/text");
+
+  # Comments / Original
+  if (not $revision and $CommentsPattern) {
+    if ($id =~ /$CommentsPattern/) {
+      my $original = $1;
+      print_menu($stream, "w" . "Add to " . NormalToFree($id),
+		 $id . "/append/text");
+      if ($original) {
+	# sometimes we are on a comment page and cannot derive the original
+	print_menu($stream, "1" . NormalToFree("$original/menu"), $original) ;
+      }
+    } else {
+      my $comments = $CommentsPrefix . $id;
+      print_menu($stream, "1" . NormalToFree("$comments/menu"), $comments);
+    }
+  }
+
+  # Page History
+  if (not $revision) {
+    print_text($stream, "i\r\n");
+    print_menu($stream, "1" . "Page History", "$id/history");
   }
   
   my @links; # ["page name", "display text"]
+
   while ($page->{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g) {
     if (substr($1, 0, 4) eq 'tag:') {
       push(@links, [substr($1, 4) . "/tag", $2||substr($1, 4)]);
@@ -325,24 +342,14 @@ sub serve_text_page_menu {
     }
   }
 
-  if (not $revision and $CommentsPattern) {
-    if ($id =~ /$CommentsPattern/) {
-      push(@links, [$1 . "/menu", $1]) if $1;
-    } else {
-      my $comments = $CommentsPrefix . $id;
-      push(@links, [$comments . "/menu", $comments]);
-    }
-  }
-
+  print_text($stream, "i\r\n");
   if (@links) {
-    print_text($stream, "i\r\n");
     print_text($stream, "iLinks leaving " . NormalToFree($id) . ":\r\n");
     for my $link (@links) {
       print_menu($stream, "1" . NormalToFree($link->[1]),
 		 FreeToNormal($link->[0]));
     }
   } else {
-    print_text($stream, "i\r\n");
     print_text($stream, "iThere are no links leaving this page.\r\n");
   }
 
@@ -404,11 +411,6 @@ sub serve_page_menu {
     serve_file_page_menu($stream, $id, $type, $revision);
   } else {
     serve_text_page_menu($stream, $id, $page, $revision);
-  }
-
-  if (not $revision) {
-    print_text($stream, "i\r\n");
-    print_menu($stream, "1" . "Page History", "$id/history");
   }
 }
 
