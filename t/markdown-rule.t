@@ -38,7 +38,7 @@ run_tests(split(/\n/,<<'EOT'));
 -  one
 <ul><li>one</li></ul>
 - one\n-- Alex
-<ul><li>one</li><li>- Alex</li></ul>
+<ul><li>one -- Alex</li></ul>
 - one\n\n- Alex
 <ul><li>one</li><li>Alex</li></ul>
 * one\n    * two

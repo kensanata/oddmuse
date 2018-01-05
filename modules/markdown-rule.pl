@@ -86,8 +86,8 @@ sub MarkdownRule {
     return AddOrCloseHtmlEnvironment('del');
   }
   # indented lists = nested lists
-  elsif ($bol and m/\G(\s*\n)*()([*-]|\d+\.)[ \t]*/cg
-      or InElement('li') && m/\G(\s*\n)+( *)([*-]|\d+\.)[ \t]*/cg) {
+  elsif ($bol and m/\G(\s*\n)*()([*-]|\d+\.)[ \t]+/cg
+      or InElement('li') && m/\G(\s*\n)+( *)([*-]|\d+\.)[ \t]+/cg) {
     my $nesting_goal = int(length($2)/4) + 1;
     my $tag = ($3 eq '*' or $3 eq '-') ? 'ul' : 'ol';
     my $nesting_current = 0;
