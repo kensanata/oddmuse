@@ -186,7 +186,6 @@ $page = query_gopher("Friends/1/html");
 like($page, qr/^<p>Some friends/m, "Friends/1 html");
 
 # upload text
-our ($q);
 my $haiku = <<EOT;
 Quiet disk ratling
 Keyboard clicking, then it stops.
