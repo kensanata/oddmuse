@@ -270,4 +270,11 @@ like($copy, qr/\211PNG\r\n/, "Image copy download");
 
 is($copy, $image, "Image and copy are identical");
 
+# Test large pages
+my $garbage = (("0123456789" x 8) . "\n") x 1000 . "Last Line";
+$page = query_gopher("Large/write/text", "$garbage");
+like($page, qr/^iPage was saved./m, "Write large page");
+$page = query_gopher("Large");
+like($page, qr/Last Line/m, "Read large page");
+
 done_testing();
