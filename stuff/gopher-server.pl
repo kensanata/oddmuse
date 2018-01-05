@@ -642,7 +642,7 @@ sub process_request {
 	return;
 	# and wait for another chunks
       }
-    } elsif ($bytes =~ /\n./ and not $bytes =~ s/\n\.\r?\n$//) {
+    } elsif ($bytes =~ /\n./ and not $bytes =~ s/\r?\n\.\r?\n$//) {
       # if this is a new request with more than one line, we continue reading
       $continue_reading = 1;
       $bytes_so_far = $bytes;
