@@ -174,11 +174,17 @@ sub print_menu {
   print_text($stream, join("\t", $selector, $display, $host, $port) . "\r\n");
 }
 
+sub print_info {
+  my $stream = shift;
+  my $info = shift;
+  print_menu($stream, "i$info", "");
+}
+
 sub serve_main_menu {
   my $stream = shift;
   $log->info("Serving main menu");
-  print_text($stream, "iWelcome to the Gopher version of this wiki.\r\n");
-  print_text($stream, "iHere are some interesting starting points:\r\n");
+  print_info($stream, "Welcome to the Gopher version of this wiki.");
+  print_info($stream, "Here are some interesting starting points:");
 
   for my $id (@wiki_pages) {
     last unless $id;
@@ -229,7 +235,7 @@ sub serve_search {
   my $stream = shift;
   my $str = shift;
   $log->info("Serving search result for $str");
-  print_text($stream, "iUse regular expressions separated by spaces.\r\n");
+  print_info($stream, "Use regular expressions separated by spaces.");
   SearchTitleAndBody($str, sub {
     my $id = shift;
     print_menu($stream, "1" . NormalToFree($id), "$id/menu");
@@ -256,7 +262,7 @@ sub serve_rc {
   $log->info("Serving recent changes"
 	     . ($showedit ? " including minor changes" : ""));
 
-  print_text($stream, "iRecent Changes\r\n");
+  print_info($stream, "Recent Changes");
   if ($showedit) {
     print_menu($stream, "1" . "Skip minor edits", "do/rc");
   } else {
@@ -266,9 +272,9 @@ sub serve_rc {
   ProcessRcLines(
     sub {
       my $date = shift;
-      print_text($stream, "i\r\n");
-      print_text($stream, "i$date\r\n");
-      print_text($stream, "i\r\n");
+      print_info($stream, "");
+      print_info($stream, "$date");
+      print_info($stream, "");
     },
     sub {
         my($id, $ts, $author_host, $username, $summary, $minor, $revision,
@@ -330,7 +336,7 @@ sub serve_text_page_menu {
   $log->info("Serving text page menu for $id"
 	     . ($revision ? "/$revision" : ""));
 
-  print_text($stream, "iThe text of this page:\r\n");
+  print_info($stream, "The text of this page:");
   print_menu($stream, "0" . NormalToFree($id),
 	     $id . ($revision ? "/$revision" : ""));
   print_menu($stream, "h" . NormalToFree($id),
@@ -351,20 +357,20 @@ sub serve_text_page_menu {
     }
   }
 
-  print_text($stream, "i\r\n");
+  print_info($stream, "");
   if (@links) {
-    print_text($stream, "iLinks leaving " . NormalToFree($id) . ":\r\n");
+    print_info($stream, "Links leaving " . NormalToFree($id) . ":");
     for my $link (@links) {
       print_menu($stream, "1" . NormalToFree($link->[1]),
 		 FreeToNormal($link->[0]));
     }
   } else {
-    print_text($stream, "iThere are no links leaving this page.\r\n");
+    print_info($stream, "There are no links leaving this page.");
   }
 
   if ($page->{text} =~ m/<journal search tag:(\S+)>\s*/) {
     my $tag = $1;
-    print_text($stream, "i\r\n");
+    print_info($stream, "");
     serve_tag_list($stream, $tag);
   }
 }
@@ -488,7 +494,7 @@ sub newest_first {
 sub serve_tag_list {
   my $stream = shift;
   my $tag = shift;
-  print_text($stream, "iSearch result for tag $tag:\r\n");
+  print_info($stream, "Search result for tag $tag:");
   for my $id (sort newest_first TagFind($tag)) {
     print_menu($stream, "1" . NormalToFree($id), "$id/menu");
   }
@@ -499,9 +505,9 @@ sub serve_tag {
   my $tag = shift;
   $log->info("Serving tag $tag");
   if ($IndexHash{$tag}) {
-    print_text($stream, "iThis page is about the tag $tag.\r\n");
+    print_info($stream, "This page is about the tag $tag.");
     print_menu($stream, "1" . NormalToFree($tag), "$tag/menu");
-    print_text($stream, "i\r\n");
+    print_info($stream, "");
   }
   serve_tag_list($stream, $tag);
 }
@@ -534,7 +540,7 @@ EOF
 sub write_page_ok {
   my $stream = shift;
   my $id = shift;
-  print_text($stream, "iPage was saved.\r\n");
+  print_info($stream, "Page was saved.");
   print_menu($stream, "1" . NormalToFree($id), "$id/menu");
 }
 
