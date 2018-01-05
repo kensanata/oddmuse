@@ -290,15 +290,15 @@ sub serve_page_comment_link {
   if (not $revision and $CommentsPattern) {
     if ($id =~ /$CommentsPattern/) {
       my $original = $1;
-      print_menu($stream, "w" . "Add to " . NormalToFree($id),
-		 $id . "/append/text");
+      print_menu($stream, "w" . "Add a comment", "$id/append/text");
       if ($original) {
 	# sometimes we are on a comment page and cannot derive the original
-	print_menu($stream, "1" . NormalToFree("$original/menu"), $original) ;
+	print_menu($stream, "1" . "Back to the original page",
+		   "$original/menu");
       }
     } else {
       my $comments = $CommentsPrefix . $id;
-      print_menu($stream, "1" . NormalToFree("$comments/menu"), $comments);
+      print_menu($stream, "1" . "Comments on this page", "$comments/menu");
     }
   }
 }
@@ -308,7 +308,6 @@ sub serve_page_history_link {
   my $id = shift;
   my $revision = shift;
   if (not $revision) {
-    print_text($stream, "i\r\n");
     print_menu($stream, "1" . "Page History", "$id/history");
   }
 }
