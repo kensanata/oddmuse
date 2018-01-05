@@ -138,8 +138,7 @@ sub run {
     $log->error("couldn't do wiki library $wiki_lib: $!") unless defined $return;
     $log->error("couldn't run wiki library $wiki_lib") unless $return;
   }
-  # do the init code without CGI (no $q)
-  Init();
+
   # make sure search is sorted newest first because NewTagFiltered resorts
   *OldGopherFiltered = \&Filtered;
   *Filtered = \&NewGopherFiltered;
