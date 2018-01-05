@@ -2522,7 +2522,7 @@ sub GetFormStart {
 sub GetSearchForm {
   my $html = GetFormStart(undef, 'get', 'search') . $q->start_p;
   $html .= $q->label({-for=>'search'}, T('Search:')) . ' '
-      . $q->textfield(-name=>'search', -id=>'search', -size=>20, -accesskey=>T('f')) . ' ';
+      . $q->textfield(-name=>'search', -id=>'search', -size=>15, -accesskey=>T('f')) . ' ';
   if (GetParam('search') ne '' and UserIsAdmin()) { # see DoBrowseRequest
     $html .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
 	. $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
@@ -2532,11 +2532,11 @@ sub GetSearchForm {
   }
   if (GetParam('matchingpages', $MatchingPages)) {
     $html .= $q->label({-for=>'matchingpage'}, T('Filter:')) . ' '
-	. $q->textfield(-name=>'match', -id=>'matchingpage', -size=>20) . ' ';
+	. $q->textfield(-name=>'match', -id=>'matchingpage', -size=>15) . ' ';
   }
   if (%Languages) {
     $html .= $q->label({-for=>'searchlang'}, T('Language:')) . ' '
-	. $q->textfield(-name=>'lang', -id=>'searchlang', -size=>10, -default=>GetParam('lang', '')) . ' ';
+	. $q->textfield(-name=>'lang', -id=>'searchlang', -size=>5, -default=>GetParam('lang', '')) . ' ';
   }
   $html .= $q->submit('dosearch', T('Go!')) . $q->end_p . $q->end_form;
   return $html;
