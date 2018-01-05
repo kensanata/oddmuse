@@ -290,12 +290,10 @@ sub serve_page_comment_link {
   if (not $revision and $CommentsPattern) {
     if ($id =~ /$CommentsPattern/) {
       my $original = $1;
+      # sometimes we are on a comment page and cannot derive the original
+      print_menu($stream, "1" . "Back to the original page",
+		 "$original/menu") if $original;
       print_menu($stream, "w" . "Add a comment", "$id/append/text");
-      if ($original) {
-	# sometimes we are on a comment page and cannot derive the original
-	print_menu($stream, "1" . "Back to the original page",
-		   "$original/menu");
-      }
     } else {
       my $comments = $CommentsPrefix . $id;
       print_menu($stream, "1" . "Comments on this page", "$comments/menu");
