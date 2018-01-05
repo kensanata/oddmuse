@@ -283,6 +283,36 @@ sub serve_rc {
     });
 }
 
+sub serve_page_comment_link {
+  my $stream = shift;
+  my $id = shift;
+  my $revision = shift;
+  if (not $revision and $CommentsPattern) {
+    if ($id =~ /$CommentsPattern/) {
+      my $original = $1;
+      print_menu($stream, "w" . "Add to " . NormalToFree($id),
+		 $id . "/append/text");
+      if ($original) {
+	# sometimes we are on a comment page and cannot derive the original
+	print_menu($stream, "1" . NormalToFree("$original/menu"), $original) ;
+      }
+    } else {
+      my $comments = $CommentsPrefix . $id;
+      print_menu($stream, "1" . NormalToFree("$comments/menu"), $comments);
+    }
+  }
+}
+
+sub serve_page_history_link {
+  my $stream = shift;
+  my $id = shift;
+  my $revision = shift;
+  if (not $revision) {
+    print_text($stream, "i\r\n");
+    print_menu($stream, "1" . "Page History", "$id/history");
+  }
+}
+
 sub serve_file_page_menu {
   my $stream = shift;
   my $id = shift;
@@ -292,6 +322,8 @@ sub serve_file_page_menu {
   $log->info("Serving file page menu for $id");
   print_menu($stream, $code . NormalToFree($id)
 	     . ($revision ? "/$revision" : ""), $id);
+  serve_page_comment_link($stream, $id, $revision);
+  serve_page_history_link($stream, $id, $revision);
 }
 
 sub serve_text_page_menu {
@@ -310,27 +342,8 @@ sub serve_text_page_menu {
   print_menu($stream, "w" . "Replace " . NormalToFree($id),
 	     $id . "/write/text");
 
-  # Comments / Original
-  if (not $revision and $CommentsPattern) {
-    if ($id =~ /$CommentsPattern/) {
-      my $original = $1;
-      print_menu($stream, "w" . "Add to " . NormalToFree($id),
-		 $id . "/append/text");
-      if ($original) {
-	# sometimes we are on a comment page and cannot derive the original
-	print_menu($stream, "1" . NormalToFree("$original/menu"), $original) ;
-      }
-    } else {
-      my $comments = $CommentsPrefix . $id;
-      print_menu($stream, "1" . NormalToFree("$comments/menu"), $comments);
-    }
-  }
-
-  # Page History
-  if (not $revision) {
-    print_text($stream, "i\r\n");
-    print_menu($stream, "1" . "Page History", "$id/history");
-  }
+  serve_page_comment_link($stream, $id, $revision);
+  serve_page_history_link($stream, $id, $revision);
   
   my @links; # ["page name", "display text"]
 
