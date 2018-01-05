@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2017  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2017–2018  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -346,7 +346,7 @@ sub serve_text_page_menu {
 
   serve_page_comment_link($stream, $id, $revision);
   serve_page_history_link($stream, $id, $revision);
-  
+
   my @links; # ["page name", "display text"]
 
   while ($page->{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g) {
@@ -622,14 +622,39 @@ sub append_text_page {
 
 sub process_request {
   my ($loop, $stream) = @_;
+  my $continue_reading = 0;
+  my $bytes_so_far = '';
 
   $stream->on(read => sub {
     my ($stream, $bytes) = @_;
 
+    # handle multiple chunks
+    if ($continue_reading) {
+      # we stop reading if the bytes end with a single period on a line
+      if ($bytes =~ /\n\.\r?\n$/) {
+	$continue_reading = 0;
+	$bytes = $bytes_so_far . $bytes;
+	$log->debug("Finished reading " . length($bytes) . " bytes");
+	# and process these
+      } else {
+	$bytes_so_far .= $bytes;
+	$log->debug("Finished reading " . length($bytes) . " bytes, continuing");
+	return;
+	# and wait for another chunks
+      }
+    } elsif ($bytes =~ /\n./ and not $bytes =~ s/\n\.\r?\n$//) {
+      # if this is a new request with more than one line, we continue reading
+      $continue_reading = 1;
+      $bytes_so_far = $bytes;
+      $log->debug("Waiting for more chunks after " . length($bytes) . " bytes");
+      return;
+      # and wait for another chunks
+    }
+
     # clear cookie and all that
     $q = undef;
     Init();
-    
+
     # refresh list of pages
     if (IsFile($IndexFile) and ReadIndex()) {
       # we're good
@@ -684,7 +709,7 @@ sub process_request {
     # Write final dot for almost everything
     print_text($stream, ".\r\n");
   LOOP_END:
-    $stream->close_gracefully();
+    $stream->close_gracefully() unless $continue_reading;
     $log->debug("Done");
   });
 }

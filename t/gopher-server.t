@@ -1,4 +1,4 @@
-# Copyright (C) 2017  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2017–2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -190,13 +190,14 @@ my $haiku = <<EOT;
 Quiet disk ratling
 Keyboard clicking, then it stops.
 Rain falls and I think
+.
 EOT
 
 $page = query_gopher("Haiku/write/text", "$haiku");
 like($page, qr/^iPage was saved./m, "Write Haiku");
 like($page, qr/^1Haiku\tHaiku\/menu/m, "Link back to Haiku");
 
-my $haiku_re = quotemeta($haiku);
+my $haiku_re = quotemeta(substr($haiku, 0, -2)); # strip period and \n
 $page = query_gopher("Haiku");
 like($page, qr/^$haiku_re/, "Haiku saved");
 
@@ -209,6 +210,7 @@ summary: typos
 Quiet disk rattling
 Keyboard clicking, then it stops.
 Rain falls and I think.
+.
 EOT
 
 $page = query_gopher("Haiku/write/text", "$haiku");
@@ -239,13 +241,14 @@ title: Haiku_Copy
 Quiet disk rattling
 Keyboard clicking, then it stops.
 Rain falls and I think.
+.
 EOT
 like($page, qr/^iPage was saved./m, "Write copy of haiku");
 $page = query_gopher("Haiku_Copy");
 like($page, qr/^$haiku_re/, "New copy of haiku created");
 
 # append
-$page = query_gopher("Haiku_Copy/append/text", "This is a comment by me!");
+$page = query_gopher("Haiku_Copy/append/text", "This is a comment by me!\n.\n");
 like($page, qr/^iPage was saved./m, "Append to copy of haiku");
 $page = query_gopher("Haiku_Copy");
 like($page, qr/^$haiku_re/, "Copy of haiku still there");
@@ -257,11 +260,11 @@ my $image = query_gopher("Picture");
 like($image, qr/\211PNG\r\n/, "Image download");
 
 # Image upload
-$page = query_gopher("PictureCopy/write/file", "$image");
+$page = query_gopher("PictureCopy/write/file", "$image\n.\n");
 like($page, qr/Files of type application\/octet-stream are not allowed/m,
      "MIME type check");
 
-$page = query_gopher("PictureCopy/image/png/write/file", "$image");
+$page = query_gopher("PictureCopy/image/png/write/file", "$image\n.\n");
 like($page, qr/^iPage was saved./m, "Image upload");
 unlike($page, qr/^3Page was not saved/, "Messages are correct");
 
@@ -271,10 +274,16 @@ like($copy, qr/\211PNG\r\n/, "Image copy download");
 is($copy, $image, "Image and copy are identical");
 
 # Test large pages
-my $garbage = (("0123456789" x 8) . "\n") x 1000 . "Last Line";
+my $garbage = (("0123456789" x 8) . "\n") x 10 . "Last Line\n.\n";
+$page = query_gopher("Small/write/text", "$garbage");
+like($page, qr/^iPage was saved./m, "Write small page");
+$page = query_gopher("Small");
+like(substr($page, -20), qr/Last Line/, "All of small page was saved");
+
+$garbage = (("0123456789" x 8) . "\n") x 4000 . "Last Line\n.\n";
 $page = query_gopher("Large/write/text", "$garbage");
 like($page, qr/^iPage was saved./m, "Write large page");
 $page = query_gopher("Large");
-like($page, qr/Last Line/m, "Read large page");
+like(substr($page, -20), qr/Last Line/, "All of large page was saved");
 
 done_testing();
