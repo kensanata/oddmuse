@@ -623,32 +623,66 @@ sub append_text_page {
 sub process_request {
   my ($loop, $stream) = @_;
   my $continue_reading = 0;
-  my $bytes_so_far = '';
+  my $content_length = 0;
+  my $selector;
+  my $data;
 
   $stream->on(read => sub {
     my ($stream, $bytes) = @_;
 
     # handle multiple chunks
     if ($continue_reading) {
-      # we stop reading if the bytes end with a single period on a line
-      if ($bytes =~ /\n\.\r?\n$/) {
+      # if the client did not specify a content-length, stop reading when the
+      # bytes end with a single period on a line
+      if (not $content_length and $bytes =~ s/^\.\r?\n\z//m) {
 	$continue_reading = 0;
-	$bytes = $bytes_so_far . $bytes;
-	$log->debug("Finished reading " . length($bytes) . " bytes");
+	$data .= $bytes;
+	$log->debug("Finished reading " . length($bytes) . " bytes up to final period");
+	# and process these
+      } elsif ($content_length and length($data) + length($bytes) >= $content_length) {
+	$data = substr($data . $bytes, 0, $content_length);
+	$continue_reading = 0;
+	$log->debug("Finished reading " . length($bytes) . " bytes of $content_length");
 	# and process these
       } else {
-	$bytes_so_far .= $bytes;
-	$log->debug("Finished reading " . length($bytes) . " bytes, continuing");
+	$data .= $bytes;
+	$log->debug("Read " . length($bytes) . " bytes and waiting for more");
 	return;
 	# and wait for another chunks
       }
-    } elsif ($bytes =~ /\n./ and not $bytes =~ s/\r?\n\.\r?\n$//) {
-      # if this is a new request with more than one line, we continue reading
-      $continue_reading = 1;
-      $bytes_so_far = $bytes;
-      $log->debug("Waiting for more chunks after " . length($bytes) . " bytes");
-      return;
-      # and wait for another chunks
+     } else {
+       # telnet just terminates with \n
+       ($selector, $data) = split(/\r?\n/, $bytes, 2);
+       utf8::decode($selector);
+       # $data can be binary file
+       $log->debug("Selector: $selector");
+
+       # special case content-length indicator for write file: page id, mime
+       # type, content-length
+       if ($selector =~ m!^([^/]*)(?:/([a-z]+/[-a-z]+))?/write/file(?:\t(\d+))?$!) {
+	 $content_length = $3;
+
+	 # keep reading unless this chunk alread has all the bytes
+	 if (length($data) >= $content_length) {
+	   $data = substr($data, 0, $content_length);
+	   $log->debug("Read " . length($data) . " bytes");
+	 } else {
+	   $log->debug("Read " . length($data) . " bytes of $content_length");
+	   $continue_reading = 1;
+	   return;
+	 }
+       }
+
+       # otherwise data must be terminated by a period on a line of its own
+       if ($data and not $content_length) {
+	 if ($data =~ s/^\.\r?\n\z//m) {
+	   $log->debug("Read " . length($data) . " bytes terminated by period");
+	 } else {
+	   $log->debug("Read " . length($bytes) . " bytes and waiting for final period");
+	   $continue_reading = 1;
+	   return;
+	 }
+       }
     }
 
     # clear cookie and all that
@@ -662,48 +696,42 @@ sub process_request {
       RefreshIndex();
     }
 
-    # telnet just terminates with \n
-    my ($id, $data) = split(/\r?\n/, $bytes, 2);
-    utf8::decode($id);
-    # $data can be binary file
-    $log->debug("Selector: $id");
-
-    if (not $id) {
+    if (not $selector) {
       serve_main_menu($stream);
-    } elsif ($id eq "do/index") {
+    } elsif ($selector eq "do/index") {
       serve_index($stream);
-    } elsif (substr($id, 0, 9) eq "do/match\t") {
-      serve_match($stream, substr($id, 9));
-    } elsif (substr($id, 0, 10) eq "do/search\t") {
-      serve_search($stream, substr($id, 10));
-    } elsif ($id eq "do/tags") {
+    } elsif (substr($selector, 0, 9) eq "do/match\t") {
+      serve_match($stream, substr($selector, 9));
+    } elsif (substr($selector, 0, 10) eq "do/search\t") {
+      serve_search($stream, substr($selector, 10));
+    } elsif ($selector eq "do/tags") {
       serve_tags($stream);
-    } elsif ($id eq "do/rc") {
+    } elsif ($selector eq "do/rc") {
       serve_rc($stream, 0);
-    } elsif ($id eq "do/rc/showedits") {
+    } elsif ($selector eq "do/rc/showedits") {
       serve_rc($stream, 1);
-    } elsif ($id eq "do/new") {
+    } elsif ($selector eq "do/new") {
       write_text_page($stream, undef, $data);
-    } elsif ($id =~ m!^([^/]*)/(\d+)/menu$!) {
+    } elsif ($selector =~ m!^([^/]*)/(\d+)/menu$!) {
       serve_page_menu($stream, $1, $2);
-    } elsif (substr($id, -5) eq '/menu') {
-      serve_page_menu($stream, substr($id, 0, -5));
-    } elsif ($id =~ m!^([^/]*)/tag$!) {
+    } elsif (substr($selector, -5) eq '/menu') {
+      serve_page_menu($stream, substr($selector, 0, -5));
+    } elsif ($selector =~ m!^([^/]*)/tag$!) {
       serve_tag($stream, $1);
-    } elsif ($id =~ m!^([^/]*)(?:/(\d+))?/html!) {
+    } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?/html!) {
       serve_page_html($stream, $1, $2);
-    } elsif ($id =~ m!^([^/]*)/history$!) {
+    } elsif ($selector =~ m!^([^/]*)/history$!) {
       serve_page_history($stream, $1);
-    } elsif ($id =~ m!^([^/]*)/write/text$!) {
+    } elsif ($selector =~ m!^([^/]*)/write/text$!) {
       write_text_page($stream, $1, $data);
-    } elsif ($id =~ m!^([^/]*)/append/text$!) {
+    } elsif ($selector =~ m!^([^/]*)/append/text$!) {
       append_text_page($stream, $1, $data);
-    } elsif ($id =~ m!^([^/]*)(?:/([a-z]+/[-a-z]+))?/write/file$!) {
+    } elsif ($selector =~ m!^([^/]*)(?:/([a-z]+/[-a-z]+))?/write/file(?:\t(\d+))?$!) {
       write_file_page($stream, $1, $data, $2);
-    } elsif ($id =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$!) {
+    } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$!) {
       serve_page($stream, $1, $2);
     } else {
-      serve_error($stream, $id, ValidId($id)||'Cause unknown');
+      serve_error($stream, $selector, ValidId($selector)||'Cause unknown');
     }
 
     # Write final dot for almost everything

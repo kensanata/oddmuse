@@ -260,11 +260,11 @@ my $image = query_gopher("Picture");
 like($image, qr/\211PNG\r\n/, "Image download");
 
 # Image upload
-$page = query_gopher("PictureCopy/write/file", "$image\n.\n");
+$page = query_gopher("PictureCopy/write/file\t" . length($image), "$image");
 like($page, qr/Files of type application\/octet-stream are not allowed/m,
      "MIME type check");
 
-$page = query_gopher("PictureCopy/image/png/write/file", "$image\n.\n");
+$page = query_gopher("PictureCopy/image/png/write/file\t" . length($image), "$image");
 like($page, qr/^iPage was saved./m, "Image upload");
 unlike($page, qr/^3Page was not saved/, "Messages are correct");
 
