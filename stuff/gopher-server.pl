@@ -180,6 +180,12 @@ sub print_info {
   print_menu($stream, "i$info", "");
 }
 
+sub print_error {
+  my $stream = shift;
+  my $error = shift;
+  print_menu($stream, "3$error", "");
+}
+
 sub serve_main_menu {
   my $stream = shift;
   $log->info("Serving main menu");
@@ -223,9 +229,8 @@ sub serve_match {
   my $stream = shift;
   my $match = shift;
   $log->info("Serving pages matching $match");
-  print_text($stream,
-	     "iUse a regular expression to match page titles.\r\n"
-	     . "iSpaces in page titles are underlines, '_'.\r\n");
+  print_info($stream, "Use a regular expression to match page titles.");
+  print_info($stream, "Spaces in page titles are underlines, '_'.");
   for my $id (sort newest_first grep(/$match/i, @IndexList)) {
     print_menu($stream,  "1" . NormalToFree($id), "$id/menu");
   }
@@ -280,11 +285,10 @@ sub serve_rc {
         my($id, $ts, $author_host, $username, $summary, $minor, $revision,
 	   $languages, $cluster, $last) = @_;
 	print_menu($stream, "1" . NormalToFree($id), "$id/menu");
-	print_text($stream, "i" . CalcTime($ts)
+	print_info($stream, CalcTime($ts)
 	    . " by " . GetAuthor($author_host, $username)
 	    . ($summary ? ": $summary" : "")
-	    . ($minor ? " (minor)" : "")
-	    . "\r\n");
+	    . ($minor ? " (minor)" : ""));
     });
 }
 
@@ -382,21 +386,19 @@ sub serve_page_history {
   OpenPage($id);
 
   print_menu($stream, "1" . NormalToFree($id) . " (current)", "$id/menu");
-  print_text($stream, "i" . CalcTime($Page{ts})
+  print_info($stream, CalcTime($Page{ts})
       . " by " . GetAuthor($Page{host}, $Page{username})
       . ($Page{summary} ? ": $Page{summary}" : "")
-      . ($Page{minor} ? " (minor)" : "")
-      . "\r\n");
+      . ($Page{minor} ? " (minor)" : ""));
 
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my $keep = GetKeptRevision($revision);
     print_menu($stream, "1" . NormalToFree($id) . " ($keep->{revision})",
 	       "$id/$keep->{revision}/menu");
-    print_text($stream, "i" . CalcTime($keep->{ts})
+    print_info($stream, CalcTime($keep->{ts})
 	. " by " . GetAuthor($keep->{host}, $keep->{username})
 	. ($keep->{summary} ? ": $keep->{summary}" : "")
-	. ($keep->{minor} ? " (minor)" : "")
-	. "\r\n");
+	. ($keep->{minor} ? " (minor)" : ""));
   }
 }
 
@@ -438,7 +440,7 @@ sub serve_file_page {
   my ($data) = $page->{text} =~ /^[^\n]*\n(.*)/s;
   $stream->write(MIME::Base64::decode($data));
   # do not append a dot, just close the connection
-  goto LOOP_END;
+  goto EXIT_NO_DOT;
 }
 
 sub serve_text_page {
@@ -480,7 +482,7 @@ sub serve_page_html {
     print_text($stream, ToString(\&PrintPageHtml));
   }
   # do not append a dot, just close the connection
-  goto LOOP_END;
+  goto EXIT_NO_DOT;
 }
 
 sub newest_first {
@@ -517,24 +519,27 @@ sub serve_error {
   my $id = shift;
   my $error = shift;
   $log->info("Error ('$id'): $error");
-  print_text($stream, "3Error ('$id'): $error\r\n");
+  print_error($stream, "Error ('$id'): $error");
 }
 
 sub write_help {
   my $stream = shift;
-  print_text($stream, <<"EOF");
-iThis is how your document should start:\r
-i```\r
-iusername: Alex Schroeder\r
-isummary: typo fixed\r
-i```\r
-iThis is the text of your document.\r
-iJust write whatever.\r
-i\r
-iNote the space after the colon for metadata fields.\r
-iMore metadata fields are allowed:\r
-i`minor` is 1 if this is a minor edit. The default is 0.\r
+  my @lines = split(/\n/, <<"EOF");
+This is how your document should start:
+```
+username: Alex Schroeder
+summary: typo fixed
+```
+This is the text of your document.
+Just write whatever.
+
+Note the space after the colon for metadata fields.
+More metadata fields are allowed:
+`minor` is 1 if this is a minor edit. The default is 0.
 EOF
+  for my $line (@lines) {
+    print_info($stream, $line);
+  }
 }
 
 sub write_page_ok {
@@ -547,8 +552,10 @@ sub write_page_ok {
 sub write_page_error {
   my $stream = shift;
   my $error = shift;
-  print_text($stream, "3Page was not saved: $error\r\n");
+  $log->debug("Not saved: $error");
+  print_error($stream, "Page was not saved: $error");
   map { ReleaseLockDir($_); } keys %Locks;
+  goto EXIT;
 }
 
 sub write_data {
@@ -557,16 +564,17 @@ sub write_data {
   my $data = shift;
   my $param = shift||'text';
   SetParam($param, $data);
-  local *ReBrowsePage = sub {
-    write_page_ok($stream, $id);
-  };
-  local *ReportError = sub {
-    write_page_error($stream, @_);
-    die;
-  };
+  my $error;
   eval {
+    local *ReBrowsePage = sub {};
+    local *ReportError = sub { $error = shift };
     DoPost($id);
   };
+  if ($error) {
+    write_page_error($stream, $error);
+  } else {
+    write_page_ok($stream, $id);
+  }
 }
 
 sub write_file_page {
@@ -587,13 +595,10 @@ sub write_text {
   my $param = shift;
 
   utf8::decode($data);
-  $log->info(($param eq 'text' ? "Posting" : "Append")
-	     . " " . length($data) . " characters to page $id");
 
   my ($lead, $meta, $text) = split(/^```\s*(?:meta)?\n/m, $data, 3);
-  $log->info("Posting " . length($text) . " characters to page $id") if $id;
 
-  if (not $lead) {
+  if (not $lead and $meta) {
     while ($meta =~ /^([a-z-]+): (.*)/mg) {
       if ($1 eq 'minor' and $2) {
 	SetParam('recent_edit', 'on'); # legacy UseMod parameter name
@@ -601,13 +606,16 @@ sub write_text {
 	SetParam($1, $2);
 	if ($1 eq "title") {
 	  $id = $2;
-	  $log->info("Posting " . length($data) . " characters to page $2");
 	}
       }
     }
+    $log->info(($param eq 'text' ? "Posting" : "Appending")
+	       . " " . length($text) . " characters (with metadata) to page $id");
     write_data($stream, $id, $text, $param);
   } else {
     # no meta data
+    $log->info(($param eq 'text' ? "Posting" : "Appending")
+	       . " " . length($data) . " characters to page $id") if $id;
     write_data($stream, $id, $data, $param);
   }
 }
@@ -626,6 +634,8 @@ sub process_request {
   my $content_length = 0;
   my $selector;
   my $data;
+
+  # $stream->timeout(5);
 
   $stream->on(read => sub {
     my ($stream, $bytes) = @_;
@@ -734,9 +744,11 @@ sub process_request {
       serve_error($stream, $selector, ValidId($selector)||'Cause unknown');
     }
 
-    # Write final dot for almost everything
+  EXIT:
+    # write final dot for almost everything
     print_text($stream, ".\r\n");
-  LOOP_END:
+  EXIT_NO_DOT:
+    # except when sending a binary file
     $stream->close_gracefully() unless $continue_reading;
     $log->debug("Done");
   });
