@@ -437,8 +437,11 @@ sub serve_file_page {
   my $page = shift;
   $log->info("Serving $id as file");
   require MIME::Base64;
-  my ($data) = $page->{text} =~ /^[^\n]*\n(.*)/s;
-  $stream->write(MIME::Base64::decode($data));
+  my ($encoded) = $page->{text} =~ /^[^\n]*\n(.*)/s;
+  $log->debug("$id has " . length($encoded) . " bytes of MIME encoded data");
+  my $data = MIME::Base64::decode($encoded);
+  $log->debug("$id has " . length($data) . " bytes of binary data");
+  $stream->write($data);
   # do not append a dot, just close the connection
   goto EXIT_NO_DOT;
 }
@@ -637,6 +640,11 @@ sub process_request {
 
   # $stream->timeout(5);
 
+  $stream->on(close => sub { $log->debug("Stream closes"); });
+  # $stream->on(drain => sub { $log->debug("Stream drained"); });
+  $stream->on(error => sub { my ($stream, $error) = @_; $log->debug("Stream error: $error"); });
+  $stream->on(timeout => sub { $log->debug("Stream timeout"); });
+  $stream->on(write => sub { my ($stream, $bytes) = @_; $log->debug("Stream writes " . length($bytes) . " bytes"); });
   $stream->on(read => sub {
     my ($stream, $bytes) = @_;
 
