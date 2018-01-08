@@ -641,10 +641,14 @@ sub process_request {
   # $stream->timeout(5);
 
   $stream->on(close => sub { $log->debug("Stream closes"); });
-  # $stream->on(drain => sub { $log->debug("Stream drained"); });
   $stream->on(error => sub { my ($stream, $error) = @_; $log->debug("Stream error: $error"); });
   $stream->on(timeout => sub { $log->debug("Stream timeout"); });
-  $stream->on(write => sub { my ($stream, $bytes) = @_; $log->debug("Stream writes " . length($bytes) . " bytes"); });
+
+  $stream->on(write => sub {
+    my ($stream, $bytes) = @_;
+    $log->debug("Stream writes " . length($bytes) . " bytes");
+  });
+
   $stream->on(read => sub {
     my ($stream, $bytes) = @_;
 
@@ -757,7 +761,7 @@ sub process_request {
     print_text($stream, ".\r\n");
   EXIT_NO_DOT:
     # except when sending a binary file
-    $stream->close_gracefully() unless $continue_reading;
+    $stream->close_gracefully();
     $log->debug("Done");
   });
 }
