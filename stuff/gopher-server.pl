@@ -16,143 +16,110 @@
 package OddMuse;
 use strict;
 use 5.10.0;
+use base qw(Net::Server::Fork); # any personality will do
 use MIME::Base64;
-use Mojo::IOLoop;
-use Mojo::Log;
-use Getopt::Long;
 
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
     $CommentsPrefix, $EditAllowed, $NoEditFile);
 
-my $host;
-my $port;
-my @wiki_pages;
-my $help;
-my $log;
+OddMuse->run;
+
+sub options {
+  my $self     = shift;
+  my $prop     = $self->{'server'};
+  my $template = shift;
+
+  # setup options in the parent classes
+  $self->SUPER::options($template);
+
+  # add a single value option
+  $prop->{wiki} ||= undef;
+  $template->{wiki} = \$prop->{wiki};
+
+  $prop->{wiki_dir} ||= undef;
+  $template->{wiki_dir} = \$prop->{wiki_dir};
+
+  $prop->{wiki_pages} ||= [];
+  $template->{wiki_pages} = $prop->{wiki_pages};
+}
+
+sub post_configure_hook {
+  my $self = shift;
+  $self->write_help if $ARGV[0] eq '--help';
+
+  $DataDir = $self->{server}->{wiki_dir} || $ENV{WikiDataDir} || '/tmp/oddmuse';
+  
+  $self->log(3, "PID $$");
+  $self->log(3, "Host " . ("@{$self->{server}->{host}}" || "*"));
+  $self->log(3, "Port @{$self->{server}->{port}}");
+  $self->log(3, "Wiki data dir is $DataDir\n");
+
+  $RunCGI = 0;
+  my $wiki = $self->{server}->{wiki} || "./wiki.pl";
+  $self->log(1, "Running $wiki\n");
+  unless (my $return = do $wiki) {
+    $self->log(1, "couldn't parse wiki library $wiki: $@") if $@;
+    $self->log(1, "couldn't do wiki library $wiki: $!") unless defined $return;
+    $self->log(1, "couldn't run wiki library $wiki") unless $return;
+  }
+
+  # make sure search is sorted newest first because NewTagFiltered resorts
+  *OldGopherFiltered = \&Filtered;
+  *Filtered = \&NewGopherFiltered;
+}
 
 my $usage = << 'EOT';
 This server serves a wiki as a gopher site.
 
-Options:
+It implements Net::Server and thus all the options available to
+Net::Server are also available here. Additional options are available:
 
---host=alexschroeder.ch
-    The host we are serving from. This defaults to localhost, meaning
-    that only clients on the same host will be able to follow links.
---port=3000
+wiki       - this is the path to the Oddmuse script
+wiki_dir   - this is the path to the Oddmuse data directory
+wiki_pages - this is a page to show on the entry menu
+
+For many of the options, more information can be had in the Net::Server
+documentation. This is important if you want to daemonize the server. You'll
+need to use --pid_file so that you can stop it using a script, --setsid to
+daemonize it, --log_file to write keep logs, and you'll net to set the user or
+group using --user or --group such that the server has write access to the data
+directory.
+
+For testing purposes, you can start with the following:
+
+--port=7070
     The port to listen to, defaults to a random port.
---log_file=/var/log/oddmuse/gopher_server.log
-    The log file to write, defaults to STDERR.
---log_level=error
-    The log level to use, defaults to "debug". The available log levels
-    are "debug", "info", "warn", "error" and "fatal", in that order.
-    Note that the "MOJO_LOG_LEVEL" environment variable can override
-    this value.
---wiki_dir=/tmp/oddmuse
-    The wiki directory. Note that the "WikiDataDir" environment
-    variable can override this value.
+--log_level=4
+    The log level to use, defaults to 2.
+--wiki_dir=/var/oddmuse
+    The wiki directory, defaults to the value of the "WikiDataDir" environment
+    variable or "/tmp/oddmuse".
 --wiki_lib=/home/alex/src/oddmuse/wiki.pl
-    The Oddmuse main script. This defaults to "./wiki.pl".
+    The Oddmuse main script, defaults to "./wiki.pl".
 --wiki_pages=SiteMap
     This adds a page to the main index. Can be used multiple times.
 --help
     Prints this message.
 
-Man pages of interest:
-- Mojo::IOLoop
-- Mojo::IOLoop::Server
-- Mojo::Log
-
 Example invocation:
 
 /home/alex/src/oddmuse/stuff/gopher-server.pl \
-    --host=alexschroeder.ch \
     --port=7070 \
     --wiki=/home/alex/src/oddmuse/wiki.pl \
+    --pid_file=/tmp/oddmuse/gopher.pid \
     --wiki_dir=/tmp/oddmuse \
     --wiki_pages=Homepage \
-    --wiki_pages=Gopher_News
+    --wiki_pages=Gopher
 
 Run the script and test it:
 
 echo | nc localhost 7070
 lynx gopher://localhost:7070
 
-The list of all pages:
-
-lynx gopher://localhost:7070/1do/index
-
-Edit a page from the command line:
-
-perl src/oddmuse/wiki.pl title=HomePage text="Welcome!"
-
-Visit it:
-
-lynx gopher://localhost:7070/0HomePage
-
-To daemonize it, I recommend using an external tool:
-
-daemonize -p /tmp/oddmuse/gopher-server.pid \
-    /home/alex/src/oddmuse/stuff/gopher-server.pl \
-    --host alexschroeder.ch \
-    --port 7070 \
-    --wiki_lib /home/alex/src/oddmuse/wiki.pl \
-    --wiki_dir /tmp/oddmuse \
-    --wiki_pages Homepage \
-    --wiki_pages Gopher_News
-
 EOT
 
 run();
-
-sub run {
-  my $wiki_dir = '/tmp/oddmuse';
-  my $wiki_lib = './wiki.pl';
-  my $log_file;
-  my $log_level;
-  $host = 'localhost';
-
-  GetOptions ("host=s" => \$host,
-	      "port=i"   => \$port,
-	      "log=s" => \$log,
-	      "log_file=s" => \$log_file,
-	      "log_level=s" => \$log_level,
-	      "wiki_dir=s" => \$wiki_dir,
-	      "wiki_lib=s" => \$wiki_lib,
-	      "wiki_pages=s" => \@wiki_pages,
-	      "help=s" => \$help,)
-      or die("Error in command line arguments\n");
-
-  die $usage if $help;
-
-  $log = Mojo::Log->new;
-  $log->path($log_file) if $log_file;
-  $log->level($log_level) if $log_level;
-
-  $log->info("Wiki data dir is " . $wiki_dir);
-  $RunCGI = 0;
-  $DataDir = $wiki_dir;
-  $log->info("Running " . $wiki_lib);
-  unless (my $return = do $wiki_lib) {
-    $log->error("couldn't parse wiki library $wiki_lib: $@") if $@;
-    $log->error("couldn't do wiki library $wiki_lib: $!") unless defined $return;
-    $log->error("couldn't run wiki library $wiki_lib") unless $return;
-  }
-
-  # make sure search is sorted newest first because NewTagFiltered resorts
-  *OldGopherFiltered = \&Filtered;
-  *Filtered = \&NewGopherFiltered;
-
-  my $id = Mojo::IOLoop->server({
-    port => $port} => \&process_request);
-  # if it's a random port, we need to know
-  $port = Mojo::IOLoop->acceptor($id)->port;
-
-  $log->info("PID $$");
-  $log->info("Linking to $host");
-  $log->info("Listening on port $port");
-  Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-};
 
 sub NewGopherFiltered {
   my @pages = OldGopherFiltered(@_);
@@ -161,95 +128,95 @@ sub NewGopherFiltered {
 }
 
 sub print_text {
-  my $stream = shift;
+  my $self = shift;
   my $text = shift;
   utf8::encode($text);
-  $stream->write($text); # bytes
+  print($text); # bytes
 }
 
 sub print_menu {
-  my $stream = shift;
+  my $self = shift;
   my $selector = shift;
   my $display = shift;
-  print_text($stream, join("\t", $selector, $display, $host, $port) . "\r\n");
+  $self->print_text(join("\t", $selector, $display, $self->{server}->{sockaddr}, $self->{server}->{sockport}) . "\r\n");
 }
 
 sub print_info {
-  my $stream = shift;
+  my $self = shift;
   my $info = shift;
-  print_menu($stream, "i$info", "");
+  $self->print_menu("i$info", "");
 }
 
 sub print_error {
-  my $stream = shift;
+  my $self = shift;
   my $error = shift;
-  print_menu($stream, "3$error", "");
+  $self->print_menu("3$error", "");
 }
 
 sub serve_main_menu {
-  my $stream = shift;
-  $log->info("Serving main menu");
-  print_info($stream, "Welcome to the Gopher version of this wiki.");
-  print_info($stream, "Here are some interesting starting points:");
+  my $self = shift;
+  $self->log(3, "Serving main menu");
+  $self->print_info("Welcome to the Gopher version of this wiki.");
+  $self->print_info("Here are some interesting starting points:");
 
-  for my $id (@wiki_pages) {
+  for my $id (@{$self->{server}->{wiki_pages}}) {
     last unless $id;
-    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . NormalToFree($id), "$id/menu");
   }
 
-  print_menu($stream, "1" . "Recent Changes", "do/rc");
-  print_menu($stream, "7" . "Find matching page titles", "do/match");
-  print_menu($stream, "7" . "Full text search", "do/search");
-  print_menu($stream, "1" . "Index of all pages", "do/index");
+  $self->print_menu("1" . "Recent Changes", "do/rc");
+  $self->print_menu("7" . "Find matching page titles", "do/match");
+  $self->print_menu("7" . "Full text search", "do/search");
+  $self->print_menu("1" . "Index of all pages", "do/index");
 
   if ($TagFile) {
-    print_menu($stream, "1" . "Index of all tags", "do/tags");
+    $self->print_menu("1" . "Index of all tags", "do/tags");
   }
 
   if ($EditAllowed and not IsFile($NoEditFile)) {
-    print_menu($stream, "w" . "New page", "do/new");
+    $self->print_menu("w" . "New page", "do/new");
   }
 
   my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @IndexList);
   for my $id (@pages) {
     last unless $id;
-    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . NormalToFree($id), "$id/menu");
   }
 }
 
 sub serve_index {
-  my $stream = shift;
-  $log->info("Serving index of all pages");
+  my $self = shift;
+  $self->log(3, "Serving index of all pages");
   for my $id (sort newest_first @IndexList) {
-    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . NormalToFree($id), "$id/menu");
   }
 }
 
 sub serve_match {
-  my $stream = shift;
+  my $self = shift;
   my $match = shift;
-  $log->info("Serving pages matching $match");
-  print_info($stream, "Use a regular expression to match page titles.");
-  print_info($stream, "Spaces in page titles are underlines, '_'.");
+  $self->log(3, "Serving pages matching $match");
+  $self->print_info("Use a regular expression to match page titles.");
+  $self->print_info("Spaces in page titles are underlines, '_'.");
   for my $id (sort newest_first grep(/$match/i, @IndexList)) {
-    print_menu($stream,  "1" . NormalToFree($id), "$id/menu");
+    $self->print_menu( "1" . NormalToFree($id), "$id/menu");
   }
 }
 
 sub serve_search {
-  my $stream = shift;
+  my $self = shift;
   my $str = shift;
-  $log->info("Serving search result for $str");
-  print_info($stream, "Use regular expressions separated by spaces.");
+  $self->log(3, "Serving search result for $str");
+  $self->print_info("Use regular expressions separated by spaces.");
   SearchTitleAndBody($str, sub {
     my $id = shift;
-    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . NormalToFree($id), "$id/menu");
   });
 }
 
 sub serve_tags {
-  my $stream = shift;
-  $log->info("Serving tag cloud");
+  my $self = shift;
+  $self->log(3, "Serving tag cloud");
   # open the DB file
   my %h = TagReadHash();
   my %count = ();
@@ -257,35 +224,35 @@ sub serve_tags {
     $count{$tag} = @{$h{$tag}};
   }
   foreach my $id (sort { $count{$b} <=> $count{$a} } keys %count) {
-    print_menu($stream, "1" . NormalToFree($id), "$id/tag");
+    $self->print_menu("1" . NormalToFree($id), "$id/tag");
   }
 }
 
 sub serve_rc {
-  my $stream = shift;
+  my $self = shift;
   my $showedit = $ShowEdits = shift;
-  $log->info("Serving recent changes"
+  $self->log(3, "Serving recent changes"
 	     . ($showedit ? " including minor changes" : ""));
 
-  print_info($stream, "Recent Changes");
+  $self->print_info("Recent Changes");
   if ($showedit) {
-    print_menu($stream, "1" . "Skip minor edits", "do/rc");
+    $self->print_menu("1" . "Skip minor edits", "do/rc");
   } else {
-    print_menu($stream, "1" . "Show minor edits", "do/rc/showedits");
+    $self->print_menu("1" . "Show minor edits", "do/rc/showedits");
   }
 
   ProcessRcLines(
     sub {
       my $date = shift;
-      print_info($stream, "");
-      print_info($stream, "$date");
-      print_info($stream, "");
+      $self->print_info("");
+      $self->print_info("$date");
+      $self->print_info("");
     },
     sub {
         my($id, $ts, $author_host, $username, $summary, $minor, $revision,
 	   $languages, $cluster, $last) = @_;
-	print_menu($stream, "1" . NormalToFree($id), "$id/menu");
-	print_info($stream, CalcTime($ts)
+	$self->print_menu("1" . NormalToFree($id), "$id/menu");
+	$self->print_info(CalcTime($ts)
 	    . " by " . GetAuthor($author_host, $username)
 	    . ($summary ? ": $summary" : "")
 	    . ($minor ? " (minor)" : ""));
@@ -293,63 +260,63 @@ sub serve_rc {
 }
 
 sub serve_page_comment_link {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $revision = shift;
   if (not $revision and $CommentsPattern) {
     if ($id =~ /$CommentsPattern/) {
       my $original = $1;
       # sometimes we are on a comment page and cannot derive the original
-      print_menu($stream, "1" . "Back to the original page",
+      $self->print_menu("1" . "Back to the original page",
 		 "$original/menu") if $original;
-      print_menu($stream, "w" . "Add a comment", "$id/append/text");
+      $self->print_menu("w" . "Add a comment", "$id/append/text");
     } else {
       my $comments = $CommentsPrefix . $id;
-      print_menu($stream, "1" . "Comments on this page", "$comments/menu");
+      $self->print_menu("1" . "Comments on this page", "$comments/menu");
     }
   }
 }
 
 sub serve_page_history_link {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $revision = shift;
   if (not $revision) {
-    print_menu($stream, "1" . "Page History", "$id/history");
+    $self->print_menu("1" . "Page History", "$id/history");
   }
 }
 
 sub serve_file_page_menu {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $type = shift;
   my $revision = shift;
   my $code = substr($type, 0, 6) eq 'image/' ? 'I' : '9';
-  $log->info("Serving file page menu for $id");
-  print_menu($stream, $code . NormalToFree($id)
+  $self->log(3, "Serving file page menu for $id");
+  $self->print_menu($code . NormalToFree($id)
 	     . ($revision ? "/$revision" : ""), $id);
-  serve_page_comment_link($stream, $id, $revision);
-  serve_page_history_link($stream, $id, $revision);
+  $self->serve_page_comment_link($id, $revision);
+  $self->serve_page_history_link($id, $revision);
 }
 
 sub serve_text_page_menu {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $page = shift;
   my $revision = shift;
-  $log->info("Serving text page menu for $id"
+  $self->log(3, "Serving text page menu for $id"
 	     . ($revision ? "/$revision" : ""));
 
-  print_info($stream, "The text of this page:");
-  print_menu($stream, "0" . NormalToFree($id),
+  $self->print_info("The text of this page:");
+  $self->print_menu("0" . NormalToFree($id),
 	     $id . ($revision ? "/$revision" : ""));
-  print_menu($stream, "h" . NormalToFree($id),
+  $self->print_menu("h" . NormalToFree($id),
 	     $id . ($revision ? "/$revision" : "") . "/html");
-  print_menu($stream, "w" . "Replace " . NormalToFree($id),
+  $self->print_menu("w" . "Replace " . NormalToFree($id),
 	     $id . "/write/text");
 
-  serve_page_comment_link($stream, $id, $revision);
-  serve_page_history_link($stream, $id, $revision);
+  $self->serve_page_comment_link($id, $revision);
+  $self->serve_page_history_link($id, $revision);
 
   my @links; # ["page name", "display text"]
 
@@ -361,41 +328,41 @@ sub serve_text_page_menu {
     }
   }
 
-  print_info($stream, "");
+  $self->print_info("");
   if (@links) {
-    print_info($stream, "Links leaving " . NormalToFree($id) . ":");
+    $self->print_info("Links leaving " . NormalToFree($id) . ":");
     for my $link (@links) {
-      print_menu($stream, "1" . NormalToFree($link->[1]),
+      $self->print_menu("1" . NormalToFree($link->[1]),
 		 FreeToNormal($link->[0]));
     }
   } else {
-    print_info($stream, "There are no links leaving this page.");
+    $self->print_info("There are no links leaving this page.");
   }
 
   if ($page->{text} =~ m/<journal search tag:(\S+)>\s*/) {
     my $tag = $1;
-    print_info($stream, "");
-    serve_tag_list($stream, $tag);
+    $self->print_info("");
+    $self->serve_tag_list($tag);
   }
 }
 
 sub serve_page_history {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
-  $log->info("Serving history of $id");
+  $self->log(3, "Serving history of $id");
   OpenPage($id);
 
-  print_menu($stream, "1" . NormalToFree($id) . " (current)", "$id/menu");
-  print_info($stream, CalcTime($Page{ts})
+  $self->print_menu("1" . NormalToFree($id) . " (current)", "$id/menu");
+  $self->print_info(CalcTime($Page{ts})
       . " by " . GetAuthor($Page{host}, $Page{username})
       . ($Page{summary} ? ": $Page{summary}" : "")
       . ($Page{minor} ? " (minor)" : ""));
 
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my $keep = GetKeptRevision($revision);
-    print_menu($stream, "1" . NormalToFree($id) . " ($keep->{revision})",
+    $self->print_menu("1" . NormalToFree($id) . " ($keep->{revision})",
 	       "$id/$keep->{revision}/menu");
-    print_info($stream, CalcTime($keep->{ts})
+    $self->print_info(CalcTime($keep->{ts})
 	. " by " . GetAuthor($keep->{host}, $keep->{username})
 	. ($keep->{summary} ? ": $keep->{summary}" : "")
 	. ($keep->{minor} ? " (minor)" : ""));
@@ -419,70 +386,67 @@ sub get_page {
 }
 
 sub serve_page_menu {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $revision = shift;
   my $page = get_page($id, $revision);
 
   if (my ($type) = TextIsFile($page->{text})) {
-    serve_file_page_menu($stream, $id, $type, $revision);
+    $self->serve_file_page_menu($id, $type, $revision);
   } else {
-    serve_text_page_menu($stream, $id, $page, $revision);
+    $self->serve_text_page_menu($id, $page, $revision);
   }
 }
 
 sub serve_file_page {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $page = shift;
-  $log->info("Serving $id as file");
-  require MIME::Base64;
+  $self->log(3, "Serving $id as file");
   my ($encoded) = $page->{text} =~ /^[^\n]*\n(.*)/s;
-  $log->debug("$id has " . length($encoded) . " bytes of MIME encoded data");
-  my $data = MIME::Base64::decode($encoded);
-  $log->debug("$id has " . length($data) . " bytes of binary data");
-  $stream->write($data);
+  $self->log(4, "$id has " . length($encoded) . " bytes of MIME encoded data");
+  my $data = decode_base64($encoded);
+  $self->log(4, "$id has " . length($data) . " bytes of binary data");
+  binmode(STDOUT, ":raw");
+  print($data);
   # do not append a dot, just close the connection
   goto EXIT_NO_DOT;
 }
 
 sub serve_text_page {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $page = shift;
-  $log->info("Serving $id as text");
   my $text = $page->{text};
+  $self->log(3, "Serving $id as " . length($text) . " bytes of text");
   $text =~ s/^\./../mg;
-  print_text($stream, $text);
+  $self->print_text($text);
 }
 
 sub serve_page {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $revision = shift;
   my $page = get_page($id, $revision);
-
   if (my ($type) = TextIsFile($page->{text})) {
-    serve_file_page($stream, $id, $page);
+    $self->serve_file_page($id, $page);
   } else {
-    serve_text_page($stream, $id, $page);
+    $self->serve_text_page($id, $page);
   }
 }
 
 sub serve_page_html {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $revision = shift;
   my $page = get_page($id, $revision);
 
-  $log->info("Serving $id as HTML");
-  # kept pages have no HTML cache
-  local *STDIN = \$stream;
+  $self->log(3, "Serving $id as HTML");
   if ($revision) {
     # no locking of the file, no updating of the cache
-    print_text($stream, ToString(\&PrintWikiToHTML, $page->{text}, 1));
+    $self->print_text(ToString(\&PrintWikiToHTML, $page->{text}, 1));
   } else {
-    print_text($stream, ToString(\&PrintPageHtml));
+    $self->print_text(ToString(\&PrintPageHtml));
   }
   # do not append a dot, just close the connection
   goto EXIT_NO_DOT;
@@ -497,36 +461,36 @@ sub newest_first {
 }
 
 sub serve_tag_list {
-  my $stream = shift;
+  my $self = shift;
   my $tag = shift;
-  print_info($stream, "Search result for tag $tag:");
+  $self->print_info("Search result for tag $tag:");
   for my $id (sort newest_first TagFind($tag)) {
-    print_menu($stream, "1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . NormalToFree($id), "$id/menu");
   }
 }
 
 sub serve_tag {
-  my $stream = shift;
+  my $self = shift;
   my $tag = shift;
-  $log->info("Serving tag $tag");
+  $self->log(3, "Serving tag $tag");
   if ($IndexHash{$tag}) {
-    print_info($stream, "This page is about the tag $tag.");
-    print_menu($stream, "1" . NormalToFree($tag), "$tag/menu");
-    print_info($stream, "");
+    $self->print_info("This page is about the tag $tag.");
+    $self->print_menu("1" . NormalToFree($tag), "$tag/menu");
+    $self->print_info("");
   }
-  serve_tag_list($stream, $tag);
+  $self->serve_tag_list($tag);
 }
 
 sub serve_error {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $error = shift;
-  $log->info("Error ('$id'): $error");
-  print_error($stream, "Error ('$id'): $error");
+  $self->log(3, "Error ('$id'): $error");
+  $self->print_error("Error ('$id'): $error");
 }
 
 sub write_help {
-  my $stream = shift;
+  my $self = shift;
   my @lines = split(/\n/, <<"EOF");
 This is how your document should start:
 ```
@@ -541,28 +505,28 @@ More metadata fields are allowed:
 `minor` is 1 if this is a minor edit. The default is 0.
 EOF
   for my $line (@lines) {
-    print_info($stream, $line);
+    $self->print_info($line);
   }
 }
 
 sub write_page_ok {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
-  print_info($stream, "Page was saved.");
-  print_menu($stream, "1" . NormalToFree($id), "$id/menu");
+  $self->print_info("Page was saved.");
+  $self->print_menu("1" . NormalToFree($id), "$id/menu");
 }
 
 sub write_page_error {
-  my $stream = shift;
+  my $self = shift;
   my $error = shift;
-  $log->debug("Not saved: $error");
-  print_error($stream, "Page was not saved: $error");
+  $self->log(4, "Not saved: $error");
+  $self->print_error("Page was not saved: $error");
   map { ReleaseLockDir($_); } keys %Locks;
   goto EXIT;
 }
 
 sub write_data {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $data = shift;
   my $param = shift||'text';
@@ -574,25 +538,25 @@ sub write_data {
     DoPost($id);
   };
   if ($error) {
-    write_page_error($stream, $error);
+    $self->write_page_error($error);
   } else {
-    write_page_ok($stream, $id);
+    $self->write_page_ok($id);
   }
 }
 
 sub write_file_page {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $data = shift;
   my $type = shift || 'application/octet-stream';
-  write_page_error($stream, "page title is missing") unless $id;
-  $log->info("Posting " . length($data) . " bytes of $type to page $id");
+  $self->write_page_error("page title is missing") unless $id;
+  $self->log(3, "Posting " . length($data) . " bytes of $type to page $id");
   # no metadata
-  write_data($stream, $id, "#FILE $type\n" . MIME::Base64::encode($data));
+  $self->write_data($id, "#FILE $type\n" . encode_base64($data));
 }
 
 sub write_text {
-  my $stream = shift;
+  my $self = shift;
   my $id = shift;
   my $data = shift;
   my $param = shift;
@@ -612,156 +576,130 @@ sub write_text {
 	}
       }
     }
-    $log->info(($param eq 'text' ? "Posting" : "Appending")
+    $self->log(3, ($param eq 'text' ? "Posting" : "Appending")
 	       . " " . length($text) . " characters (with metadata) to page $id");
-    write_data($stream, $id, $text, $param);
+    $self->write_data($id, $text, $param);
   } else {
     # no meta data
-    $log->info(($param eq 'text' ? "Posting" : "Appending")
+    $self->log(3, ($param eq 'text' ? "Posting" : "Appending")
 	       . " " . length($data) . " characters to page $id") if $id;
-    write_data($stream, $id, $data, $param);
+    $self->write_data($id, $data, $param);
   }
 }
 
 sub write_text_page {
-  write_text(@_, 'text');
+  my $self = shift;
+  $self->write_text(@_, 'text');
 }
 
 sub append_text_page {
-  write_text(@_, 'aftertext');
+  my $self = shift;
+  $self->write_text(@_, 'aftertext');
+}
+
+sub read_file {
+  my $self = shift;
+  my $length = shift;
+  $length = $MaxPost if $length > $MaxPost;
+  local $/ = \$length;
+  my $buf .= <STDIN>;
+  $self->log(4, "Received " . length($buf) . " bytes (max is $MaxPost)");
+  return $buf;
+}
+
+sub read_text {
+  my $self = shift;
+  my $buf;
+  while (1) {
+    my $line = <STDIN>;
+    if (length($line) == 0) {
+      sleep(1); # wait for input
+      next;
+    }
+    last if $line =~ /^.\r?\n/m;
+    $buf .= $line;
+    if (length($buf) > $MaxPost) {
+      $buf = substr($buf, 0, $MaxPost);
+      last;
+    }
+  }
+  $self->log(4, "Received " . length($buf) . " bytes (max is $MaxPost)");
+  utf8::decode($buf);
+  $self->log(4, "Received " . length($buf) . " characters");
+  return $buf;
 }
 
 sub process_request {
-  my ($loop, $stream) = @_;
-  my $continue_reading = 0;
-  my $content_length = 0;
-  my $selector;
-  my $data;
+  my $self = shift;
 
-  # $stream->timeout(5);
+  # clear cookie and all that
+  $q = undef;
+  Init();
 
-  $stream->on(close => sub { $log->debug("Stream closes"); });
-  $stream->on(error => sub { my ($stream, $error) = @_; $log->debug("Stream error: $error"); });
-  $stream->on(timeout => sub { $log->debug("Stream timeout"); });
+  # refresh list of pages
+  if (IsFile($IndexFile) and ReadIndex()) {
+    # we're good
+  } else {
+    RefreshIndex();
+  }
 
-  $stream->on(write => sub {
-    my ($stream, $bytes) = @_;
-    $log->debug("Stream writes " . length($bytes) . " bytes");
-  });
-
-  $stream->on(read => sub {
-    my ($stream, $bytes) = @_;
-
-    # handle multiple chunks
-    if ($continue_reading) {
-      # if the client did not specify a content-length, stop reading when the
-      # bytes end with a single period on a line
-      if (not $content_length and $bytes =~ s/^\.\r?\n\z//m) {
-	$continue_reading = 0;
-	$data .= $bytes;
-	$log->debug("Finished reading " . length($bytes) . " bytes up to final period");
-	# and process these
-      } elsif ($content_length and length($data) + length($bytes) >= $content_length) {
-	$data = substr($data . $bytes, 0, $content_length);
-	$continue_reading = 0;
-	$log->debug("Finished reading " . length($bytes) . " bytes of $content_length");
-	# and process these
-      } else {
-	$data .= $bytes;
-	$log->debug("Read " . length($bytes) . " bytes and waiting for more");
-	return;
-	# and wait for another chunks
-      }
-     } else {
-       # telnet just terminates with \n
-       ($selector, $data) = split(/\r?\n/, $bytes, 2);
-       utf8::decode($selector);
-       # $data can be binary file
-       $log->debug("Selector: $selector");
-
-       # special case content-length indicator for write file: page id, mime
-       # type, content-length
-       if ($selector =~ m!^([^/]*)(?:/([a-z]+/[-a-z]+))?/write/file(?:\t(\d+))?$!) {
-	 $content_length = $3;
-
-	 # keep reading unless this chunk alread has all the bytes
-	 if (length($data) >= $content_length) {
-	   $data = substr($data, 0, $content_length);
-	   $log->debug("Read " . length($data) . " bytes");
-	 } else {
-	   $log->debug("Read " . length($data) . " bytes of $content_length");
-	   $continue_reading = 1;
-	   return;
-	 }
-       }
-
-       # otherwise data must be terminated by a period on a line of its own
-       if ($data and not $content_length) {
-	 if ($data =~ s/^\.\r?\n\z//m) {
-	   $log->debug("Read " . length($data) . " bytes terminated by period");
-	 } else {
-	   $log->debug("Read " . length($bytes) . " bytes and waiting for final period");
-	   $continue_reading = 1;
-	   return;
-	 }
-       }
-    }
-
-    # clear cookie and all that
-    $q = undef;
-    Init();
-
-    # refresh list of pages
-    if (IsFile($IndexFile) and ReadIndex()) {
-      # we're good
-    } else {
-      RefreshIndex();
-    }
+  eval {
+    local $SIG{'ALRM'} = sub {
+      $self->log(1, "Timeout!");
+      die "Timed Out!\n";
+    };
+    alarm(10); # timeout
+    my $selector = <STDIN>; # no loop
+    utf8::decode($selector); # only the selector is assumed to be UTF8
+    $selector =~ s/\s+$//g; # no trailing whitespace
 
     if (not $selector) {
-      serve_main_menu($stream);
+      $self->serve_main_menu();
     } elsif ($selector eq "do/index") {
-      serve_index($stream);
+      $self->serve_index();
     } elsif (substr($selector, 0, 9) eq "do/match\t") {
-      serve_match($stream, substr($selector, 9));
+      $self->serve_match(substr($selector, 9));
     } elsif (substr($selector, 0, 10) eq "do/search\t") {
-      serve_search($stream, substr($selector, 10));
+      $self->serve_search(substr($selector, 10));
     } elsif ($selector eq "do/tags") {
-      serve_tags($stream);
+      $self->serve_tags();
     } elsif ($selector eq "do/rc") {
-      serve_rc($stream, 0);
+      $self->serve_rc(0);
     } elsif ($selector eq "do/rc/showedits") {
-      serve_rc($stream, 1);
+      $self->serve_rc(1);
     } elsif ($selector eq "do/new") {
-      write_text_page($stream, undef, $data);
+      my $data = $self->read_text();
+      $self->write_text_page(undef, $data);
     } elsif ($selector =~ m!^([^/]*)/(\d+)/menu$!) {
-      serve_page_menu($stream, $1, $2);
+      $self->serve_page_menu($1, $2);
     } elsif (substr($selector, -5) eq '/menu') {
-      serve_page_menu($stream, substr($selector, 0, -5));
+      $self->serve_page_menu(substr($selector, 0, -5));
     } elsif ($selector =~ m!^([^/]*)/tag$!) {
-      serve_tag($stream, $1);
+      $self->serve_tag($1);
     } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?/html!) {
-      serve_page_html($stream, $1, $2);
+      $self->serve_page_html($1, $2);
     } elsif ($selector =~ m!^([^/]*)/history$!) {
-      serve_page_history($stream, $1);
+      $self->serve_page_history($1);
     } elsif ($selector =~ m!^([^/]*)/write/text$!) {
-      write_text_page($stream, $1, $data);
+      my $data = $self->read_text();
+      $self->write_text_page($1, $data);
     } elsif ($selector =~ m!^([^/]*)/append/text$!) {
-      append_text_page($stream, $1, $data);
+      my $data = $self->read_text();
+      $self->append_text_page($1, $data);
     } elsif ($selector =~ m!^([^/]*)(?:/([a-z]+/[-a-z]+))?/write/file(?:\t(\d+))?$!) {
-      write_file_page($stream, $1, $data, $2);
+      my $data = $self->read_file($3);
+      $self->write_file_page($1, $data, $2);
     } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$!) {
-      serve_page($stream, $1, $2);
+      $self->serve_page($1, $2);
     } else {
-      serve_error($stream, $selector, ValidId($selector)||'Cause unknown');
+      $self->serve_error($selector, ValidId($selector)||'Cause unknown');
     }
 
   EXIT:
     # write final dot for almost everything
-    print_text($stream, ".\r\n");
+    $self->print_text(".\r\n");
   EXIT_NO_DOT:
     # except when sending a binary file
-    $stream->close_gracefully();
-    $log->debug("Done");
-  });
+    $self->log(4, "Done");
+  }
 }

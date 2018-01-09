@@ -46,10 +46,9 @@ if (!defined $pid) {
   my $secure_perl_path = $Config{perlpath};
   exec($secure_perl_path,
        "stuff/gopher-server.pl",
-       "--host=localhost",
        "--port=$port",
-       "--log_level=error", # set to debug for logging
-       "--wiki_lib=./wiki.pl",
+       "--log_level=4", # set to debug for logging
+       "--wiki=./wiki.pl",
        "--wiki_dir=$DataDir",
        "--wiki_pages=Alex",
        "--wiki_pages=Berta",
@@ -273,16 +272,11 @@ like($copy, qr/\211PNG\r\n/, "Image copy download");
 
 is($copy, $image, "Image and copy are identical");
 
-# Test large pages
-my $garbage = (("0123456789" x 8) . "\n") x 10 . "Last Line\n.\n";
-$page = query_gopher("Small/write/text", "$garbage");
-like($page, qr/^iPage was saved./m, "Write small page");
-$page = query_gopher("Small");
-like(substr($page, -20), qr/Last Line/, "All of small page was saved");
-
-$garbage = (("0123456789" x 8) . "\n") x 4000 . "Last Line\n.\n";
-$page = query_gopher("Large/write/text", "$garbage");
-like($page, qr/^iPage was saved./m, "Write large page");
+# Test upload of large page (but note $MaxPost: 1024 * 210 > (10 * 8 + 1) * 2600)
+my $garbage = (("0123456789" x 8) . "\n") x 2600 . "Last Line\n";
+$page = query_gopher("Large/write/text", "$garbage.\n");
+like($page, qr/^iPage was saved./m, "Write page with "
+     . length($garbage) . " bytes");
 $page = query_gopher("Large");
 like(substr($page, -20), qr/Last Line/, "All of large page was saved");
 
