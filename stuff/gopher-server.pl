@@ -138,7 +138,12 @@ sub print_menu {
   my $self = shift;
   my $selector = shift;
   my $display = shift;
-  $self->print_text(join("\t", $selector, $display, $self->{server}->{sockaddr}, $self->{server}->{sockport}) . "\r\n");
+  $self->print_text(join("\t", $selector, $display,
+			 $self->{server}->{host}
+			 || $self->{server}->{sockaddr},
+			 $self->{server}->{port}
+			 || $self->{server}->{sockport})
+		    . "\r\n");
 }
 
 sub print_info {
