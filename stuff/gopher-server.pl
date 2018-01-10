@@ -139,9 +139,9 @@ sub print_menu {
   my $selector = shift;
   my $display = shift;
   $self->print_text(join("\t", $selector, $display,
-			 $self->{server}->{host}
+			 $self->{server}->{host}->[0]
 			 || $self->{server}->{sockaddr},
-			 $self->{server}->{port}
+			 $self->{server}->{port}->[0]
 			 || $self->{server}->{sockport})
 		    . "\r\n");
 }
