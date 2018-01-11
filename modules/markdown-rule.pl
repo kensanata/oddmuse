@@ -190,7 +190,7 @@ sub MarkdownExtraRule {
   elsif (InElement('em', 'style="font-style: normal; text-decoration: underline"') and m/\G_/cg) {
     return CloseHtmlEnvironment('em');
   }
-  elsif ($bol and m/\G_/cg or m/\G(?<=\P{Word})_/cg) {
+  elsif ($bol and m/\G_/cg or m/\G(?<=\P{Word})_(?=\S)/cg) {
     return AddHtmlEnvironment('em', 'style="font-style: normal; text-decoration: underline"');
   }
   # //italic//
@@ -201,7 +201,7 @@ sub MarkdownExtraRule {
   elsif (InElement('em') and m/\G\//cg) {
     return CloseHtmlEnvironment('em');
   }
-  elsif ($bol and m/\G\//cg or m/\G(?<=[|[:space:]])\//cg) {
+  elsif ($bol and m/\G\//cg or m/\G(?<=[|[:space:]])\/(?=\S)/cg) {
     return AddHtmlEnvironment('em');
   }
   return;
