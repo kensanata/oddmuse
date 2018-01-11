@@ -130,7 +130,6 @@ sub NewGopherFiltered {
 sub print_text {
   my $self = shift;
   my $text = shift;
-  utf8::encode($text);
   print($text); # bytes
 }
 
