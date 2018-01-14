@@ -47,7 +47,7 @@ if (!defined $pid) {
   exec($secure_perl_path,
        "stuff/gopher-server.pl",
        "--port=$port",
-       "--log_level=4", # set to debug for logging
+       "--log_level=0", # set to 4 for verbose logging
        "--wiki=./wiki.pl",
        "--wiki_dir=$DataDir",
        "--wiki_pages=Alex",
@@ -271,6 +271,14 @@ my $copy = query_gopher("PictureCopy");
 like($copy, qr/\211PNG\r\n/, "Image copy download");
 
 is($copy, $image, "Image and copy are identical");
+
+# image:link
+$page = query_gopher("Test/write/text", "[[image:Picture]]\n.\n");
+like($page, qr/^iPage was saved./m, "Saved test page containing image link");
+$page = query_gopher("Test/menu");
+like($page, qr/^1Picture\tPicture\/menu/m, "Link to image page looks good");
+$page = query_gopher("Picture/menu");
+like($page, qr/^IPicture\tPicture/, "Link to image file looks good");
 
 # Test upload of large page (but note $MaxPost: 1024 * 210 > (10 * 8 + 1) * 2600)
 my $garbage = (("0123456789" x 8) . "\n") x 2600 . "Last Line\n";

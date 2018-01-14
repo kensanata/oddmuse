@@ -325,10 +325,14 @@ sub serve_text_page_menu {
   my @links; # ["page name", "display text"]
 
   while ($page->{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g) {
-    if (substr($1, 0, 4) eq 'tag:') {
-      push(@links, [substr($1, 4) . "/tag", $2||substr($1, 4)]);
+    my ($title, $text) = ($1, $2);
+    if (substr($title, 0, 4) eq 'tag:') {
+      push(@links, [substr($title, 4) . "/tag", $text||substr($title, 4)]);
     } else {
-      push(@links, [$1 . "/menu", $2||$1]);
+      if (substr($title, 0, 6) eq 'image:') {
+	$title = substr($title, 6);
+      }
+      push(@links, [$title . "/menu", $text||$title]);
     }
   }
 
