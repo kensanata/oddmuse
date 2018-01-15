@@ -300,4 +300,10 @@ like($page, qr/^0Zürich♥\tZ%c3%bcrich%e2%99%a5\t/m, "UTF-8 encoded text link"
 like($page, qr/^1Üetliberg♥\t%c3%9cetliberg%e2%99%a5\/menu\t/m,
      "UTF-8 encoded links");
 
+# gopher links
+update_page('Gopher', '[http://gopher.floodgap.com/gopher/gw?a=gopher%3A%2F%2Fsdf.org%3A70%2F0%2Fusers%2Fsolderpunk%2Fphlog%2Fintroducing-vf1.txt VF-1], [gopher://sdf.org:70/1/phlogs/ Phlogs]');
+$page = query_gopher("Gopher/menu");
+like($page, qr/^1Phlogs\t\/phlogs\/\tsdf\.org\t70/m, "Direct Gopher link");
+like($page, qr/^0VF-1\t\/users\/solderpunk\/phlog\/introducing-vf1.txt\tsdf\.org\t70/m, "Floodgap proxy link");
+
 done_testing();

@@ -137,13 +137,15 @@ sub print_menu {
   my $self = shift;
   my $display = shift;
   my $selector = shift;
+  my $host = shift
+      || $self->{server}->{host}->[0]
+      || $self->{server}->{sockaddr};
+  my $port = shift
+      || $self->{server}->{port}->[0]
+      || $self->{server}->{sockport};
 
   $selector = join('/', map { UrlEncode($_) } split(/\//, $selector));
-  $self->print_text(join("\t", $display, $selector,
-			 $self->{server}->{host}->[0]
-			 || $self->{server}->{sockaddr},
-			 $self->{server}->{port}->[0]
-			 || $self->{server}->{sockport})
+  $self->print_text(join("\t", $display, $selector, $host, $port)
 		    . "\r\n");
 }
 
@@ -345,10 +347,33 @@ sub serve_text_page_menu {
       $self->print_menu("1" . NormalToFree($link->[1]),
 		 FreeToNormal($link->[0]));
     }
-  } else {
-    $self->print_info("There are no links leaving this page.");
   }
 
+  my $first = 1;
+  while ($page->{text} =~ /\[gopher:\/\/([^:\/]*)(?::(\d+))?\/(\d)(\S+)\s+([^\]]+)\]/g) {
+    my ($hostname, $port, $type, $selector, $text) = ($1, $2||"70", $3, $4, $5);
+    if ($first) {
+      $self->print_info("");
+      $self->print_info("Gopher links:");
+      $first = 0;
+    }
+    $self->print_text(join("\t", $type . $text, $selector, $hostname, $port)
+		      . "\r\n");
+  }
+
+  $first = 1;
+  while ($page->{text} =~ /\[https?:\/\/gopher\.floodgap\.com\/gopher\/gw\?a=gopher%3a%2f%2f(.*?)(?:%3a(\d+))?%2f(.)(\S+)\s+([^\]]+)\]/gi) {
+    my ($hostname, $port, $type, $selector, $text) = ($1, $2||"70", $3, $4, $5);
+    if ($first) {
+      $self->print_info("");
+      $self->print_info("Gopher links (via Floodgap):");
+      $first = 0;
+    }
+    $selector =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/eig; # url unescape
+    $self->print_text(join("\t", $type . $text, $selector, $hostname, $port)
+		      . "\r\n");
+  }
+  
   if ($page->{text} =~ m/<journal search tag:(\S+)>\s*/) {
     my $tag = $1;
     $self->print_info("");
