@@ -288,4 +288,16 @@ like($page, qr/^iPage was saved./m, "Write page with "
 $page = query_gopher("Large");
 like(substr($page, -20), qr/Last Line/, "All of large page was saved");
 
+# Test of Umlauts in the selector
+test_page(update_page('Zürich♥', '[[Üetliberg♥]]'), 'Zürich♥', 'Üetliberg♥');
+$page = query_gopher("Z%c3%bcrich%e2%99%a5");
+utf8::decode($page);
+like($page, qr/Üetliberg♥/, "UTF-8 encoded page names");
+
+$page = query_gopher("Z%c3%bcrich%e2%99%a5/menu");
+utf8::decode($page);
+like($page, qr/^0Zürich♥\tZ%c3%bcrich%e2%99%a5\t/m, "UTF-8 encoded text link");
+like($page, qr/^1Üetliberg♥\t%c3%9cetliberg%e2%99%a5\/menu\t/m,
+     "UTF-8 encoded links");
+
 done_testing();
