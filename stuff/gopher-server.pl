@@ -135,9 +135,11 @@ sub print_text {
 
 sub print_menu {
   my $self = shift;
-  my $selector = shift;
   my $display = shift;
-  $self->print_text(join("\t", $selector, $display,
+  my $selector = shift;
+
+  $selector = join('/', map { UrlEncode($_) } split(/\//, $selector));
+  $self->print_text(join("\t", $display, $selector,
 			 $self->{server}->{host}->[0]
 			 || $self->{server}->{sockaddr},
 			 $self->{server}->{port}->[0]
@@ -658,7 +660,7 @@ sub process_request {
     };
     alarm(10); # timeout
     my $selector = <STDIN>; # no loop
-    utf8::decode($selector); # only the selector is assumed to be UTF8
+    $selector = UrlDecode($selector); # assuming URL-encoded UTF-8
     $selector =~ s/\s+$//g; # no trailing whitespace
 
     if (not $selector) {
