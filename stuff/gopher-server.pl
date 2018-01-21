@@ -23,13 +23,17 @@ our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
     $CommentsPrefix, $EditAllowed, $NoEditFile);
 
-# Sadly, we can't reply on sub options!
-if (my @args = grep(/--wiki_pem_file=(.*)/, @ARGV)) {
-  my ($file) = $args[0] =~ /--wiki_pem_file=(.*)/;
-  OddMuse->run(
-    proto => 'ssl',
-    SSL_cert_file => $file,
-    SSL_key_file  => $file);
+# Sadly, we need this infor before doing anything else
+my %args = (proto => 'ssl');
+for (grep(/--wiki_(key|cert)_file=/, @ARGV)) {
+  $args{SSL_cert_file} = $1 if /--wiki_cert_file=(.*)/;
+  $args{SSL_key_file} = $1 if /--wiki_key_file=(.*)/;
+}
+if ($args{SSL_cert_file} and not $args{SSL_key_file}
+    or not $args{SSL_cert_file} and $args{SSL_key_file}) {
+  die "I must have both --wiki_key_file and --wiki_cert_file\n";
+} elsif ($args{SSL_cert_file} and $args{SSL_key_file}) {
+  OddMuse->run(%args);
 } else {
   OddMuse->run;
 }
@@ -90,7 +94,8 @@ Net::Server are also available here. Additional options are available:
 wiki       - this is the path to the Oddmuse script
 wiki_dir   - this is the path to the Oddmuse data directory
 wiki_pages - this is a page to show on the entry menu
-wiki_pem_file - the filename containing a certificate and a private key
+wiki_cert_file - the filename containing a certificate in PEM format
+wiki_key_file - the filename containing a private key in PEM format
 
 For many of the options, more information can be had in the Net::Server
 documentation. This is important if you want to daemonize the server. You'll
@@ -112,8 +117,6 @@ For testing purposes, you can start with the following:
     The Oddmuse main script, defaults to "./wiki.pl".
 --wiki_pages=SiteMap
     This adds a page to the main index. Can be used multiple times.
---wiki_pem_file=server.pem
-    The file containing server certificate and private key.
 --help
     Prints this message.
 
@@ -132,11 +135,11 @@ Run the script and test it:
 echo | nc localhost 7070
 lynx gopher://localhost:7070
 
-If you want to use SSL, you need to provide a PEM file containing both
-certificate and private key. Create it using the following, for example:
+If you want to use SSL, you need to provide PEM files containing certificate and
+private key. To create self-signed files, for example:
 
 openssl req -new -x509 -days 365 -nodes -out \
-        gopher-server2.pem -keyout gopher-server2.pem
+        gopher-server-cert.pem -keyout gopher-server-key.pem
 
 Make sure the common name you provide matches your domain name!
 
