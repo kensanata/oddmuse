@@ -21,9 +21,9 @@ use MIME::Base64;
 
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
-    $CommentsPrefix, $EditAllowed, $NoEditFile);
+    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName);
 
-# Sadly, we need this infor before doing anything else
+# Sadly, we need this information before doing anything else
 my %args = (proto => 'ssl');
 for (grep(/--wiki_(key|cert)_file=/, @ARGV)) {
   $args{SSL_cert_file} = $1 if /--wiki_cert_file=(.*)/;
@@ -502,13 +502,20 @@ sub serve_page_html {
   my $revision = shift;
   my $page = get_page($id, $revision);
 
-  $self->log(3, "Serving $id as HTML");
+  $self->log(3, "Serving " . UrlEncode($id) . " as HTML");
+
+  my $title = NormalToFree($id);
+  print GetHtmlHeader(Ts('%s:', $SiteName) . ' ' . UnWiki($title), $id);
+  print GetHeaderDiv($id, $title);
+  print $q->start_div({-class=>'wrapper'});
+
   if ($revision) {
     # no locking of the file, no updating of the cache
-    $self->print_text(ToString(\&PrintWikiToHTML, $page->{text}, 1));
+    PrintWikiToHTML($page->{text});
   } else {
-    $self->print_text(ToString(\&PrintPageHtml));
+    PrintPageHtml();
   }
+  PrintFooter($id, $revision);
   # do not append a dot, just close the connection
   goto EXIT_NO_DOT;
 }
