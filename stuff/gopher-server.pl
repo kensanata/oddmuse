@@ -229,7 +229,7 @@ sub serve_index {
 sub serve_match {
   my $self = shift;
   my $match = shift;
-  $self->log(3, "Serving pages matching $match");
+  $self->log(3, "Serving pages matching " . UrlEncode($match));
   $self->print_info("Use a regular expression to match page titles.");
   $self->print_info("Spaces in page titles are underlines, '_'.");
   for my $id (sort newest_first grep(/$match/i, @IndexList)) {
@@ -240,7 +240,7 @@ sub serve_match {
 sub serve_search {
   my $self = shift;
   my $str = shift;
-  $self->log(3, "Serving search result for $str");
+  $self->log(3, "Serving search result for " . UrlEncode($str));
   $self->print_info("Use regular expressions separated by spaces.");
   SearchTitleAndBody($str, sub {
     my $id = shift;
@@ -326,7 +326,7 @@ sub serve_file_page_menu {
   my $type = shift;
   my $revision = shift;
   my $code = substr($type, 0, 6) eq 'image/' ? 'I' : '9';
-  $self->log(3, "Serving file page menu for $id");
+  $self->log(3, "Serving file page menu for " . UrlEncode($id));
   $self->print_menu($code . NormalToFree($id)
 	     . ($revision ? "/$revision" : ""), $id);
   $self->serve_page_comment_link($id, $revision);
@@ -338,7 +338,7 @@ sub serve_text_page_menu {
   my $id = shift;
   my $page = shift;
   my $revision = shift;
-  $self->log(3, "Serving text page menu for $id"
+  $self->log(3, "Serving text page menu for " . UrlEncode($id)
 	     . ($revision ? "/$revision" : ""));
 
   $self->print_info("The text of this page:");
@@ -410,7 +410,7 @@ sub serve_text_page_menu {
 sub serve_page_history {
   my $self = shift;
   my $id = shift;
-  $self->log(3, "Serving history of $id");
+  $self->log(3, "Serving history of " . UrlEncode($id));
   OpenPage($id);
 
   $self->print_menu("1" . NormalToFree($id) . " (current)", "$id/menu");
@@ -463,11 +463,13 @@ sub serve_file_page {
   my $self = shift;
   my $id = shift;
   my $page = shift;
-  $self->log(3, "Serving $id as file");
+  $self->log(3, "Serving " . UrlEncode($id) . " as file");
   my ($encoded) = $page->{text} =~ /^[^\n]*\n(.*)/s;
-  $self->log(4, "$id has " . length($encoded) . " bytes of MIME encoded data");
+  $self->log(4, UrlEncode($id) . " has " . length($encoded)
+	     . " bytes of MIME encoded data");
   my $data = decode_base64($encoded);
-  $self->log(4, "$id has " . length($data) . " bytes of binary data");
+  $self->log(4, UrlEncode($id) . " has " . length($data)
+	     . " bytes of binary data");
   binmode(STDOUT, ":raw");
   print($data);
   # do not append a dot, just close the connection
@@ -479,7 +481,8 @@ sub serve_text_page {
   my $id = shift;
   my $page = shift;
   my $text = $page->{text};
-  $self->log(3, "Serving $id as " . length($text) . " bytes of text");
+  $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text)
+	     . " bytes of text");
   $text =~ s/^\./../mg;
   $self->print_text($text);
 }
@@ -540,7 +543,7 @@ sub serve_tag_list {
 sub serve_tag {
   my $self = shift;
   my $tag = shift;
-  $self->log(3, "Serving tag $tag");
+  $self->log(3, "Serving tag " . UrlEncode($tag));
   if ($IndexHash{$tag}) {
     $self->print_info("This page is about the tag $tag.");
     $self->print_menu("1" . NormalToFree($tag), "$tag/menu");
@@ -553,8 +556,8 @@ sub serve_error {
   my $self = shift;
   my $id = shift;
   my $error = shift;
-  $self->log(3, "Error ('$id'): $error");
-  $self->print_error("Error ('$id'): $error");
+  $self->log(3, "Error ('" . UrlEncode($id) . "'): $error");
+  $self->print_error("Error ('" . UrlEncode($id) . "'): $error");
 }
 
 sub write_help {
@@ -618,7 +621,8 @@ sub write_file_page {
   my $data = shift;
   my $type = shift || 'application/octet-stream';
   $self->write_page_error("page title is missing") unless $id;
-  $self->log(3, "Posting " . length($data) . " bytes of $type to page $id");
+  $self->log(3, "Posting " . length($data) . " bytes of $type to page "
+	     . UrlEncode($id));
   # no metadata
   $self->write_data($id, "#FILE $type\n" . encode_base64($data));
 }
