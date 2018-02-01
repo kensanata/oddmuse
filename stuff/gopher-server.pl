@@ -18,6 +18,7 @@ use strict;
 use 5.10.0;
 use base qw(Net::Server::Fork); # any personality will do
 use MIME::Base64;
+use Text::Wrap;
 
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
@@ -189,12 +190,20 @@ sub print_error {
 
 sub serve_main_menu {
   my $self = shift;
+  my $more = shift;
   $self->log(3, "Serving main menu");
   $self->print_info("Welcome to the Gopher version of this wiki.");
-  $self->print_info("Here are some interesting starting points:");
+  $self->print_info("");
+
+  $self->print_info("Phlog:");
+  my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @IndexList);
+  for my $id (@pages[0..9]) {
+    $self->print_menu("1" . NormalToFree($id), "$id/menu");
+  }
+  $self->print_menu("1" . "More...", "do/more");
+  $self->print_info("");
 
   for my $id (@{$self->{server}->{wiki_pages}}) {
-    last unless $id;
     $self->print_menu("1" . NormalToFree($id), "$id/menu");
   }
 
@@ -210,10 +219,13 @@ sub serve_main_menu {
   if ($EditAllowed and not IsFile($NoEditFile)) {
     $self->print_menu("w" . "New page", "do/new");
   }
+}
 
+sub serve_phlog_archive {
+  my $self = shift;
+  $self->log(3, "Serving phlog archive");
   my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @IndexList);
   for my $id (@pages) {
-    last unless $id;
     $self->print_menu("1" . NormalToFree($id), "$id/menu");
   }
 }
@@ -286,10 +298,9 @@ sub serve_rc {
         my($id, $ts, $author_host, $username, $summary, $minor, $revision,
 	   $languages, $cluster, $last) = @_;
 	$self->print_menu("1" . NormalToFree($id), "$id/menu");
-	$self->print_info(CalcTime($ts)
-	    . " by " . GetAuthor($author_host, $username)
-	    . ($summary ? ": $summary" : "")
-	    . ($minor ? " (minor)" : ""));
+	for my $line (split(/\n/, wrap('    ', '  ', $summary))) {
+	  $self->print_info($line);
+	}
     });
 }
 
@@ -727,6 +738,8 @@ sub process_request {
 
     if (not $selector) {
       $self->serve_main_menu();
+    } elsif ($selector eq "do/more") {
+      $self->serve_phlog_archive();
     } elsif ($selector eq "do/index") {
       $self->serve_index();
     } elsif (substr($selector, 0, 9) eq "do/match\t") {
