@@ -146,13 +146,11 @@ sub run_tests_negative {
 }
 
 sub apply_rules {
-  my $input = shift;
-  local *STDOUT;
-  $output = '';
-  open(STDOUT, '>', \$output) or die "Can't open memory file: $!";
-  $FootnoteNumber = 0;
-  ApplyRules(QuoteHtml($input), 1);
-  return $output;
+  return ToString(sub {
+    my $input = shift;
+    $FootnoteNumber = 0;
+    ApplyRules(QuoteHtml($input), 1, undef, undef, @_);
+  }, @_);
 }
 
 # alternating input and output strings for applying macros instead of rules
