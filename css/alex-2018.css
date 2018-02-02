@@ -195,7 +195,7 @@ input[type="text"] {
 
 textarea, pre, code, tt {
     font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace, "Symbola";
-    font-size: 80%;
+    font-size: 75%; /* fits 80ex */
 }
 
 pre {
@@ -505,6 +505,18 @@ p.table + p { clear:both; }
 div.mastodon { padding: 0 2em }
 div.mastodon .status {padding-top: 1ex; border-bottom: 1px solid grey;}
 div.mastodon .status:first-child {border-top: 1px solid grey;}
+
+/* terminal "screenshots" */
+
+.terminal {
+    width: 80%;
+    margin: 50px auto 100px auto;
+    padding: 5px;
+    font-size: 62%; /* fits 80ex */
+    border: 1px solid #999;
+    border-radius: 5px;
+    box-shadow: 0px 25px 50px #999;  
+}
 
 /* rss */
 
