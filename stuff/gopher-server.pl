@@ -19,6 +19,7 @@ use 5.10.0;
 use base qw(Net::Server::Fork); # any personality will do
 use MIME::Base64;
 use Text::Wrap;
+use List::Util qw(first);
 
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
@@ -56,6 +57,12 @@ sub options {
 
   $prop->{wiki_pages} ||= [];
   $template->{wiki_pages} = $prop->{wiki_pages};
+
+  $prop->{menu} ||= [];
+  $template->{menu} = $prop->{menu};
+
+  $prop->{menu_file} ||= [];
+  $template->{menu_file} = $prop->{menu_file};
 
   # $prop->{wiki_pem_file} ||= undef;
   # $template->{wiki_pem_file} = $prop->{wiki_pem_file};
@@ -95,6 +102,8 @@ Net::Server are also available here. Additional options are available:
 wiki       - this is the path to the Oddmuse script
 wiki_dir   - this is the path to the Oddmuse data directory
 wiki_pages - this is a page to show on the entry menu
+menu       - this is the description of a gopher menu to prepend
+menu_file  - this is the filename of the gopher menu to prepend
 wiki_cert_file - the filename containing a certificate in PEM format
 wiki_key_file - the filename containing a private key in PEM format
 
@@ -143,6 +152,18 @@ openssl req -new -x509 -days 365 -nodes -out \
         gopher-server-cert.pem -keyout gopher-server-key.pem
 
 Make sure the common name you provide matches your domain name!
+
+Note that parameters should not contain spaces. Thus:
+
+/home/alex/src/oddmuse/stuff/gopher-server.pl \
+    --port=7070 \
+    --log_level=3 \
+    --wiki=/home/alex/src/oddmuse/wiki.pl \
+    --wiki_dir=/home/alex/alexschroeder \
+    --menu=Moku_Pona_Updates \
+    --menu_file=~/.moku-pona/updates.txt \
+    --menu=Moku_Pona_Sites \
+    --menu_file=~/.moku-pona/sites.txt
 
 EOT
 
@@ -205,6 +226,10 @@ sub serve_main_menu {
 
   for my $id (@{$self->{server}->{wiki_pages}}) {
     $self->print_menu("1" . NormalToFree($id), "$id/menu");
+  }
+
+  for my $id (@{$self->{server}->{menu}}) {
+    $self->print_menu("1" . NormalToFree($id), "map/$id");
   }
 
   $self->print_menu("1" . "Recent Changes", "do/rc");
@@ -302,6 +327,23 @@ sub serve_rc {
 	  $self->print_info($line);
 	}
     });
+}
+
+sub serve_map {
+  my $self = shift;
+  my $id = shift;
+  $self->log(3, "Serving map " . UrlEncode($id));
+  my @menu = @{$self->{server}->{menu}};
+  my $i = first { $id eq $menu[$_] } 0..$#menu;
+  my $file = $self->{server}->{menu_file}->[$i];
+  if (-f $file and open(my $fh, '<:encoding(UTF-8)', $file)) {
+    local $/ = undef;
+    my $text = <$fh>;
+    $self->log(4, "Map has " . length($text) . " characters");
+    $self->print_text($text);
+  } else {
+    $self->log(1, "Error reading $file");
+  }
 }
 
 sub serve_page_comment_link {
@@ -757,6 +799,8 @@ sub process_request {
       $self->write_text_page(undef, $data);
     } elsif ($selector =~ m!^([^/]*)/(\d+)/menu$!) {
       $self->serve_page_menu($1, $2);
+    } elsif ($selector =~ m!^map/(.*)!) {
+      $self->serve_map($1);
     } elsif (substr($selector, -5) eq '/menu') {
       $self->serve_page_menu(substr($selector, 0, -5));
     } elsif ($selector =~ m!^([^/]*)/tag$!) {
