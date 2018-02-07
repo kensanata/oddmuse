@@ -115,7 +115,7 @@ like($page, qr/^My best friend is \[\[Berta\]\]/, "Alex plain text");
 
 # HTML
 $page = query_gopher("Alex/html");
-like($page, qr/^<p>My best friend is <a.*?>Berta<\/a>/, "Alex HTML");
+like($page, qr/<p>My best friend is <a.*?>Berta<\/a>/, "Alex HTML");
 
 # tags
 $page = query_gopher("Friends/tag");
@@ -182,7 +182,7 @@ like($page, qr/^Some friends/m, "Friends/1 plain text");
 
 # revision html
 $page = query_gopher("Friends/1/html");
-like($page, qr/^<p>Some friends/m, "Friends/1 html");
+like($page, qr/<p>Some friends/m, "Friends/1 html");
 
 # upload text
 my $haiku = <<EOT;
