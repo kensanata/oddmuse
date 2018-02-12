@@ -191,8 +191,9 @@ sub print_menu {
   my $port = shift
       || $self->{server}->{port}->[0]
       || $self->{server}->{sockport};
+  my $encoded = shift;
 
-  $selector = join('/', map { UrlEncode($_) } split(/\//, $selector));
+  $selector = join('/', map { UrlEncode($_) } split(/\//, $selector)) unless $encoded;
   $self->print_text(join("\t", $display, $selector, $host, $port)
 		    . "\r\n");
 }
@@ -405,39 +406,28 @@ sub serve_text_page_menu {
   $self->serve_page_comment_link($id, $revision);
   $self->serve_page_history_link($id, $revision);
 
-  my @links; # ["page name", "display text"]
-
-  while ($page->{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]/g) {
-    my ($title, $text) = ($1, $2);
-    if (substr($title, 0, 4) eq 'tag:') {
-      push(@links, [substr($title, 4) . "/tag", $text||substr($title, 4)]);
-    } else {
+  my $first = 1;
+  while ($page->{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]|\[(https?:\/\/\S+)\s+([^\]]*)\]|\[gopher:\/\/([^:\/]*)(?::(\d+))?\/(\d)(\S+)\s+([^\]]+)\]/g) {
+    my ($title, $text, $url, $hostname, $port, $type, $selector)
+	= ($1, $2||$4||$9, $3, $5, $6, $7, $8);
+    if ($first) { 
+      $self->print_info("");
+      $self->print_info("Links leaving " . NormalToFree($id) . ":");
+      $first = 0;
+    }
+    if ($hostname) {
+      $self->print_text(join("\t", $type . $text, $selector, $hostname, $port) . "\r\n");
+    } elsif ($url) {
+      $self->print_menu("h$text", "URL:" . $url, undef, undef, 1);
+    } elsif ($title and substr($title, 0, 4) eq 'tag:') {
+      $self->print_menu("1" . ($text||substr($title, 4)),
+			substr($title, 4) . "/tag");
+    } elsif ($title) {
       if (substr($title, 0, 6) eq 'image:') {
 	$title = substr($title, 6);
       }
-      push(@links, [$title . "/menu", $text||$title]);
+      $self->print_menu("1" . $text||$title, $title . "/menu");
     }
-  }
-
-  $self->print_info("");
-  if (@links) {
-    $self->print_info("Links leaving " . NormalToFree($id) . ":");
-    for my $link (@links) {
-      $self->print_menu("1" . NormalToFree($link->[1]),
-		 FreeToNormal($link->[0]));
-    }
-  }
-
-  my $first = 1;
-  while ($page->{text} =~ /\[gopher:\/\/([^:\/]*)(?::(\d+))?\/(\d)(\S+)\s+([^\]]+)\]/g) {
-    my ($hostname, $port, $type, $selector, $text) = ($1, $2||"70", $3, $4, $5);
-    if ($first) {
-      $self->print_info("");
-      $self->print_info("Gopher links:");
-      $first = 0;
-    }
-    $self->print_text(join("\t", $type . $text, $selector, $hostname, $port)
-		      . "\r\n");
   }
 
   $first = 1;
@@ -572,6 +562,24 @@ sub serve_page_html {
     PrintPageHtml();
   }
   PrintFooter($id, $revision);
+  # do not append a dot, just close the connection
+  goto EXIT_NO_DOT;
+}
+
+sub serve_redirect {
+  my $self = shift;
+  my $url = shift;
+  print qq{<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+<meta http-equiv="refresh" content="0; url=$url">
+<title>Redirection</title>
+</head>
+<body>
+If you are not redirected automatically, follow this <a href='$url'>link</a>.
+</body>
+</html>
+};
   # do not append a dot, just close the connection
   goto EXIT_NO_DOT;
 }
@@ -820,6 +828,8 @@ sub process_request {
       $self->write_file_page($1, $data, $2);
     } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?(?:/text)?$!) {
       $self->serve_page($1, $2);
+    } elsif ($selector =~ m!^URL:(.*)!i) {
+      $self->serve_redirect(UrlDecode($1));
     } else {
       $self->serve_error($selector, ValidId($selector)||'Cause unknown');
     }
