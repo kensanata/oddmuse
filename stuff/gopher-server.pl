@@ -25,6 +25,8 @@ our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
     $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName);
 
+my $external_image_path = '/home/alex/alexschroeder.ch/pics/';
+
 # Sadly, we need this information before doing anything else
 my %args = (proto => 'ssl');
 for (grep(/--wiki_(key|cert)_file=/, @ARGV)) {
@@ -422,10 +424,10 @@ sub serve_text_page_menu {
     } elsif ($title and substr($title, 0, 4) eq 'tag:') {
       $self->print_menu("1" . ($text||substr($title, 4)),
 			substr($title, 4) . "/tag");
+    } elsif ($title =~ s!^image[/a-z]* external:!pics/!) {
+      $self->print_menu("I" . $text||$title, $title);
     } elsif ($title) {
-      if (substr($title, 0, 6) eq 'image:') {
-	$title = substr($title, 6);
-      }
+      $title =~ s!^image[/[a-z]]*:!!;
       $self->print_menu("1" . $text||$title, $title . "/menu");
     }
   }
@@ -582,6 +584,26 @@ If you are not redirected automatically, follow this <a href='$url'>link</a>.
 };
   # do not append a dot, just close the connection
   goto EXIT_NO_DOT;
+}
+
+sub serve_image {
+  my $self = shift;
+  my $pic = shift;
+  my $file = $external_image_path . $pic;
+  # no tricks
+  if ($file !~ /\.\./ and $file !~ /\/\//
+      and -f $file and open(my $fh, "<", $file)) {
+    local $/ = undef;
+    my $data = <$fh>;
+    $self->log(4, $pic . " has " . length($data)
+	       . " bytes of binary data");
+    binmode(STDOUT, ":raw");
+    print($data);
+    # do not append a dot, just close the connection
+    goto EXIT_NO_DOT;
+  } else {
+    $self->log(1, "Error reading $file: $!");
+  }
 }
 
 sub newest_first {
@@ -830,6 +852,8 @@ sub process_request {
       $self->serve_page($1, $2);
     } elsif ($selector =~ m!^URL:(.*)!i) {
       $self->serve_redirect(UrlDecode($1));
+    } elsif ($selector =~ m!^pics/(.*)!i) {
+      $self->serve_image(UrlDecode($1));
     } else {
       $self->serve_error($selector, ValidId($selector)||'Cause unknown');
     }
