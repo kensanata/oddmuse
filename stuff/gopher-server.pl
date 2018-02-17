@@ -828,7 +828,7 @@ sub process_request {
     $selector = UrlDecode($selector); # assuming URL-encoded UTF-8
     $selector =~ s/\s+$//g; # no trailing whitespace
 
-    if (not $selector) {
+    if (not $selector or $selector eq "/") {
       $self->serve_main_menu();
     } elsif ($selector eq "do/more") {
       $self->serve_phlog_archive();
