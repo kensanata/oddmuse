@@ -23,7 +23,7 @@ use List::Util qw(first);
 
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
-    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName);
+    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName);
 
 my $external_image_path = '/home/alex/alexschroeder.ch/pics/';
 
@@ -236,6 +236,7 @@ sub serve_main_menu {
   }
 
   $self->print_menu("1" . "Recent Changes", "do/rc");
+  $self->print_menu("0" . "Gopher RSS", "do/rss");
   $self->print_menu("7" . "Find matching page titles", "do/match");
   $self->print_menu("7" . "Full text search", "do/search");
   $self->print_menu("1" . "Index of all pages", "do/index");
@@ -330,6 +331,25 @@ sub serve_rc {
 	  $self->print_info($line);
 	}
     });
+}
+
+sub serve_rss {
+  my $self = shift;
+  $self->log(3, "Serving Gopher RSS");
+  my $host = shift
+      || $self->{server}->{host}->[0]
+      || $self->{server}->{sockaddr};
+  my $port = shift
+      || $self->{server}->{port}->[0]
+      || $self->{server}->{sockport};
+  my $gopher = "gopher://$host:$port/"; # use gophers for TLS?
+  local $ScriptName = $gopher;
+  my $rss = GetRcRss();
+  $rss =~ s!$ScriptName\?action=rss!${gopher}1do/rss!g;
+  $rss =~ s!$ScriptName\?action=history;id=([^[:space:]<]*)!${gopher}1$1/history!g;
+  $rss =~ s!$ScriptName/([^[:space:]<]*)!${gopher}0$1!g;
+  $rss =~ s!<wiki:diff>.*</wiki:diff>\n!!g;
+  print $rss;
 }
 
 sub serve_map {
@@ -822,6 +842,8 @@ sub process_request {
       $self->serve_tags();
     } elsif ($selector eq "do/rc") {
       $self->serve_rc(0);
+    } elsif ($selector eq "do/rss") {
+      $self->serve_rss(0);
     } elsif ($selector eq "do/rc/showedits") {
       $self->serve_rc(1);
     } elsif ($selector eq "do/new") {
