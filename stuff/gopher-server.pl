@@ -537,8 +537,6 @@ sub serve_file_page {
 	     . " bytes of binary data");
   binmode(STDOUT, ":raw");
   print($data);
-  # do not append a dot, just close the connection
-  goto EXIT_NO_DOT;
 }
 
 sub serve_text_page {
@@ -584,8 +582,6 @@ sub serve_page_html {
     PrintPageHtml();
   }
   PrintFooter($id, $revision);
-  # do not append a dot, just close the connection
-  goto EXIT_NO_DOT;
 }
 
 sub serve_redirect {
@@ -602,8 +598,6 @@ If you are not redirected automatically, follow this <a href='$url'>link</a>.
 </body>
 </html>
 };
-  # do not append a dot, just close the connection
-  goto EXIT_NO_DOT;
 }
 
 sub serve_image {
@@ -619,8 +613,6 @@ sub serve_image {
 	       . " bytes of binary data");
     binmode(STDOUT, ":raw");
     print($data);
-    # do not append a dot, just close the connection
-    goto EXIT_NO_DOT;
   } else {
     $self->log(1, "Error reading $file: $!");
   }
@@ -696,7 +688,6 @@ sub write_page_error {
   $self->log(4, "Not saved: $error");
   $self->print_error("Page was not saved: $error");
   map { ReleaseLockDir($_); } keys %Locks;
-  goto EXIT;
 }
 
 sub write_data {
@@ -880,11 +871,6 @@ sub process_request {
       $self->serve_error($selector, ValidId($selector)||'Cause unknown');
     }
 
-  EXIT:
-    # write final dot for almost everything
-    $self->print_text(".\r\n");
-  EXIT_NO_DOT:
-    # except when sending a binary file
     $self->log(4, "Done");
   }
 }
