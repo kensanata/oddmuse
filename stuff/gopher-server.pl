@@ -429,10 +429,10 @@ sub serve_text_page_menu {
   $self->serve_page_history_link($id, $revision);
 
   my $first = 1;
-  while ($page->{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]|\[(https?:\/\/\S+)\s+([^\]]*)\]|\[gopher:\/\/([^:\/]*)(?::(\d+))?\/(\d)(\S+)\s+([^\]]+)\]/g) {
+  while ($page->{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]|\[(https?:\/\/\S+)\s+([^\]]*)\]|\[gopher:\/\/([^:\/]*)(?::(\d+))?(?:\/(\d)(\S+))?\s+([^\]]+)\]/g) {
     my ($title, $text, $url, $hostname, $port, $type, $selector)
-	= ($1, $2||$4||$9, $3, $5, $6, $7, $8);
-    if ($first) { 
+	= ($1, $2||$4||$9, $3, $5, $6||70, $7||1, $8);
+    if ($first) {
       $self->print_info("");
       $self->print_info("Links leaving " . NormalToFree($id) . ":");
       $first = 0;
