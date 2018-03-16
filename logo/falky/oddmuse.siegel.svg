@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-162 -162 324 324">
+
+<circle fill="#FFF" stroke="#000" stroke-width="3" cx="0" cy="0" r="160.5"/>
+
+<text style="font:400 27px Neris Black" fill="#000" text-anchor="middle" x="-5" y="137">Oddmuse</text>
+
+<g id="new" transform="rotate(210)" >
+
+  <path fill="#000" d="m42 -77 q24 0 38 20 c14 -1 42 -18  52 -29 c-1 50 -26 68 -44 70 c0 90 -44 141 -88 141 c-44 0 -88 -51 -88 -141 c-18 -2 -43 -20 -44 -70 c10 11  38 28  52 29 q14 -20 38 -20z"/>
+  <path fill="#000" transform="translate(0,60) rotate(-14)" d="m -22  46q1 50  22  50q21 0  22 -50z"/>
+
+  <path stroke="#FFF" stroke-width="4" fill="#000" d="m0 17 c 30 0  36 -2   46 -2 c 18 0  32 16   32  51 c 0 34 -12 50  -32  50 c-16 0 -26 -5  -46 -5 c-20 0 -30  5  -46  5 c-20 0 -33 -18 -32 -50 c0 -36  16 -52  32 -51 c10  0  16  2   46 2z"/>
+  <circle fill="#FFF" cx=" 44" cy=" 49" r="12"/> <circle fill="#FFF" cx="-44" cy=" 49" r="12"/>
+
+  <circle fill="#FFF" cx=" 42" cy="-31" r="40"/> <circle fill="#000" cx=" 42" cy="-31" r="20.5"/>
+  <circle fill="#FFF" cx="-42" cy="-31" r="40"/> <path fill="#000" transform="translate(-42,-31), rotate(55)" d="m-7 7 v20 q7 2 14 0 v-20 h20 q2 -7 0 -14 h-20 v-20 q -7 -2  -14 0 v20 h-20 q-2 7 0 14z"/>
+
+</g>
+
+
+
+</svg>
