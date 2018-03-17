@@ -35,6 +35,7 @@ use warnings;
 no warnings 'numeric';
 no warnings 'uninitialized';
 use utf8; # in case anybody ever adds UTF8 characters to the source
+use B;
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
@@ -2195,6 +2196,17 @@ sub ScriptLinkDiff {
   return ScriptLink($action, $text, 'diff');
 }
 
+sub ColorCode {
+  my ($str) = @_;
+  my $num = unpack("L",B::hash($str)); # 32-bit integer
+  my $code = sprintf("%o", $num); # octal is 0-7
+  my @indexes = split(//, substr($code, 0, 4)); # four numbers
+  my @colors = qw/red orange yellow green blue indigo violet white/;
+  return $q->span({-class => 'ip-code', -title => T('Anonymous')},
+		  join('', map { $q->span({-class => $colors[$_]}, $_) }
+		       @indexes));
+}
+
 sub GetAuthor {
   my ($username) = @_;
   return $username if $username;
@@ -2209,12 +2221,11 @@ sub GetAuthorLink {
     $username = '';     # Just pretend it isn't there.
   }
   if ($username and $RecentLink) {
-    return ScriptLink(UrlEncode($username), $name, 'author', undef, $host);
+    return ScriptLink(UrlEncode($username), $name, 'author');
   } elsif ($username) {
     return $q->span({-class=>'author'}, $name);
   }
-  # FIXME add funny little image to visuall group by $host
-  return T('Anonymous');
+  return ColorCode($host);
 }
 
 sub GetHistoryLink {

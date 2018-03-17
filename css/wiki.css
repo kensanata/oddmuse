@@ -172,6 +172,50 @@ span.bar a {
     padding: 1ex 0;
 }
 
+.red {
+    background: red;
+    color: red;
+}
+
+.orange {
+    background: orange;
+    color: orange;
+}
+
+.yellow {
+    background: yellow;
+    color: yellow;
+}
+
+.green {
+    background: green;
+    color: green;
+}
+
+.blue {
+    background: blue;
+    color: blue;
+}
+
+.indigo {
+    background: indigo;
+    color: indigo;
+}
+
+.violet {
+    background: violet;
+    color: violet;
+}
+
+.white {
+    background: white;
+    color: white;
+}
+
+.ip-code {
+    border: 1px solid #666;
+}
+
 hr {
     border: none;
     color: black;
