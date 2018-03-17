@@ -26,6 +26,18 @@ sub ParseData {
   return %result;
 }
 
+sub EncodePage {
+  my @data = @_;
+  my $result = '';
+  $result .= (shift @data) . ': ' . EscapeNewlines(shift @data) . "\n" while (@data);
+  return $result;
+}
+
+sub EscapeNewlines {
+  $_[0] =~ s/\n/\n\t/g;   # modify original instead of copying
+  return $_[0];
+}
+
 sub main {
   die "There is no temp directory, here.\n"
       . "Perhaps this isn't an Oddmuse data directory?\n"
@@ -51,7 +63,7 @@ sub main {
     if (exists($result{host})) {
       delete($result{host});
       open($fh,'>', "$file~") or die "Cannot $file~: $!\n";
-      print $fh $result{text};
+      print $fh EncodePage(%result);
       close($fh);
       rename("$file~", $file) or die "Cannot rename $file~ to $file: $!\n";
       $n++;
