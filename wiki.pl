@@ -1757,7 +1757,7 @@ sub RcHtml {
        $languages, $cluster, $last) = @_;
     my $all_revision = $last ? undef : $revision; # no revision for the last one
     $host = QuoteHtml($host);
-    my $author = GetAuthorLink($host, $username);
+    my $author = GetAuthorLink($username, $host);
     my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ')
       . $q->strong(QuoteHtml($summary)) : '';
     my $edit = $minor ? $q->em({class=>'type'}, T('(minor)')) : '';
@@ -1840,7 +1840,7 @@ sub RcTextRevision {
        : ($UsePathInfo ? '/' : '?') . UrlEncode($id));
   print "\n", RcTextItem('title', NormalToFree($id)),
     RcTextItem('description', $summary),
-    RcTextItem('generator', GetAuthor($host, $username)),
+    RcTextItem('generator', GetAuthor($username)),
     RcTextItem('language', join(', ', @{$languages})), RcTextItem('link', $link),
     RcTextItem('last-modified', TimeToW3($ts)),
     RcTextItem('revision', $revision),
@@ -1925,7 +1925,6 @@ sub RssItem {
   }
   my $date = TimeToRFC822($ts);
   $username = QuoteHtml($username);
-  $username ||= $host;
   my $rss = "<item>\n";
   $rss .= "<title>$name</title>\n";
   my $link = ScriptUrl(GetParam('all', $cluster)
@@ -2034,8 +2033,7 @@ sub GetHistoryLine {
     $html .= ' ' . GetOldPageLink('browse', $id, $revision,
           Ts('Revision %s', $revision));
   }
-  my $host = $data{host} || $data{ip};
-  $html .= T(' . . . .') . ' ' . GetAuthorLink($host, $data{username});
+  $html .= T(' . . . .') . ' ' . GetAuthorLink($data{username});
   $html .= $q->span({class=>'dash'}, ' &#8211; ')
     . $q->strong(QuoteHtml($data{summary})) if $data{summary};
   $html .= ' ' . $q->em({class=>'type'}, T('(minor)')) . ' ' if $data{minor};
@@ -2198,14 +2196,13 @@ sub ScriptLinkDiff {
 }
 
 sub GetAuthor {
-  my ($host, $username) = @_;
-  return $username . ' ' . Ts('from %s', $host) if $username and $host;
+  my ($username) = @_;
   return $username if $username;
-  return T($host); # could be 'Anonymous'
+  return T('Anonymous');
 }
 
 sub GetAuthorLink {
-  my ($host, $username) = @_;
+  my ($username, $host) = @_;
   $username = FreeToNormal($username);
   my $name = NormalToFree($username);
   if (ValidId($username) ne '') { # ValidId() returns error string
@@ -2216,7 +2213,8 @@ sub GetAuthorLink {
   } elsif ($username) {
     return $q->span({-class=>'author'}, $name);
   }
-  return T($host); # could be 'Anonymous'
+  # FIXME add funny little image to visuall group by $host
+  return T('Anonymous');
 }
 
 sub GetHistoryLink {
@@ -2437,7 +2435,7 @@ sub GetFooterTimestamp {
   $page //= \%Page;
   if ($id and $rev ne 'history' and $rev ne 'edit' and $page->{revision}) {
     my @elements = (($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($page->{ts}),
-		    Ts('by %s', GetAuthorLink($page->{host}, $page->{username})));
+		    Ts('by %s', GetAuthorLink($page->{username})));
     push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff and $page->{revision} > 1;
     return $q->div({-class=>'time'}, @elements);
   }
@@ -3526,20 +3524,19 @@ sub PrintSearchResult {
   $entry{size} = int((length($text) / 1024) + 1) . 'K';
   $entry{'last-modified'} = TimeToText($Page{ts});
   $entry{username} = $Page{username};
-  $entry{host} = $Page{host};
   PrintSearchResultEntry(\%entry);
 }
 
 sub PrintSearchResultEntry {
   my %entry = %{(shift)}; # get value from reference
   if (GetParam('raw', 0)) {
-    $entry{generator} = GetAuthor($entry{host}, $entry{username});
-    foreach my $key (qw(title description size last-modified generator username host)) {
+    $entry{generator} = GetAuthor($entry{username});
+    foreach my $key (qw(title description size last-modified generator username)) {
       print RcTextItem($key, $entry{$key});
     }
     print RcTextItem('link', "$ScriptName?$entry{title}"), "\n";
   } else {
-    my $author = GetAuthorLink($entry{host}, $entry{username});
+    my $author = GetAuthorLink($entry{username});
     $author ||= $entry{generator};
     my $id = $entry{title};
     my ($class, $resolved, $title, $exists) = ResolveId($id);
@@ -3593,8 +3590,8 @@ sub ReplaceAndSave {
   RequestLockOrError();   # fatal
   my @result = Replace($from, $to, 1, sub {
     my ($id, $new) = @_;
-    Save($id, $new, $from . ' → ' . $to, 1, ($Page{host} ne $q->remote_addr()));
-		       });
+    Save($id, $new, $from . ' → ' . $to, 1);
+  });
   ReleaseLock();
   return @result;
 }
@@ -3713,9 +3710,7 @@ sub DoPost {
   }
   my $newAuthor = 0;
   if ($oldrev) { # the first author (no old revision) is not considered to be "new"
-    # prefer usernames for potential new author detection
     $newAuthor = 1 if not $Page{username} or $Page{username} ne GetParam('username', '');
-    $newAuthor = 1 if not $q->remote_addr() or not $Page{host} or $q->remote_addr() ne $Page{host};
   }
   my $oldtime = $Page{ts};
   my $myoldtime = GetParam('oldtime', ''); # maybe empty!
@@ -3789,7 +3784,6 @@ sub AddComment {
 sub Save {      # call within lock, with opened page
   my ($id, $new, $summary, $minor, $upload) = @_;
   my $user = GetParam('username', '');
-  my $host = $q->remote_addr();
   my $revision = $Page{revision} + 1;
   my $old = $Page{text};
   my $olddiff = $Page{'diff-major'} == '1' ? $Page{'diff-minor'} : $Page{'diff-major'};
@@ -3805,8 +3799,8 @@ sub Save {      # call within lock, with opened page
   ExpireKeepFiles();
   $Page{lastmajor} = $revision unless $minor;
   $Page{lastmajorsummary} = $summary unless $minor;
-  @Page{qw(ts revision summary username host minor text)} =
-      ($Now, $revision, $summary, $user, $host, $minor, $new);
+  @Page{qw(ts revision summary username minor text)} =
+      ($Now, $revision, $summary, $user, $minor, $new);
   if ($UseDiff and $UseCache > 1 and $revision > 1 and not $upload and not TextIsFile($old)) {
     UpdateDiffs($old, $new, $olddiff); # sets diff-major and diff-minor
   }
@@ -3817,6 +3811,7 @@ sub Save {      # call within lock, with opened page
   if ($revision == 1 and $LockOnCreation{$id}) {
     WriteStringToFile(GetLockedPageFile($id), 'LockOnCreation');
   }
+  my $host = $q->remote_addr();
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
   AddToIndex($id) if ($revision == 1);
 }
@@ -3908,7 +3903,7 @@ sub DoMaintain {
   for my $line (@rc) {
     my ($ts, $id, $minor, $summary, $host, @rest) = split(/$FS/, $line);
     last if $ts >= $starttime;
-    push(@tmp, join($FS, $ts, $id, $minor, $summary, 'Anonymous', @rest));
+    push(@tmp, join($FS, $ts, $id, $minor, $summary, T('Anonymous'), @rest));
   }
   print $q->p(Ts('Moving %s log entries.', scalar(@tmp)));
   if (@tmp) {
