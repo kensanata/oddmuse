@@ -447,8 +447,8 @@ sub serve_text_page_menu {
     } elsif ($title =~ s!^image[/a-z]* external:!pics/!) {
       $self->print_menu("I" . $text||$title, $title);
     } elsif ($title) {
-      $title =~ s!^image[/[a-z]]*:!!;
-      $self->print_menu("1" . $text||$title, $title . "/menu");
+      $title =~ s!^image[/a-z]*:!!i;
+      $self->print_menu("1" . ($text||$title), $title . "/menu");
     }
   }
 
@@ -480,7 +480,7 @@ sub serve_page_history {
 
   $self->print_menu("1" . NormalToFree($id) . " (current)", "$id/menu");
   $self->print_info(CalcTime($Page{ts})
-      . " by " . GetAuthor($Page{host}, $Page{username})
+      . " by " . GetAuthor($Page{username})
       . ($Page{summary} ? ": $Page{summary}" : "")
       . ($Page{minor} ? " (minor)" : ""));
 
@@ -489,7 +489,7 @@ sub serve_page_history {
     $self->print_menu("1" . NormalToFree($id) . " ($keep->{revision})",
 	       "$id/$keep->{revision}/menu");
     $self->print_info(CalcTime($keep->{ts})
-	. " by " . GetAuthor($keep->{host}, $keep->{username})
+	. " by " . GetAuthor($keep->{username})
 	. ($keep->{summary} ? ": $keep->{summary}" : "")
 	. ($keep->{minor} ? " (minor)" : ""));
   }

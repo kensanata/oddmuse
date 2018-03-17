@@ -51,7 +51,7 @@ test_page(get_page('action=rc raw=1'), 'title: Wiki');
 WriteStringToFile($RcFile, "1${FS}test${FS}${FS}test${FS}127.0.0.1${FS}${FS}1${FS}${FS}\n");
 test_page_negative(get_page('action=rc raw=1'), 'title: test');
 test_page(get_page('action=rc raw=1 from=1'), 'title: Wiki', 'title: test',
-	  'description: test', 'generator: 127.0.0.1',
+	  'description: test', 'generator: Anonymous',
 	  'link: http://localhost/wiki.pl/test',
 	  'last-modified: 1970-01-01T00:00Z', 'revision: 1');
 

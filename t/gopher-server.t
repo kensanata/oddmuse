@@ -226,7 +226,7 @@ like($page, qr/^$haiku_re/, "Haiku updated");
 
 $page = query_gopher("Haiku/history");
 like($page, qr/^1Haiku \(current\)\tHaiku\/menu\t/m, "Haiku (current)");
-like($page, qr/^i\d\d:\d\d UTC by Alex from \S+: typos \(minor\)/m,
+like($page, qr/^i\d\d:\d\d UTC by Alex: typos \(minor\)/m,
      "Metadata recorded");
 like($page, qr/^1Haiku \(1\)\tHaiku\/1\/menu\t/m, "Haiku (1)");
 
