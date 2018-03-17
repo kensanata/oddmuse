@@ -12,10 +12,10 @@
   <path fill="#000" transform="translate(0,60) rotate(-14)" d="m -22  46q1 50  22  50q21 0  22 -50z"/>
 
   <path stroke="#FFF" stroke-width="4" fill="#000" d="m0 17 c 30 0  36 -2   46 -2 c 18 0  32 16   32  51 c 0 34 -12 50  -32  50 c-16 0 -26 -5  -46 -5 c-20 0 -30  5  -46  5 c-20 0 -33 -18 -32 -50 c0 -36  16 -52  32 -51 c10  0  16  2   46 2z"/>
-  <circle fill="#FFF" cx=" 44" cy=" 49" r="12"/> <circle fill="#FFF" cx="-44" cy=" 49" r="12"/>
+  <circle fill="#FFF" cx="44" cy="49" r="12"/> <circle fill="#FFF" cx="-44" cy="49" r="12"/>
 
-  <circle fill="#FFF" cx=" 42" cy="-31" r="40"/> <circle fill="#000" cx=" 42" cy="-31" r="20.5"/>
-  <circle fill="#FFF" cx="-42" cy="-31" r="40"/> <path fill="#000" transform="translate(-42,-31), rotate(55)" d="m-7 7 v20 q7 2 14 0 v-20 h20 q2 -7 0 -14 h-20 v-20 q -7 -2  -14 0 v20 h-20 q-2 7 0 14z"/>
+  <circle fill="#FFF" cx="42" cy="-31" r="40"/> <circle fill="#000" cx="42" cy="-31" r="20.5"/>
+  <circle fill="#FFF" cx="-42" cy="-31" r="40"/> <path fill="#000" transform="translate(-42,-31) rotate(55)" d="m-7 7 v20 q7 2 14 0 v-20 h20 q2 -7 0 -14 h-20 v-20 q -7 -2  -14 0 v20 h-20 q-2 7 0 14z"/>
 
 </g>
 
