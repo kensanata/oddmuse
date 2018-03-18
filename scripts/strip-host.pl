@@ -60,8 +60,9 @@ sub main {
     close($fh);
     next unless $data;
     my %result = ParseData($data);
-    if (exists($result{host})) {
+    if (exists($result{host}) or exists($result{ip})) {
       delete($result{host});
+      delete($result{ip});
       open($fh,'>', "$file~") or die "Cannot $file~: $!\n";
       print $fh EncodePage(%result);
       close($fh);
@@ -70,14 +71,14 @@ sub main {
     }
   }
   rmdir "temp/lockmain" or die "Cannot remove main lock: $!\n";
-  print "I looked at $t files and found $n host keys which I removed.\n";
+  print "I looked at $t files and found $n host or ip keys which I removed.\n";
 }
 
 if (@ARGV) {
   print qq{
 Usage: $0 [--page DIR]
 
-Goes through the wiki and removes the host (IP) number from page and
+Goes through the wiki and removes the hostname or IP number from page and
 keep files. Make a backup before running this script! Run this script in
 your data directory.
 }
