@@ -2225,6 +2225,7 @@ sub GetAuthorLink {
   } elsif ($username) {
     return $q->span({-class=>'author'}, $name);
   }
+  return T('Anonymous') if $host eq 'Anonymous';
   return ColorCode($host);
 }
 
@@ -3914,7 +3915,7 @@ sub DoMaintain {
   for my $line (@rc) {
     my ($ts, $id, $minor, $summary, $host, @rest) = split(/$FS/, $line);
     last if $ts >= $starttime;
-    push(@tmp, join($FS, $ts, $id, $minor, $summary, T('Anonymous'), @rest));
+    push(@tmp, join($FS, $ts, $id, $minor, $summary, 'Anonymous', @rest));
   }
   print $q->p(Ts('Moving %s log entries.', scalar(@tmp)));
   if (@tmp) {
