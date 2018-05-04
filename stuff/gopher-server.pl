@@ -177,6 +177,12 @@ sub NewGopherFiltered {
   return @pages;
 }
 
+sub normal_to_free {
+  my $title = shift;
+  $title =~ s/_/ /g;
+  return $title;
+}
+
 sub print_text {
   my $self = shift;
   my $text = shift;
@@ -222,17 +228,17 @@ sub serve_main_menu {
   $self->print_info("Phlog:");
   my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @IndexList);
   for my $id (@pages[0..9]) {
-    $self->print_menu("1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . normal_to_free($id), "$id/menu");
   }
   $self->print_menu("1" . "More...", "do/more");
   $self->print_info("");
 
   for my $id (@{$self->{server}->{wiki_pages}}) {
-    $self->print_menu("1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . normal_to_free($id), "$id/menu");
   }
 
   for my $id (@{$self->{server}->{menu}}) {
-    $self->print_menu("1" . NormalToFree($id), "map/$id");
+    $self->print_menu("1" . normal_to_free($id), "map/$id");
   }
 
   $self->print_menu("1" . "Recent Changes", "do/rc");
@@ -255,7 +261,7 @@ sub serve_phlog_archive {
   $self->log(3, "Serving phlog archive");
   my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @IndexList);
   for my $id (@pages) {
-    $self->print_menu("1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . normal_to_free($id), "$id/menu");
   }
 }
 
@@ -263,7 +269,7 @@ sub serve_index {
   my $self = shift;
   $self->log(3, "Serving index of all pages");
   for my $id (sort newest_first @IndexList) {
-    $self->print_menu("1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . normal_to_free($id), "$id/menu");
   }
 }
 
@@ -274,7 +280,7 @@ sub serve_match {
   $self->print_info("Use a regular expression to match page titles.");
   $self->print_info("Spaces in page titles are underlines, '_'.");
   for my $id (sort newest_first grep(/$match/i, @IndexList)) {
-    $self->print_menu( "1" . NormalToFree($id), "$id/menu");
+    $self->print_menu( "1" . normal_to_free($id), "$id/menu");
   }
 }
 
@@ -285,7 +291,7 @@ sub serve_search {
   $self->print_info("Use regular expressions separated by spaces.");
   SearchTitleAndBody($str, sub {
     my $id = shift;
-    $self->print_menu("1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . normal_to_free($id), "$id/menu");
   });
 }
 
@@ -299,7 +305,7 @@ sub serve_tags {
     $count{$tag} = @{$h{$tag}};
   }
   foreach my $id (sort { $count{$b} <=> $count{$a} } keys %count) {
-    $self->print_menu("1" . NormalToFree($id), "$id/tag");
+    $self->print_menu("1" . normal_to_free($id), "$id/tag");
   }
 }
 
@@ -326,7 +332,7 @@ sub serve_rc {
     sub {
         my($id, $ts, $author_host, $username, $summary, $minor, $revision,
 	   $languages, $cluster, $last) = @_;
-	$self->print_menu("1" . NormalToFree($id), "$id/menu");
+	$self->print_menu("1" . normal_to_free($id), "$id/menu");
 	for my $line (split(/\n/, wrap('    ', '  ', $summary))) {
 	  $self->print_info($line);
 	}
@@ -403,7 +409,7 @@ sub serve_file_page_menu {
   my $revision = shift;
   my $code = substr($type, 0, 6) eq 'image/' ? 'I' : '9';
   $self->log(3, "Serving file page menu for " . UrlEncode($id));
-  $self->print_menu($code . NormalToFree($id)
+  $self->print_menu($code . normal_to_free($id)
 	     . ($revision ? "/$revision" : ""), $id);
   $self->serve_page_comment_link($id, $revision);
   $self->serve_page_history_link($id, $revision);
@@ -418,11 +424,11 @@ sub serve_text_page_menu {
 	     . ($revision ? "/$revision" : ""));
 
   $self->print_info("The text of this page:");
-  $self->print_menu("0" . NormalToFree($id),
+  $self->print_menu("0" . normal_to_free($id),
 	     $id . ($revision ? "/$revision" : ""));
-  $self->print_menu("h" . NormalToFree($id),
+  $self->print_menu("h" . normal_to_free($id),
 	     $id . ($revision ? "/$revision" : "") . "/html");
-  $self->print_menu("w" . "Replace " . NormalToFree($id),
+  $self->print_menu("w" . "Replace " . normal_to_free($id),
 	     $id . "/write/text");
 
   $self->serve_page_comment_link($id, $revision);
@@ -434,7 +440,7 @@ sub serve_text_page_menu {
 	= ($1, $2||$4||$9, $3, $5, $6||70, $7||1, $8);
     if ($first) {
       $self->print_info("");
-      $self->print_info("Links leaving " . NormalToFree($id) . ":");
+      $self->print_info("Links leaving " . normal_to_free($id) . ":");
       $first = 0;
     }
     if ($hostname) {
@@ -478,7 +484,7 @@ sub serve_page_history {
   $self->log(3, "Serving history of " . UrlEncode($id));
   OpenPage($id);
 
-  $self->print_menu("1" . NormalToFree($id) . " (current)", "$id/menu");
+  $self->print_menu("1" . normal_to_free($id) . " (current)", "$id/menu");
   $self->print_info(CalcTime($Page{ts})
       . " by " . GetAuthor($Page{username})
       . ($Page{summary} ? ": $Page{summary}" : "")
@@ -486,7 +492,7 @@ sub serve_page_history {
 
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my $keep = GetKeptRevision($revision);
-    $self->print_menu("1" . NormalToFree($id) . " ($keep->{revision})",
+    $self->print_menu("1" . normal_to_free($id) . " ($keep->{revision})",
 	       "$id/$keep->{revision}/menu");
     $self->print_info(CalcTime($keep->{ts})
 	. " by " . GetAuthor($keep->{username})
@@ -570,7 +576,7 @@ sub serve_page_html {
 
   $self->log(3, "Serving " . UrlEncode($id) . " as HTML");
 
-  my $title = NormalToFree($id);
+  my $title = normal_to_free($id);
   print GetHtmlHeader(Ts('%s:', $SiteName) . ' ' . UnWiki($title), $id);
   print GetHeaderDiv($id, $title);
   print $q->start_div({-class=>'wrapper'});
@@ -631,7 +637,7 @@ sub serve_tag_list {
   my $tag = shift;
   $self->print_info("Search result for tag $tag:");
   for my $id (sort newest_first TagFind($tag)) {
-    $self->print_menu("1" . NormalToFree($id), "$id/menu");
+    $self->print_menu("1" . normal_to_free($id), "$id/menu");
   }
 }
 
@@ -641,7 +647,7 @@ sub serve_tag {
   $self->log(3, "Serving tag " . UrlEncode($tag));
   if ($IndexHash{$tag}) {
     $self->print_info("This page is about the tag $tag.");
-    $self->print_menu("1" . NormalToFree($tag), "$tag/menu");
+    $self->print_menu("1" . normal_to_free($tag), "$tag/menu");
     $self->print_info("");
   }
   $self->serve_tag_list($tag);
@@ -679,7 +685,7 @@ sub write_page_ok {
   my $self = shift;
   my $id = shift;
   $self->print_info("Page was saved.");
-  $self->print_menu("1" . NormalToFree($id), "$id/menu");
+  $self->print_menu("1" . normal_to_free($id), "$id/menu");
 }
 
 sub write_page_error {
