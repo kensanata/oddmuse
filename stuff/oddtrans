@@ -41,7 +41,7 @@ while ($arg =~ /^-l/) {
   die $help unless -f $file;
   my %backup = %Translate;
   header_info_extract($file); # keep the header information of the translation files
-  do $file or die "Cannot do $file";
+  do "./$file" or die "Cannot do $file";
   foreach my $key (keys %Translate) {
     $backup{$key} = $Translate{$key};
   }
