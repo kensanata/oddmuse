@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Copyright (C) 2001-2015
+# Copyright (C) 2001-2018
 #     Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2014-2015
 #     Alex Jakimenko <alex.jakimenko@gmail.com>
@@ -125,6 +125,7 @@ our $DeletedPage = 'DeletedPage';   # Pages starting with this can be deleted
 our $RCName      = 'RecentChanges'; # Name of changes page
 our @RcDays      = qw(1 3 7 30 90); # Days for links on RecentChanges
 our $RcDefault   = 30;              # Default number of RecentChanges days
+our $KeepHostDays = 4;              # Days to keep IP numbers for
 our $KeepDays    = 0;               # Days to keep old revisions (0 means keep forever)
 our $KeepMajor   = 1;               # 1 = keep at least one major rev when expiring pages
 our $SummaryHours = 4;              # Hours to offer the old subject when editing a page
@@ -3896,7 +3897,7 @@ sub DoMaintain {
   RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
   print $q->p(Ts('Moving part of the %s log file.', $RCName));
-  # Determine the number of days to go back
+  # Determine the number of days to go back, default is largest of @RcDays
   my $days = 0;
   foreach (@RcDays) {
     $days = $_ if $_ > $days;
@@ -3907,23 +3908,36 @@ sub DoMaintain {
   if (not $status) {
     print $q->p($q->strong(Ts('Could not open %s log file', $RCName) . ':') . ' ' . $RcFile),
       $q->p(T('Error was') . ':'), $q->pre($!), $q->p(T('Note: This error is normal if no changes have been made.'));
+  } else {
+    WriteStringToFile($RcFile . '.old', $data);
   }
   # Move the old stuff from rc to temp
   my @rc = split(/\n/, $data);
   my @tmp = ();
-  for my $line (@rc) {
+  my $line;
+  my $changed = 0;
+  while ($line = shift(@rc)) {
     my ($ts, $id, $minor, $summary, $host, @rest) = split(/$FS/, $line);
     last if $ts >= $starttime;
     push(@tmp, join($FS, $ts, $id, $minor, $summary, T('Anonymous'), @rest));
+    $changed = 1;
   }
+  unshift(@rc, $line) if $line; # this one ended the loop
   print $q->p(Ts('Moving %s log entries.', scalar(@tmp)));
-  if (@tmp) {
-    # Write new files, and backups
-    AppendStringToFile($RcOldFile, join("\n", @tmp) . "\n");
-    WriteStringToFile($RcFile . '.old', $data);
-    splice(@rc, 0, scalar(@tmp)); # strip
-    WriteStringToFile($RcFile, @rc ? join("\n", @rc) . "\n" : '');
+  AppendStringToFile($RcOldFile, join("\n", @tmp) . "\n") if @tmp;
+  # remove IP numbers from all but the last few days
+  $starttime = $Now - $KeepHostDays * 86400; # 24*60*60
+  @tmp = ();
+  while ($line = shift(@rc)) {
+    my ($ts, $id, $minor, $summary, $host, @rest) = split(/$FS/, $line);
+    last if $ts >= $starttime;
+    push(@tmp, join($FS, $ts, $id, $minor, $summary, T('Anonymous'), @rest));
+    $changed = 1;
   }
+  unshift(@rc, $line) if $line; # this one ended the loop
+  unshift(@rc, @tmp) if @tmp;
+  print $q->p(Ts('Removing IP numbers from %s log entries.', scalar(@tmp)));
+  WriteStringToFile($RcFile, @rc ? join("\n", @rc) . "\n" : '') if $changed;
   if (opendir(DIR, $RssDir)) {  # cleanup if they should expire anyway
     foreach (readdir(DIR)) {
       Unlink("$RssDir/$_") if $Now - Modified($_) > $RssCacheHours * 3600;
