@@ -1326,12 +1326,12 @@ sub DoBrowseRequest {
     eval { local $SIG{__DIE__}; MyActions(); };
   } elsif ($action) {
     ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
-  } elsif (GetParam('match', '') ne '') {
-    SetParam('action', 'index'); # make sure this gets a NOINDEX
-    DoIndex();
   } elsif (GetParam('search', '') ne '') { # allow search for "0"
     SetParam('action', 'search'); # make sure this gets a NOINDEX
     DoSearch();
+  } elsif (GetParam('match', '') ne '') {
+    SetParam('action', 'index'); # make sure this gets a NOINDEX
+    DoIndex();
   } elsif (GetParam('title', '') and not GetParam('Cancel', '')) {
     DoPost(GetParam('title', ''));
   } else {
@@ -3501,8 +3501,11 @@ sub SearchTitleAndBody {
   return @found;
 }
 
-sub Filtered {         # this is overwriten in extensions such as tags.pl
-  return @_[1 .. $#_]; # ignores $regex and returns all pages
+sub Filtered { # this is overwriten in extensions such as tags.pl
+  my ($string, @pages) = @_;
+  my $match = GetParam('match', '');
+  @pages = grep /$match/i, @pages if $match;
+  return @pages;
 }
 
 sub SearchString {
