@@ -198,8 +198,7 @@ sub MakeLaTeX {
       }
 
       if (not $error and IsFile('srender1.png') and not ZeroSize('srender1.png')) {
-	my $png = ReadFileOrDie("srender1.png");
-	WriteStringToFile ("$LatexDir/$hash.png", $png);
+	Rename("srender1.png", "$LatexDir/$hash.png");
       } else {
 	$error = "[Error retrieving image for $latex]";
       }
