@@ -156,8 +156,11 @@ WikiDataDir=$HOME/oddmuse perl server.pl daemon
 }}}
 
 This makes the server available on {{{http://localhost:3000/wiki}}}.
+Make sure you create the directory before starting the server!
+If you don't, you'll get a strange error:
+`STDERR: : No such file or directory at ... perl5/Mojolicious/Plugin/CGI.pm`.
 
-If it works for you, feel free to upgrade to Hypnotoad.
+If it works, feel free to upgrade to Hypnotoad.
 
 {{{
 WikiDataDir=$HOME/oddmuse hypnotoad server.pl
