@@ -1,4 +1,4 @@
-# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ xpath_test(update_page('IncludeSearch',
 	   '//p[text()="first line "]', # note the NL -> SPC
 	   '//div[@class="search"]/p/span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/NegativeSearchTest"][text()="NegativeSearchTest"]',
 	   '//div[@class="search"]/p/span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/NegativeSearchTestTwo"][text()="NegativeSearchTestTwo"]',
-	  '//p[text()=" last line"]'); # note the NL -> SPC
+	   '//p[text()=" last line"]'); # note the NL -> SPC
 
 xpath_test(get_page('search=Schröder'),
 	   '//input[@name="search"][@value="Schröder"]');

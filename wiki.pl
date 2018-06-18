@@ -3484,8 +3484,8 @@ sub SearchTitleAndBody {
   foreach my $id (Filtered($regex, AllPagesList())) {
     my $name = NormalToFree($id);
     my ($text) = PageIsUploadedFile($id); # set to mime-type if this is an uploaded file
+    local ($OpenPageName, %Page); # this is local!
     if (not $text) { # not uploaded file, therefore allow searching of page body
-      local ($OpenPageName, %Page); # this is local!
       OpenPage($id); # this opens a page twice if it is not uploaded, but that's ok
       if ($lang) {
 	my @languages = split(/,/, $Page{languages});
