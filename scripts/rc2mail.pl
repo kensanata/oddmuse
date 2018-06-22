@@ -206,10 +206,12 @@ sub send_mail {
 
 sub main {
   my $rss = get_rss();
-  return unless @{$rss->{items}};
-  my $subscribers = get_subscribers();
-  return unless %{$subscribers};
-  send_files($rss, $subscribers);
+  if (@{$rss->{items}}) {
+    my $subscribers = get_subscribers();
+    if (%{$subscribers}) {
+      send_files($rss, $subscribers);
+    }
+  }
   update_timestamp();
 }
 
