@@ -3923,7 +3923,7 @@ sub DoMaintain {
   while ($line = shift(@rc)) {
     my ($ts, $id, $minor, $summary, $host, @rest) = split(/$FS/, $line);
     last if $ts >= $starttime;
-    push(@tmp, join($FS, $ts, $id, $minor, $summary, T('Anonymous'), @rest));
+    push(@tmp, join($FS, $ts, $id, $minor, $summary, 'Anonymous', @rest));
     $changed = 1;
   }
   unshift(@rc, $line) if $line; # this one ended the loop
@@ -3935,7 +3935,7 @@ sub DoMaintain {
   while ($line = shift(@rc)) {
     my ($ts, $id, $minor, $summary, $host, @rest) = split(/$FS/, $line);
     last if $ts >= $starttime;
-    push(@tmp, join($FS, $ts, $id, $minor, $summary, T('Anonymous'), @rest));
+    push(@tmp, join($FS, $ts, $id, $minor, $summary, 'Anonymous', @rest));
     $changed = 1;
   }
   unshift(@rc, $line) if $line; # this one ended the loop
