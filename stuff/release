@@ -33,7 +33,7 @@ EOT
 
 my $min = version->parse(shift || "2.3.0");
 
-my @tags = grep { /\d+\.\d+\.\d+/ and version->parse($_) >= $min } 
+my @tags = grep { /(\d+\.\d+\.\d+)/ and version->parse($1) >= $min } 
            split(/\n/, qx{git tag --list});
 
 unless (@tags) {
