@@ -20,6 +20,7 @@ use base qw(Net::Server::Fork); # any personality will do
 use MIME::Base64;
 use Text::Wrap;
 use List::Util qw(first);
+use Socket;
 
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
@@ -93,6 +94,12 @@ sub post_configure_hook {
   # make sure search is sorted newest first because NewTagFiltered resorts
   *OldGopherFiltered = \&Filtered;
   *Filtered = \&NewGopherFiltered;
+  *ReportError = sub {
+    my ($error, $status, $log, @html) = @_;
+    $self->print_error("Error: $error");
+    map { ReleaseLockDir($_); } keys %Locks;
+    exit 2;
+  };
 }
 
 my $usage = << 'EOT';
@@ -807,6 +814,14 @@ sub process_request {
   # clear cookie and all that
   $q = undef;
   Init();
+
+  # get the client IP number
+  my $sock = ($self->{server}->{client});
+  my $sockaddr    = getpeername($sock);
+  my ($port, $iaddr) = sockaddr_in($sockaddr);
+  my $straddr     = inet_ntoa($iaddr);
+  SetParam('username', $straddr);
+  DoSurgeProtection();
 
   # refresh list of pages
   if (IsFile($IndexFile) and ReadIndex()) {
