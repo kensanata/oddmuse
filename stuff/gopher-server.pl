@@ -24,7 +24,8 @@ use Socket;
 
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
-    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName);
+    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName,
+    $Now, %RecentVisitors, $SurgeProtectionTime, $SurgeProtectionViews);
 
 my $external_image_path = '/home/alex/alexschroeder.ch/pics/';
 
@@ -808,20 +809,37 @@ sub read_text {
   return $buf;
 }
 
-sub process_request {
+sub allow_deny_hook {
   my $self = shift;
+  my $client = shift;
+
+  # get the client IP number
+  my $peeraddr = $self->{server}->{'peeraddr'};
 
   # clear cookie and all that
   $q = undef;
   Init();
 
-  # get the client IP number
-  my $sock = ($self->{server}->{client});
-  my $sockaddr    = getpeername($sock);
-  my ($port, $iaddr) = sockaddr_in($sockaddr);
-  my $straddr     = inet_ntoa($iaddr);
-  SetParam('username', $straddr);
-  DoSurgeProtection();
+  # implement standard surge protection using Oddmuse tools but without using
+  # ReportError and all that
+  $self->log(4, "Adding visitor $peeraddr");
+  ReadRecentVisitors();
+  AddRecentVisitor($peeraddr);
+  if (RequestLockDir('visitors')) { # not fatal
+    WriteRecentVisitors();
+    ReleaseLockDir('visitors');
+    my @entries = @{$RecentVisitors{$peeraddr}};
+    my $ts = $entries[$SurgeProtectionViews];
+    if (($Now - $ts) < $SurgeProtectionTime) {
+      $self->log(2, "Too many requests by $peeraddr");
+      return 0;
+    }
+  }
+  return 1;
+}
+
+sub process_request {
+  my $self = shift;
 
   # refresh list of pages
   if (IsFile($IndexFile) and ReadIndex()) {
