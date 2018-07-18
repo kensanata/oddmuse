@@ -1700,15 +1700,35 @@ sub RcHeader {
   return $html;
 }
 
-sub GetScriptUrlWithRcParameters {
-  my $url = "$ScriptName?action=rss";
-  foreach my $param (qw(from upto days all showedit rollback rcidonly rcuseronly
-			rchostonly rcclusteronly rcfilteronly match lang
-			followup page diff full)) {
-    my $val = GetParam($param, undef);
-    $url .= ";$param=$val" if defined $val;
+sub RcOtherParameters {
+  my $more = '';
+  foreach (@_, qw(page diff full all showedit rollback rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly match lang followup)) {
+    my $val = GetParam($_, '');
+    $more .= ";$_=$val" if $val;
   }
-  return $url;
+  return $more;
+}
+
+sub RcSelfAction {
+  my ($action) = @_;
+  return "action=$action" . RcOtherParameters(qw(from upto days));
+}
+
+sub RcPreviousAction {
+  my ($action) = @_;
+  my $interval = GetParam('days', $RcDefault) * 86400;
+  # use delta between from and upto, or use days, whichever is available
+  my $to = GetParam('from', GetParam('upto', $Now - $interval));
+  my $from = $to - (GetParam('upto') ? GetParam('upto') - GetParam('from') : $interval);
+  return "action=$action;from=$from;upto=$to" . RcOtherParameters();
+}
+
+sub RcLastAction {
+  my ($action) = @_;
+  my $more = "action=$action";
+  my $days = GetParam('days', $RcDefault);
+  $more .= ";days=$days" if $days != $RcDefault;
+  return $more . RcOtherParameters();
 }
 
 sub GetFilterForm {
@@ -1798,16 +1818,7 @@ sub RcHtml {
   };
   ProcessRcLines($printDailyTear, $printRCLine);
   $html .= '</ul>' if $inlist;
-  # use delta between from and upto, or use days, whichever is available
-  my $to = GetParam('from', GetParam('upto', $Now - GetParam('days', $RcDefault) * 86400));
-  my $from = $to - (GetParam('upto') ? GetParam('upto') - GetParam('from') : GetParam('days', $RcDefault) * 86400);
-  my $more = "action=rc;from=$from;upto=$to";
-  foreach (qw(all showedit rollback rcidonly rcuseronly rchostonly
-	      rcclusteronly rcfilteronly match lang followup)) {
-    my $val = GetParam($_, '');
-    $more .= ";$_=$val" if $val;
-  }
-  $html .= $q->p({-class=>'more'}, ScriptLink($more, T('More...'), 'more'));
+  $html .= $q->p({-class=>'more'}, ScriptLink(RcPreviousAction('rc'), T('More...'), 'more'));
   return GetFormStart(undef, 'get', 'rc') . $html . $q->end_form;
 }
 
@@ -1884,8 +1895,9 @@ sub GetRcRss {
   my $title = QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
   $rss .= "<title>$title</title>\n";
   $rss .= "<link>" . ScriptUrl($HomePage) . "</link>\n";
-  $rss .= qq{<atom:link href="} . GetScriptUrlWithRcParameters()
-    . qq{" rel="self" type="application/rss+xml" />\n};
+  $rss .= qq{<atom:link href="$ScriptName?} . RcSelfAction('rss') . qq{" rel="self" type="application/rss+xml" />\n};
+  $rss .= qq{<atom:link href="$ScriptName?} . RcPreviousAction('rss') . qq{" rel="previous" type="application/rss+xml" />\n};
+  $rss .= qq{<atom:link href="$ScriptName?} . RcLastAction('rss') . qq{" rel="last" type="application/rss+xml" />\n};
   if ($SiteDescription) {
     $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n"
   }
