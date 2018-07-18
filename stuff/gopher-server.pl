@@ -22,10 +22,11 @@ use Text::Wrap;
 use List::Util qw(first);
 use Socket;
 
-our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
-    %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
-    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName,
-    $Now, %RecentVisitors, $SurgeProtectionTime, $SurgeProtectionViews);
+our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q, %Page,
+    $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
+    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName, $Now,
+    %RecentVisitors, $SurgeProtection, $SurgeProtectionTime,
+    $SurgeProtectionViews);
 
 my $external_image_path = '/home/alex/alexschroeder.ch/pics/';
 
@@ -813,12 +814,15 @@ sub allow_deny_hook {
   my $self = shift;
   my $client = shift;
 
-  # get the client IP number
-  my $peeraddr = $self->{server}->{'peeraddr'};
-
-  # clear cookie and all that
+  # clear cookie, read config file
   $q = undef;
   Init();
+
+  # don't do surge protection if we're testing
+  return 1 unless $SurgeProtection;
+
+  # get the client IP number
+  my $peeraddr = $self->{server}->{'peeraddr'};
 
   # implement standard surge protection using Oddmuse tools but without using
   # ReportError and all that
