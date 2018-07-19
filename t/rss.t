@@ -1,4 +1,4 @@
-# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 126;
+use Test::More tests => 132;
 use utf8; # tests contain UTF-8 characters and it matters
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
@@ -106,6 +106,30 @@ test_page(get_page('action=rss full=1'), 'too big to send over RSS');
 update_page('big', "mee too\n" x 2 . 'x' x 55000);
 test_page(get_page('action=rss full=1'), 'too big to send over RSS');
 test_page(get_page('action=rss full=1 diff=1'), 'mee too', 'too big to send over RSS');
+
+# pagination
+my $interval = $RcDefault * 24 * 60 * 60;
+my $t1 = $Now - $interval;
+my $t2 = $Now - 2 * $interval;
+my $t3 = $Now - 3 * $interval;
+my $action1 = " from=$t2 upto=$t1";
+my $window1 = ";from=$t2;upto=$t1";
+my $window2 = ";from=$t3;upto=$t2";
+
+# make sure we start from a well-known point in time
+AppendStringToFile($ConfigFile, "push(\@MyInitVariables, sub { \$Now = '$Now' });\n");
+
+# check default RSS
+xpath_test(get_page('action=rss'),
+	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=rss"]',
+	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=rss"]',
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=rss' . $window1 . '"]');
+
+# check next page
+xpath_test(get_page('action=rss' . $action1),
+	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=rss' . $window1 . '"]',
+	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=rss"]',
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=rss' . $window2 . '"]');
 
 SKIP: {
 
