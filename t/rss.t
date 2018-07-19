@@ -15,7 +15,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 132;
+use Test::More tests => 135;
 use utf8; # tests contain UTF-8 characters and it matters
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
@@ -130,6 +130,12 @@ xpath_test(get_page('action=rss' . $action1),
 	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=rss' . $window1 . '"]',
 	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=rss"]',
 	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=rss' . $window2 . '"]');
+
+# check next page but with full pages
+xpath_test(get_page('action=rss full=1' . $action1),
+	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=rss' . $window1 . ';full=1"]',
+	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=rss;full=1"]',
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=rss' . $window2 . ';full=1"]');
 
 SKIP: {
 
