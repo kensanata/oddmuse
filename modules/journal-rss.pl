@@ -1,4 +1,4 @@
-# Copyright (C) 2004–2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004–2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ sub DoJournalRss {
   local *RcSelfAction = \&JournalRssSelfAction;
   local *RcPreviousAction = \&JournalRssPreviousAction;
   local *RcLastAction = \&JournalRssLastAction;
+  SetParam('full', 1);
   print GetHttpHeader('application/xml') . GetRcRss();
 }
 

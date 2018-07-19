@@ -19,19 +19,17 @@ use Test::More tests => 41;
 
 add_module('journal-rss.pl');
 
-# summaries eq page content since no summaries are provided
 update_page('2008-09-21', 'first page');
 update_page('2008-09-22', 'second page'); # major
 sleep(1);
-update_page('2008-09-22', 'third edit', 'third edit', 1); # minor
+update_page('2008-09-22', 'third edit content', 'third edit summary', 1); # minor
 update_page('unrelated', 'wrong page');
 
 my $page = get_page('action=journal');
 test_page($page,
 	  '2008-09-21', 'first page',
-	  # ignore minor edits are ignored: show last major edit
-	  # instead
-	  '2008-09-22', 'third edit',
+	  # make sure we're showing full page content, not summaries
+	  '2008-09-22', 'third edit content',
 	  # reverse sort is the default
 	  '2008-09-22(.*\n)+.*2008-09-21');
 
