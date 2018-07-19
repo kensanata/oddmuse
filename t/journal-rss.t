@@ -15,7 +15,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 48;
+use Test::More tests => 57;
 
 add_module('journal-rss.pl');
 
@@ -112,3 +112,33 @@ my $date1 = $dates[2]; # revision 1 comes second
 my ($item) = $page =~ m!(<item>\n<title>2008-09-22</title>\n(.*\n)+?</item>\n)!;
 test_page($item, "<pubDate>$date1</pubDate>");
 test_page_negative($item, "<pubDate>$date2</pubDate>");
+
+# pagination, copied from rss.t and modified
+my $interval = $RcDefault * 24 * 60 * 60;
+my $t1 = $Now - $interval;
+my $t2 = $Now - 2 * $interval;
+my $t3 = $Now - 3 * $interval;
+my $action1 = " from=$t2 upto=$t1";
+my $window1 = ";from=$t2;upto=$t1";
+my $window2 = ";from=$t3;upto=$t2";
+
+# make sure we start from a well-known point in time
+AppendStringToFile($ConfigFile, "push(\@MyInitVariables, sub { \$Now = '$Now' });\n");
+
+# check default RSS
+xpath_test(get_page('action=journal'),
+	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal"]',
+	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal"]',
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal' . $window1 . '"]');
+
+# check next page
+xpath_test(get_page('action=journal' . $action1),
+	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal' . $window1 . '"]',
+	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal"]',
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal' . $window2 . '"]');
+
+# check next page but with full pages
+xpath_test(get_page('action=journal full=1' . $action1),
+	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal' . $window1 . ';full=1"]',
+	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal;full=1"]',
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal' . $window2 . ';full=1"]');

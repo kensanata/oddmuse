@@ -1710,12 +1710,12 @@ sub RcOtherParameters {
 }
 
 sub RcSelfAction {
-  my ($action) = @_;
+  my $action = GetParam('action', 'rc');
   return "action=$action" . RcOtherParameters(qw(from upto days));
 }
 
 sub RcPreviousAction {
-  my ($action) = @_;
+  my $action = GetParam('action', 'rc');
   my $interval = GetParam('days', $RcDefault) * 86400;
   # use delta between from and upto, or use days, whichever is available
   my $to = GetParam('from', GetParam('upto', $Now - $interval));
@@ -1724,7 +1724,7 @@ sub RcPreviousAction {
 }
 
 sub RcLastAction {
-  my ($action) = @_;
+  my $action = GetParam('action', 'rc');
   my $more = "action=$action";
   my $days = GetParam('days', $RcDefault);
   $more .= ";days=$days" if $days != $RcDefault;
@@ -1818,7 +1818,7 @@ sub RcHtml {
   };
   ProcessRcLines($printDailyTear, $printRCLine);
   $html .= '</ul>' if $inlist;
-  $html .= $q->p({-class=>'more'}, ScriptLink(RcPreviousAction('rc'), T('More...'), 'more'));
+  $html .= $q->p({-class=>'more'}, ScriptLink(RcPreviousAction(), T('More...'), 'more'));
   return GetFormStart(undef, 'get', 'rc') . $html . $q->end_form;
 }
 
@@ -1895,9 +1895,9 @@ sub GetRcRss {
   my $title = QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
   $rss .= "<title>$title</title>\n";
   $rss .= "<link>" . ScriptUrl($HomePage) . "</link>\n";
-  $rss .= qq{<atom:link href="$ScriptName?} . RcSelfAction('rss') . qq{" rel="self" type="application/rss+xml" />\n};
-  $rss .= qq{<atom:link href="$ScriptName?} . RcPreviousAction('rss') . qq{" rel="previous" type="application/rss+xml" />\n};
-  $rss .= qq{<atom:link href="$ScriptName?} . RcLastAction('rss') . qq{" rel="last" type="application/rss+xml" />\n};
+  $rss .= qq{<atom:link href="$ScriptName?} . RcSelfAction() . qq{" rel="self" type="application/rss+xml" />\n};
+  $rss .= qq{<atom:link href="$ScriptName?} . RcPreviousAction() . qq{" rel="previous" type="application/rss+xml" />\n};
+  $rss .= qq{<atom:link href="$ScriptName?} . RcLastAction() . qq{" rel="last" type="application/rss+xml" />\n};
   if ($SiteDescription) {
     $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n"
   }
