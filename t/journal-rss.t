@@ -1,4 +1,4 @@
-# Copyright (C) 2008, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2008-2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 55;
+use Test::More tests => 41;
 
 add_module('journal-rss.pl');
 
@@ -31,17 +31,12 @@ test_page($page,
 	  '2008-09-21', 'first page',
 	  # ignore minor edits are ignored: show last major edit
 	  # instead
-	  '2008-09-22', 'second page',
+	  '2008-09-22', 'third edit',
 	  # reverse sort is the default
 	  '2008-09-22(.*\n)+.*2008-09-21');
 
 # make sure unrelated pages and minor edits don't show up
-test_page_negative($page, 'unrelated', 'wrong page',
-		   'third edit');
-
-# verify the order of pages
-test_page(get_page('action=journal'),
-	  '2008-09-22(.*\n)+.*2008-09-21');
+test_page_negative($page, 'unrelated', 'wrong page');
 
 # reverse the order
 test_page(get_page('action=journal reverse=1'),
@@ -51,21 +46,6 @@ test_page(get_page('action=journal reverse=1'),
 $page = get_page('action=journal match=21');
 test_page($page, '2008-09-21', 'first page');
 test_page_negative($page, '2008-09-22', 'second page');
-
-# search parameter
-$page = get_page('action=journal search=second');
-
-# no pages found, since this is for an old revision!
-test_page_negative($page,
-		   '2008-09-21', 'first page',
-		   '2008-09-22', 'second page',
-		   'third edit');
-
-# strange but true: search returns a page based on the minor edit but
-# shows the latest major revision that doesn't actually match.
-$page = get_page('action=journal search=third');
-test_page($page, '2008-09-22', 'second page');
-test_page_negative($page, '2008-09-21', 'first page', 'third edit');
 
 # testing the limit default
 update_page('2008-09-05', 'page');
@@ -97,18 +77,6 @@ test_page_negative($page, '2008-09-12', '2008-09-11', '2008-09-10',
 $page = get_page('action=journal rsslimit=1');
 test_page($page, '2008-09-22');
 test_page_negative($page, '2008-09-21');
-
-# Now let's show that we're using the timestamp of the last major
-# change if possible.
-
-my @dates = get_page('action=rss showedit=1 all=1 match=2008-09-22')
-  =~ m!<pubDate>(.*?)</pubDate>!g;
-# $dates[0] is the channel pubDate
-my $date2 = $dates[1]; # revision 2 comes first
-my $date1 = $dates[2]; # revision 1 comes second
-my ($item) = $page =~ m!(<item>\n<title>2008-09-22</title>\n(.*\n)+?</item>\n)!;
-test_page($item, "<pubDate>$date1</pubDate>");
-test_page_negative($item, "<pubDate>$date2</pubDate>");
 
 # make sure we start from a well-known point in time
 AppendStringToFile($ConfigFile, "push(\@MyInitVariables, sub { \$Now = '$Now' });\n");
