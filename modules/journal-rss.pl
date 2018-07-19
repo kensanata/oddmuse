@@ -82,18 +82,6 @@ sub JournalRssGetRcLines {
     local %Page;
     local $OpenPageName = '';
     OpenPage($id);
-    # If this is a minor edit, ignore it. Load the last major revision
-    # instead, if you can.
-    if ($Page{minor}) {
-      # Perhaps the old kept revision is gone due to $KeepMajor=0 or
-      # admin.pl or because a page was created as a minor change and
-      # never edited. Reading kept revisions in this case results in
-      # an error.
-      eval {
- 	%Page = GetKeptRevision($Page{lastmajor});
-      };
-      next if $@;
-    }
     next if $Page{text} =~ /^\s*$/; # only whitespace is also to be deleted
     next if $DeletedPage && substr($Page{text}, 0, length($DeletedPage))
 	eq $DeletedPage; # no regexp
