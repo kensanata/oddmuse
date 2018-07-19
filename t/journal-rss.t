@@ -15,7 +15,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 57;
+use Test::More tests => 55;
 
 add_module('journal-rss.pl');
 
@@ -98,9 +98,6 @@ $page = get_page('action=journal rsslimit=1');
 test_page($page, '2008-09-22');
 test_page_negative($page, '2008-09-21');
 
-$page = get_page('action=journal rsslimit=all');
-test_page($page, '2008-09-22', '2008-09-05');
-
 # Now let's show that we're using the timestamp of the last major
 # change if possible.
 
@@ -113,15 +110,6 @@ my ($item) = $page =~ m!(<item>\n<title>2008-09-22</title>\n(.*\n)+?</item>\n)!;
 test_page($item, "<pubDate>$date1</pubDate>");
 test_page_negative($item, "<pubDate>$date2</pubDate>");
 
-# pagination, copied from rss.t and modified
-my $interval = $RcDefault * 24 * 60 * 60;
-my $t1 = $Now - $interval;
-my $t2 = $Now - 2 * $interval;
-my $t3 = $Now - 3 * $interval;
-my $action1 = " from=$t2 upto=$t1";
-my $window1 = ";from=$t2;upto=$t1";
-my $window2 = ";from=$t3;upto=$t2";
-
 # make sure we start from a well-known point in time
 AppendStringToFile($ConfigFile, "push(\@MyInitVariables, sub { \$Now = '$Now' });\n");
 
@@ -129,16 +117,16 @@ AppendStringToFile($ConfigFile, "push(\@MyInitVariables, sub { \$Now = '$Now' })
 xpath_test(get_page('action=journal'),
 	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal"]',
 	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal"]',
-	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal' . $window1 . '"]');
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal;offset=10"]');
 
 # check next page
-xpath_test(get_page('action=journal' . $action1),
-	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal' . $window1 . '"]',
+xpath_test(get_page('action=journal offset=10'),
+	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal;offset=10"]',
 	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal"]',
-	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal' . $window2 . '"]');
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal;offset=20"]');
 
-# check next page but with full pages
-xpath_test(get_page('action=journal full=1' . $action1),
-	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal' . $window1 . ';full=1"]',
-	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal;full=1"]',
-	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal' . $window2 . ';full=1"]');
+# check next page but with a tag search
+xpath_test(get_page('action=journal search=tag:oddmuse'),
+	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal;search=tag:oddmuse"]',
+	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal;search=tag:oddmuse"]',
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal;offset=10;search=tag:oddmuse"]');
