@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006-2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 70;
+use Test::More tests => 76;
 use utf8;
 
 add_module('tags.pl');
@@ -159,6 +159,12 @@ test_page_negative($page, qw(AlexSchroeder Foo));
 $page = update_page('Podcasts', '<journal "." search tag:podcast>');
 test_page($page, qw(Pödgecäst´s Brilliant Sons));
 test_page_negative($page, qw(Alex Foo));
+
+# check recent changes
+test_page(get_page('action=rc'), qw(Brilliant Alex Jeff));
+$page = get_page('action=rc rcfilteronly=tag:Podcast');
+test_page($page, qw(Brilliant));
+test_page_negative($page, qw(Alex Jeff));
 
 # check the tag cloud
 xpath_test(get_page('action=tagcloud'),
