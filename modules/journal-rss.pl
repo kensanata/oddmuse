@@ -87,8 +87,7 @@ sub JournalRssGetRcLines {
 	eq $DeletedPage; # no regexp
     # OK, this is a candidate page
     $n++;
-    # If num is 2, we want $n 11 and higher
-    next if $n <= ($num - 1) * $offset;
+    next if $n <= $offset;
     # Generate artifical rows in the list to pass to GetRcRss. We need
     # to open every single page, because the meta-data ordinarily
     # available in the rc.log file is not available to us. This is why
