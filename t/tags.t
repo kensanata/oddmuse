@@ -15,11 +15,26 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 76;
+use Test::More tests => 94;
 use utf8;
 
 add_module('tags.pl');
 InitVariables();
+
+# first, let's make sure the old search still works
+test_page(join(':', TagsTerms('a b "c d"')), 'a:b:c d');
+
+update_page('test', 'foo bar baz');
+test_page(get_page('search=foo'), 'test', 'Search for: foo', '<strong>foo</strong>');
+test_page(get_page('search=foo+bar'), 'test', 'Search for: foo bar', '<strong>foo</strong> <strong>bar</strong>');
+test_page(get_page('search=bar+foo'), 'test', 'Search for: bar foo', '<strong>foo</strong> <strong>bar</strong>');
+test_page(get_page('search=foo+baz'), 'test', 'Search for: foo baz', '<strong>foo</strong> bar <strong>baz</strong>');
+$page = get_page('search=%22foo+baz%22');
+test_page($page, 'Search for: "foo baz"');
+test_page_negative($page, 'test');
+test_page(get_page('search=%22foo+bar%22'), 'test', 'Search for: "foo bar"', '<strong>foo bar</strong>');
+
+# testing other stuff
 
 $TagFeedIcon = 'http://www.example.org/pics/rss.png';
 

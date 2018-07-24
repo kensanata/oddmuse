@@ -239,6 +239,11 @@ sub TagFind {
   return @result;
 }
 
+sub TagsTerms {
+  my $string = shift;
+  return grep(/./, $string =~ /\"([^\"]+)\"|(\S+)/g);
+}
+
 *OldTagFiltered = \&Filtered;
 *Filtered = \&NewTagFiltered;
 
@@ -246,7 +251,7 @@ sub NewTagFiltered { # called within a lock!
   my ($string, @pages) = @_;
   my %page = map { $_ => 1 } @pages;
   # looking at all the "tag:SOME TERMS" and and tag:TERM
-  my @tagterms = map { FreeToNormal($_) } grep(/^-?tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g);
+  my @tagterms = map { FreeToNormal($_) } grep(/^-?tag:/, TagsTerms($string));
   my @positives = map {substr($_, 4)} grep(/^tag:/, @tagterms);
   my @negatives = map {substr($_, 5)} grep(/^-tag:/, @tagterms);
   if (@positives) {
@@ -260,8 +265,9 @@ sub NewTagFiltered { # called within a lock!
   foreach my $id (TagFind(@negatives)) {
     delete $page{$id};
   }
-  # filter out the tags from the search string
-  $string = join(' ', grep(!/^-?tag:/, $string =~ /\"([^\"]+)\"|(\S+)/g));
+  # filter out the tags from the search string, and add quotes which might have
+  # been stripped
+  $string = join(' ', map { qq{"$_"} } grep(!/^-?tag:/, TagsTerms($string)));
   # run the old code for any remaining search terms
   return OldTagFiltered($string, sort keys %page);
 }
@@ -279,11 +285,12 @@ We're need to remove all tag terms (again) in order to not confuse it.
 *SearchString = \&NewTagSearchString;
 
 sub NewTagSearchString {
-  # filter out the negative tags from the search string
-  my $string = join(' ', map { NormalToFree($_) }
-		    grep(!/^-tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g));
+  my ($string, @rest) = @_;
+  # filter out the negative tags from the search string, and add quotes which
+  # might have been stripped
+  $string = join(' ', map { NormalToFree($_) } map { qq{"$_"} } grep(!/^-tag:/, TagsTerms($string)));
   return 1 unless $string;
-  return OldTagSearchString($string, @_);
+  return OldTagSearchString($string, @rest);
 }
 
 =pod
