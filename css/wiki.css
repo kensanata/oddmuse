@@ -263,3 +263,19 @@ code {
     background: #eee;
     white-space: pre-wrap;
 }
+
+/* for https://oddmuse.org/wiki/All_Modules */
+.foo_list + .journal h1 {
+    font: inherit;
+    border: none;
+    display: list-item;
+    margin-top: 0;
+    margin-left: 1em;
+}
+
+.foo_list + .journal a {
+    font: inherit;
+    border: none;
+    text-decoration: none;
+    color: #a00;
+}
