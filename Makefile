@@ -25,7 +25,7 @@ release:
 	perl stuff/release ~/oddmuse.org/releases 2.3.3
 
 build/wiki.pl: wiki.pl
-	perl -lne "s/(\\\$$q->a\(\{-href=>'https:\/\/www.oddmuse.org\/'\}, 'Oddmuse'\))/\\\$$q->a({-href=>'https:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ' ($(VERSION_NO)), see ' . \$$1/; print" < $< > $@
+	perl -lne "s/(\\\$$q->a\(\{-href=>'https:\/\/www.oddmuse.org\/'\}, 'Oddmuse'\))/\\\$$q->a({-href=>'https:\/\/alexschroeder.ch\/cgit\/oddmuse\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ' ($(VERSION_NO)), see ' . \$$1/; print" < $< > $@
 
 build/%-utf8.pl: modules/translations/%-utf8.pl
 	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, 'translations\/', '$(VERSION_NO)')/; print" < $< > $@
