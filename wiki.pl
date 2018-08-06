@@ -4112,8 +4112,8 @@ sub TextIsFile { $_[0] =~ /^#FILE (\S+) ?(\S+)?\n/; }
 
 sub AddModuleDescription { # cannot use $q here because this is module init time
   my ($filename, $page, $dir, $tag) = @_;
-  my $src = "http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/$dir" . UrlEncode($filename) . ($tag ? '?' . $tag : '');
-  my $doc = 'https://www.oddmuse.org/cgi-bin/oddmuse/' . UrlEncode(FreeToNormal($page));
+  my $src = "https://alexschroeder.ch/cgit/oddmuse/tree/modules/$dir" . UrlEncode($filename) . ($tag ? '?' . $tag : '');
+  my $doc = 'https://www.oddmuse.org/wiki/' . UrlEncode(FreeToNormal($page));
   $ModulesDescription .= "<p><a href=\"$src\">" . QuoteHtml($filename) . "</a>" . ($tag ? " ($tag)" : '');
   $ModulesDescription .= T(', see') . " <a href=\"$doc\">" . QuoteHtml($page) . "</a>" if $page;
   $ModulesDescription .= "</p>";
