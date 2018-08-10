@@ -444,9 +444,21 @@ sub serve_text_page_menu {
   $self->serve_page_history_link($id, $revision);
 
   my $first = 1;
-  while ($page->{text} =~ /\[\[([^\]|]*)(?:\|([^\]]*))?\]\]|\[(https?:\/\/\S+)\s+([^\]]*)\]|\[gopher:\/\/([^:\/]*)(?::(\d+))?(?:\/(\d)(\S+))?\s+([^\]]+)\]/g) {
-    my ($title, $text, $url, $hostname, $port, $type, $selector)
-	= ($1, $2||$4||$9, $3, $5, $6||70, $7||1, $8);
+  while ($page->{text} =~ /
+	 \[\[ (?<title>[^\]|]*) (?:\|(?<text>[^\]]*))? \]\]
+	 | \[ (?<url>https?:\/\/\S+) \s+ (?<text>[^\]]*) \]
+	 | \[ (?<text>[^\]]*) \] \( (?<url>https?:\/\/\S+) \)
+	 | \[ gopher:\/\/ (?<hostname>[^:\/]*) (?::(?<port>\d+))?
+	      (?:\/(?<type>\d) (?<selector>\S+))?
+              \s+ (?<text>[^\]]+)\]
+	 | \[ (?<text>[^\]]+) \]
+           \( gopher:\/\/ (?<hostname>[^:\/]*) (?::(?<port>\d+))?
+	      (?:\/(?<type>\d) (?<selector>\S+))? \)
+	 /xg) {
+    my ($title, $text, $url, $hostname,
+	$port, $type, $selector)
+	= ($+{title}, $+{text}, $+{url}, $+{hostname},
+	   $+{port}||70, $+{type}||1, $+{selector});
     if ($first) {
       $self->print_info("");
       $self->print_info("Links leaving " . normal_to_free($id) . ":");
