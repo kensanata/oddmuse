@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+=encoding utf8
+
 =head1 Mixed Scripts
 
 This module disallows ordinary users from posting words that consist of multiple
@@ -22,16 +24,6 @@ ARMENIAN SMALL LETTER SEH
 CYRILLIC SMALL LETTER A
 CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I
 SMALL ROMAN NUMERAL FIFTY
-
-=cut
-
-=for comment
-
-In order to silence the warnings of t/meta.t because of the UTF-8 characters in
-the comment above, here's a fake "use utf8" statement. It's not really required
-since the actual source code doesn't contain any UTF8 characters.
-
-use utf8;
 
 =cut
 
