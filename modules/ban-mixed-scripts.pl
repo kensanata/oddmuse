@@ -25,6 +25,16 @@ SMALL ROMAN NUMERAL FIFTY
 
 =cut
 
+=for comment
+
+In order to silence the warnings of t/meta.t because of the UTF-8 characters in
+the comment above, here's a fake "use utf8" statement. It's not really required
+since the actual source code doesn't contain any UTF8 characters.
+
+use utf8;
+
+=cut
+
 use strict;
 use v5.10;
 
