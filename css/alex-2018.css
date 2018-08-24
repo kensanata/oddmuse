@@ -2,9 +2,9 @@
 html{ text-align: center; }
 
 body, rss {
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-family: "DejaVu Serif", Palatino, serif;
     font-style: normal;
-    font-size: 14pt;
+    font-size: 16pt;
     padding: 1em 3em;
     max-width: 72ex;
     display: inline-block;
@@ -13,10 +13,31 @@ body, rss {
     background-color: #fff;
 }
 
-@media only screen and (max-device-width: 480px) {
+@media only screen and (max-device-width: 600px) {
     body {
 	padding: 1ex;
     }
+    textarea {
+	font-size: inherit;
+    }
+}
+
+/* code */
+
+textarea, pre, code, tt {
+    font-family: "DejaVu Mono", "Andale Mono", Monaco, "Courier New", Courier, monospace;
+}
+
+pre, code, tt {
+    font-size: 12pt; /* fits 80ex */
+}
+pre {
+    overflow:hidden;
+    white-space: pre-wrap;      /* CSS 3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap;     /* Opera 4-6 */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    word-wrap: break-word;      /* Internet Explorer 5.5+ */
 }
 
 @import url(file:///home/alex/alexschroeder.ch/css/alex-2017.css) print;
@@ -191,22 +212,6 @@ input[type="text"] {
     line-height: 125%;
 }
 
-/* code */
-
-textarea, pre, code, tt {
-    font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace, "Symbola";
-    font-size: 75%; /* fits 80ex */
-}
-
-pre {
-    overflow:hidden;
-    white-space: pre-wrap;      /* CSS 3 */
-    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-    white-space: -pre-wrap;     /* Opera 4-6 */
-    white-space: -o-pre-wrap;   /* Opera 7 */
-    word-wrap: break-word;      /* Internet Explorer 5.5+ */
-}
-
 /* styling for divs that will be invisible when printing
    when printing. */
 
@@ -223,6 +228,9 @@ div.header, div.footer, div.near, div.definition, p.comment, a.tag {
 div.footer form.search {
     display: none;
 }
+
+/* Recent Changes */
+
 div.rc {
     overflow: hidden;
 }
@@ -233,12 +241,57 @@ div.rc li strong, table.history strong, strong.description {
     font-family: inherit;
     font-weight: inherit;
 }
+.red {
+    background: red;
+    color: red;
+}
+
+.orange {
+    background: orange;
+    color: orange;
+}
+
+.yellow {
+    background: yellow;
+    color: yellow;
+}
+
+.green {
+    background: green;
+    color: green;
+}
+
+.blue {
+    background: blue;
+    color: blue;
+}
+
+.indigo {
+    background: indigo;
+    color: indigo;
+}
+
+.violet {
+    background: violet;
+    color: violet;
+}
+
+.white {
+    background: white;
+    color: white;
+}
+
+.ip-code {
+    border: 1px solid #666;
+}
+
+/* Diff */
+
 div.diff {
     padding-left: 5%;
     padding-right: 5%;
     font-size: 12pt;
     color: #000;
-
 }
 div.old {
     background-color: #ffffaf;
