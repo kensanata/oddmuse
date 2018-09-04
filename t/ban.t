@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007, 2010  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006-2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 23;
+use Test::More tests => 27;
 
 $localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;
@@ -96,3 +96,23 @@ test_page(get_page("action=rollback to=$ts id=CriminalPage username=Alex"),
 test_page(get_page("action=rollback to=$ts id=CriminalPage pwd=foo"),
 	  'Rolling back changes',
 	  'CriminalPage</a> rolled back');
+
+# make sure it also doesn't work in the homepage field for comments
+AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
+
+# mafia is still banned
+test_page(get_page(join(' ', 'title=Comments_on_CriminalPage',
+			'aftertext=Innocent',
+			'username=Alex',
+			'homepage=http://mafia.example.com')),
+	  'Reason: crime');
+
+# but it still works!
+test_page(get_page(join(' ', 'title=Comments_on_CriminalPage',
+			'aftertext=Innocent',
+			'username=Alex',
+			'homepage=http://police.example.com')),
+	  'Status: 302');
+test_page(get_page('Comments_on_CriminalPage'),
+	  'Innocent',
+	  'http://police.example.com');
