@@ -1,4 +1,4 @@
-# Copyright (C) 2017  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2017-2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 13;
+use Test::More tests => 15;
 
 add_module('banned-regexps.pl');
 
@@ -63,3 +63,13 @@ test_page(update_page('Test2', 'Voldemort', 'one banned word'),
 
 # Make sure the underscores don't show up in the page link
 test_page(get_page('action=admin'), 'Local Banned Regexps');
+
+# Make sure it doesn't break BannedContent!
+
+# mafia is banned
+update_page('BannedContent', 'mafia', 'one banned word', 0, 1);
+test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'),
+	  'This page does not exist');
+
+# error message is shown
+test_page($redirect, 'Edit Denied');

@@ -62,9 +62,10 @@ push(@MyInitVariables, sub {
 
 sub RegexpNewBannedContent {
   my $str = shift;
-  # remove URLs as they are controlled by $BannedContent
-  $str =~ s/$FullUrlPattern//g;
+  # check whether Banned Content complains
   my $rule = RegexpOldBannedContent($str, @_);
+  # remove URLs as they have been checked by $BannedContent
+  $str =~ s/$FullUrlPattern//g;
   if (not $rule) {
     foreach (split(/\n/, GetPageContent($BannedRegexps))) {
       next unless m/^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$/;
