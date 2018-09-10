@@ -22,11 +22,10 @@ use Text::Wrap;
 use List::Util qw(first);
 use Socket;
 
-our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q, %Page,
-    $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
-    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName, $Now,
-    %RecentVisitors, $SurgeProtection, $SurgeProtectionTime,
-    $SurgeProtectionViews);
+our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
+    %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
+    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName,
+    $Now, %RecentVisitors, $SurgeProtectionTime, $SurgeProtectionViews);
 
 my $external_image_path = '/home/alex/alexschroeder.ch/pics/';
 
@@ -78,7 +77,7 @@ sub post_configure_hook {
   $self->write_help if $ARGV[0] eq '--help';
 
   $DataDir = $self->{server}->{wiki_dir} || $ENV{WikiDataDir} || '/tmp/oddmuse';
-  
+
   $self->log(3, "PID $$");
   $self->log(3, "Host " . ("@{$self->{server}->{host}}" || "*"));
   $self->log(3, "Port @{$self->{server}->{port}}");
@@ -236,6 +235,7 @@ sub serve_main_menu {
 
   $self->print_info("Phlog:");
   my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @IndexList);
+  # we should check for pages marked for deletion!
   for my $id (@pages[0..9]) {
     $self->print_menu("1" . normal_to_free($id), "$id/menu");
   }
@@ -491,7 +491,7 @@ sub serve_text_page_menu {
     $self->print_text(join("\t", $type . $text, $selector, $hostname, $port)
 		      . "\r\n");
   }
-  
+
   if ($page->{text} =~ m/<journal search tag:(\S+)>\s*/) {
     my $tag = $1;
     $self->print_info("");
