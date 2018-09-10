@@ -25,7 +25,8 @@ use Socket;
 our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
     %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
     $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName,
-    $Now, %RecentVisitors, $SurgeProtectionTime, $SurgeProtectionViews);
+    $Now, %RecentVisitors, $SurgeProtectionTime, $SurgeProtectionViews,
+    $SurgeProtection);
 
 my $external_image_path = '/home/alex/alexschroeder.ch/pics/';
 
