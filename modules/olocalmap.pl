@@ -1,4 +1,6 @@
-# Copyright (C) 2005  Flavio Poletti <flavio@polettix.it>
+# Copyright (C) 2005       Flavio Poletti <flavio@polettix.it>
+# Copyright (C) 2014-2015  Alex Jakimenko <alex.jakimenko@gmail.com>
+# Copyright (C) 2014-2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,7 +50,7 @@ AddModuleDescription('olocalmap.pl');
 push(@MyInitVariables, \&InitLocalMap);
 
 sub InitLocalMap {
-   my $id = GetCurrentPageName();
+   my $id = GetId();
    my $action = lc(GetParam('action', ''));
    AllPagesList();              # Build %IndexHash
 
