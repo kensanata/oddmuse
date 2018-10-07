@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Copyright (C) 2010  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2010–2018  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -137,7 +137,7 @@ sub send_files {
     $sent += @subscribers;
     send_file($id, $title, $item, @subscribers);
   }
-  print "$sent messages sent\n" if $sent;
+  print "$sent messages sent\n" if $sent and not $quiet;
 }
 
 sub send_file {
