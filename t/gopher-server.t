@@ -35,7 +35,7 @@ END {
   # kill server
   if ($pid) {
     kill 'KILL', $pid or warn "Could not kill server $pid";
-  }  
+  }
 }
 
 our ($DataDir);
@@ -85,7 +85,7 @@ sub query_gopher {
 
   $socket->print("$query\r\n");
   $socket->print($text);
-  
+
   undef $/; # slurp
   return <$socket>;
 }
@@ -305,5 +305,11 @@ update_page('Gopher', '[http://gopher.floodgap.com/gopher/gw?a=gopher%3A%2F%2Fsd
 $page = query_gopher("Gopher/menu");
 like($page, qr/^1Phlogs\t\/phlogs\/\tsdf\.org\t70/m, "Direct Gopher link");
 like($page, qr/^0VF-1\t\/users\/solderpunk\/phlog\/introducing-vf1.txt\tsdf\.org\t70/m, "Floodgap proxy link");
+
+# gopher tags
+update_page('Gopher', 'Tags: [[tag:Gopher]] [[tag:Perl 6]]');
+$page = query_gopher("Gopher");
+like($page, qr/#Gopher/m, "Gopher tag");
+like($page, qr/#Perl_6/m, "Gopher multi-word tag");
 
 done_testing();

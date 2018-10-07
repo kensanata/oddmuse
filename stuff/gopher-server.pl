@@ -572,9 +572,10 @@ sub serve_text_page {
   my $id = shift;
   my $page = shift;
   my $text = $page->{text};
+  $text =~ s/^\./../mg;
+  $text =~ s/\[\[tag:([^]]+)\]\]/'#' . join('_', split(' ', $1))/mge;
   $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text)
 	     . " bytes of text");
-  $text =~ s/^\./../mg;
   $self->print_text($text);
 }
 
