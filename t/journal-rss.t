@@ -15,14 +15,26 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 41;
+use Test::More tests => 43;
 
 add_module('journal-rss.pl');
 
 update_page('2008-09-21', 'first page');
 update_page('2008-09-22', 'second page'); # major
+
+OpenPage('2008-09-22');
+my $ts1 = $Page{ts};
+
 sleep(1);
+
 update_page('2008-09-22', 'third edit content', 'third edit summary', 1); # minor
+
+$OpenPageName = ''; # force OpenPage to reopen the page
+OpenPage('2008-09-22');
+my $ts2 = $Page{ts};
+
+isnt($ts1, $ts2, "timestamps are different");
+
 update_page('unrelated', 'wrong page');
 
 my $page = get_page('action=journal');
@@ -33,8 +45,12 @@ test_page($page,
 	  # reverse sort is the default
 	  '2008-09-22(.*\n)+.*2008-09-21');
 
-# make sure unrelated pages and minor edits don't show up
+# make sure unrelated pages don't show up
 test_page_negative($page, 'unrelated', 'wrong page');
+
+# make sure the minor change doesn't affect the timestamp
+my $date = quotemeta("<pubDate>" . TimeToRFC822($ts1) . "</pubDate>");
+like($page, qr/$date/, "minor don't change the timestamp");
 
 # reverse the order
 test_page(get_page('action=journal reverse=1'),

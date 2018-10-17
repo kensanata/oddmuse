@@ -83,6 +83,14 @@ sub JournalRssGetRcLines {
     local %Page;
     local $OpenPageName = '';
     OpenPage($id);
+    # If this is a minor edit, let's keep everything as it is, but show the date
+    # of the last major change, if possible. This is important for blogs that
+    # get added to a Planet. A minor change doesn't mean that the page needs to
+    # go to the front of the Planet.
+    if ($Page{minor}) {
+      my %major = GetKeptRevision($Page{lastmajor});
+      $Page{ts} = $major{ts} if $major{ts};
+    }
     next if $Page{text} =~ /^\s*$/; # only whitespace is also to be deleted
     next if $DeletedPage && substr($Page{text}, 0, length($DeletedPage))
 	eq $DeletedPage; # no regexp
