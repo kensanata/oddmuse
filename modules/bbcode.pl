@@ -32,7 +32,9 @@ sub bbCodeRule {
     my $bbcode = $1;
     my $tag = lc($2);
     my $option = $3; # sanitize?
-    if ($tag eq 'b') {
+    if ($tag eq 'br') {
+      return $q->br(); }
+    elsif ($tag eq 'b') {
       return AddHtmlEnvironment('b'); }
     elsif ($tag eq 'i') {
       return AddHtmlEnvironment('i'); }
