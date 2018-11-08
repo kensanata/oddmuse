@@ -43,10 +43,10 @@ update_page('GotoBar', q{
 [[Comments on $id]]
 [[Comments on $id|Comments]]
 [[Edit:$id Edit $id]]
-[http://example.org/$id Example]
+[http://example.org/$$id Example]
 });
 
-test_page(get_page('Test'),
-	  'Comments on Test', 'Comments_on_Test',
-	  'http://emacswiki.org/wiki\?action=edit;id=Test', 'Edit Test',
-	  'http://example.org/Test', 'Example');
+test_page(get_page('Tëst'),
+	  'Comments on Tëst', 'Comments_on_T%c3%abst',
+	  'http://emacswiki.org/wiki\?action=edit;id=Tëst', 'Edit Tëst',
+	  'http://example.org/T%c3%abst', 'Example');

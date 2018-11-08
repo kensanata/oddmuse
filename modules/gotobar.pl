@@ -36,6 +36,7 @@ sub GotobarInit {
   $GotobarName = FreeToNormal($GotobarName); # spaces to underscores
   $AdminPages{$GotobarName} = 1;
   my $id = GetId();
+  my $encoded = UrlEncode($id);
   if ($IndexHash{$GotobarName}) {
     OpenPage($GotobarName);
     return if PageMarkedForDeletion();
@@ -44,6 +45,7 @@ sub GotobarInit {
     @UserGotoBarPages = ();
     $UserGotoBar = '';
     my $text = $Page{text};
+    $text =~ s/\$\$id\b/$encoded/g;
     $text =~ s/\$id\b/$id/g;
     my $count = 0;
     while ($text =~ m/($LinkPattern|\[\[$FreeLinkPattern\]\]|\[\[$FreeLinkPattern\|([^\]]+)\]\]|\[$InterLinkPattern\s+([^\]]+?)\]|\[$FullUrlPattern[|[:space:]]([^\]]+?)\])/g) {
