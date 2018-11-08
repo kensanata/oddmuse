@@ -15,19 +15,38 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 7;
+use Test::More tests => 17;
 use utf8;
 
 add_module('gotobar.pl');
 
+test_page(update_page('InterMap', q{
+ Edit http://emacswiki.org/wiki?action=edit;id=%s
+ Browse http://emacswiki.org/wiki/%s
+}, 0, 0, 1), 'Edit', 'Browse');
+
 test_page(update_page('GotoBar', q{
 [[Hauptseite]]
 [[Letzte Änderungen]]
+[Browse:SiteMap Emacs Wiki]
 [http://example.org/ Example]
-}), 'Hauptseite', 'Letzte Änderungen', 'Example');
+}), 'Hauptseite', 'Letzte Änderungen', 'Emacs Wiki', 'Example');
 
 test_page(get_page('Hauptseite'),
-	  'Hauptseite', 'Letzte Änderungen', 'Example');
+	  'Hauptseite', 'Letzte Änderungen', 'Emacs Wiki', 'Example');
 
 test_page(get_page('Letzte_%C3%84nderungen'),
 	  'GotoBar');
+
+
+update_page('GotoBar', q{
+[[Comments on $id]]
+[[Comments on $id|Comments]]
+[[Edit:$id Edit $id]]
+[http://example.org/$id Example]
+});
+
+test_page(get_page('Test'),
+	  'Comments on Test', 'Comments_on_Test',
+	  'http://emacswiki.org/wiki\?action=edit;id=Test', 'Edit Test',
+	  'http://example.org/Test', 'Example');

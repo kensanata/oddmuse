@@ -35,6 +35,7 @@ push(@MyInitVariables, \&GotobarInit);
 sub GotobarInit {
   $GotobarName = FreeToNormal($GotobarName); # spaces to underscores
   $AdminPages{$GotobarName} = 1;
+  my $id = GetId();
   if ($IndexHash{$GotobarName}) {
     OpenPage($GotobarName);
     return if PageMarkedForDeletion();
@@ -42,8 +43,10 @@ sub GotobarInit {
     # links for unsuspecting users.
     @UserGotoBarPages = ();
     $UserGotoBar = '';
+    my $text = $Page{text};
+    $text =~ s/\$id\b/$id/g;
     my $count = 0;
-    while ($Page{text} =~ m/($LinkPattern|\[\[$FreeLinkPattern\]\]|\[\[$FreeLinkPattern\|([^\]]+)\]\]|\[$InterLinkPattern\s+([^\]]+?)\]|\[$FullUrlPattern[|[:space:]]([^\]]+?)\])/g) {
+    while ($text =~ m/($LinkPattern|\[\[$FreeLinkPattern\]\]|\[\[$FreeLinkPattern\|([^\]]+)\]\]|\[$InterLinkPattern\s+([^\]]+?)\]|\[$FullUrlPattern[|[:space:]]([^\]]+?)\])/g) {
       my $page = $2||$3||$4||$6||$8;
       my $text = $5||$7||$9;
       $UserGotoBar .= ' ' if $UserGotoBar;
@@ -57,10 +60,10 @@ sub GotobarInit {
 	# is the list of recent changes.
 	$count++;
 	if ($count == 1) {
-        unless ($GotobarSetHome) {$HomePage = FreeToNormal($page)};
-    } elsif ($count == 2) {
-        unless ($GotobarSetRC) {$RCName = FreeToNormal($page);}
-    }
+	  unless ($GotobarSetHome) {$HomePage = FreeToNormal($page)};
+	} elsif ($count == 2) {
+	  unless ($GotobarSetRC) {$RCName = FreeToNormal($page);}
+	}
       }
     }
   }
