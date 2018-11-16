@@ -16,7 +16,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('markdown-convert.pl', 'Markdown Convert');
+AddModuleDescription('markdown-converter.pl', 'Markdown Convert');
 
 our (%Action, @MyAdminCode);
 
