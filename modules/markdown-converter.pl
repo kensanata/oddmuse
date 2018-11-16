@@ -18,7 +18,7 @@ use v5.10;
 
 AddModuleDescription('markdown-converter.pl', 'Markdown Convert');
 
-our (%Action, @MyAdminCode);
+our (%Action, @MyAdminCode, $q, $OpenPageName, %Page);
 
 push(@MyAdminCode, \&AdminPower);
 
@@ -30,6 +30,7 @@ sub AdminPower {
   if ($id) {
     push(@$menuref, ScriptLink('action=convert;id=' . $id, Ts('Help convert %s to Markdown', $name), 'convert'));
   }
+  push(@$menuref, ScriptLink('action=conversion-candidates', Ts('List all non-Markdown pages'), 'convert'));
 }
 
 $Action{convert} = \&MarkdownConvert;
@@ -66,4 +67,29 @@ sub MarkdownConvert {
   s!\[(https?://\S+) (.*?)\]![$2]($1)!g;
 
   return DoEdit($id, "#MARKDOWN\n" . $_, 1); # preview
+}
+
+$Action{'conversion-candidates'} = \&MarkdownConversionCandidates;
+
+sub MarkdownConversionCandidates {
+  # from Search
+  print GetHeader('', Ts('Candidates for Conversion to Markdown')), $q->start_div({-class=>'content'});
+  # from SearchTitleAndBody
+  my $regex = qr'^(?!#MARKDOWN)';
+  foreach my $id (Filtered($regex, AllPagesList())) {
+    my $name = NormalToFree($id);
+    my ($text) = PageIsUploadedFile($id); # set to mime-type if this is an uploaded file
+    local ($OpenPageName, %Page); # this is local!
+    if (not $text) { # not uploaded file, therefore allow searching of page body
+      OpenPage($id); # this opens a page twice if it is not uploaded, but that's ok
+      $text = $Page{text};
+    }
+    if ($text =~ /$regex/) {
+      my $action = 'action=convert;id=' . UrlEncode($id);
+      my $name = NormalToFree($id);
+      print $q->br(), GetPageLink($id, $name),
+	  ScriptLink($action, Ts('Help convert %s to Markdown', $name));
+    }
+  }
+  PrintFooter();
 }

@@ -17,7 +17,7 @@
 require './t/test.pl';
 package OddMuse;
 use utf8;
-use Test::More tests => 12;
+use Test::More tests => 14;
 
 add_module('markdown-converter.pl');
 
@@ -62,3 +62,9 @@ update_page('test', $input);
 my $output = get_page('action=convert id=test');
 
 like $output, qr'\*Toe’s Reach\*', 'Toe’s Reach';
+
+test_page(get_page('action=conversion-candidates'), 'test');
+
+update_page('test', "#MARKDOWN\nhello\n");
+
+test_page_negative(get_page('action=conversion-candidates'), 'test');
