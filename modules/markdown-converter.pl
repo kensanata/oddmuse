@@ -37,7 +37,7 @@ $Action{convert} = \&MarkdownConvert;
 # some text that doesn't start and end with a space, or just one non-space
 sub MarkdownConvertString {
   my $c = shift;
-  return qr"([^\\$c\n][^\\$c \n]*[^\\$c\n]|[^\\$c\n])";
+  return qr"([^\\$c \n][^\\$c\n]*[^\\$c \n]|[^\\$c \n])";
 }
 
 sub MarkdownConvert {
