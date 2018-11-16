@@ -15,6 +15,7 @@
 
 use strict;
 use v5.10;
+use utf8;
 
 AddModuleDescription('markdown-converter.pl', 'Markdown Convert');
 
