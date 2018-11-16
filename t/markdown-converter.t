@@ -17,7 +17,7 @@
 require './t/test.pl';
 package OddMuse;
 use utf8;
-use Test::More tests => 21;
+use Test::More tests => 22;
 
 add_module('markdown-converter.pl');
 
@@ -67,6 +67,9 @@ one
 {{{
 two
 }}}
+
+nothing but {{{#REDIRECT [[Rhysalis Eina]]}}}
+
 };
 
 update_page('test', $input);
@@ -77,6 +80,7 @@ like $output, qr'\*Toe’s Reach\*', 'Toe’s Reach';
 like $output, qr'^```\none\n```$'m, 'code block one';
 like $output, qr'^```\none\n```$'m, 'code block two';
 like $output, qr'^## heading$'m, 'heading';
+like $output, qr'`#REDIRECT \[\[Rhysalis Eina\]\]`', 'inline code again';
 
 # check whether the candidates are listed correctly
 
