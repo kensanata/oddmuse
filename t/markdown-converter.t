@@ -17,7 +17,7 @@
 require './t/test.pl';
 package OddMuse;
 use utf8;
-use Test::More tests => 19;
+use Test::More tests => 20;
 
 add_module('markdown-converter.pl');
 
@@ -60,7 +60,7 @@ $input = qq{
 one
 }}}
 
-and
+== heading
 
 {{{
 two
@@ -74,6 +74,7 @@ my $output = get_page('action=convert id=test');
 like $output, qr'\*Toe’s Reach\*', 'Toe’s Reach';
 like $output, qr'^```\none\n```$'m, 'code block one';
 like $output, qr'^```\none\n```$'m, 'code block two';
+like $output, qr'^## heading$'m, 'heading';
 
 # check whether the candidates are listed correctly
 
