@@ -49,6 +49,7 @@ sub MarkdownConvert {
   $_ = GetPageContent($id);
 
   s/^\{\{\{((?:.*\n)+?)\}\}\}$/```$1```/gm;
+  s/^\{\{\{(.+?)\}\}\}$/`$1`/gm;
 
   my $s = MarkdownConvertString('*');
   s/\*$s\*/**$1**/g;

@@ -17,7 +17,7 @@
 require './t/test.pl';
 package OddMuse;
 use utf8;
-use Test::More tests => 20;
+use Test::More tests => 21;
 
 add_module('markdown-converter.pl');
 
@@ -34,6 +34,7 @@ my $input = qq{
 {{{
 code
 }}}
+{{{also code}}}
 };
 
 update_page('test', $input);
@@ -51,6 +52,7 @@ like $output, qr'\*quux\*', 'long emphasis';
 like $output, qr'`oort`', 'code';
 like $output, qr'\[example\]\(http://example.com/\)', 'link';
 like $output, qr'```\ncode\n```', 'fenced code';
+like $output, qr'`also code`', 'inline code';
 
 # Errors found and fixed at a later date
 $input = qq{
