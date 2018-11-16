@@ -65,5 +65,5 @@ sub MarkdownConvert {
 
   s!\[(https?://\S+) (.*?)\]![$2]($1)!g;
 
-  return DoEdit($id, $_, 1); # preview
+  return DoEdit($id, "#MARKDOWN\n" . $_, 1); # preview
 }
