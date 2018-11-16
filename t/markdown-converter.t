@@ -17,7 +17,7 @@
 require './t/test.pl';
 package OddMuse;
 use utf8;
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 add_module('markdown-converter.pl');
 
@@ -63,8 +63,16 @@ my $output = get_page('action=convert id=test');
 
 like $output, qr'\*Toe’s Reach\*', 'Toe’s Reach';
 
+# check whether the candidates are listed correctly
+
 test_page(get_page('action=conversion-candidates'), 'test');
 
+# convert the file so it isn't listed anymore
 update_page('test', "#MARKDOWN\nhello\n");
 
-test_page_negative(get_page('action=conversion-candidates'), 'test');
+# add an image which cannot be converted
+AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
+$page = update_page('pic', "#FILE image/png\niVBORw0KGgoAAAA");
+test_page($page, 'This page contains an uploaded file:');
+
+test_page_negative(get_page('action=conversion-candidates'), 'test', 'pic');
