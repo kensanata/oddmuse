@@ -17,7 +17,7 @@
 require './t/test.pl';
 package OddMuse;
 use utf8;
-use Test::More tests => 17;
+use Test::More tests => 19;
 
 add_module('markdown-converter.pl');
 
@@ -55,6 +55,16 @@ like $output, qr'```\ncode\n```', 'fenced code';
 # Errors found and fixed at a later date
 $input = qq{
 /Toe’s Reach/
+
+{{{
+one
+}}}
+
+and
+
+{{{
+two
+}}}
 };
 
 update_page('test', $input);
@@ -62,6 +72,8 @@ update_page('test', $input);
 my $output = get_page('action=convert id=test');
 
 like $output, qr'\*Toe’s Reach\*', 'Toe’s Reach';
+like $output, qr'^```\none\n```$'m, 'code block one';
+like $output, qr'^```\none\n```$'m, 'code block two';
 
 # check whether the candidates are listed correctly
 

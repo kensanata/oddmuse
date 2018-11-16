@@ -48,7 +48,7 @@ sub MarkdownConvert {
   print GetHeader('', Ts('Converting %s', $id), '');
   $_ = GetPageContent($id);
 
-  s/^\{\{\{((?:.*\n)+)\}\}\}$/```$1```/gm;
+  s/^\{\{\{((?:.*\n)+?)\}\}\}$/```$1```/gm;
 
   my $s = MarkdownConvertString('*');
   s/\*$s\*/**$1**/g;
