@@ -73,7 +73,9 @@ $Action{'conversion-candidates'} = \&MarkdownConversionCandidates;
 
 sub MarkdownConversionCandidates {
   # from Search
-  print GetHeader('', Ts('Candidates for Conversion to Markdown')), $q->start_div({-class=>'content'});
+  print GetHeader('', Ts('Candidates for Conversion to Markdown'));
+  print $q->start_div({-class=>'content'});
+  print $q->start_ol();
   # from SearchTitleAndBody
   my $regex = qr'^(?!#MARKDOWN)';
   foreach my $id (Filtered($regex, AllPagesList())) {
@@ -87,9 +89,11 @@ sub MarkdownConversionCandidates {
     if ($text =~ /$regex/) {
       my $action = 'action=convert;id=' . UrlEncode($id);
       my $name = NormalToFree($id);
-      print $q->br(), GetPageLink($id, $name),
-	  ScriptLink($action, Ts('Help convert %s to Markdown', $name));
+      print $q->li(GetPageLink($id, $name) . ' – '
+		   . ScriptLink($action, Ts('Help convert %s to Markdown', $name)));
     }
   }
+  print $q->end_ol();
+  print $q->end_div();
   PrintFooter();
 }
