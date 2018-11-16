@@ -19,7 +19,7 @@ use utf8;
 
 AddModuleDescription('markdown-converter.pl', 'Markdown Convert');
 
-our (%Action, @MyAdminCode, $q, $OpenPageName, %Page);
+our (%Action, @MyAdminCode, $q, $OpenPageName, %Page, @MyRules);
 
 push(@MyAdminCode, \&AdminPower);
 
@@ -96,4 +96,13 @@ sub MarkdownConversionCandidates {
   print $q->end_ol();
   print $q->end_div();
   PrintFooter();
+}
+
+push(@MyRules, \&MarkdownConvertRule);
+
+sub MarkdownConvertRule {
+  if (pos == 0 and /\G#MARKDOWN\n/gc) {
+    return '';
+  }
+  return;
 }

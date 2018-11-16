@@ -17,7 +17,7 @@
 require './t/test.pl';
 package OddMuse;
 use utf8;
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 add_module('markdown-converter.pl');
 
@@ -39,8 +39,8 @@ code
 update_page('test', $input);
 
 my $output = get_page('action=convert id=test');
-
-like $output, qr'#MARKDOWN\n', 'markdown marker';
+unlike $output, qr'<p>#MARKDOWN</p>', 'No Markdown marker in the HTML';
+like $output, qr'#MARKDOWN\n', 'Markdown marker';
 like $output, qr'1\. mu', 'list item';
 like $output, qr'1 \* 2 \* 3', 'lone asterisk';
 like $output, qr'\*\*foo\*\*', 'short strong emphasis';
