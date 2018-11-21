@@ -4,7 +4,7 @@
 
 VERSION_NO=$(shell git describe --tags)
 TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
-MODULES=$(wildcard modules/*.pl)
+MODULES=$(sort $(wildcard modules/*.pl))
 BUILD=build/wiki.pl $(foreach file, $(notdir $(MODULES)) $(notdir $(TRANSLATIONS)), build/$(file))
 
 # PREPARE/BUILD: this creates copies of wiki.pl and all the modules
