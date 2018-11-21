@@ -21,10 +21,9 @@ AddModuleDescription('markdown-converter.pl', 'Markdown Convert');
 
 our (%Action, @MyAdminCode, $q, $OpenPageName, %Page, @MyRules);
 
-push(@MyAdminCode, \&AdminPower);
+push(@MyAdminCode, \&MarkdownConvertMenu);
 
-sub AdminPower {
-  return unless UserIsAdmin();
+sub MarkdownConvertMenu {
   my ($id, $menuref, $restref) = @_;
   my $name = $id;
   $name =~ s/_/ /g;
