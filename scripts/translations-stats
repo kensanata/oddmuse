@@ -30,7 +30,7 @@ if (@ARGV == 1 and $ARGV[0] eq '--help') {
 sub AddModuleDescription { print $_[0], ' ' };
 our %Translate;
 
-my @files = <modules/translations/*-utf8.pl>;
+my @files = <./modules/translations/*-utf8.pl>;
 for (@files) {
   if (@ARGV) { # some specific modules
     my $files = join ' ', map { quotemeta } @ARGV; # quick and dirty
