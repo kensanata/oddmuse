@@ -501,7 +501,7 @@ HINWEIS: Dieser Fehler ist normal, wenn keine Änderungen durchgeführt wurden.
 Moving %s log entries.
 Verschiebe %s Log-Einträge.
 Removing IP numbers from %s log entries.
-
+IP Nummbern wurden as %s Log Einträgen entfernt.
 Set or Remove global edit lock
 Erzeugen oder Aufheben der globalen Bearbeitungssperre
 Edit lock created.
@@ -1203,8 +1203,8 @@ All mail subscriptions
 Alle Email Abonnements
 Subscriptions
 Abonnements
-Email: 
-
+Email:
+E-Mail:
 Show
 Zeigen
 Subscriptions for %s:
@@ -1237,13 +1237,13 @@ Migrated %s rows.
 # modules/markdown-converter.pl
 ################################################################################
 Help convert %s to Markdown
-
+%s zu Markdown convertieren
 List all non-Markdown pages
-
+Liste aller Seiten, die noch nicht zu Markdown konvertiert wurden
 Converting %s
-
+%s konvertieren
 Candidates for Conversion to Markdown
-
+Kandidaten für die Konvertierung zu Mardown
 ################################################################################
 # modules/module-bisect.pl
 ################################################################################
