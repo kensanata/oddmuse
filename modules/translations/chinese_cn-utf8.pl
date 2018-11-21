@@ -245,8 +245,8 @@ Important pages:
 重要页面：
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 在首行加入 <strong>%s</strong>以将页面标记为删除。
-from %s
-自 %s
+Anonymous
+匿名者
 redirected from %s
 自%s重定向
 %s:
@@ -485,8 +485,6 @@ The changes conflict.  Please check the page again.
 您的修改和他人发生冲突。请再次确认。
 Please check whether you overwrote those changes.
 请您确认一下是否要覆盖这些修改。
-Anonymous
-匿名者
 Cannot delete the index file %s.
 无法删除索引档%s。
 Please check the directory permissions.
@@ -521,6 +519,8 @@ Note: This error is normal if no changes have been made.
 如果还没有做过任何修改，请不用理会这个错误讯息。
 Moving %s log entries.
 移除了%s个日志项目。
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 设定或移除整个网站的编辑锁定
 Edit lock created.
@@ -1251,6 +1251,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

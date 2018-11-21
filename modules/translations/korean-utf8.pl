@@ -226,8 +226,8 @@ Important pages:
 중요한 페이지들:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 특정 페이지를 삭제 요청페이지로 하려면, <strong>%s</strong> 를 첫줄에 입력하세요.
-from %s
-%s 로 부터
+Anonymous
+익명
 redirected from %s
 %s 에서 재전송됨
 %s:
@@ -466,8 +466,6 @@ The changes conflict.  Please check the page again.
 이 페이지들이 충돌합니다. 페이지를 다시 확인하세요.
 Please check whether you overwrote those changes.
 이 변경사항들에 덮어쓰기 하지 않았는지 확인하세요.
-Anonymous
-익명
 Cannot delete the index file %s.
 %s 인덱스 파일을 삭제 할 수 없습니다.
 Please check the directory permissions.
@@ -502,6 +500,8 @@ Note: This error is normal if no changes have been made.
 주의: 변경이 전혀 없었다면 이 오류는 정상적인 것입니다.
 Moving %s log entries.
 %s 로그 엔트리를 옭김.
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 전역 편집 잠금을 설정하거나 제거
 Edit lock created.
@@ -1232,6 +1232,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

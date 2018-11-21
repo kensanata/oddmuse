@@ -230,8 +230,8 @@ Important pages:
 Páginas importantes:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Para marcar una página para su eliminación, escribir <strong>%s</strong> en la primera línea.
-from %s
-desde %s
+Anonymous
+Anónimo
 redirected from %s
 redirigido desde %s
 %s:
@@ -470,8 +470,6 @@ The changes conflict.  Please check the page again.
 Los cambios entran en conflicto.  Por favor, comprueba la página otra vez.
 Please check whether you overwrote those changes.
 Por favor, comprueba si sobreescribes esos cambios.
-Anonymous
-Anónimo
 Cannot delete the index file %s.
 No se puede borrar el archivo índice %s.
 Please check the directory permissions.
@@ -506,6 +504,8 @@ Note: This error is normal if no changes have been made.
 Nota: Este error es normal si no se han hecho cambios.
 Moving %s log entries.
 Moviendo %s entradas del registro.
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 Establecer o quitar bloqueo global de edición
 Edit lock created.
@@ -1237,6 +1237,17 @@ No non-migrated email addresses found, migration not necessary.
 No se encontraron direcciones de correo no migradas, la migración no es necesaria.
 Migrated %s rows.
 Migrado %s filas.
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
+
 ################################################################################
 # modules/module-bisect.pl
 ################################################################################

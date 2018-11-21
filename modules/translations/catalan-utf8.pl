@@ -228,8 +228,8 @@ Important pages:
 Pàgines importants:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Per marcar una pàgina per esborrar, escriure <strong>%s</strong> en la primera línia.
-from %s
-des de %s
+Anonymous
+Anònim
 redirected from %s
 redirigit des de %s
 %s:
@@ -468,8 +468,6 @@ The changes conflict.  Please check the page again.
 Els canvis entren en conflicte. Si us plau, comprova la pàgina un altre cop.
 Please check whether you overwrote those changes.
 Si us plau, comprova si sobreescrius aquests canvis.
-Anonymous
-Anònim
 Cannot delete the index file %s.
 No es pot esborrar el arxiu índex de %s.
 Please check the directory permissions.
@@ -504,6 +502,8 @@ Note: This error is normal if no changes have been made.
 Nota: Aquest error és normal si no s'han fet canvis.
 Moving %s log entries.
 Movent %s entrades del registre.
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 (Des)activar bloqueig global de edició
 Edit lock created.
@@ -1234,6 +1234,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

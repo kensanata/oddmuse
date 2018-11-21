@@ -232,8 +232,8 @@ Important pages:
 Служебные страницы:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Чтобы пометить любую страницу к удалению, поместите <strong>%s</strong> первой строкой страницы.
-from %s
-с %s
+Anonymous
+Аноним
 redirected from %s
 перенаправлено с %s
 %s:
@@ -472,8 +472,6 @@ The changes conflict.  Please check the page again.
 Изменения конфликтуют. Проверьте страницу снова.
 Please check whether you overwrote those changes.
 Пожалуйста удостоверьтесь, что вы не перезаписали чужие изменения.
-Anonymous
-Аноним
 Cannot delete the index file %s.
 Не могу удалить индекс-файл %s.
 Please check the directory permissions.
@@ -508,6 +506,8 @@ Note: This error is normal if no changes have been made.
 Примечание: Эта ошибка - нормально, если не было сделано изменений.
 Moving %s log entries.
 Перемещаю %s лог записей.
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 Установка или снятие глобальной блокировки на редактирование
 Edit lock created.
@@ -1238,6 +1238,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

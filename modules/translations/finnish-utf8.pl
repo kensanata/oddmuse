@@ -226,8 +226,8 @@ Important pages:
 
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 
-from %s
-%s:stä
+Anonymous
+Nimetön
 redirected from %s
 uudelleenohjattu sivulta %s
 %s:
@@ -466,8 +466,6 @@ The changes conflict.  Please check the page again.
 Muutokset ovat ristiriidassa. Tarkista sivu uudelleen.
 Please check whether you overwrote those changes.
 Tarkista, ylikirjoititko joitakin noista muutoksista.
-Anonymous
-Nimetön
 Cannot delete the index file %s.
 
 Please check the directory permissions.
@@ -502,6 +500,8 @@ Note: This error is normal if no changes have been made.
 Huom: Tämä virhe on normaali, jos muutoksia ei ole tehty.
 Moving %s log entries.
 Siirretään %s kirjausta.
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 Aseta tai poista sivuston muokkauslukitus
 Edit lock created.
@@ -1232,6 +1232,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

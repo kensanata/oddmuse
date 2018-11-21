@@ -230,8 +230,8 @@ Important pages:
 Viktiga sidor:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 För att markera en sida för radering, skriv <strong>%s</strong> på första raden.
-from %s
-från %s
+Anonymous
+Anonym
 redirected from %s
 omdirigerad från %s
 %s:
@@ -470,8 +470,6 @@ The changes conflict.  Please check the page again.
 Ändringarna står i konflikt. Kontrollera sidan igen.
 Please check whether you overwrote those changes.
 Kontrollera om du skrev över de ändringarna.
-Anonymous
-Anonym
 Cannot delete the index file %s.
 Kan inte radera index-filen %s.
 Please check the directory permissions.
@@ -506,6 +504,8 @@ Note: This error is normal if no changes have been made.
 Observera: Det här felet är normalt om inga ändringar gjorts.
 Moving %s log entries.
 Flyttar %s loggnotering.
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 Slå på eller av globalt redigeringslås
 Edit lock created.
@@ -1236,6 +1236,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

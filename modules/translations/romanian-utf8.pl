@@ -226,8 +226,8 @@ Important pages:
 Pagini importante:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 
-from %s
-de la %s
+Anonymous
+Anonim
 redirected from %s
 redirecţionat de la %s
 %s:
@@ -466,8 +466,6 @@ The changes conflict.  Please check the page again.
 
 Please check whether you overwrote those changes.
 
-Anonymous
-Anonim
 Cannot delete the index file %s.
 Nu am putut şterge fişierul index %s.
 Please check the directory permissions.
@@ -501,6 +499,8 @@ Eroarea a fost
 Note: This error is normal if no changes have been made.
 
 Moving %s log entries.
+
+Removing IP numbers from %s log entries.
 
 Set or Remove global edit lock
 
@@ -1232,6 +1232,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

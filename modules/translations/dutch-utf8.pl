@@ -235,8 +235,8 @@ Important pages:
 
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 
-from %s
-vanaf %s
+Anonymous
+Anoniem
 redirected from %s
 doorverwezen vanaf %s
 %s:
@@ -475,8 +475,6 @@ The changes conflict.  Please check the page again.
 De wijzigingen zijn strijdig met elkaar. Controleer de pagina a.u.b. opnieuw.
 Please check whether you overwrote those changes.
 Controleer a.u.b. of u die wijzigingen overschreven heeft.
-Anonymous
-Anoniem
 Cannot delete the index file %s.
 
 Please check the directory permissions.
@@ -511,6 +509,8 @@ Note: This error is normal if no changes have been made.
 NB: Deze foutmelding is gebruikelijk als er geen wijzigingen zijn gemaakt.
 Moving %s log entries.
 Bezig met verplaatsen van %s items.
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 Ver-/ontgrendelen van de gehele site
 Edit lock created.
@@ -1241,6 +1241,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

@@ -229,8 +229,8 @@ Important pages:
 重要頁面:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 在該頁首行加入 <strong>%s</strong> 可將頁面標記為刪除
-from %s
-自 %s
+Anonymous
+匿名者
 redirected from %s
 由 %s 轉址
 %s:
@@ -469,8 +469,6 @@ The changes conflict.  Please check the page again.
 你的修改和他人發生衝突。請再次確認。
 Please check whether you overwrote those changes.
 請確認一下是否你要覆蓋這些修改。
-Anonymous
-匿名者
 Cannot delete the index file %s.
 無法刪除索引檔 %s 。
 Please check the directory permissions.
@@ -505,6 +503,8 @@ Note: This error is normal if no changes have been made.
 如果還沒有做過任何修改的話，則不用理會這個錯誤訊息。
 Moving %s log entries.
 移除了 %s 個記錄項目。
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 設定或移除整個網站的編輯鎖定
 Edit lock created.
@@ -1235,6 +1235,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

@@ -228,8 +228,8 @@ Important pages:
 
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 
-from %s
-מ %s
+Anonymous
+אנונימי
 redirected from %s
 הוכוון מחדש מ %s
 %s:
@@ -468,8 +468,6 @@ The changes conflict.  Please check the page again.
 
 Please check whether you overwrote those changes.
 
-Anonymous
-אנונימי
 Cannot delete the index file %s.
 
 Please check the directory permissions.
@@ -504,6 +502,8 @@ Note: This error is normal if no changes have been made.
 הערה: שגיאה זו היא רגילה אם לא בוצעו שינויים.
 Moving %s log entries.
 מזיז %s ערכי יומן.
+Removing IP numbers from %s log entries.
+
 Set or Remove global edit lock
 קבע או הסר נעילת עריכה גלובלית
 Edit lock created.
@@ -1234,6 +1234,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl

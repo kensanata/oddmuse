@@ -226,8 +226,8 @@ Important pages:
 Важливі сторінки:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Для того, щоб помітити сторінку для видалення, вставте <strong>%s</strong> на першу строчку.
-from %s
-від %s
+Anonymous
+Анонім
 redirected from %s
 перенаправлено з %s
 %s:
@@ -466,8 +466,6 @@ The changes conflict.  Please check the page again.
 Зміни конфліктують. Будь ласка, перевірте цю сторінку ще раз.
 Please check whether you overwrote those changes.
 Будь ласка, перевірте, чи перезаписали ви ці зміни.
-Anonymous
-Анонім
 Cannot delete the index file %s.
 Не можу видалити файл з покажчиком %s.
 Please check the directory permissions.
@@ -501,6 +499,8 @@ Error was
 Note: This error is normal if no changes have been made.
 Примітка: Ця помилка припустима, якщо не було зроблено жодних змін.
 Moving %s log entries.
+
+Removing IP numbers from %s log entries.
 
 Set or Remove global edit lock
 Встановити або Видалити глобальний блок редагування
@@ -1232,6 +1232,17 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+List all non-Markdown pages
+
+Converting %s
+
+Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl
