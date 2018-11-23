@@ -178,6 +178,7 @@ sub NewPermanentAnchorsDeletePage {
   my $status = OldPermanentAnchorsDeletePage(@_);
   return $status if $status; # this would be the error message
   DeletePermanentAnchors(@_); # the only parameter is $id
+  return ''; # no errors
 }
 
 *OldPermanentAnchorsSave = \&Save;

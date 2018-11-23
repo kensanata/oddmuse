@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006-2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 27;
+use Test::More tests => 30;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('permanent-anchors.pl');
@@ -90,3 +90,10 @@ run_tests(split('\n',<<'EOT'));
 **[::bold]** and **bold**
 <strong><span class="permanentanchor">bold</span></strong> and <strong>bold</strong>
 EOT
+
+# delete a page
+update_page('TheTest', $DeletedPage);
+OpenPage('TheTest');
+is(-f GetPageFile($OpenPageName), 1, 'Page file exists');
+is(DeletePage($OpenPageName), '', 'No error deleting a page');
+is(-e GetPageFile($OpenPageName), undef, 'Page file no longer exists');
