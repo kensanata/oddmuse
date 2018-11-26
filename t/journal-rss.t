@@ -19,7 +19,7 @@ use Test::More tests => 43;
 
 add_module('journal-rss.pl');
 
-update_page('2008-09-21', 'first page');
+update_page('2008-09-21', 'first page', '', 1); # minor
 update_page('2008-09-22', 'second page'); # major
 
 OpenPage('2008-09-22');
@@ -39,6 +39,7 @@ update_page('unrelated', 'wrong page');
 
 my $page = get_page('action=journal');
 test_page($page,
+	  # make sure pages with only minor edits get shown as well
 	  '2008-09-21', 'first page',
 	  # make sure we're showing full page content, not summaries
 	  '2008-09-22', 'third edit content',

@@ -87,7 +87,7 @@ sub JournalRssGetRcLines {
     # of the last major change, if possible. This is important for blogs that
     # get added to a Planet. A minor change doesn't mean that the page needs to
     # go to the front of the Planet.
-    if ($Page{minor}) {
+    if ($Page{minor} and $Page{lastmajor}) {
       my %major = GetKeptRevision($Page{lastmajor});
       $Page{ts} = $major{ts} if $major{ts};
     }
