@@ -1840,7 +1840,7 @@ sub RcTextItem {
   my ($name, $value) = @_;
   $value = UnquoteHtml($value);
   $value =~ s/\n+$//;
-  $value =~ s/\n+/\n /;
+  $value =~ s/\n+/\n /g;
   return $value ? $name . ': ' . $value . "\n" : '';
 }
 
@@ -1851,6 +1851,7 @@ sub RcTextRevision {
     . (GetParam('all', $ShowAll) && ! $last
        ? '?' . GetPageParameters('browse', $id, $revision, $cluster, $last)
        : ($UsePathInfo ? '/' : '?') . UrlEncode($id));
+  $summary = GetPageContent($id) if GetParam('full', 0);
   print "\n", RcTextItem('title', NormalToFree($id)),
     RcTextItem('description', $summary),
     RcTextItem('generator', GetAuthor($username)),
