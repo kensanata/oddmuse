@@ -364,6 +364,10 @@ sub serve_rss {
   $rss =~ s!$ScriptName\?action=rss!${gopher}1do/rss!g;
   $rss =~ s!$ScriptName\?action=history;id=([^[:space:]<]*)!${gopher}1$1/history!g;
   $rss =~ s!$ScriptName/([^[:space:]<]*)!${gopher}0$1!g;
+  my $wikiNs = 'xmlns:wiki="http://purl.org/rss/1.0/modules/wiki/"';
+  my $gopherNs = 'xmlns:gopher="https://communitywiki.org/wiki/Gopher_Module_1.0"';
+  $rss =~ s!$wikiNs!$gopherNs\n    $wikiNs!;
+  $rss =~ s!<link>(gopher.*?)</link>!<gopher:link>$1</gopher:link>!g;
   $rss =~ s!<wiki:diff>.*</wiki:diff>\n!!g;
   print $rss;
 }
