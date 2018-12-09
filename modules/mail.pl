@@ -416,21 +416,16 @@ $Action{unsubscribe} = \&DoMailUnsubscribe;
 
 sub DoMailUnsubscribe {
   my $mail = GetParam('who', GetParam('mail', ''));
+  return DoMailSubscriptions(@_) unless $mail;
   local $CGI::LIST_CONTEXT_WARN = 0;
   my @pages = $q->param('pages');
-  return DoMailSubscriptions(@_) unless $mail;
-  my @real = ();
-  foreach my $id (@pages) {
-    push @real, $id if $IndexHash{$id};
-  }
-  MailUnsubscribe($mail, @real);
+  MailUnsubscribe($mail, @pages);
   # MailUnsubscribe will set a parameter and must run before printing
   # the header.
   print GetHeader('', T('Subscriptions')),
     $q->start_div({-class=>'content unsubscribe'});
   print $q->p(Ts('Unsubscribed %s from the following pages:', $mail));
-  print $q->ul($q->li([map { GetPageLink($_) } @real]));
-  print $q->p(T('The remaining pages do not exist.')) if $#real < $#pages;
+  print $q->ul($q->li([map { GetPageLink($_) } @pages]));
   print $q->p(ScriptLink('action=subscriptions', T('Your mail subscriptions'),
 			 'subscriptions') . '.');
   print $q->end_div();
