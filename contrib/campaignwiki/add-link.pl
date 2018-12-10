@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 
-# Copyright (C) 2011–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2011–2018  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,8 @@ use utf8;
 
 # load Oddmuse core
 $RunCGI = 0;
-do "wiki.pl";
+$DataDir = '/home/alex/campaignwiki';
+do "/home/alex/farm/wiki.pl";
 
 # globals depending on the name of the script
 my ($self, $name, $wiki);
@@ -35,6 +36,9 @@ if ($0 eq '/home/alex/campaignwiki.org/add-link.pl') {
   $self = "https://campaignwiki.org/add-adventure";
   $name = "OSR Links to Adventures";
   $wiki = 'Adventures';
+} elsif ($0 eq '/home/alex/campaignwiki.org/add-sf-link.pl') {
+  $name = "OSRSF House Rules Wiki: Uplinked Intelligence";
+  $wiki = 'UplinkedIntelligence';
 } else {
   ReportError('Cannot determine wiki!', '500 INTERNAL SERVER ERROR');
 }
@@ -164,7 +168,7 @@ sub is_duplicate {
                   " already links to the URL you submitted:",
 	        GetUrl($link->[0], $link->[1]));
       return 1;
-    }      
+    }
   }
   return 0;
 }
@@ -288,11 +292,13 @@ sub print_end_of_page {
 
 sub main {
   $ConfigFile = "$DataDir/config"; # read the global config file
+  $ModuleDir = "$DataDir/modules"; # global modules
   $DataDir = "$DataDir/$wiki";     # but link to the local pages
-  Init();                          # read config file (no modules!)
+  Init();                          # read config file
   $ScriptName = $site;             # undo setting in the config file
   $FullUrl = $site;                #
   InitPageVariables();             # call again: $ScriptName was wrong
+  $HomePage = 'HomePage';          # $HomePage must not be translated
   binmode(STDOUT,':utf8');
   $q->charset('utf8');
   if ($q->path_info eq '/source') {
