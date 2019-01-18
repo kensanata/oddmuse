@@ -14,7 +14,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 35;
+use Test::More tests => 31;
 use utf8;
 
 # encoding stuff
@@ -56,12 +56,6 @@ test_page(get_page('action=history id=david'),
 	  'Revision 4');
 # using diffrevision=1 will make sure that the third revision is not shown
 xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1'),
-	   '//p[@class="summary"][text()="Summary: second revision"]',
-	   '//div[@class="old"]/p/strong[text()="first"]',
-	   '//div[@class="new"]/p/strong[text()="second"]',
-	   '//div[@class="content browse"]/p[text()="this is the second revision"]');
-# check with cache = 0
-xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1 cache=0'),
 	   '//p[@class="summary"][text()="Summary: second revision"]',
 	   '//div[@class="old"]/p/strong[text()="first"]',
 	   '//div[@class="new"]/p/strong[text()="second"]',
