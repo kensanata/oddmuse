@@ -2571,24 +2571,40 @@ sub GetGotoBar {    # ignore $id parameter
 					    @UserGotoBarPages), $UserGotoBar);
 }
 
+# return list of summaries between two revisions, assuming the open page is the upper one
+sub DiffSummary {
+  my ($from, $to, $current) = @_;
+  my @summaries = map { GetKeptRevision($_)->{summary} } ($from + 1 .. $to - 1);
+  push(@summaries, $current); # the current summary is not in a kept file
+  my ($last, @result);
+  for my $summary (@summaries) {
+    next unless $summary; # not empty
+    next if $summary eq $last; # not a repeat
+    push(@result, $summary);
+    $last = $summary;
+  }
+  return @result;
+}
+
 sub PrintHtmlDiff {
   my ($type, $old, $page, $current) = @_;
   $page //= \%Page;
   $current //= $page->{revision};
   $type = 2 if $old or $page->{revision} != $current; # explicit revisions means minor diffs!
-  my $summary = $page->{$type == 1 ? 'lastmajorsummary' : 'summary'};
+  $old //= $page->{$type == 1 ? 'lastmajor' : 'revision'} - 1; # default diff revision if none given
+  my ($diff, @summary);
   my $intro = T('Last edit');
-  my $diff;
-  # use the cached diff if possible
-  if (not $old or $old == $page->{$type == 1 ? 'lastmajor' : 'revision'} - 1) {
+  # use the cached diff and summary if possible
+  if ($old == $page->{$type == 1 ? 'lastmajor' : 'revision'} - 1) {
     $diff = GetCacheDiff($type == 1 ? 'major' : 'minor', $page);
-    $old = $page->{$type == 1 ? 'lastmajor' : 'revision'} - 1 if not $old;
+    push(@summary, $page->{$type == 1 ? 'lastmajorsummary' : 'summary'});
   }
   # if there was no cached diff: compute it, and new intro
   if (not $diff and $old > 0) {
     ($diff, my $keptPage) = GetKeptDiff($page->{text}, $old);
     my $to = $page->{revision} != $current ? Ts('revision %s', $page->{revision}) : T('current revision');
     $intro = Tss('Difference between revision %1 and %2', $old, $to);
+    push(@summary, DiffSummary($old, $page->{revision}, $page->{summary}));
   }
   # if this is the last major diff and there are minor diffs to look at, and we
   # didn't request a particular old revision
@@ -2599,7 +2615,7 @@ sub PrintHtmlDiff {
   $diff =~ s!<p><strong>(.*?)</strong></p>!'<p><strong>' . T($1) . '</strong></p>'!eg;
   $diff ||= T('No diff available.');
   print $q->div({-class=>'diff'}, $q->p($q->b($intro)),
-		$summary ? $q->p({-class=>'summary'}, T('Summary:') . ' ' . QuoteHtml($summary)) : '',
+		join('', map { $q->p({-class=>'summary'}, T('Summary:') . ' ' . QuoteHtml($_)) } @summary),
 		$diff);
 }
 
