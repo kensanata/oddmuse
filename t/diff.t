@@ -69,11 +69,11 @@ xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1 cac
 # check summaries
 $page = get_page('action=browse diff=1 id=david revision=3 diffrevision=1 cache=0');
 xpath_test($page,
-	   '//p[@class="summary"][text()="Summary: second revision"]',
-	   '//p[@class="summary"][text()="Summary: third revision"]',
+	   '//div[@class="summary"]/ul/li[text()="second revision"]',
+	   '//div[@class="summary"]/ul/li[text()="third revision"]',
 	   '//div[@class="old"]/p/strong[text()="first"]',
 	   '//div[@class="new"]/p/strong[text()="third"]',
 	   '//div[@class="content browse"]/p[text()="this is the third revision"]');
-test_page_negative($page,
-		   'Summary: first revision',
-		   'Summary: fourth revision');
+negative_xpath_test($page,
+		    '//div[@class="summary"]/ul/li[text()="first revision"]',
+		    '//div[@class="summary"]/ul/li[text()="fourth revision"]');
