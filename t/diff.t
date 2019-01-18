@@ -14,7 +14,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 31;
+use Test::More tests => 30;
 use utf8;
 
 # encoding stuff
@@ -46,7 +46,8 @@ test_page(get_page('action=browse diff=1 id=code'),
 update_page('david', 'this is the first revision', 'first revision');
 update_page('david', 'this is the second revision', 'second revision');
 update_page('david', 'this is the third revision', 'third revision');
-update_page('david', 'this is the fourth revision', '');
+update_page('david', 'this is the fourth revision', '    ');
+update_page('david', 'this is the fifth revision', '');
 # first make sure the history page shows the appropriate labels and
 # summaries
 test_page(get_page('action=history id=david'),
@@ -67,13 +68,11 @@ xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1 cac
 	   '//div[@class="new"]/p/strong[text()="second"]',
 	   '//div[@class="content browse"]/p[text()="this is the second revision"]');
 # check summaries
-$page = get_page('action=browse diff=1 id=david revision=3 diffrevision=1 cache=0');
+$page = get_page('action=browse diff=1 id=david revision=5 diffrevision=1 cache=0');
 xpath_test($page,
 	   '//div[@class="summary"]/ul/li[text()="second revision"]',
 	   '//div[@class="summary"]/ul/li[text()="third revision"]',
+	   '//div[@class="summary"]/ul[count(li)=2]',
 	   '//div[@class="old"]/p/strong[text()="first"]',
-	   '//div[@class="new"]/p/strong[text()="third"]',
-	   '//div[@class="content browse"]/p[text()="this is the third revision"]');
-negative_xpath_test($page,
-		    '//div[@class="summary"]/ul/li[text()="first revision"]',
-		    '//div[@class="summary"]/ul/li[text()="fourth revision"]');
+	   '//div[@class="new"]/p/strong[text()="fifth"]',
+	   '//div[@class="content browse"]/p[text()="this is the fifth revision"]');

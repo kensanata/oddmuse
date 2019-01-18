@@ -2578,6 +2578,7 @@ sub DiffSummary {
   unshift(@summaries, map { GetKeptRevision($_)->{summary} } ($from + 1 .. $to - 1)) if $from and $to;
   my ($last, @result);
   for my $summary (@summaries) {
+    $summary =~ s/^\s+//; # squish leading whitespace
     next unless $summary; # not empty
     next if $summary eq $last; # not a repeat
     push(@result, $summary);
