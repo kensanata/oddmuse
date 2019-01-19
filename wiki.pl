@@ -2581,11 +2581,11 @@ sub DiffSummary {
     $summary =~ s/^\s+//; # squish leading whitespace
     next unless $summary; # not empty
     next if $summary eq $last; # not a repeat
-    push(@result, $summary);
+    push(@result, QuoteHtml($summary));
     $last = $summary;
   }
   return '' unless @result;
-  return $q->p({-class=>'summary'}, T('Summary:'), $last) if @result == 1;
+  return $q->p({-class=>'summary'}, T('Summary:'), $result[0]) if @result == 1;
   return $q->div({-class=>'summary'}, $q->p(T('Summary:')), $q->ul($q->li(\@result)));
 }
 
