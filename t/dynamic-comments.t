@@ -1,4 +1,4 @@
-# Copyright (C) 2011  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2019  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -23,18 +23,18 @@ test_page(update_page('2011-07-06', 'Hallo'),
 	  'Comments_on_2011-07-06');
 xpath_test(update_page('Hi', '<journal>'),
 	  '//h1/a[text()="2011-07-06"]',
-	  '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[text()="Comments on this page"]');
+	  '//div[@class="journal h-feed"]/div[@class="page h-entry"]/p[@class="comment"]/a[text()="Comments on this page"]');
 
 add_module('dynamic-comments.pl');
 
 xpath_test(get_page('Hi'),
-	   '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[@href="http://localhost/wiki.pl/Comments_on_2011-07-06"][text()="Add Comment"]');
+	   '//div[@class="journal h-feed"]/div[@class="page h-entry"]/p[@class="comment"]/a[@href="http://localhost/wiki.pl/Comments_on_2011-07-06"][text()="Add Comment"]');
 
 test_page(update_page('Comments_on_2011-07-06', 'Yo'),
 	  'Yo');
 
 xpath_test(get_page('Hi'),
-	   '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[@href="javascript:togglecomments(\'id0\')"][text()="Comments on 2011-07-06"]');
+	   '//div[@class="journal h-feed"]/div[@class="page h-entry"]/p[@class="comment"]/a[@href="javascript:togglecomments(\'id0\')"][text()="Comments on 2011-07-06"]');
 
 # encoding basics
 $page = update_page('2011-07-06_(…)_Dü', 'Hallo Dü');
@@ -45,5 +45,5 @@ update_page('Comments_on_2011-07-06_(…)_Dü', 'Yo');
 
 xpath_test(update_page('Hi', '<journal>'),
 	  '//h1/a[text()="2011-07-06 (…) Dü"]',
-	  '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[text()="Comments on 2011-07-06 (…) Dü"]',
-	  '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[@href="javascript:togglecomments(\'id0\')"]');
+	  '//div[@class="journal h-feed"]/div[@class="page h-entry"]/p[@class="comment"]/a[text()="Comments on 2011-07-06 (…) Dü"]',
+	  '//div[@class="journal h-feed"]/div[@class="page h-entry"]/p[@class="comment"]/a[@href="javascript:togglecomments(\'id0\')"]');

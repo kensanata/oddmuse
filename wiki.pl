@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Copyright (C) 2001-2018
+# Copyright (C) 2001-2019
 #     Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2014-2015
 #     Alex Jakimenko <alex.jakimenko@gmail.com>
@@ -853,7 +853,7 @@ sub PrintJournal {
     }
   }
   return unless $pages[$offset];
-  print $q->start_div({-class=>'journal'});
+  print $q->start_div({-class=>'journal h-feed'});
   my $next = $offset + PrintAllPages(1, 1, $num, $variation, @pages[$offset .. $#pages]);
   print $q->end_div();
   $regexp = UrlEncode($regexp);
@@ -876,11 +876,13 @@ sub PrintAllPages {
     next if $lang and @languages and not grep(/$lang/, @languages);
     next if PageMarkedForDeletion();
     next if substr($Page{text}, 0, 10) eq '#REDIRECT ';
-    print $q->start_div({-class=>'page'}),
-      $q->h1($links ? GetPageLink($id)
-	     : $q->a({-name=>$id}, UrlEncode(FreeToNormal($id))));
+    print $q->start_div({-class=>'page h-entry'}),
+      $q->h1({-class => 'entry-title'},
+	     $links ? GetPageLink($id) : $q->a({-name=>$id}, UrlEncode(FreeToNormal($id))));
     if ($variation ne 'titles') {
+      print $q->start_div({-class=>'entry-content'});
       PrintPageHtml();
+      print $q->end_div();
       PrintPageCommentsLink($id, $comments);
     }
     print $q->end_div();
