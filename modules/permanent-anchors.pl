@@ -262,12 +262,15 @@ Some user interface changes are required as well.
 =item *
 
 Allow the page index to list permanent anchors or not by setting
-C<@IndexOptions>.
+C<@IndexOptions>. Note that we need to delay setting this option until we're
+sure that translations have loaded correctly, which is why we're setting
+C<@IndexOptions> as part of running C<@MyInitVariables>.
 
 =cut
 
-push(@IndexOptions, ['permanentanchors', T('Include permanent anchors'),
-		     1, sub { keys %PermanentAnchors }]);
+push(@MyInitVariables, sub {
+  push(@IndexOptions, ['permanentanchors', T('Include permanent anchors'),
+		       1, sub { keys %PermanentAnchors }])});
 
 =item *
 

@@ -312,9 +312,7 @@ resolved to the same target (the local page), which is unexpected.
 # IndexOptions must be set in MyInitVariables for translations to
 # work.
 push(@MyInitVariables, sub {
-       push(@IndexOptions, ['near', T('Include near pages'), 0,
-			    \&ListNearPages]);
-     });
+  push(@IndexOptions, ['near', T('Include near pages'), 0, \&ListNearPages])});
 
 sub ListNearPages {
   my %pages = %NearSource;
