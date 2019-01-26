@@ -1,4 +1,5 @@
 # Copyright (C) 2004  Brock Wilcox <awwaiid@thelackthereof.org>
+# Copyright (C) 2019  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,152 +17,124 @@
 use strict;
 use v5.10;
 
-use LWP::UserAgent; # This one will one day be eliminated! Hopefully!
-
-# Need these to do pingback
-use RPC::XML;
+use LWP::UserAgent;
 use RPC::XML::Parser;
+use RPC::XML;
 
 AddModuleDescription('pingback-server.pl', 'Pingback Server Extension');
 
-our ($CommentsPrefix);
+# Specification:  http://www.hixie.ch/specs/pingback/pingback
+# XML-RPC errors: http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php
 
-*OldPingbackServerGetHtmlHeader = \&GetHtmlHeader;
-*GetHtmlHeader = \&NewPingbackServerGetHtmlHeader;
+our ($CommentsPrefix, $q, $HtmlHeaders, %Action, $QuestionaskerSecretKey,
+    @MyInitVariables, %IndexHash);
 
-# Add the <link ...> to the header
-sub NewPingbackServerGetHtmlHeader {
-  my ($title, $id) = @_;
-  my $header = OldPingbackServerGetHtmlHeader($title,$id);
-  my $pingbackLink =
-    '<link rel="pingback" '
-    . 'href="http://thelackthereof.org/wiki.pl?action=pingback;id='
-    . $id . '">';
-  $header =~ s/<head>/<head>$pingbackLink/;
-  return $header;
+push(@MyInitVariables, \&PingbackServerAddLink);
+
+sub PingbackServerAddLink {
+  SetParam('action', 'pingback') if $q->path_info =~ m|/pingback\b|;
+  my $id = GetId();
+  return unless $id;
+  return if $id =~ /^$CommentsPrefix/;
+  my $link = '<link rel="alternate" type="application/wiki" href="'
+      . ScriptUrl('pingback/' . UrlEncode($id)) . '" />';
+  $HtmlHeaders .= $link unless index($HtmlHeaders, /$link/) != -1;
 }
 
-*OldPingbackServerInitRequest = \&InitRequest;
-*InitRequest = \&NewPingbackServerInitRequest;
-
-sub NewPingbackServerInitRequest {
-  if($ENV{'QUERY_STRING'} =~ /action=pingback;id=(.*)/) {
-    my $id = $1;
-    DoPingbackServer($id);
-    exit 0;
-  } else {
-    return OldPingbackServerInitRequest(@_);
-  }
-}
+$Action{pingback} = \&DoPingbackServer;
 
 sub DoPingbackServer {
   my $id = FreeToNormal(shift);
 
-
-  if ($ENV{'REQUEST_METHOD'} ne 'POST') {
-      result('405 Method Not Allowed', -32300,
-        'Only XML-RPC POST requests recognised.', 'Allow: POST');
+  # some sanity checks for the request
+  if ($q->request_method() ne 'POST') {
+    ReportError(T('Only XML-RPC POST requests recognised'), '405 METHOD NOT ALLOWED');
+  }
+  if ($q->content_type() ne 'text/xml') {
+    ReportError(T('Only XML-RPC POST requests recognised'), '415 UNSUPPORTED MEDIA TYPE');
   }
 
-  if ($ENV{'CONTENT_TYPE'} ne 'text/xml') {
-      result('415 Unsupported Media Type', -32300,
-        'Only XML-RPC POST requests recognised.');
+  # some sanity checks for the target page name
+  if (not $id) {
+    PingbackServerFault('400 BAD REQUEST', 33, "No page specified");
+  }
+  my $error = ValidId($id);
+  if ($error) {
+    PingbackServerFault('400 BAD REQUEST', 33, "Invalid page name: $id");
   }
 
-  local $/ = undef;
-  my $input = <STDIN>;
+  # check the IP number for bans
+  my $rule = UserIsBanned();
+  if ($rule) {
+   PingbackServerFault('403 FORBIDDEN', 49, "Your IP number is blocked");
+  }
 
-  # parse it
+  # check that the target page exists
+  AllPagesList();
+  if (not $IndexHash{$id}) {
+    PingbackServerFault('404 NOT FOUND', 32, "Page does not exist: $id");
+  }
+
+  # parse the remote procedure call
+  my $data = $q->param('POSTDATA');
   my $parser = RPC::XML::Parser->new();
-  my $request = $parser->parse($input);
+  my $request = $parser->parse($data);
   if (not ref($request)) {
-      result('400 Bad Request', -32700, $request);
+    PingbackServerFault('400 BAD REQUEST', -32700, "Could not parse XML-RPC");
   }
 
-  # handle it
+  # sanity check the function and argument number
   my $name = $request->name;
   my $arguments = $request->args;
   if ($name ne 'pingback.ping') {
-      result('501 Not Implemented', -32601, "Method $name not supported");
+    PingbackServerFault('501 NOT IMPLEMENTED', -32601, "Method $name not supported");
   }
   if (@$arguments != 2) {
-      result('400 Bad Request', -32602,
-      "Wrong number of arguments (arguments must be in the form 'from', 'to')");
+    PingbackServerFault('400 BAD REQUEST', -32602, "Wrong number of arguments");
   }
+
+  # extract the two arguments
   my $source = $arguments->[0]->value;
   my $target = $arguments->[1]->value;
 
+  # verify that the source isn't banned
+  $rule = BannedContent($source);
+  if ($rule) {
+   PingbackServerFault('403 FORBIDDEN', 49, "The URL is blocked");
+  }
 
-  # TODO: Since we are _inside_ the wiki seems like we shouldn't have to use LWP
-  # So comment out all the LWP stuff once the DoPost thingie works
-  # DoPost($id);
-
+  # verify that the pingback is legit
   my $ua = LWP::UserAgent->new;
-  $ua->agent("OddmusePingbackServer/0.1 ");
-
-  # Create a request
-  my $req = HTTP::Request->new(POST => 'http://thelackthereof.org/wiki.pl');
-  $req->content_type('application/x-www-form-urlencoded');
-  $req->content("title=$CommentsPrefix$id"
-    . "&summary=new%20comment"
-    . "&aftertext=Pingback:%20$source"
-    . "&save=save"
-    . "&username=pingback");
-  my $res = $ua->request($req);
-
-  my $out = '';
-  # Check the outcome of the response
-  if ($res->is_success) {
-    $out =  $res->content;
-  } else {
-    $out = $res->status_line . "\n";
+  my $response = $ua->get($source);
+  if (not $response->is_success) {
+    PingbackServerFault('400 BAD REQUEST', 16, "Cannot retrieve $source");
+  }
+  my $self = ScriptUrl(UrlEncode($id));
+  if ($response->decoded_content !~ /$self/) {
+    PingbackServerFault('403 FORBIDDEN', "$source does not link to $self");
+  }
+  $id = $CommentsPrefix . $id;
+  if (GetPageContent($id) =~ /$source/) {
+    PingbackServerFault('400 BAD REQUEST', 48, "$source has already been registered");
   }
 
-  result('200 OK', 0, "Oddmuse PingbackServer! $id OK");
+  # post a comment without redirect at the end
+  SetParam('aftertext', 'Pingback: ' . $source);
+  SetParam('summary', 'Pingback');
+  SetParam('username', T('Anonymous'));
+  SetParam($QuestionaskerSecretKey, 1) if $QuestionaskerSecretKey;
+  local *ReBrowsePage;
+  DoPost($id);
+
+  # response
+  my $message = "Oddmuse PingbackServer! $id OK";
+  my $response = RPC::XML::response->new(RPC::XML::string->new($message));
+  print GetHttpHeader('text/xml', 'nocache', '200 OK'), $response->as_string, "\n\n";
 }
 
-sub result {
-  my($status, $error, $data, $extra) = @_;
-  my $response;
-  if ($error) {
-    $response = RPC::XML::response->new(
-      RPC::XML::fault->new($error, $data));
-  } else {
-    $response = RPC::XML::response->new(RPC::XML::string->new($data));
-  }
-  print "Status: $status\n";
-  if (defined($extra)) {
-    print "$extra\n";
-  }
-  print "Content-Type: text/xml\n\n";
-  print $response->as_string;
-  exit;
+sub PingbackServerFault {
+  my($status, $error, $data) = @_;
+  my $fault = RPC::XML::response->new(RPC::XML::fault->new($error, $data));
+  print GetHttpHeader('text/xml', 'nocache', $status), $fault->as_string, "\n\n";
+  exit 2;
 }
-
-=pod
-
-  # This doesn't work... but might be a basis for an in-wiki update system
-
-  sub DoPost {
-    my $id = FreeToNormal(shift);
-    my $source = shift;
-    ValidIdOrDie($id);
-    # Lock before getting old page to prevent races
-    RequestLockOrError(); # fatal
-    OpenPage($id);
-    my $string = $Page{text};
-    my $comment = "Pingback: $source";
-    $comment =~ s/\r//g;	# Remove "\r"-s (0x0d) from the string
-    $comment =~ s/\s+$//g;    # Remove whitespace at the end
-    $string .= "----\n" if $string and $string ne "\n";
-    $string .= $comment . "\n\n-- Pingback"
-      . ' ' . TimeToText(time) . "\n\n";
-    my $summary = "new pingback"
-    $Page{summary} = $summary;
-    $Page{username} = $user;
-    $Page{text} = $string;
-    SavePage();
-    ReleaseLock();
-  }
-
-=cut
