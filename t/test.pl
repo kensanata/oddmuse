@@ -350,7 +350,7 @@ sub clear_pages {
 sub random_port {
   use Errno  qw( EADDRINUSE );
   use Socket qw( PF_INET SOCK_STREAM INADDR_ANY sockaddr_in );
-  
+
   my $family = PF_INET;
   my $type   = SOCK_STREAM;
   my $proto  = getprotobyname('tcp')  or die "getprotobyname: $!";
@@ -370,32 +370,38 @@ sub random_port {
   die "Tried 3 random ports and failed.\n"
 }
 
-my $pid;
+my @pids;
 
 # Fork a simple test server
 sub start_server {
-  die "A server already exists: $pid\n" if $pid;
+  my $num = shift||1;
+  die "A server already exists: @pids\n" unless @pids < $num;
   my $port = random_port();
   $ScriptName = "http://localhost:$port";
   AppendStringToFile($ConfigFile, "\$ScriptName = '$ScriptName';\n");
-  $pid = fork();
+  my $pid = fork();
   if (!defined $pid) {
     die "Cannot fork: $!";
   } elsif ($pid == 0) {
     use Config;
     my $secure_perl_path = $Config{perlpath};
     exec($secure_perl_path, "stuff/server.pl", "./wiki.pl", $port) or die "Cannot exec: $!";
+  } else {
+    push(@pids, $pid);
+    # give the server some time to start up
+    sleep 1;
   }
 }
 
 # Fork a Mojolicious server
 sub start_mojolicious_server {
-  die "A server already exists: $pid\n" if $pid;
+  my $num = shift||1;
+  die "A server already exists: @pids\n" unless @pids < $num;
   my $port = random_port();
   my $listen = "http://127.0.0.1:$port";
   $ScriptName = "http://127.0.0.1:$port/wiki";
   AppendStringToFile($ConfigFile, "\$ScriptName = '$ScriptName';\n");
-  $pid = fork();
+  my $pid = fork();
   if (!defined $pid) {
     die "Cannot fork: $!";
   } elsif ($pid == 0) {
@@ -404,16 +410,17 @@ sub start_mojolicious_server {
     exec($secure_perl_path, "server.pl", "daemon", "-l", $listen)
 	or die "Cannot exec: $!";
   } else {
+    push(@pids, $pid);
     # give the server some time to start up
     sleep 1;
   }
 }
 
 END {
-  # kill server
-  if ($pid) {
+  # kill servers
+  for my $pid (@pids) {
     kill 'KILL', $pid or warn "Could not kill server $pid";
-  }  
+  }
 }
 
 sub RunAndTerminate { # runs a command for 1 second and then sends SIGTERM
@@ -437,4 +444,3 @@ sub AppendToConfig {
 }
 
 1;
-

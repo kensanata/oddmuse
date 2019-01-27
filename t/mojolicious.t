@@ -20,7 +20,6 @@ use Test::Mojo;
 require './t/test.pl';
 
 start_mojolicious_server();
-sleep(1);
 
 my $t = Test::Mojo->new;
 

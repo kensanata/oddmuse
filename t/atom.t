@@ -26,9 +26,6 @@ add_module('atom.pl');
 
 start_server();
 
-# Give the child time to start
-sleep 1; 
-
 # Check whether the child is up and running
 my $ua = LWP::UserAgent->new;
 my $response = $ua->get("$ScriptName?action=version");

@@ -67,7 +67,6 @@ add_module('namespaces.pl');
 # EOF
 
 start_mojolicious_server();
-sleep(1);
 
 my $t = Test::Mojo->new;
 
