@@ -56,11 +56,11 @@ sub DoPingbackServer {
 
   # some sanity checks for the target page name
   if (not $id) {
-    PingbackServerFault('400 BAD REQUEST', 33, "No page specified");
+    PingbackServerFault('400 NO ID', 33, "No page specified");
   }
   my $error = ValidId($id);
   if ($error) {
-    PingbackServerFault('400 BAD REQUEST', 33, "Invalid page name: $id");
+    PingbackServerFault('400 INVALID ID', 33, "Invalid page name: $id");
   }
 
   # check the IP number for bans
@@ -80,7 +80,7 @@ sub DoPingbackServer {
   my $parser = RPC::XML::Parser->new();
   my $request = $parser->parse($data);
   if (not ref($request)) {
-    PingbackServerFault('400 BAD REQUEST', -32700, "Could not parse XML-RPC");
+    PingbackServerFault('400 NO DATA', -32700, "Could not parse XML-RPC");
   }
 
   # sanity check the function and argument number
@@ -90,7 +90,7 @@ sub DoPingbackServer {
     PingbackServerFault('501 NOT IMPLEMENTED', -32601, "Method $name not supported");
   }
   if (@$arguments != 2) {
-    PingbackServerFault('400 BAD REQUEST', -32602, "Wrong number of arguments");
+    PingbackServerFault('400 WRONG NUMBER OF ARGS', -32602, "Wrong number of arguments");
   }
 
   # extract the two arguments
@@ -107,7 +107,7 @@ sub DoPingbackServer {
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get($source);
   if (not $response->is_success) {
-    PingbackServerFault('400 BAD REQUEST', 16, "Cannot retrieve $source");
+    PingbackServerFault('400 NO SOURCE', 16, "Cannot retrieve $source");
   }
   my $self = ScriptUrl(UrlEncode($id));
   if ($response->decoded_content !~ /$self/) {
@@ -115,7 +115,7 @@ sub DoPingbackServer {
   }
   $id = $CommentsPrefix . $id;
   if (GetPageContent($id) =~ /$source/) {
-    PingbackServerFault('400 BAD REQUEST', 48, "$source has already been registered");
+    PingbackServerFault('400 ALREADY REGISTERED', 48, "$source has already been registered");
   }
 
   # post a comment without redirect at the end
@@ -123,7 +123,7 @@ sub DoPingbackServer {
   SetParam('summary', 'Pingback');
   SetParam('username', T('Anonymous'));
   SetParam($QuestionaskerSecretKey, 1) if $QuestionaskerSecretKey;
-  local *ReBrowsePage;
+  local *ReBrowsePage = sub {};
   DoPost($id);
 
   # response
