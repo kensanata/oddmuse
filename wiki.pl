@@ -3921,7 +3921,7 @@ sub DoMaintain {
   print GetHeader('', T('Run Maintenance')), $q->start_div({-class=>'content maintain'});
   my $fname = "$DataDir/maintain";
   if (not UserIsAdmin()) {
-    if (IsFile($fname) and $Now - Modified($fname) < 0.5) {
+    if (IsFile($fname) and $Now - Modified($fname) < 12 * 60 * 60) {
       print $q->p(T('Maintenance not done.') . ' ' . T('(Maintenance can only be done once every 12 hours.)')
 		  . ' ', T('Remove the "maintain" file or wait.')), $q->end_div();
       PrintFooter();
