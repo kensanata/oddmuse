@@ -60,7 +60,7 @@ sub RenamePageMenu {
   my $name = FreeToNormal($id);
   if ($id) {
     push(@$menuref, GetFormStart()
-	 . $q->label({-for=>'rename'}, Ts('Rename %s to:', $name) . ' ')
+	 . $q->label({-for=>'to'}, Ts('Rename %s to:', $name) . ' ')
 	 . GetHiddenValue('action', 'rename-page')
 	 . GetHiddenValue('id', $id)
 	 . $q->textfield(-name=>'to', -size=>20)
