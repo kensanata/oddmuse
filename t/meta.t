@@ -147,6 +147,7 @@ for my $re (sort keys %changes) {
     $text =~s/Tss?\([^\)]+//g; # getting rid of "rename" in strings
     $text =~s/\{\w+\}//g; # getting rid of "rename" in $Action{rename}
     $text =~s/'\w+'//g; # getting rid of "rename" in 'rename'
+    $text =~s/rename-//g; # rename-page is OK
     not ($_ eq 'modules/pygmentize.pl' and $re eq '-f'
 	or $_ eq 'modules/static-copy.pl' and $re eq 'chmod'
 	or $_ eq 'modules/static-hybrid.pl' and $re eq 'chmod')
