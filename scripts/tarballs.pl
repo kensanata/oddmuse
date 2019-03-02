@@ -3,13 +3,14 @@ use Mojolicious::Lite;
 use Mojo::Cache;
 use Archive::Tar;
 use File::Basename;
+use Sort::Versions;
 use Encode qw(decode_utf8);
 my $dir = "/home/alex/oddmuse.org/releases";
 my $cache = Mojo::Cache->new(max_keys => 50);
 
 get '/' => sub {
   my $c = shift;
-  my @tarballs = sort map {
+  my @tarballs = sort versioncmp map {
     my ($name, $path, $suffix) = fileparse($_, '.tar.gz');
     $name;
   } <$dir/*.tar.gz>;
