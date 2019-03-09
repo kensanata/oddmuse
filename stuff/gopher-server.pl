@@ -82,6 +82,10 @@ sub post_configure_hook {
   $self->log(3, "PID $$");
   $self->log(3, "Host " . ("@{$self->{server}->{host}}" || "*"));
   $self->log(3, "Port @{$self->{server}->{port}}");
+
+  # Note: if you use sudo to run gopher-server.pl, these options might not work!
+  $self->log(4, "--wikir_dir says $self->{server}->{wiki_dir}\n");
+  $self->log(4, "\$WikiDataDir says $ENV{WikiDataDir}\n");
   $self->log(3, "Wiki data dir is $DataDir\n");
 
   $RunCGI = 0;
@@ -121,7 +125,7 @@ wiki_key_file - the filename containing a private key in PEM format
 For many of the options, more information can be had in the Net::Server
 documentation. This is important if you want to daemonize the server. You'll
 need to use --pid_file so that you can stop it using a script, --setsid to
-daemonize it, --log_file to write keep logs, and you'll net to set the user or
+daemonize it, --log_file to write keep logs, and you'll need to set the user or
 group using --user or --group such that the server has write access to the data
 directory.
 
