@@ -41,7 +41,7 @@ sub JournalRssParameters {
   my $more = '';
   foreach (@_, qw(rsslimit match search reverse monthly)) {
     my $val = GetParam($_, '');
-    $more .= ";$_=$val" if $val;
+    $more .= ";$_=" . UrlEncode($val) if $val;
   }
   return $more;
 }

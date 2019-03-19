@@ -1706,7 +1706,7 @@ sub RcOtherParameters {
   my $more = '';
   foreach (@_, qw(page diff full all showedit rollback rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly match lang followup)) {
     my $val = GetParam($_, '');
-    $more .= ";$_=$val" if $val;
+    $more .= ";$_=" . UrlEncode($val) if $val;
   }
   return $more;
 }
