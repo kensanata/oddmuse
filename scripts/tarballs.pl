@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+use Modern::Perl;
 use Mojolicious::Lite;
 use Mojo::Cache;
 use Archive::Tar;
@@ -8,18 +9,33 @@ use Encode qw(decode_utf8);
 my $dir = "/home/alex/oddmuse.org/releases";
 my $cache = Mojo::Cache->new(max_keys => 50);
 
-get '/' => sub {
-  my $c = shift;
-  my @tarballs = sort versioncmp map {
+sub tarballs {
+  my @tarballs = reverse sort versioncmp map {
     my ($name, $path, $suffix) = fileparse($_, '.tar.gz');
     $name;
   } <$dir/*.tar.gz>;
-  $c->render(template => 'index', tarballs => \@tarballs);
+  return \@tarballs;
+}
+
+sub tarball {
+  my $tarball = shift;
+  if ($tarball eq 'latest') {
+    my $tarballs = tarballs();
+    $tarball = shift @$tarballs;
+  }
+  return $tarball;
+}
+
+get '/' => sub {
+  my $c = shift;
+  my $tarballs = tarballs();
+  unshift @$tarballs, 'latest';
+  $c->render(template => 'index', tarballs => $tarballs);
 } => 'main';
 
 get '/#tarball' => sub {
   my $c = shift;
-  my $tarball = $c->param('tarball');
+  my $tarball = tarball $c->param('tarball');
   my $files = $cache->get($tarball);
   if (not $files) {
     $c->app->log->info("Reading $tarball.tar.gz");
@@ -37,7 +53,7 @@ get '/#tarball' => sub {
 
 get '/#tarball/#file' => sub {
   my $c = shift;
-  my $tarball = $c->param('tarball');
+  my $tarball = tarball $c->param('tarball');
   my $file = $c->param('file');
   my $text = $cache->get("$tarball/$file");
   if (not $text) {
