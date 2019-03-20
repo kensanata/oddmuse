@@ -110,6 +110,6 @@ xpath_test(get_page('action=journal offset=10'),
 
 # check next page but with a tag search
 xpath_test(get_page('action=journal search=tag:oddmuse'),
-	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal;search=tag:oddmuse"]',
-	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal;search=tag:oddmuse"]',
-	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal;offset=10;search=tag:oddmuse"]');
+	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal;search=tag%3aoddmuse"]',
+	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal;search=tag%3aoddmuse"]',
+	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal;offset=10;search=tag%3aoddmuse"]');
