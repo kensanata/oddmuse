@@ -62,16 +62,26 @@ Example:
 
     $TagFeedIcon = 'http://www.example.org/pics/rss.png';
 
+=head2 $TagCloudSize
+
+The number of most used tags when looking at the tag cloud. The
+default is 50.
+
+Example:
+
+    $TagCloudSize = 20;
+
 =cut
 
 our ($q, $Now, %Action, %Page, $FreeLinkPattern, @MyInitVariables, @MyRules, @MyAdminCode, $DataDir, $ScriptName);
-our ($TagUrl, $TagFeed, $TagFeedIcon, $TagFile);
+our ($TagUrl, $TagFeed, $TagFeedIcon, $TagFile, $TagCloudSize);
 
 push(@MyInitVariables, \&TagsInit);
 
 sub TagsInit {
   $TagUrl = ScriptUrl('action=rc;rcfilteronly=tag:%s') unless $TagUrl;
   $TagFeed = ScriptUrl('action=rss;rcfilteronly=tag:%s') unless $TagFeed;
+  $TagCloudSize = 50 unless $TagCloudSize;
   $TagFile = "$DataDir/tag.db";
 }
 
@@ -313,7 +323,7 @@ sub TagCloud {
   foreach my $tag (grep !/^_/, keys %h) {
     $cloud->add(NormalToFree($tag), "$ScriptName?search=tag:" . UrlEncode($tag), scalar @{$h{$tag}});
   }
-  print $cloud->html_and_css(50);
+  print $cloud->html_and_css($TagCloudSize);
   print '</div>';
   PrintFooter();
 }
