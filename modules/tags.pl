@@ -424,7 +424,6 @@ sub TagsMenu {
   my ($id, $menuref, $restref) = @_;
   push(@$menuref,
        ScriptLink('action=reindex', T('Rebuild tag index'), 'reindex')
-       . ', ' . ScriptLink('action=taglist', T('list tags'), 'taglist')
        . ', ' . ScriptLink('action=tagcloud', T('tag cloud'), 'tagcloud'));
 }
 
