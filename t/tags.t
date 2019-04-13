@@ -184,9 +184,9 @@ test_page_negative($page, qw(Alex Jeff));
 # check the tag cloud
 xpath_test(get_page('action=tagcloud'),
 	   '//h1[text()="Tag Cloud"]',
-	   '//a[@style="font-size: 200%;"][@href="http://localhost/wiki.pl?search=tag:podcast"][@title="3"][text()="podcast"]',
-	   '//a[@style="font-size: 80%;"][@href="http://localhost/wiki.pl?search=tag:old_school"][@title="1"][text()="old school"]',
-	   '//a[@style="font-size: 80%;"][@href="http://localhost/wiki.pl?search=tag:mag"][@title="1"][text()="mag"]');
+	   '//a[@href="http://localhost/wiki.pl?search=tag:podcast"][text()="podcast"]',
+	   '//a[@href="http://localhost/wiki.pl?search=tag:old_school"][text()="old school"]',
+	   '//a[@href="http://localhost/wiki.pl?search=tag:mag"][text()="mag"]');
 
 # check interference; in order for this test to work, we need to make
 # sure that localnames is loaded first

@@ -305,27 +305,16 @@ $Action{tagcloud} = \&TagCloud;
 
 sub TagCloud {
   print GetHeader('', T('Tag Cloud'), ''),
-    $q->start_div({-class=>'content cloud'}) . '<p>';
+    $q->start_div({-class=>'content cloud'});
+  require HTML::TagCloud;
+  my $cloud = HTML::TagCloud->new;
   # open the DB file
   my %h = TagReadHash();
-  my $max = 0;
-  my $min = 0;
-  my %count = ();
   foreach my $tag (grep !/^_/, keys %h) {
-    $count{$tag} = @{$h{$tag}};
-    $max = $count{$tag} if $count{$tag} > $max;
-    $min = $count{$tag} if not $min or $count{$tag} < $min;
+    $cloud->add(NormalToFree($tag), "$ScriptName?search=tag:" . UrlEncode($tag), scalar @{$h{$tag}});
   }
-  foreach my $tag (sort keys %count) {
-    my $n = $count{$tag};
-    print $q->a({-href  => "$ScriptName?search=tag:" . UrlEncode($tag),
-		 -title => $n,
-		 -style => 'font-size: '
-		 . int(80+120*($max == $min ? 1 : ($n-$min)/($max-$min)))
-		 . '%;',
-		}, NormalToFree($tag)), ' ... ';
-  }
-  print '</p></div>';
+  print $cloud->html_and_css(50);
+  print '</div>';
   PrintFooter();
 }
 
@@ -431,7 +420,7 @@ sub TagsMenu {
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005–2015  Alex Schroeder <alex@gnu.org>
+Copyright (C) 2005–2019  Alex Schroeder <alex@gnu.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
