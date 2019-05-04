@@ -300,6 +300,14 @@ like($page, qr/^0Zürich♥\tZ%c3%bcrich%e2%99%a5\t/m, "UTF-8 encoded text link"
 like($page, qr/^1Üetliberg♥\t%c3%9cetliberg%e2%99%a5\/menu\t/m,
      "UTF-8 encoded links");
 
+# Space normalization
+test_page(update_page('my_page', '[[my page]]'));
+$page = query_gopher("my_page"); # all pages are normalized
+like($page, qr/\[\[my page\]\]/, "Page name with space");
+
+$page = query_gopher("my_page/menu");
+like($page, qr/^0my page\tmy_page\t/m, "Space translates to underscore in links");
+
 # gopher links
 update_page('Gopher', '[http://gopher.floodgap.com/gopher/gw?a=gopher%3A%2F%2Fsdf.org%3A70%2F0%2Fusers%2Fsolderpunk%2Fphlog%2Fintroducing-vf1.txt VF-1], [gopher://sdf.org:70/1/phlogs/ Phlogs]');
 $page = query_gopher("Gopher/menu");
