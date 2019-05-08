@@ -1,4 +1,4 @@
-# Copyright (C) 2004–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004–2019  Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2015       Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify it under
