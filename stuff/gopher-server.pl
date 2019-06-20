@@ -460,27 +460,37 @@ sub serve_text_page_menu {
   while ($page->{text} =~ /
 	 \[\[ (?<title>[^\]|]*) (?:\|(?<text>[^\]]*))? \]\]
 	 | \[ (?<url>https?:\/\/\S+) \s+ (?<text>[^\]]*) \]
+	 | (?<url>https?:\/\/\S+)
 	 | \[ (?<text>[^\]]*) \] \( (?<url>https?:\/\/\S+) \)
 	 | \[ gophers?:\/\/ (?<hostname>[^:\/]*) (?::(?<port>\d+))?
+	      (?:\/(?<type>\d)? (?<selector>\S+))? \]
+	 | \[ gophers?:\/\/ (?<hostname>[^:\/]*) (?::(?<port>\d+))?
 	      (?:\/(?<type>\d)? (?<selector>\S+))?
-              \s+ (?<text>[^\]]+)\]
+              \s+ (?<text>[^\]]+) \]
 	 | \[ (?<text>[^\]]+) \]
            \( gophers?:\/\/ (?<hostname>[^:\/]*) (?::(?<port>\d+))?
 	      (?:\/(?<type>\d)? (?<selector>\S+))? \)
 	 /xg) {
+    # remember $type can be "0" and thus "false" -- use // and defined instead!
     my ($title, $text, $url, $hostname,
 	$port, $type, $selector)
 	= ($+{title}, $+{text}, $+{url}, $+{hostname},
-	   $+{port}||70, $+{type}||1, $+{selector});
+	   $+{port}||70, $+{type}//1, $+{selector});
     if ($first) {
       $self->print_info("");
       $self->print_info("Links leaving " . normal_to_free($id) . ":");
       $first = 0;
     }
-    if ($hostname) {
+    if ($hostname and $text) {
       $self->print_text(join("\t", $type . $text, $selector, $hostname, $port) . "\r\n");
-    } elsif ($url) {
+    } elsif ($hostname and $selector) {
+      $self->print_text(join("\t", "$type$hostname:$port/$type$selector", $selector, $hostname, $port) . "\r\n");
+    } elsif ($hostname) {
+      $self->print_text(join("\t", "1$hostname:$port", $selector, $hostname, $port) . "\r\n");
+    } elsif ($url and $text) {
       $self->print_menu("h$text", "URL:" . $url, undef, undef, 1);
+    } elsif ($url) {
+      $self->print_menu("h$url", "URL:" . $url, undef, undef, 1);
     } elsif ($title and substr($title, 0, 4) eq 'tag:') {
       $self->print_menu("1" . ($text||substr($title, 4)),
 			free_to_normal(substr($title, 4)) . "/tag");

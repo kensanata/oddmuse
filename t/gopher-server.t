@@ -308,16 +308,88 @@ like($page, qr/\[\[my page\]\]/, "Page name with space");
 $page = query_gopher("my_page/menu");
 like($page, qr/^0my page\tmy_page\t/m, "Space translates to underscore in links");
 
+$page = <<EOF;
+Floodgap link, and the typical Gopher link:
+[http://gopher.floodgap.com/gopher/gw?a=gopher%3A%2F%2Fsdf.org%3A70%2F0%2Fusers%2Fsolderpunk%2Fphlog%2Fintroducing-vf1.txt VF-1], [gopher://sdf.org:70/1/phlogs/ Phlogs]
+
+Solderpunk was writing about Gopher and the Web again.
+[gopher://zaibatsu.circumlunar.space:70/0/~solderpunk/phlog/protocol-pondering-intensifies.txt]
+[gopher://zaibatsu.circumlunar.space:70/0/~solderpunk/phlog/protocol-pondering-intensifies-ii.txt]
+[gopher://zaibatsu.circumlunar.space:70/0/~solderpunk/phlog/protocol-pondering-intensifies-iii.txt]
+
+So that's what I did. I wrote a little server that serves text files.
+Requests are simple selectors. Like Gopher. Like Finger. Remember,
+[[2019-01-09 Finger is Gopher|finger is gopher]]!
+
+I called it *Nimi Mute*, "many words."
+
+* https://alexschroeder.ch/cgit/nimi-mute/about/
+* [https://github.com/kensanata/nimi-mute Nimi Mute]
+
+As you can see in the README, you can even use `finger` or `lynx` to
+get text files from it! It's all the same. `telnet` and `nc` also
+work, of course. :)
+
+Tags: [[tag:Gopher]] [[tag:Finger]] [[tag:Perl 5]]
+EOF
+
 # gopher links
-update_page('Gopher', '[http://gopher.floodgap.com/gopher/gw?a=gopher%3A%2F%2Fsdf.org%3A70%2F0%2Fusers%2Fsolderpunk%2Fphlog%2Fintroducing-vf1.txt VF-1], [gopher://sdf.org:70/1/phlogs/ Phlogs]');
+update_page('Gopher', $page);
 $page = query_gopher("Gopher/menu");
 like($page, qr/^1Phlogs\t\/phlogs\/\tsdf\.org\t70/m, "Direct Gopher link");
 like($page, qr/^0VF-1\t\/users\/solderpunk\/phlog\/introducing-vf1.txt\tsdf\.org\t70/m, "Floodgap proxy link");
 
-# gopher tags
-update_page('Gopher', 'Tags: [[tag:Gopher]] [[tag:Perl 6]]');
+my $re = "^0"
+    . join("\t",
+	   quotemeta("zaibatsu.circumlunar.space:70/0/~solderpunk/phlog/protocol-pondering-intensifies.txt"),
+	   quotemeta("/~solderpunk/phlog/protocol-pondering-intensifies.txt"),
+	   quotemeta("zaibatsu.circumlunar.space"),
+	   "70");
+like($page, qr/$re/m, "Gopher link 1");
+
+my $re = "^0"
+    . join("\t",
+	   quotemeta("zaibatsu.circumlunar.space:70/0/~solderpunk/phlog/protocol-pondering-intensifies-ii.txt"),
+	   quotemeta("/~solderpunk/phlog/protocol-pondering-intensifies-ii.txt"),
+	   quotemeta("zaibatsu.circumlunar.space"),
+	   "70");
+like($page, qr/$re/m, "Gopher link 2");
+
+my $re = "^0"
+    . join("\t",
+	   quotemeta("zaibatsu.circumlunar.space:70/0/~solderpunk/phlog/protocol-pondering-intensifies-iii.txt"),
+	   quotemeta("/~solderpunk/phlog/protocol-pondering-intensifies-iii.txt"),
+	   quotemeta("zaibatsu.circumlunar.space"),
+	   "70");
+like($page, qr/$re/m, "Gopher link 3");
+
+my $re = "^1"
+    . join("\t",
+	   quotemeta("finger is gopher"),
+	   quotemeta("2019-01-09_Finger_is_Gopher/menu"),
+	   "(::1|localhost)",
+	   $port);
+like($page, qr/$re/m, "Internal link");
+
+my $re = "^h"
+    . join("\t",
+	   quotemeta("Nimi Mute"),
+	   quotemeta("URL:https://github.com/kensanata/nimi-mute"),
+	   "(::1|localhost)",
+	   $port);
+like($page, qr/$re/m, "HTML Link");
+
+my $re = "^h"
+    . join("\t",
+	   quotemeta("https://alexschroeder.ch/cgit/nimi-mute/about/"),
+	   quotemeta("URL:https://alexschroeder.ch/cgit/nimi-mute/about/"),
+	   "(::1|localhost)",
+	   $port);
+like($page, qr/$re/m, "Bare HTML Link");
+
+# and on the page itself, tags are rendered differently
 $page = query_gopher("Gopher");
 like($page, qr/#Gopher/m, "Gopher tag");
-like($page, qr/#Perl_6/m, "Gopher multi-word tag");
+like($page, qr/#Perl_5/m, "Gopher multi-word tag");
 
 done_testing();
