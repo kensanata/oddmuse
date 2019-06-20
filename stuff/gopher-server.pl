@@ -462,11 +462,11 @@ sub serve_text_page_menu {
 	 | \[ (?<url>https?:\/\/\S+) \s+ (?<text>[^\]]*) \]
 	 | \[ (?<text>[^\]]*) \] \( (?<url>https?:\/\/\S+) \)
 	 | \[ gophers?:\/\/ (?<hostname>[^:\/]*) (?::(?<port>\d+))?
-	      (?:\/(?<type>\d) (?<selector>\S+))?
+	      (?:\/(?<type>\d)? (?<selector>\S+))?
               \s+ (?<text>[^\]]+)\]
 	 | \[ (?<text>[^\]]+) \]
            \( gophers?:\/\/ (?<hostname>[^:\/]*) (?::(?<port>\d+))?
-	      (?:\/(?<type>\d) (?<selector>\S+))? \)
+	      (?:\/(?<type>\d)? (?<selector>\S+))? \)
 	 /xg) {
     my ($title, $text, $url, $hostname,
 	$port, $type, $selector)
