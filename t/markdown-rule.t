@@ -16,7 +16,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 53;
+use Test::More tests => 56;
 
 add_module('markdown-rule.pl');
 add_module('bbcode.pl');
@@ -107,6 +107,8 @@ bar <h2>foo</h2><p>bar</p>
 ``` foo ``` bar
 `bar`
 <code>bar</code>
+"""\n*foo*\n"""\nhallo
+<blockquote><p><em>foo</em></p></blockquote><p>hallo</p>
 |a|b|\n|c|d|\nbar
 <table><tr><th>a</th><th>b</th></tr><tr><td>c</td><td>d</td></tr></table><p>bar</p>
 |a|b|\n|c|d|
@@ -132,4 +134,8 @@ xpath_run_tests(split('\n',<<'EOT'));
 //a[@class="url http"][@href="http://example.com/"][text()="an example"]
 [an example](http://example.com/ "Title")
 //a[@class="url http"][@href="http://example.com/"][@title="Title"][text()="an example"]
+[an\nexample](http://example.com/)
+//a[@class="url http"][@href="http://example.com/"][text()="an\nexample"]
+\n[an\n\nexample](http://example.com/)
+//p[text()="[an"]/following-sibling::p//text()[contains(string(),"example](")]
 EOT

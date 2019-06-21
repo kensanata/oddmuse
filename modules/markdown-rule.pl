@@ -54,6 +54,17 @@ sub MarkdownRule {
     return CloseHtmlEnvironments()
       . AddHtmlEnvironment('blockquote');
   }
+  # """ = blockquote, too
+  elsif ($bol and m/\G"""[ \t]*\n(.*?)\n"""[ \t]*(\n|$)/cgs) {
+    Clean(CloseHtmlEnvironments());
+    Dirty($1);
+    my ($oldpos, $old_) = ((pos), $_);
+    print '<blockquote>';
+    ApplyRules($1, 1, 1, undef, 'p'); # local links, anchors, no revision, start with p
+    print '</blockquote>';
+    Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
+    ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
+  }
   # ``` = code
   elsif ($bol and m/\G```[ \t]*\n(.*?)\n```[ \t]*(\n|$)/cgs) {
     return CloseHtmlEnvironments() . $q->pre($1)
@@ -160,8 +171,8 @@ sub MarkdownRule {
     }
     return OpenHtmlEnvironment('pre',1) . $str; # always level 1
   }
-  # [an example](http://example.com/ "Title")
-  elsif (m/\G\[(.+?)\]\($FullUrlPattern(\s+"(.+?)")?\)/cg) {
+  # link: [an example](http://example.com/ "Title")
+  elsif (m/\G\[((?:[^]\n]+\n?)+)\]\($FullUrlPattern(\s+"(.+?)")?\)/cg) {
     my ($text, $url, $title) = ($1, $2, $4);
     $url =~ /^($UrlProtocols)/;
     my %params;
