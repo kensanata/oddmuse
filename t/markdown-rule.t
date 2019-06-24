@@ -16,7 +16,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 61;
+use Test::More tests => 65;
 
 add_module('markdown-rule.pl');
 add_module('bbcode.pl');
@@ -142,8 +142,6 @@ xpath_run_tests(split(/\n/,<<'EOT'));
 //p[text()="[an"]/following-sibling::p//text()[contains(string(),"example](")]
 EOT
 
-    ;
-
 # test the quote again, writing an actual page
 test_page(update_page('cache', qq{"""\n*foo*\n"""\nhallo}),
 	  '<blockquote><p><em>foo</em></p></blockquote><p>hallo</p>');
@@ -157,3 +155,16 @@ test_page(update_page('cache', qq{> *foo*\n> bar\nhallo}),
 # test the page again to find errors in dirty block marking
 test_page(get_page('cache'),
 	  '<blockquote><p><em>foo</em> bar</p></blockquote><p>hallo</p>');
+
+@MyRules = grep { $_ ne \&MarkdownExtraRule } @MyRules;
+
+run_tests(split(/\n/,<<'EOT'));
+__underline__
+__underline__
+_underline_
+_underline_
+//italic//
+//italic//
+/italic/
+/italic/
+EOT
