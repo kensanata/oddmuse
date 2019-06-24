@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Copyright (C) 2014–2017  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2019  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -55,12 +55,12 @@ sub MarkdownRule {
       . AddHtmlEnvironment('blockquote');
   }
   # """ = blockquote, too
-  elsif ($bol and m/\G"""[ \t]*\n(.*?)\n"""[ \t]*(\n|$)/cgs) {
+  elsif ($bol and m/\G("""[ \t]*\n(.*?)\n"""[ \t]*(?:\n|$))/cgs) {
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     my ($oldpos, $old_) = ((pos), $_);
     print '<blockquote>';
-    ApplyRules($1, 1, 1, undef, 'p'); # local links, anchors, no revision, start with p
+    ApplyRules($2, 1, 1, undef, 'p'); # local links, anchors, no revision, start with p
     print '</blockquote>';
     Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
     ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)

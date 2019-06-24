@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2014–2017  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2019  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 56;
+use Test::More tests => 58;
 
 add_module('markdown-rule.pl');
 add_module('bbcode.pl');
@@ -127,7 +127,7 @@ pay 1.-/month
 pay 1.-/month
 EOT
 
-xpath_run_tests(split('\n',<<'EOT'));
+xpath_run_tests(split(/\n/,<<'EOT'));
 [example](http://example.com/)
 //a[@class="url http"][@href="http://example.com/"][text()="example"]
 [an example](http://example.com/)
@@ -139,3 +139,12 @@ xpath_run_tests(split('\n',<<'EOT'));
 \n[an\n\nexample](http://example.com/)
 //p[text()="[an"]/following-sibling::p//text()[contains(string(),"example](")]
 EOT
+
+    ;
+
+# test the quote again, writing an actual page
+test_page(update_page('cache', qq{"""\n*foo*\n"""\nhallo}),
+	  '<blockquote><p><em>foo</em></p></blockquote><p>hallo</p>');
+# test the page again to find errors in dirty block marking
+test_page(get_page('cache'),
+	  '<blockquote><p><em>foo</em></p></blockquote><p>hallo</p>');
