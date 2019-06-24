@@ -476,6 +476,8 @@ sub serve_text_page_menu {
 	$port, $type, $selector)
 	= ($+{title}, $+{text}, $+{url}, $+{hostname},
 	   $+{port}||70, $+{type}//1, $+{selector});
+    $title =~ s/\n/ /g;
+    $text =~ s/\n/ /g;
     if ($first) {
       $self->print_info("");
       $self->print_info("Links leaving " . normal_to_free($id) . ":");
