@@ -46,6 +46,7 @@ if (!defined $pid) {
   my $secure_perl_path = $Config{perlpath};
   exec($secure_perl_path,
        "stuff/gopher-server.pl",
+       "--host=127.0.0.1",
        "--port=$port",
        "--log_level=0", # set to 4 for verbose logging
        "--wiki=./wiki.pl",
@@ -367,7 +368,7 @@ my $re = "^1"
     . join("\t",
 	   quotemeta("finger is gopher"),
 	   quotemeta("2019-01-09_Finger_is_Gopher/menu"),
-	   "(::1|localhost)",
+	   "127\.0\.0\.1",
 	   $port);
 like($page, qr/$re/m, "Internal link");
 
@@ -375,7 +376,7 @@ my $re = "^h"
     . join("\t",
 	   quotemeta("Nimi Mute"),
 	   quotemeta("URL:https://github.com/kensanata/nimi-mute"),
-	   "(::1|localhost)",
+	   "127\.0\.0\.1",
 	   $port);
 like($page, qr/$re/m, "HTML Link");
 
@@ -383,7 +384,7 @@ my $re = "^h"
     . join("\t",
 	   quotemeta("https://alexschroeder.ch/cgit/nimi-mute/about/"),
 	   quotemeta("URL:https://alexschroeder.ch/cgit/nimi-mute/about/"),
-	   "(::1|localhost)",
+	   "127\.0\.0\.1",
 	   $port);
 like($page, qr/$re/m, "Bare HTML Link");
 
