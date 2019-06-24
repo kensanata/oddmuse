@@ -16,7 +16,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 58;
+use Test::More tests => 61;
 
 add_module('markdown-rule.pl');
 add_module('bbcode.pl');
@@ -109,6 +109,8 @@ bar <h2>foo</h2><p>bar</p>
 <code>bar</code>
 """\n*foo*\n"""\nhallo
 <blockquote><p><em>foo</em></p></blockquote><p>hallo</p>
+> *foo*\nhallo
+<blockquote><p><em>foo</em></p></blockquote><p>hallo</p>
 |a|b|\n|c|d|\nbar
 <table><tr><th>a</th><th>b</th></tr><tr><td>c</td><td>d</td></tr></table><p>bar</p>
 |a|b|\n|c|d|
@@ -148,3 +150,10 @@ test_page(update_page('cache', qq{"""\n*foo*\n"""\nhallo}),
 # test the page again to find errors in dirty block marking
 test_page(get_page('cache'),
 	  '<blockquote><p><em>foo</em></p></blockquote><p>hallo</p>');
+
+# test the other quote again, writing an actual page
+test_page(update_page('cache', qq{> *foo*\n> bar\nhallo}),
+	  '<blockquote><p><em>foo</em> bar</p></blockquote><p>hallo</p>');
+# test the page again to find errors in dirty block marking
+test_page(get_page('cache'),
+	  '<blockquote><p><em>foo</em> bar</p></blockquote><p>hallo</p>');

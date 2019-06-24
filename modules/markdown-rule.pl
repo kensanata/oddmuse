@@ -50,9 +50,17 @@ sub MarkdownRule {
   }
   # > blockquote
   # with continuation
-  elsif ($bol and m/\G&gt;/cg) {
-    return CloseHtmlEnvironments()
-      . AddHtmlEnvironment('blockquote');
+  elsif ($bol and m/\G((?:&gt;.*\n?)+)/cg) {
+    Clean(CloseHtmlEnvironments());
+    Dirty($1);
+    my $text = $1;
+    my ($oldpos, $old_) = ((pos), $_);
+    print '<blockquote>';
+    $text =~ s/^&gt; ?//gm;
+    ApplyRules($text, 1, 1, undef, 'p'); # local links, anchors, no revision, start with p
+    print '</blockquote>';
+    Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
+    ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
   }
   # """ = blockquote, too
   elsif ($bol and m/\G("""[ \t]*\n(.*?)\n"""[ \t]*(?:\n|$))/cgs) {
