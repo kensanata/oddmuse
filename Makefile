@@ -60,3 +60,10 @@ jobs ?= 4
 test:
 	prove t/setup.pl
 	prove --jobs=$(jobs) --state=slow,save t
+
+# Spin up a quick test
+
+development:
+	morbo --listen http://*:8080 \
+	--watch wiki.pl --watch test-data/config --watch test-data/modules/ \
+	stuff/mojolicious-app.pl
