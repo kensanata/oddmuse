@@ -1,4 +1,4 @@
-# Copyright (C) 2006–2016  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2019  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 78;
+use Test::More tests => 82;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('namespaces.pl');
@@ -188,3 +188,17 @@ $feed = get_page('action=rc raw=1');
 test_page($feed, 'title: Wiki', 'title: Muu:Test');
 # BackHome never existed and Muu:BackHome was rolled back
 test_page_negative($feed, 'title: Muu:BackHome', 'title: BackHome');
+
+AppendStringToFile($ConfigFile, <<'EOT');
+$InterSitePattern = '[\p{Uppercase}\d][\w_  ]*';
+$InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x{0080}-\x{fffd}_=!?#\$\@~`\%&*+\\/:;.,]*[-a-zA-Z0-9\x{0080}-\x{fffd}_=#\$\@~`\%&*+\\/])$QDelim";
+$FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x{0080}-\x{fffd}_=!?#\$\@~`\%&*+\\/:;.,()' ]+)";
+EOT
+
+test_page(update_page('Bond', 'My name is Bond', '007 ns', undef, undef,
+		      'ns=007', 'username=James'),
+	  '<title>Wiki 007: Bond</title>',
+	  '<p>My name is Bond</p>');
+test_page(get_page('action=browse id=Bond ns=007'),
+	  '<title>Wiki 007: Bond</title>',
+	  '<p>My name is Bond</p>');
