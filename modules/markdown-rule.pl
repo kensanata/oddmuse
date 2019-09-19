@@ -18,7 +18,7 @@ use v5.10;
 
 AddModuleDescription('markdown-rule.pl', 'Markdown Rule Extension');
 
-our ($q, $bol, %RuleOrder, @MyRules, $UrlProtocols, $FullUrlPattern, @HtmlStack);
+our ($q, $bol, %RuleOrder, @MyRules, $UrlProtocols, $FullUrlPattern, @HtmlStack, $Fragment);
 
 push(@MyRules, \&MarkdownRule);
 # Since we want this package to be a simple add-on, we try and avoid
@@ -31,6 +31,7 @@ $RuleOrder{\&MarkdownRule} = 200;
 # https://help.github.com/articles/github-flavored-markdown
 
 sub MarkdownRule {
+  my $alignment;
   # \escape
   if (m/\G\\([-#>*`=])/cg) {
     return $1;
@@ -142,34 +143,47 @@ sub MarkdownRule {
   # beginning of a table
   elsif ($bol and !InElement('table') and m/\G\|/cg) {
     # warn pos . " beginning of a table";
+    $alignment = 'style="text-align: right"' if m/\G([ \t]+)/cg;
+    $alignment = 'style="text-align: center"' if $alignment and m/\G(?=[^|]+[ \t]+\|)/cg;
+    $Fragment =~ s/[ \t]+$//; # cleanup trailing whitespace if previous column was centered
     return OpenHtmlEnvironment('table',1)
       . AddHtmlEnvironment('tr')
-      . AddHtmlEnvironment('th');
+      . AddHtmlEnvironment('th', $alignment);
   }
   # end of a row and beginning of a new row
   elsif (InElement('table') and m/\G\|?\n\|/cg) {
     # warn pos . " end of a row and beginning of a new row";
+    $alignment = 'style="text-align: right"' if m/\G([ \t]+)/cg;
+    $alignment = 'style="text-align: center"' if $alignment and m/\G(?=[^|]+[ \t]+\|)/cg;
+    $Fragment =~ s/[ \t]+$//; # cleanup trailing whitespace if previous column was centered
     return CloseHtmlEnvironment('tr')
       . AddHtmlEnvironment('tr')
-      . AddHtmlEnvironment('td');
+      . AddHtmlEnvironment('td', $alignment);
   }
   # otherwise the table ends
   elsif (InElement('table') and m/\G\|?(\n|$)/cg) {
     # warn pos . " otherwise the table ends";
+    $Fragment =~ s/[ \t]+$//; # cleanup trailing whitespace if previous column was centered
     return CloseHtmlEnvironment('table')
       . AddHtmlEnvironment('p');
   }
   # continuation of the first row
   elsif (InElement('th') and m/\G\|/cg) {
     # warn pos . " continuation of the first row";
+    $alignment = 'style="text-align: right"' if m/\G([ \t]+)/cg;
+    $alignment = 'style="text-align: center"' if $alignment and m/\G(?=[^|]+[ \t]+\|)/cg;
+    $Fragment =~ s/[ \t]+$//; # cleanup trailing whitespace if previous column was centered
     return CloseHtmlEnvironment('th')
-      . AddHtmlEnvironment('th');
+      . AddHtmlEnvironment('th', $alignment);
   }
   # continuation of other rows
   elsif (InElement('td') and m/\G\|/cg) {
     # warn pos . " continuation of other rows";
+    $alignment = 'style="text-align: right"' if m/\G([ \t]+)/cg;
+    $alignment = 'style="text-align: center"' if $alignment and m/\G(?=[^|]+[ \t]+\|)/cg;
+    $Fragment =~ s/[ \t]+$//; # cleanup trailing whitespace if previous column was centered
     return CloseHtmlEnvironment('td')
-      . AddHtmlEnvironment('td');
+      . AddHtmlEnvironment('td', $alignment);
   }
   # whitespace indentation = code
   elsif ($bol and m/\G(\s*\n)*(    .+)\n?/cg) {

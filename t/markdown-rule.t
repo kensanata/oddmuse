@@ -16,7 +16,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 65;
+use Test::More tests => 67;
 
 add_module('markdown-rule.pl');
 add_module('bbcode.pl');
@@ -123,6 +123,10 @@ bar <h2>foo</h2><p>bar</p>
 <table><tr><th><em>foo</em></th></tr></table>
 |_foo_
 <table><tr><th><em style="font-style: normal; text-decoration: underline">foo</em></th></tr></table>
+| a| b|\n| c| d|
+<table><tr><th style="text-align: right">a</th><th style="text-align: right">b</th></tr><tr><td style="text-align: right">c</td><td style="text-align: right">d</td></tr></table>
+| a | b |\n| c | d |
+<table><tr><th style="text-align: center">a</th><th style="text-align: center">b</th></tr><tr><td style="text-align: center">c</td><td style="text-align: center">d</td></tr></table>
 foo ~~bar~~
 foo <del>bar</del>
 pay 1.-/month
