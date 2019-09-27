@@ -100,7 +100,7 @@ bla
           quotemeta(qq{<div class="crossbar"><p>bla</p><h2>mu</h2>}),
           quotemeta(qq{<p>bla </p><div class="toc"><h2>$TocHeaderText</h2>}),
           quotemeta(qq{<ol><li><a href="#${TocAnchorPrefix}1">two</a><ol><li><a href="#${TocAnchorPrefix}2">three</a></li></ol></li><li><a href="#${TocAnchorPrefix}3">one</a></li></ol>}),
-          quotemeta(qq{one</a></li></ol></div></div><div class="content browse"><p>bla}));
+          quotemeta(qq{one</a></li></ol></div></div><div class="content browse" lang="en"><p>bla}));
           quotemeta(qq{<h2 id="${TocAnchorPrefix}1">two</h2>}),
           quotemeta(qq{<h2 id="${TocAnchorPrefix}3">one</h2>}),
 

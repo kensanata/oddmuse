@@ -217,7 +217,7 @@ sub PrintPageContentCrossbar {
 
   # If the crossbar div is placed immediately after the content div, place it
   # immediately before the content div.
-  if (not ($html =~ s~(<div class="content browse">)$crossbar_pattern~$2$1~)) {
+  if (not ($html =~ s~(<div class="content browse" lang="[a-z]*">)$crossbar_pattern~$2$1~)) {
     # Otherwise, if the crossbar div is placed immediately before the end of the
     # content div, place it immediately after the end of the content div.
     $html =~

@@ -157,6 +157,7 @@ our $CommentsPrefix   = '';        	# prefix for comment pages, eg. 'Comments_on
 our $CommentsPattern = undef;      	# regex used to match comment pages
 our $HtmlHeaders      = '';        	# Additional stuff to put in the HTML <head> section
 our $IndentLimit      = 20;        	# Maximum depth of nested lists
+our $CurrentLanguage = 'en';		# Language of error messages etc
 our $LanguageLimit     = 3;        	# Number of matches req. for each language
 our $JournalLimit    = 200;        	# how many pages can be collected in one go?
 our $PageNameLimit   = 120;        	# max length of page name in bytes
@@ -880,7 +881,8 @@ sub PrintAllPages {
       $q->h1({-class => 'entry-title'},
 	     $links ? GetPageLink($id) : $q->a({-name=>$id}, UrlEncode(FreeToNormal($id))));
     if ($variation ne 'titles') {
-      print $q->start_div({-class=>'entry-content'});
+      my $lang = (split /,/, $Page{languages})[0] || $CurrentLanguage;
+      print $q->start_div({-class=>'entry-content', -lang=>$lang});
       PrintPageHtml();
       print $q->end_div();
       PrintPageCommentsLink($id, $comments);
@@ -1276,7 +1278,9 @@ sub PageHtml {
   OpenPage($id);
   my $diff = ToString \&PrintPageDiff;
   return $error if $limit and length($diff) > $limit;
-  my $page = ToString \&PrintPageHtml;
+  my $lang = (split /,/, $Page{languages})[0] // $CurrentLanguage;
+  my $page .= ToString \&PrintPageHtml;
+  $page = qq{<div class="page" lang="$lang">$page</div>} if $page;
   return $diff . $q->p($error) if $limit and length($diff . $page) > $limit;
   return $diff . $page;
 }
@@ -2361,15 +2365,14 @@ sub Cookie {
 
 sub GetHtmlHeader {   # always HTML!
   my ($title, $id) = @_;
-  my $edit_link = '';
-  $edit_link = '<link rel="alternate" type="application/wiki" title="'
-      . T('Edit this page') . '" href="'
-      . ScriptUrl('action=edit;id=' . UrlEncode($id)) . '" />' if $id;
+  my $edit_link = $id ? '<link rel="alternate" type="application/wiki" title="'
+      . T('Edit this page') . '" href="' . ScriptUrl('action=edit;id=' . UrlEncode($id)) . '" />' : '';
+  my $theme = GetParam('theme', 'default');
   return $DocumentHeader
       . $q->head($q->title($title) . $edit_link
 		 . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
 		 . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />')
-      . '<body class="' . GetParam('theme', 'default') . '">';
+      . qq{<body class="$theme" lang="$CurrentLanguage">};
 }
 
 sub GetRobots { # NOINDEX for non-browse pages.
@@ -2407,7 +2410,8 @@ sub GetCss {      # prevent javascript injection
 
 sub PrintPageContent {
   my ($text, $revision, $comment) = @_;
-  print $q->start_div({-class=>'content browse'});
+  print $q->start_div({-class=>'content browse', -lang=>GetLanguage($text)});
+  # This is a lot like PrintPageHtml except that it also works for older revisions
   if ($revision eq '' and $Page{blocks} and GetParam('cache', $UseCache) > 0) {
     PrintCache();
   } else {
@@ -3873,12 +3877,16 @@ sub TouchIndexFile {
 
 sub GetLanguages {
   my $text = shift;
-  my @result;
-  for my $lang (sort keys %Languages) {
+  my %result;
+  for my $lang (keys %Languages) {
     my @matches = $text =~ /$Languages{$lang}/gi;
-    push(@result, $lang) if $#matches >= $LanguageLimit;
+    $result{$lang} = @matches if @matches >= $LanguageLimit;
   }
-  return join(',', @result);
+  return join(',', sort { $result{$b} <=> $result{$a} } keys %result);
+}
+
+sub GetLanguage { # the first language, or the default language
+  return ((split /,/, GetLanguages(@_))[0] or $CurrentLanguage);
 }
 
 sub GetCluster {

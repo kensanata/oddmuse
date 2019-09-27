@@ -70,7 +70,7 @@ test_page(get_page('action=rss full=1'),
 	  '<title>12h50 Forget It</title>', # wrong
 	  '<title>2008-08-08</title>',
 	  '<title>Comments on New Hope</title>',
-	  '<description>&lt;p&gt;foo foo&lt;/p&gt;</description>');
+	  '<description>&lt;div class="page" lang="en"&gt;&lt;p&gt;foo foo&lt;/p&gt;&lt;/div&gt;</description>');
 
 # no stripping of dates
 test_page(get_page('action=rss short=0'),

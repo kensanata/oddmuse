@@ -34,7 +34,7 @@ test_page(get_page('headers'), '<div class="color one level0"><p>foo </p></div><
 add_module('toc.pl');
 test_page(update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n"),
     # default to before the header
-    '<div class="content browse"><div class="color one level0"><p>foo </p></div>',
+    '<div class="content browse" lang="en"><div class="color one level0"><p>foo </p></div>',
     '<div class="toc"><h2>Contents</h2><ol>',
     qq{<li><a href="#${TocAnchorPrefix}1">one</a></li>},
     qq{<li><a href="#${TocAnchorPrefix}2">two</a></li>},

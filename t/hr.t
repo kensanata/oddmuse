@@ -27,18 +27,18 @@ test_page(get_page('hr'), 'one ---- two');
 add_module('usemod.pl');
 update_page('hr', "one\n----\nthree\n");
 test_page(get_page('hr'),
-	  '<div class="content browse"><p>one </p><hr /><p>three</p></div>');
+	  '<div class="content browse" lang="en"><p>one </p><hr /><p>three</p></div>');
 remove_rule(\&UsemodRule);
 
 # headers only
 add_module('headers.pl');
 update_page('hr', "one\n----\ntwo\n");
 test_page(get_page('hr'),
-	  '<div class="content browse"><h3>one</h3><p>two</p></div>');
+	  '<div class="content browse" lang="en"><h3>one</h3><p>two</p></div>');
 
 update_page('hr', "one\n\n----\nthree\n");
 test_page(get_page('hr'),
-	  '<div class="content browse"><p>one</p><hr /><p>three</p></div>');
+	  '<div class="content browse" lang="en"><p>one</p><hr /><p>three</p></div>');
 remove_rule(\&HeadersRule);
 
 # with portrait support
@@ -49,19 +49,19 @@ clear_pages();
 add_module('portrait-support.pl');
 update_page('hr', "[new]one\n----\ntwo\n");
 test_page(get_page('hr'),
-	  '<div class="content browse"><div class="color one level0"><p>one </p></div><hr /><p>two</p></div>');
+	  '<div class="content browse" lang="en"><div class="color one level0"><p>one </p></div><hr /><p>two</p></div>');
 
 # usemod and portrait-support
 add_module('usemod.pl');
 update_page('hr', "one\n----\nthree\n");
 test_page(get_page('hr'),
-	  '<div class="content browse"><p>one </p><hr /><p>three</p></div>');
+	  '<div class="content browse" lang="en"><p>one </p><hr /><p>three</p></div>');
 remove_rule(\&UsemodRule);
 
 # headers and portrait-support
 add_module('headers.pl');
 update_page('hr', "one\n----\ntwo\n");
-test_page(get_page('hr'), '<div class="content browse"><h3>one</h3><p>two</p></div>');
+test_page(get_page('hr'), '<div class="content browse" lang="en"><h3>one</h3><p>two</p></div>');
 
 update_page('hr', "one\n\n----\nthree\n");
-test_page(get_page('hr'), '<div class="content browse"><p>one</p><hr /><p>three</p></div>');
+test_page(get_page('hr'), '<div class="content browse" lang="en"><p>one</p><hr /><p>three</p></div>');

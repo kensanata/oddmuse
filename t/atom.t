@@ -138,5 +138,6 @@ sub trim {
   s/\s+$//g;
   return $_;
 }
-ok(trim($result->content->body) eq ("<p>" . trim($content) . '</p>'), 'verify content');
+my $re = "<p>" . trim($content) . '</p>';
+like($result->content->body, qr/$re/, 'verify content');
 ok($result->author->name eq $username, 'verify author');
