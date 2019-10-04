@@ -296,6 +296,8 @@ Delete
 
 Filter:
 
+Summary:
+
 Last edit
 
 revision %s
@@ -309,8 +311,6 @@ Last major edit (%s)
 later minor edits
 
 No diff available.
-
-Summary:
 
 Old revision:
 
@@ -1410,6 +1410,11 @@ Click to search for references to this permanent anchor
 Include permanent anchors
 
 ################################################################################
+# modules/pingback-server.pl
+################################################################################
+Only XML-RPC POST requests recognised
+
+################################################################################
 # modules/portrait-support.pl
 ################################################################################
 Portrait
@@ -1472,6 +1477,17 @@ Referrers
 # modules/referrer-tracking.pl
 ################################################################################
 All Referrers
+
+################################################################################
+# modules/rename-pages.pl
+################################################################################
+Target page already exists.
+
+Source page does not exist.
+
+Copied from %s
+
+Moved to %s
 
 ################################################################################
 # modules/search-list.pl
@@ -1538,8 +1554,6 @@ Rebuilding index not done.
 (Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
-
-list tags
 
 tag cloud
 
@@ -1696,6 +1710,35 @@ Edit %s.
 # modules/weblog-4.pl
 ################################################################################
 Tags:
+
+################################################################################
+# modules/webmention.pl
+################################################################################
+Webmention requires a POST request
+
+Webmention requires x-www-form-urlencoded requests
+
+Webmention must mention a specific page
+
+Webmention must mention a valid page
+
+Your IP number is blocked: %s
+
+Webmention must mention an existing page
+
+Webmention must mention source
+
+Webmention must mention target
+
+The URL is blocked: %s
+
+Webmention source cannot be verified: %1 returns %2 %3
+
+Webmention source does not link to %s
+
+Webmention for %s already exists
+
+Webmention OK!
 
 #
 END_OF_TRANSLATION
