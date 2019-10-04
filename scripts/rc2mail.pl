@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Copyright (C) 2010–2018  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2010–2019  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -22,6 +22,8 @@ use MIME::Entity;
 use File::Temp;
 use File::Basename;
 use File::Path;
+use Net::SMTP;
+use Authen::SASL qw(Perl);
 
 # This script can be invoked as follows:
 # perl rc2mail.pl -r http://localhost/cgi-bin/wiki \
@@ -36,7 +38,8 @@ use File::Path;
 #    gets http://localhost/cgi-bin/wiki?action=rss;days=1;full=1;short=0
 #    And http://localhost/cgi-bin/wiki?action=subscriptionlist;raw=1;pwd=foo
 # -m user:password@mailhost for sending email using SMTP Auth. Without this
-#    information, the script will send mail to localhost.
+#    information, the script will send mail to localhost. The host can end
+#    in a port number, e.g. "kensanata:*secret*@smtp.migadu.com:587"
 # -f email address to use as the sender.
 # -t timestamp file; it's last modified date is used to determine when the
 #    the last run was and an appropriate URL is used. Instead of days=1 it
@@ -171,36 +174,19 @@ sub send_mail {
 				     Type=> "text/html");
   if ($host) {
     print "Sending $title to $subscriber using ${user}\@${host}\n" if $verbose;
-    eval {
-      require Net::SMTP::TLS;
-      my $smtp = Net::SMTP::TLS->new($host,
-				     User => $user,
-				     Password => $password);
-      $smtp->mail($from);
-      $smtp->to($subscriber);
+    my $smtp = Net::SMTP->new($host, Debug => $debug);
+    $smtp->starttls();
+    # the following requires Authen::SASL!
+    $smtp->auth($user, $password);
+    $smtp->mail($from);
+    if ($smtp->to($subscriber)) {
       $smtp->data;
       $smtp->datasend($mail->stringify);
       $smtp->dataend;
-      $smtp->quit;
-    };
-    if ($@) {
-      require Net::SMTP::SSL;
-      my $smtp = Net::SMTP::SSL->new($host, Port => 465);
-      $smtp->auth($user, $password);
-      $smtp->mail($from);
-      $smtp->to($subscriber);
-      $smtp->data;
-      $smtp->datasend($mail->stringify);
-      $smtp->dataend;
-      $smtp->quit;
-    }
-  } else {
-    my @recipients = $mail->smtpsend();
-    if (@recipients) {
-      print "Sent $title to ", join(', ', @recipients), "\n" unless $quiet;
     } else {
-      print "Failed to send $title to $subscriber\n" unless $quiet;
+      warn "Error: ", $smtp->message();
     }
+    $smtp->quit;
   }
 }
 
