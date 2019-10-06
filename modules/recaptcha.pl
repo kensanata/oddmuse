@@ -239,9 +239,11 @@ sub NewReCaptchaDoPost {
 
 sub ReCaptchaCheckAnswer {
   eval "use Captcha::reCAPTCHA";
+  my $answer = GetParam('g-recaptcha-response');
+  return 0 unless $answer;
   my $result = Captcha::reCAPTCHA->new()->check_answer_v2(
     $ReCaptchaPrivateKey,
-    GetParam('g-recaptcha-response'),
+    $answer,
     $q->remote_addr()
   );
   return $result->{is_valid};
