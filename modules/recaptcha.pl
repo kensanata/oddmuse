@@ -171,7 +171,7 @@ sub ReCaptchaGetQuestion {
 # if (defined $ReCaptchaTabIndex) { $recaptcha_options{tabindex} = $ReCaptchaTabIndex; }
 
   eval "use Captcha::reCAPTCHA";
-  my $captcha_html = Captcha::reCAPTCHA->new()->get_html(
+  my $captcha_html = Captcha::reCAPTCHA->new()->get_html_v2(
     $ReCaptchaPublicKey, undef, $ENV{'HTTPS'} eq 'on', undef);
   my $submit_html = $need_button ? $q->submit(-value=> T('Go!')) : '';
   my $options_html = '
@@ -239,11 +239,10 @@ sub NewReCaptchaDoPost {
 
 sub ReCaptchaCheckAnswer {
   eval "use Captcha::reCAPTCHA";
-  my $result = Captcha::reCAPTCHA->new()->check_answer(
+  my $result = Captcha::reCAPTCHA->new()->check_answer_v2(
     $ReCaptchaPrivateKey,
-    $q->remote_addr(),
-    GetParam('recaptcha_challenge_field'),
-    GetParam('recaptcha_response_field')
+    GetParam('g-recaptcha-response'),
+    $q->remote_addr()
   );
   return $result->{is_valid};
 }
