@@ -13,6 +13,23 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+# What is this?
+# =============
+#
+# This is a script that will server a wiki using a web server written in Perl,
+# without a fancy framework like Mojolicious. Instead, it uses
+# HTTP::Server::Simple::CGI.
+#
+# A simple usecase would be that you have had a wiki running years ago but then
+# you forgot all about it and your Apache config no longer works and who knows
+# how the system Perl is doing. So check out the data dir and notice that the
+# files belong to a user called _www... And so you run the following:
+#
+# sudo -u _www perl stuff/server.pl ./wiki.pl 3000 \
+#                   /Users/alex/WebServer/Oddmuse
+#
+# Your old wiki is served on localhost:3000 for you to examine.
+
 my $wiki = $ARGV[0] || './wiki.pl';
 my $port = $ARGV[1] || 8080;
 my $dir  = $ARGV[2];
