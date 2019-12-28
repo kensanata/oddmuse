@@ -44,10 +44,10 @@ $ENV{WikiDataDir} = $dir if $dir;
 die <<'EOT' unless -f $wiki;
 Usage: perl server.pl [WIKI [PORT [DIR]]]
 
-Example: perl server.pl wiki.pl 8080 ~/src/oddmuse/test-data
+Example: perl server.pl ./wiki.pl 8080 ~/src/oddmuse/test-data
 
 You may provide the Oddmuse wiki script on the command line. If you do not
-provide it, WIKI will default to 'wiki.pl'.
+provide it, WIKI will default to './wiki.pl'.
 
 You may provide a port number on the command line. If you do not provide it,
 PORT will default to 8080.
@@ -67,7 +67,7 @@ echo <<EOF > "$WikiDataDir/config"
 $AdminPass = 'foo';
 $ScriptName = 'http://localhost/';
 EOF
-perl stuff/server.pl wiki.pl &
+perl stuff/server.pl ./wiki.pl &
 SERVER=$!
 sleep 1
 w3m http://localhost:8080/
