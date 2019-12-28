@@ -50,6 +50,10 @@ $ENV{WikiDataDir} = $dir if $dir;
     package OddMuse;
     $q = shift;
 
+    # The equivalent of use CGI qw(-utf8) because it didn't work as part of
+    # cgi_init.
+    $CGI::PARAM_UTF8++;
+
     # NPH, or "no-parsed-header", scripts bypass the server completely by
     # sending the complete HTTP header directly to the browser.
     $q->nph(1);
