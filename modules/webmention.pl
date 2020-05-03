@@ -168,7 +168,7 @@ sub DoWebmention {
   my $id = GetParam('from');
   ValidIdOrDie($id);
   my $from = ScriptUrl($id);
-  my @to = $q->param('to'); # multivalued!
+  my @to = $q->multi_param('to');
   ReportError('Missing target') unless @to;
   print GetHeader('', Ts('Webmentioning somebody from %s', NormalToFree($id)), '');
   for my $to (@to) {
