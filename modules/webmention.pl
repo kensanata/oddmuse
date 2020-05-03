@@ -18,25 +18,40 @@ use strict;
 use v5.10;
 
 use LWP::UserAgent;
+use Modern::Perl;
+use XML::LibXML;
 
 AddModuleDescription('webmention.pl', 'Webmention Server Extension');
 
 # Specification:  https://www.w3.org/TR/webmention/
 
 our ($CommentsPrefix, $q, $HtmlHeaders, %Action, $QuestionaskerSecretKey,
-    @MyInitVariables, %IndexHash, $BannedContent);
+     @MyInitVariables, %IndexHash, $BannedContent, $UsePathInfo, $HomePage,
+    $Message, @MyAdminCode, $FullUrlPattern);
 
-push(@MyInitVariables, \&WebmentionServerAddLink);
+push(@MyInitVariables, \&WebmentionServerAddLink, \&WebmentionAddAction);
+
+# Add webmentions metadata to our pages
 
 sub WebmentionServerAddLink {
-  SetParam('action', 'webmention') if $q->path_info =~ m|/webmention\b|;
-  my $id = GetId();
-  return unless $id;
+  $Message .= T('Webmention module requires $CommentsPrefix to be set')  unless $CommentsPrefix;
+  # only allow linking to reasonable pages: no URL parameters!
+  my @params = $q->param;
+  return if $UsePathInfo and @params > 0;
+  return if not $UsePathInfo and (@params > 1 or @params == 1 and $params[0] ne 'id');
+  return unless GetParam('action', 'browse') eq 'browse';
+  my $id = GetId() || $HomePage;
   return if $id =~ /^$CommentsPrefix/;
   my $link = '<link rel="webmention" type="application/wiki" href="'
       . ScriptUrl('webmention/' . UrlEncode($id)) . '" />';
-  $HtmlHeaders .= $link unless $HtmlHeaders =~ /re="webmention"/;
+  $HtmlHeaders .= $link unless $HtmlHeaders =~ /rel="webmention"/;
 }
+
+sub WebmentionAddAction {
+  SetParam('action', 'webmention') if $q->path_info =~ m|/webmention\b|;
+}
+
+# Process incoming webmentions
 
 $Action{webmention} = \&DoWebmentionServer;
 
@@ -111,5 +126,84 @@ sub DoWebmentionServer {
   print $q->start_div({-class=>'content webmention'}),
       $q->p(GetPageLink($BannedContent)),
       $q->end_div;
+  PrintFooter();
+}
+
+# Allow user to webmention other sites
+
+push(@MyAdminCode, \&WebmentionMenu);
+
+sub WebmentionMenu {
+  my ($id, $menuref, $restref) = @_;
+  if ($id) {
+    push(@$menuref, ScriptLink('action=webmentions;id=' . $id, T('Add webmentions'), 'webmentions'));
+  }
+}
+
+$Action{webmentions} = \&DoWebmentionMenu;
+
+sub DoWebmentionMenu {
+  my $id = GetId();
+  ValidIdOrDie($id);
+  print GetHeader('', Ts('Webmentioning others from %s', NormalToFree($id)), '');
+  my $text = GetPageContent($id);
+  my @urls = $text =~ /$FullUrlPattern/g;
+  if (@urls) {
+    print '<ul>';
+    for my $url (@urls) {
+      print $q->li(ScriptLink('action=webmentioning;from='. UrlEncode($id)
+			      . ';to=' . UrlEncode($url), $url, 'webmention'));
+    }
+    print '</ul>';
+  } else {
+    print $q->p(T('No links found.'));
+  }
+  PrintFooter();
+}
+
+$Action{webmentioning} = \&DoWebmention;
+
+sub DoWebmention {
+  my $id = GetParam('from');
+  ValidIdOrDie($id);
+  my $from = ScriptUrl($id);
+  my $to = GetParam('to');
+  ReportError('Missing target') unless $to;
+  ReportError('Target must be an URL', '400 BAD REQUEST', 0, $q->p($to)) unless $to =~ /$FullUrlPattern/;
+  print GetHeader('', Ts('Webmentioning somebody from %s', NormalToFree($id)), '');
+  my $ua = LWP::UserAgent->new(agent => "Oddmuse Webmention Client/0.1");
+
+  print $q->p(Ts('Contacting %s', $to));
+  my $response = $ua->get($to);
+  if (!$response->is_success) {
+    print $q->p(Ts('Target reports an error: %s', $response->status_line), '502 BAD GATEWAY', 0, $q->p($to));
+    return PrintFooter();
+  }
+
+  print $q->p("Parsing response");
+  my $data = $response->decoded_content;
+  my $parser = XML::LibXML->new(recover => 2);
+  my $dom = $parser->load_html(string => $data);
+  my $webmention = $dom->findvalue('//link[@rel="webmention"]/@href');
+
+  if (!$webmention) {
+    print $q->p(T('No Webmention URL found'), '502 BAD GATEWAY', 0, $q->p($to));
+    return PrintFooter();
+  }
+
+  print $q->p("Webmention URL is $webmention");
+
+  $response = $ua->post($webmention, { source => $from, target => $to });
+  my $message = $response->code . " " . $response->message;
+  if ($response->is_success) {
+    print $q->p(Ts("Success: %s", $message));
+  } else {
+    print $q->p(Ts("Failure: %s", $message));
+    $dom = $parser->load_html(string => $response->decoded_content());
+    for my $node ($dom->getElementsByTagName('script')) { $node->parentNode->removeChild($node) };
+    for my $node ($dom->getElementsByTagName('style')) { $node->parentNode->removeChild($node) };
+    print $q->p($dom->textContent);
+  }
+
   PrintFooter();
 }

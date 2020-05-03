@@ -15,12 +15,38 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 15;
+use Test::More tests => 20;
 use LWP::UserAgent;
 use XML::LibXML;
 
 add_module('webmention.pl');
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments_on_';\n");
+$CommentsPrefix = 'Comments_on_';
+
+# Test the various patterns that should or should not have a link
+sub test_headers {
+  $HtmlHeaders = '';
+  $q = new CGI;
+  my %params = @_;
+  for (keys %params) { $q->param($_, $params{$_}) };
+  WebmentionServerAddLink();
+  return $HtmlHeaders;
+}
+
+like(test_headers(), qr/$HomePage/, "Webmention link for default URL");
+unlike(test_headers(action => 'history', id => $HomePage), qr/$HomePage/,
+       "No webmention link for history action");
+unlike(test_headers(action => 'browse', id => $HomePage), qr/$HomePage/,
+       "No webmention link for browse action");
+
+$UsePathInfo = 0;
+
+unlike(test_headers(action => 'browse', id => $HomePage), qr/$HomePage/,
+       "Webmention link for browse action without path info");
+unlike(test_headers(action => 'history', id => $HomePage), qr/$HomePage/,
+       "Still no webmention link for history action even without path info");
+
+$UsePathInfo = 1;
 
 # This test is is going to use two servers in addition to this script, but in
 # actual fact we are all going to share the data directory.
