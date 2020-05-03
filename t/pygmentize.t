@@ -14,7 +14,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 add_module('pygmentize.pl');
 
@@ -23,9 +23,14 @@ add_module('pygmentize.pl');
      skip "pygmentize not found", 2;
    }
 
+   my $text = '{{{perl\nmy $x = "hello";\n}}}\n';
+   $page = apply_rules(newlines($text));
+   test_page($page,
+	     '<span style="color: #666666">=</span>');
+
    $ENV{PATH} = '.'; # pygmentize is not installed in the current directory
-   $page = apply_rules(newlines('{{{\ntest\n}}}\n'));
+   $page = apply_rules(newlines($text));
    test_page($page,
 	     '\bsh\b.*\bpygmentize\b.*\bnot found\b',
-	     '<pre>test</pre>');
+	     '<pre>my \$x = "hello";</pre>');
 }
