@@ -15,36 +15,28 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 20;
+use Test::More tests => 21;
 use LWP::UserAgent;
 use XML::LibXML;
 
 add_module('webmention.pl');
-AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments_on_';\n");
+AppendStringToFile($ConfigFile, <<'EOT');
+$CommentsPrefix = 'Comments_on_';
+$FooterNote = '<p>Author: <a rel="author" href="https://alexschroeder.ch/">Alex Schroeder</a></p>';
+EOT
+
 $CommentsPrefix = 'Comments_on_';
 
-# Test the various patterns that should or should not have a link
-sub test_headers {
-  $HtmlHeaders = '';
-  $q = new CGI;
-  my %params = @_;
-  for (keys %params) { $q->param($_, $params{$_}) };
-  WebmentionServerAddLink();
-  return $HtmlHeaders;
-}
-
-like(test_headers(), qr/$HomePage/, "Webmention link for default URL");
-unlike(test_headers(action => 'history', id => $HomePage), qr/$HomePage/,
+like(get_page(''), qr/webmention/,
+     "Webmention link for default URL");
+like(get_page('HomePage'), qr/webmention/,
+     "Webmention link for homepage");
+unlike(get_page('Comments_on_HomePage'), qr/webmention/,
+     "No webmention link for comment pages");
+unlike(get_page('action=history id=HomePage'), qr/webmention/,
        "No webmention link for history action");
-unlike(test_headers(action => 'browse', id => $HomePage), qr/$HomePage/,
-       "No webmention link for browse action");
-
-$UsePathInfo = 0;
-
-unlike(test_headers(action => 'browse', id => $HomePage), qr/$HomePage/,
-       "Webmention link for browse action without path info");
-unlike(test_headers(action => 'history', id => $HomePage), qr/$HomePage/,
-       "Still no webmention link for history action even without path info");
+unlike(get_page('action=browse id=HomePage revision=1'), qr/webmention/,
+       "No webmention link for browse action with revision");
 
 $UsePathInfo = 1;
 
@@ -106,4 +98,6 @@ $response = $ua->post($webmention, { source => $source_url, target => $target_ur
 
 ok($response->is_success, 'Got webmention response: ' . $response->message);
 
-test_page(get_page('Comments_on_Target'), 'Webmention:', $source_url);
+$page = get_page('Comments_on_Target');
+test_page($page, 'Webmention:', $source_url);
+xpath_test($page, '//a[@class="url https outside"][@href="https://alexschroeder.ch/"][text()="Alex Schroeder"]');

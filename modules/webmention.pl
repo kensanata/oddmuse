@@ -37,9 +37,8 @@ sub WebmentionServerAddLink {
   $Message .= T('Webmention module requires $CommentsPrefix to be set')  unless $CommentsPrefix;
   # only allow linking to reasonable pages: no URL parameters!
   my @params = $q->param;
-  return if $UsePathInfo and @params > 0;
-  return if not $UsePathInfo and (@params > 1 or @params == 1 and $params[0] ne 'id');
   return unless GetParam('action', 'browse') eq 'browse';
+  return if GetParam('revision');
   my $id = GetId() || $HomePage;
   return if $id =~ /^$CommentsPrefix/;
   my $link = '<link rel="webmention" type="application/wiki" href="'
@@ -113,10 +112,22 @@ sub DoWebmentionServer {
     ReportError(Ts('Webmention for %s already exists', $source), '400 BAD REQUEST');
   }
 
+  # try to determine a name and a link
+  my ($username, $homepage);
+  my $parser = XML::LibXML->new(recover => 2);
+  my $dom = $parser->load_html(string => $response->decoded_content);
+  my @nodes = $dom->findnodes('//*[@rel="author"]');
+  if (@nodes) {
+    my $node = shift @nodes;
+    $username = $node->textContent;
+    $homepage = $node->getAttribute('href');
+  }
+
   # post a comment without redirect at the end
   SetParam('aftertext', 'Webmention: ' . $source);
   SetParam('summary', 'Webmention');
-  SetParam('username', T('Anonymous'));
+  SetParam('username', $username || T('Anonymous'));
+  SetParam('homepage', $homepage);
   SetParam($QuestionaskerSecretKey, 1) if $QuestionaskerSecretKey;
   local *ReBrowsePage = sub {};
   DoPost($id);

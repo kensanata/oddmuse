@@ -33,21 +33,39 @@ if (@ARGV != 2) {
   die "Usage: webmention FROM TO\n";
 }
 
+my $parser = XML::LibXML->new(recover => 2);
+
 my ($from, $to) = @ARGV;
 my $ua = LWP::UserAgent->new(agent => "Oddmuse Webmention Client/0.1");
 
+print "Getting $from\n";
+my $response = $ua->get($from);
+
+if (!$response->is_success) {
+  die $response->status_line;
+}
+
+print "Parsing $from\n";
+my ($username, $homepage);
+my $dom = $parser->load_html(string => $response->decoded_content);
+my @nodes = $dom->findnodes('//*[@rel="author"]');
+if (@nodes) {
+  my $node = shift @nodes;
+  $username = $node->textContent;
+  $homepage = $node->getAttribute('href');
+}
+print "Webmention from " . join(", ", $username, $homepage) . "\n"
+    if $username or $homepage;
+
 print "Getting $to\n";
-my $response = $ua->get($to);
+$response = $ua->get($to);
 
 if (!$response->is_success) {
   die $response->status_line;
 }
 
 print "Parsing $to\n";
-my $data = $response->decoded_content;
-
-my $parser = XML::LibXML->new(recover => 2);
-my $dom = $parser->load_html(string => $data);
+$dom = $parser->load_html(string => $response->decoded_content);
 my $webmention = $dom->findvalue('//link[@rel="webmention"]/@href');
 
 if (!$webmention) {
