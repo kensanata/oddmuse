@@ -149,12 +149,13 @@ sub DoWebmentionMenu {
   my $text = GetPageContent($id);
   my @urls = $text =~ /$FullUrlPattern/g;
   if (@urls) {
-    print '<ul>';
-    for my $url (@urls) {
-      print $q->li(ScriptLink('action=webmentioning;from='. UrlEncode($id)
-			      . ';to=' . UrlEncode($url), $url, 'webmention'));
-    }
-    print '</ul>';
+    print GetFormStart();
+    print GetHiddenValue('action', 'webmentioning');
+    print GetHiddenValue('from', UrlEncode($id));
+    print '<p>';
+    print $q->checkbox_group('to', \@urls, undef, 'true');
+    print '</p>';
+    print $q->submit('go', T('Webmention!'));
   } else {
     print $q->p(T('No links found.'));
   }
@@ -167,17 +168,25 @@ sub DoWebmention {
   my $id = GetParam('from');
   ValidIdOrDie($id);
   my $from = ScriptUrl($id);
-  my $to = GetParam('to');
-  ReportError('Missing target') unless $to;
-  ReportError('Target must be an URL', '400 BAD REQUEST', 0, $q->p($to)) unless $to =~ /$FullUrlPattern/;
+  my @to = $q->param('to'); # multivalued!
+  ReportError('Missing target') unless @to;
   print GetHeader('', Ts('Webmentioning somebody from %s', NormalToFree($id)), '');
+  for my $to (@to) {
+    Webmention($from, $to);
+  }
+  PrintFooter();
+}
+
+sub Webmention {
+  my ($from, $to) = @_;
+  ReportError('Target must be an URL', '400 BAD REQUEST', 0, $q->p($to)) unless $to =~ /$FullUrlPattern/;
   my $ua = LWP::UserAgent->new(agent => "Oddmuse Webmention Client/0.1");
 
   print $q->p(Ts('Contacting %s', $to));
   my $response = $ua->get($to);
   if (!$response->is_success) {
-    print $q->p(Ts('Target reports an error: %s', $response->status_line), '502 BAD GATEWAY', 0, $q->p($to));
-    return PrintFooter();
+    print $q->p(Ts('Target reports an error: %s', $response->status_line));
+    return;
   }
 
   print $q->p("Parsing response");
@@ -187,8 +196,8 @@ sub DoWebmention {
   my $webmention = $dom->findvalue('//link[@rel="webmention"]/@href');
 
   if (!$webmention) {
-    print $q->p(T('No Webmention URL found'), '502 BAD GATEWAY', 0, $q->p($to));
-    return PrintFooter();
+    print $q->p(T('No Webmention URL found'));
+    return;
   }
 
   print $q->p("Webmention URL is $webmention");
@@ -204,6 +213,4 @@ sub DoWebmention {
     for my $node ($dom->getElementsByTagName('style')) { $node->parentNode->removeChild($node) };
     print $q->p($dom->textContent);
   }
-
-  PrintFooter();
 }
