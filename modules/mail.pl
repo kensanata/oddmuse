@@ -354,17 +354,11 @@ sub DoMailSubscribers {
   my %authors;
   require DB_File;
   tie my %h, "DB_File", encode_utf8($MailFile);
-  for my $encodedkey (sort keys %h) {
-    my @values = sort split(/$FS/, UrlDecode($h{$encodedkey}));
-    for my $author (@values) {
-      $authors{$author} = 1;
-    }
-  }
-  for my $author (sort keys %authors) {
+  for my $author (sort grep /\@/, map { UrlDecode($_) } keys %h) {
     if ($raw) {
       print "$author\n";
     } else {
-        print $q->li(ScriptLink("action=unsubscribe;who=$author"));
+        print $q->li(ScriptLink("action=unsubscribe;who=$author", $author));
     }
   }
   print '</ul></div>' unless $raw;
@@ -468,9 +462,13 @@ sub DoMailUnsubscribe {
   # MailUnsubscribe will set a parameter and must run before printing
   # the header.
   print GetHeader('', T('Subscriptions')),
-    $q->start_div({-class=>'content unsubscribe'});
-  print $q->p(Ts('Unsubscribed %s from the following pages:', $mail));
-  print $q->ul($q->li([map { GetPageLink($_) } @pages]));
+      $q->start_div({-class=>'content unsubscribe'});
+  if (@pages) {
+    print $q->p(Ts('Unsubscribed %s from the following pages:', $mail));
+    print $q->ul($q->li([map { GetPageLink($_) } @pages]));
+  } else {
+    print $q->p(Ts('Unsubscribed %s from all pages.', $mail));
+  }
   print $q->p(ScriptLink('action=subscriptions', T('Your mail subscriptions'),
 			 'subscriptions') . '.');
   print $q->end_div();
