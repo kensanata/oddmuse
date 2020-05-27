@@ -1,4 +1,4 @@
-# Copyright (C) 2009–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2009–2020  Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2015 Aleks-Daniel Jakimenko <alex.jakimenko@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -230,6 +230,10 @@ sub MailMenu {
        ScriptLink('action=subscriptionlist',
 		  T('All mail subscriptions'),
 		  'subscriptionlist')) if UserIsAdmin();
+  push(@$menuref,
+       ScriptLink('action=subscribers',
+		  T('All mail subscribers'),
+		  'subscribers')) if UserIsAdmin();
 }
 
 =head1 Your subscriptions
@@ -283,9 +287,9 @@ sub MailSubscription {
 
 =head1 Administrator Access
 
-The subscriptionlist action will show you the subscription database,
-if you're an administrator. It's a plain text file of the data, which
-you can use for debugging and scripting purposes.
+The C<subscriptionlist> action will show you the subscription database, if
+you're an administrator. With the C<raw> parameter set it's a plain text file of
+the data, which you can use for debugging and scripting purposes.
 
 =cut
 
@@ -325,6 +329,47 @@ sub MailLink {
   return GetPageLink($str) if index($str, '@') == -1;
   return ScriptLink("action=unsubscribe;who=$str;"
 		    . join(';', map { "pages=$_" } @pages), $str);
+}
+
+=pod
+
+The C<subscribers> action lists each unique email address for easier mass
+unsubscribing of email addresses after a wave of wiki spam.
+
+=cut
+
+$Action{subscribers} = \&DoMailSubscribers;
+
+sub DoMailSubscribers {
+  UserIsAdminOrError();
+  my $raw = GetParam('raw', 0);
+  if ($raw) {
+    print GetHttpHeader('text/plain');
+  } else {
+    print GetHeader('', T('Subscriptions')),
+      $q->start_div({-class=>'content subscribtionlist'}),
+      $q->p(T('Mail addresses are linked to unsubscription links.')),
+      '<ul>';
+  }
+  my %authors;
+  require DB_File;
+  tie my %h, "DB_File", encode_utf8($MailFile);
+  for my $encodedkey (sort keys %h) {
+    my @values = sort split(/$FS/, UrlDecode($h{$encodedkey}));
+    for my $author (@values) {
+      $authors{$author} = 1;
+    }
+  }
+  for my $author (sort keys %authors) {
+    if ($raw) {
+      print "$author\n";
+    } else {
+        print $q->li(ScriptLink("action=unsubscribe;who=$author"));
+    }
+  }
+  print '</ul></div>' unless $raw;
+  PrintFooter() unless $raw;
+  untie %h;
 }
 
 =head1 Subscription
@@ -402,13 +447,13 @@ sub MailSubscribe {
 
 =head1 Unsubscription
 
-The unsubscribe action will unsubscribe you from pages. The mail
-parameter contains the mail address to use and defaults to the value
-store in your cookie. Multiple pages parameters contain the pages to
-unsubscribe.
+The unsubscribe action will unsubscribe you from pages. The mail parameter
+contains the mail address to use and defaults to the value store in your cookie.
+Multiple pages parameters contain the pages to unsubscribe. Without naming
+pages, you will be unsubscribed from all pages.
 
-The who parameter overrides the mail parameter and is used for
-administrator unsubscription from the subscriptionlist action.
+The who parameter overrides the mail parameter and is used for administrator
+unsubscription from the subscriptionlist action.
 
 =cut
 
@@ -438,6 +483,7 @@ sub MailUnsubscribe {
   require DB_File;
   tie my %h, "DB_File", encode_utf8($MailFile);
   my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
+  @pages = keys %subscriptions unless @pages;
   foreach my $id (@pages) {
     delete $subscriptions{$id};
     # take care of reverse lookup
