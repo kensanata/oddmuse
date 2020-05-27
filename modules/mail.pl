@@ -477,7 +477,7 @@ sub DoMailUnsubscribe {
 
 sub MailUnsubscribe {
   my ($mail, @pages) = @_;
-  return unless $mail and @pages;
+  return unless $mail;
   require DB_File;
   tie my %h, "DB_File", encode_utf8($MailFile);
   my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
