@@ -215,7 +215,7 @@ sub base {
 sub link {
   my $self = shift;
   my $id = shift;
-  my $gemini = $self->base() . UrlEncode($id);
+  return $self->base() . UrlEncode($id);
 }
 
 sub print_link {
@@ -314,27 +314,28 @@ sub serve_rc {
   my $showedit = $ShowEdits = shift;
   $self->log(3, "Serving recent changes"
 	     . ($showedit ? " including minor changes" : ""));
-
-  $self->print_info("Recent Changes");
+  $self->success();
+  say "Recent Changes";
   if ($showedit) {
-    $self->print_menu("1" . "Skip minor edits", "do/rc");
+    $self->print_link("Skip minor edits", "do/rc");
   } else {
-    $self->print_menu("1" . "Show minor edits", "do/rc/showedits");
+    $self->print_link("Show minor edits", "do/rc/showedits");
   }
+  $self->print_link("Show RSS", "do/rss");
 
   ProcessRcLines(
     sub {
       my $date = shift;
-      $self->print_info("");
-      $self->print_info("$date");
-      $self->print_info("");
+      say "";
+      say "$date";
+      say "";
     },
     sub {
         my($id, $ts, $author_host, $username, $summary, $minor, $revision,
 	   $languages, $cluster, $last) = @_;
-	$self->print_menu("1" . normal_to_free($id), free_to_normal($id) . "/menu");
+	$self->print_link(normal_to_free($id), free_to_normal($id));
 	for my $line (split(/\n/, wrap('    ', '  ', $summary))) {
-	  $self->print_info($line);
+	  say $line;
 	}
     });
 }
@@ -342,18 +343,11 @@ sub serve_rc {
 sub serve_rss {
   my $self = shift;
   $self->log(3, "Serving Gemini RSS");
-  my $host = shift
-      || $self->{server}->{host}->[0]
-      || $self->{server}->{sockaddr};
-  my $port = shift
-      || $self->{server}->{port}->[0]
-      || $self->{server}->{sockport};
-  my $gemini = "gemini://$host:$port/";
-  local $ScriptName = $gemini;
+  $self->success("application/rss+xml");
   my $rss = GetRcRss();
-  $rss =~ s!$ScriptName\?action=rss!${gemini}1do/rss!g;
-  $rss =~ s!$ScriptName\?action=history;id=([^[:space:]<]*)!${gemini}1$1/history!g;
-  $rss =~ s!$ScriptName/([^[:space:]<]*)!${gemini}0$1!g;
+  # $rss =~ s!$ScriptName\?action=rss!${gemini}1do/rss!g;
+  # $rss =~ s!$ScriptName\?action=history;id=([^[:space:]<]*)!${gemini}1$1/history!g;
+  # $rss =~ s!$ScriptName/([^[:space:]<]*)!${gemini}0$1!g;
   $rss =~ s!<wiki:diff>.*</wiki:diff>\n!!g;
   print $rss;
 }
@@ -742,12 +736,12 @@ sub process_request {
     #   $self->serve_search(substr($url, 10));
     } elsif ($selector eq "do/tags") {
       $self->serve_tags();
-    # } elsif ($url eq "do/rc") {
-    #   $self->serve_rc(0);
-    # } elsif ($url eq "do/rss") {
-    #   $self->serve_rss(0);
-    # } elsif ($url eq "do/rc/showedits") {
-    #   $self->serve_rc(1);
+    } elsif ($selector eq "do/rc") {
+      $self->serve_rc(0);
+    } elsif ($selector eq "do/rss") {
+      $self->serve_rss(0);
+    } elsif ($selector eq "do/rc/showedits") {
+      $self->serve_rc(1);
     # } elsif ($url eq "do/new") {
     #   my $data = $self->read_text();
     #   $self->write_text_page(undef, $data);
