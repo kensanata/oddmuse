@@ -2287,12 +2287,13 @@ sub html_regular_expression {
   # An attribute name consists of an ASCII letter, _, or :, followed by zero or
   # more ASCII letters, digits, _, ., :, or -. (Note: This is the XML
   # specification restricted to ASCII. HTML5 is laxer.)
-  my $attribute_name = qr"[[:alpha:]_:][[:alnum:]+.:-]*";
+  my $attribute_name = qr"[[:alpha:]_:][[:alnum:]_.:-]*";
 
   # An unquoted attribute value is a nonempty string of characters not including
   # spaces, ", ', =, <, >, or `. Since < and > are quoted as &lt; and &gt; we
   # don't care about them?
-  my $unquoted = qr/[^"'`=]+/;
+  # my $unquoted = qr/[^"'`=]+/;
+  my $unquoted = qr/(?:&(?![gl]t;)|[^&"'`=])+/;
 
   # A single-quoted attribute value consists of ', zero or more characters not
   # including ', and a final '.
@@ -2519,6 +2520,29 @@ sub CommonMarkdownRule {
     return qq(<a href="$destination">$link</a>);
   }
 
+  # Syntax for images is like the syntax for links, with one difference. Instead
+  # of link text, we have an image description. The rules for this are the same
+  # as for link text, except that (a) an image description starts with ![ rather
+  # than [, and (b) an image description may contain links. An image description
+  # has inline elements as its contents. When an image is rendered to HTML, this
+  # is standardly used as the image’s alt attribute.
+  elsif (m/\G!\[(.+?)\]\(\s*(?:&lt;([^ \n]*)&gt;|([^ [:cntrl:]]+))?(?:\s+(?:"(.*)"|'(.*)'|\((.*)\)))?\s*\)/scg) {
+    my ($link, $destination, $title) = ($1, $2||$3, $4||$5||$6);
+    if (not valid_link($link)
+	or $3 and unbalanced_parentheses($3)
+	or $4 and unquoted($4, q{"})
+	or $5 and unquoted($5, q{'})
+	or $6 and unbalanced_parentheses($6) and unquoted($6, q{)})) {
+      pos = $oldpos + 1; # reset pos
+      return '[';
+    }
+    $link = unquote($link);
+    $destination = encode_without_url_escapes(unquote($destination));
+    $title = use_named_entities(unquote($title));
+    return qq(<img src="$destination" alt="$link" title="$title" />) if $title;
+    return qq(<img src="$destination" alt="$link" />);
+  }
+
   # autolinks
   elsif (m/\G&lt;($uri_re)&gt;/cg) {
     my $uri = $1;
@@ -2553,8 +2577,8 @@ sub CommonMarkdownRule {
     return AddHtmlEnvironment('em');
   }
 
-  # *code* (closing before adding environment!)
-  elsif (m/\G`([^\n`][^`]*)`/cg) {
+  # `code` (closing before adding environment!)
+  elsif (m/\G`((?:[^`]+\n)*[^`]*)`/cg) {
     my $code = $1;
     # Line breaks do not occur inside code spans
     $code =~ s/  +\n/ /g;
