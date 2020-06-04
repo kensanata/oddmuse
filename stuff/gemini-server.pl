@@ -220,6 +220,13 @@ sub base {
   my $self = shift;
   my $host = $self->host();
   my $port = $self->port();
+  return "gemini://$host:$port/";
+}
+
+sub base_re {
+  my $self = shift;
+  my $host = $self->host();
+  my $port = $self->port();
   return "gemini(\\+write)?://$host:$port/";
 }
 
@@ -427,8 +434,11 @@ sub serve_tag {
 sub write {
   my $self = shift;
   my $id = shift;
+  my $token = shift;
   my $data = shift;
+  SetParam("title", $id);
   SetParam("text", $data);
+  SetParam("answer", $token);
   my $error;
   eval {
     local *ReBrowsePage = sub {};
@@ -453,7 +463,12 @@ sub write_page {
     print "59 This is not a valid page name: $id\r\n";
     return;
   }
+  my $token = <STDIN>;
+  chomp $token;
+  # the token is going to be checked by the question-asker extension, or maybe
+  # it's a password...
   my $type = <STDIN>;
+  chomp $type;
   if (not $type) {
     print "59 Uploads require a MIME type\r\n";
     return;
@@ -462,24 +477,26 @@ sub write_page {
     return;
   }
   my $length = <STDIN>;
+  chomp $length;
   if ($length > $MaxPost) {
     print "59 This wiki does not allow more than $MaxPost bytes\r\n";
     return;
   } elsif ($length !~ /^\d+$/) {
-    print "59 You need to send along the number of bytes\r\n";
+    print "59 You need to send along the number of bytes, not $length\r\n";
     return;
   }
   local $/ = undef;
   my $data;
-  if (read STDIN, $data, $length != $length) {
-    print "59 Unable to read exactly $length bytes\r\n";
+  my $actual = read STDIN, $data, $length;
+  if ($actual != $length) {
+    print "59 Got $actual bytes instead of $length\r\n";
     return;
   }
   if ($type ne "text/plain") {
-    $self->write($id, "#FILE $type\n" . encode_base64($data));
+    $self->write($id, $token, "#FILE $type\n" . encode_base64($data));
     return;
   } elsif (utf8::decode($data)) {
-    $self->write($id, decode_utf8($data));
+    $self->write($id, $token, decode_utf8($data));
     return;
   } else {
     print "59 The text is invalid UTF-8\r\n";
@@ -532,25 +549,25 @@ sub process_request {
       die "Timed Out!\n";
     };
     alarm(10); # timeout
-    my $host = $self->host();
     my $port = $self->port();
     my $base = $self->base();
+    my $base_re = $self->base_re();
     my $url = <STDIN>; # no loop
     $url =~ s/\s+$//g; # no trailing whitespace
     $url =~ s!^([^/:]+://[^/:]+)(/.*|)$!$1:$port$2!; # add port
     $url .= '/' if $url =~ m!^[^/]+://[^/]+$!; # add missing trailing slash
     my $selector = $url;
-    $selector =~ s/^$base//;
+    $selector =~ s/^$base_re//;
     $selector = UrlDecode($selector);
     $self->log(3, "Looking at $url");
-    if ($url =~ "^gemini\+write://") {
+    if ($url =~ m"^gemini\+write://") {
       $self->write_page($selector);
-    } elsif ($url !~ "^gemini://") {
+    } elsif ($url !~ m"^gemini://") {
       $self->log(3, "Cannot serve $url");
       print "53 This server only serves the gemini schema\r\n";
-    } elsif ($url !~ "^$base") {
+    } elsif ($url !~ m"^$base_re") {
       $self->log(3, "Cannot serve $url");
-      print "53 This server only serves gemini://$host:$port\r\n";
+      print "53 This server only serves $base\r\n";
     } elsif (not $selector) {
       $self->serve_main_menu();
     } elsif ($selector eq "do/more") {
