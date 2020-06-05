@@ -265,6 +265,8 @@ sub serve_main_menu {
 
   $self->print_link("Recent Changes", "do/rc");
   $self->print_link("Index of all pages", "do/index");
+  $self->print_link("Search matching page names", "do/match");
+  $self->print_link("Search matching page content", "do/search");
 
   if ($TagFile) {
     $self->print_link("Index of all tags", "do/tags");
@@ -288,6 +290,40 @@ sub serve_index {
   for my $id (sort newest_first @IndexList) {
     $self->print_link(normal_to_free($id), free_to_normal($id));
   }
+}
+
+sub serve_match {
+  my $self = shift;
+  my $match = shift;
+  if (not $match) {
+    print("59 Search term is missing");
+    return;
+  }
+  $self->success();
+  $self->log(3, "Serving pages matching " . UrlEncode($match));
+  say "# Search for $match";
+  say "Use a regular expression to match page titles.";
+  say "Spaces in page titles are underlines, '_'.";
+  for my $id (sort newest_first grep(/$match/i, @IndexList)) {
+    $self->print_link(normal_to_free($id), free_to_normal($id));
+  }
+}
+
+sub serve_search {
+  my $self = shift;
+  my $str = shift;
+  if (not $str) {
+    print("59 Search term is missing");
+    return;
+  }
+  $self->success();
+  $self->log(3, "Serving search result for " . UrlEncode($str));
+  say "# Search for $str";
+  say "Use regular expressions separated by spaces.";
+  SearchTitleAndBody($str, sub {
+    my $id = shift;
+    $self->print_link(normal_to_free($id), free_to_normal($id));
+  });
 }
 
 sub serve_tags {
@@ -402,11 +438,16 @@ sub serve_page {
 }
 
 sub newest_first {
-  my ($A, $B) = ($a, $b);
-  if ($A =~ /^\d\d\d\d-\d\d-\d\d/ and $B =~ /^\d\d\d\d-\d\d-\d\d/) {
-    return $B cmp $A;
+  my ($comment_a, $image_a, $article_a) = $a =~ /^($CommentsPrefix|Image_(\d+)_for_)?(\d\d\d\d-\d\d-\d\d.*)/;
+  my ($comment_b, $image_b, $article_b) = $b =~ /^($CommentsPrefix|Image_(\d+)_for_)?(\d\d\d\d-\d\d-\d\d.*)/;
+  if ($article_a and $article_a eq $article_b) {
+    # one of them must be a comment or an image
+    return ($comment_a cmp $comment_b) || ($image_a <=> $image_b);
+  } elsif ($article_a or $article_b) {
+    return $article_b cmp $article_a;
+  } else {
+    return $a cmp $b;
   }
-  $A cmp $B;
 }
 
 sub serve_tag_list {
@@ -559,7 +600,7 @@ sub process_request {
     my $selector = $url;
     $selector =~ s/^$base_re//;
     $selector = UrlDecode($selector);
-    $self->log(3, "Looking at $url");
+    $self->log(3, "Looking at $url / $selector");
     if ($url =~ m"^gemini\+write://") {
       $self->write_page($selector);
     } elsif ($url !~ m"^gemini://") {
@@ -574,6 +615,14 @@ sub process_request {
       $self->serve_archive();
     } elsif ($selector eq "do/index") {
       $self->serve_index();
+    } elsif ($selector eq "do/match") {
+      print "10 Find page by name (Perl regexp)\r\n";
+    } elsif (substr($selector, 0, 9) eq "do/match?") {
+      $self->serve_match(substr($selector, 9));
+    } elsif ($selector eq "do/search") {
+      print "10 Find page by content (Perl regexp, use tag:foo to search for tags)\r\n";
+    } elsif (substr($selector, 0, 10) eq "do/search?") {
+      $self->serve_search(substr($selector, 10));
     } elsif ($selector eq "do/tags") {
       $self->serve_tags();
     } elsif ($selector eq "do/rc") {
