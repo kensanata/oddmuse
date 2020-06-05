@@ -448,7 +448,7 @@ sub write {
   if ($error) {
     print "59 Unable to save $id: $error\r\n";
   } else {
-    print "29 Saved $id\r\n";
+    print "31 " . $self->base() . $id . "\r\n";
   }
 }
 
