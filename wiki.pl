@@ -802,7 +802,7 @@ sub UrlEncode {
 
 sub UrlDecode {
   my $str = shift;
-  return decode_utf8($str) if $str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/eg;
+  return decode_utf8($str) if $str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/eig;
   return $str;
 }
 
