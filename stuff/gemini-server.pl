@@ -92,11 +92,11 @@ use Text::Wrap;
 use Pod::Text;
 use Socket;
 
-our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q,
-    %Page, $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
-    $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName,
-    $Now, %RecentVisitors, $SurgeProtectionTime, $SurgeProtectionViews,
-    $SurgeProtection, @UploadTypes, $UploadAllowed);
+our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q, %Page,
+$OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern, $CommentsPrefix,
+$EditAllowed, $NoEditFile, $SiteName, $ScriptName, $Now, %RecentVisitors,
+$SurgeProtectionTime, $SurgeProtectionViews, $SurgeProtection, @UploadTypes,
+$UploadAllowed, $FullUrlPattern, $FreeLinkPattern);
 
 # Help
 if ($ARGV[0] eq '--help') {
@@ -425,7 +425,7 @@ sub serve_text_page {
   print $text;
 }
 
-sub serve_page {
+sub serve_raw_page {
   my $self = shift;
   my $id = shift;
   my $revision = shift;
@@ -434,6 +434,52 @@ sub serve_page {
     $self->serve_file_page($id, $type, $page);
   } else {
     $self->serve_text_page($id, $page);
+  }
+}
+
+sub gemini_link {
+  my $self = shift;
+  my $id = shift;
+  my $text = shift || NormalToFree($id);
+  $id = FreeToNormal($id);
+  $text =~ s/\s+/ /g;
+  my $url = $self->link($id);
+  return "=> $url $text";
+}
+
+sub serve_gemini_page {
+  my $self = shift;
+  my $id = shift;
+  my $page = shift;
+  my $text = $page->{text};
+  my @blocks = split(/\n\n+/, $text);
+  for my $block (@blocks) {
+    my @links;
+    $block =~ s/\[([^]]+)\]\(([^) ]+)\)/push(@links, $self->gemini_link($2, $1)); $1/mge;
+    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
+    $block =~ s/\[\[tag:([^]]+)\]\]/push(@links, $self->gemini_link("$1\/tag", $1)); $1/mge;
+    $block =~ s/\[\[$FreeLinkPattern\|([^\]]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
+    $block =~ s/\[\[$FreeLinkPattern\]\]/push(@links, $self->gemini_link($1)); $1/mge;
+    $block = fill('', '', $block) if $block =~ /^\w/; # not a list, quote, etc
+    $block .= join("\n", "", @links);
+  }
+  $text = join("\n\n", @blocks);
+  $text =~ s/^Tags: .*/Tags:/m;
+  $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text)
+	     . " bytes of text");
+  $self->success();
+  print $text;
+}
+
+sub serve_gemini {
+  my $self = shift;
+  my $id = shift;
+  my $revision = shift;
+  my $page = get_page($id, $revision);
+  if (my ($type) = TextIsFile($page->{text})) {
+    $self->serve_file_page($id, $type, $page);
+  } else {
+    $self->serve_gemini_page($id, $page);
   }
 }
 
@@ -634,8 +680,11 @@ sub process_request {
     } elsif ($selector =~ m!^([^/]*)/tag$!) {
       $self->serve_tag($1);
     } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?$!) {
-      $self->log(3, "Serve page $selector");
-      $self->serve_page($1, $2);
+      $self->log(3, "Serve Gemini page $selector");
+      $self->serve_gemini($1, $2);
+    } elsif ($selector =~ m!^raw/([^/]*)(?:/(\d+))?$!) {
+      $self->log(3, "Serve raw page $selector");
+      $self->serve_raw_page($1, $2);
     } else {
       $self->log(3, "Unknown $selector");
       print "40 " . (ValidId($url) || 'Cause unknown') . "\r\n";
