@@ -233,7 +233,8 @@ sub base_re {
 sub link {
   my $self = shift;
   my $id = shift;
-  return $self->base() . UrlEncode($id);
+  # don't encode the slash
+  return $self->base() . join("/", map { UrlEncode($_) } split (/\//, $id));
 }
 
 sub print_link {
@@ -264,10 +265,12 @@ sub serve_main_menu {
   }
 
   $self->print_link("Recent Changes", "do/rc");
-  $self->print_link("Index of all pages", "do/index");
   $self->print_link("Search matching page names", "do/match");
   $self->print_link("Search matching page content", "do/search");
+  $self->print_link("New page", "do/new");
+  say "";
 
+  $self->print_link("Index of all pages", "do/index");
   if ($TagFile) {
     $self->print_link("Index of all tags", "do/tags");
   }
@@ -336,8 +339,8 @@ sub serve_tags {
   foreach my $tag (grep !/^_/, keys %h) {
     $count{$tag} = @{$h{$tag}};
   }
-  foreach my $id (sort { $count{$b} <=> $count{$a} } keys %count) {
-    $self->print_link(normal_to_free($id), free_to_normal($id) . "/tag");
+  foreach my $id (sort { $count{$b} <=> $count{$a} or $a cmp $b } keys %count) {
+    $self->print_link(normal_to_free($id) . " ($count{$id})", "tag/" . free_to_normal($id));
   }
 }
 
@@ -413,19 +416,17 @@ sub serve_file_page {
   print($data);
 }
 
-sub serve_text_page {
+sub serve_raw_page {
   my $self = shift;
   my $id = shift;
   my $page = shift;
   my $text = $page->{text};
-  $text =~ s/\[\[tag:([^]]+)\]\]/'#' . join('_', split(' ', $1))/mge;
-  $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text)
-	     . " bytes of text");
+  $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text) . " bytes of text");
   $self->success('text/markdown; charset=UTF-8');
   print $text;
 }
 
-sub serve_raw_page {
+sub serve_raw {
   my $self = shift;
   my $id = shift;
   my $revision = shift;
@@ -433,7 +434,7 @@ sub serve_raw_page {
   if (my ($type) = TextIsFile($page->{text})) {
     $self->serve_file_page($id, $type, $page);
   } else {
-    $self->serve_text_page($id, $page);
+    $self->serve_raw_page($id, $page);
   }
 }
 
@@ -457,14 +458,34 @@ sub serve_gemini_page {
     my @links;
     $block =~ s/\[([^]]+)\]\(([^) ]+)\)/push(@links, $self->gemini_link($2, $1)); $1/mge;
     $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
-    $block =~ s/\[\[tag:([^]]+)\]\]/push(@links, $self->gemini_link("$1\/tag", $1)); $1/mge;
-    $block =~ s/\[\[$FreeLinkPattern\|([^\]]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
+    $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/mge;
+    $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/mge;
+    $block =~ s/\[\[image:([^]|]+)\]\]/push(@links, $self->gemini_link($1, "$1 (image)")); "$1"/mge;
+    $block =~ s/\[\[image:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)")); "$2"/mge;
+    $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$2 (follow-up)")); "$2"/mge;
+    $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$4 (follow-up)")); "$2"/mge;
+    $block =~ s/\[\[$FreeLinkPattern\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
     $block =~ s/\[\[$FreeLinkPattern\]\]/push(@links, $self->gemini_link($1)); $1/mge;
     $block = fill('', '', $block) if $block =~ /^\w/; # not a list, quote, etc
     $block .= join("\n", "", @links);
   }
   $text = join("\n\n", @blocks);
   $text =~ s/^Tags: .*/Tags:/m;
+  # Footer
+  my @links;
+  if ($CommentsPattern) {
+    if ($id =~ /$CommentsPattern/) {
+      my $original = $1;
+      # sometimes we are on a comment page and cannot derive the original
+      push(@links, $self->gemini_link($original, "Back to the original page")) if $original;
+    } else {
+      my $comments = free_to_normal($CommentsPrefix . $id);
+      push(@links, $self->gemini_link($comments, "Comments on this page"));
+    }
+  }
+  push(@links, $self->gemini_link("raw/$id", "Raw text"));
+  $text .= join("\n", "\n\nMore:", @links) if @links;
+  # Serve
   $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text)
 	     . " bytes of text");
   $self->success();
@@ -526,6 +547,7 @@ sub write {
   SetParam("title", $id);
   SetParam("text", $data);
   SetParam("answer", $token);
+  SetParam("recent_edit", $IndexHash{$id} ? "on" : "");
   my $error;
   eval {
     local *ReBrowsePage = sub {};
@@ -645,9 +667,13 @@ sub process_request {
     $url .= '/' if $url =~ m!^[^/]+://[^/]+$!; # add missing trailing slash
     my $selector = $url;
     $selector =~ s/^$base_re//;
-    $selector = UrlDecode($selector);
+    $selector = FreeToNormal(UrlDecode($selector));
     $self->log(3, "Looking at $url / $selector");
-    if ($url =~ m"^gemini\+write://") {
+    if ($url =~ m"^gemini\+write://" and $selector !~ /^raw\//) {
+      $self->log(3, "Cannot write $url");
+      print "59 This server only allows writing of raw pages\r\n";
+    } elsif ($url =~ m"^gemini\+write://") {
+      $selector =~ s/^raw\///;
       $self->write_page($selector);
     } elsif ($url !~ m"^gemini://") {
       $self->log(3, "Cannot serve $url");
@@ -669,6 +695,10 @@ sub process_request {
       print "10 Find page by content (Perl regexp, use tag:foo to search for tags)\r\n";
     } elsif (substr($selector, 0, 10) eq "do/search?") {
       $self->serve_search(substr($selector, 10));
+    } elsif ($selector eq "do/new") {
+      print "10 New page\r\n";
+    } elsif (substr($selector, 0, 7) eq "do/new?") {
+      print "30 $base" . "raw/" . (substr($selector, 7)) . "\r\n";
     } elsif ($selector eq "do/tags") {
       $self->serve_tags();
     } elsif ($selector eq "do/rc") {
@@ -677,14 +707,14 @@ sub process_request {
       $self->serve_rss(0);
     } elsif ($selector eq "do/rc/showedits") {
       $self->serve_rc(1);
-    } elsif ($selector =~ m!^([^/]*)/tag$!) {
+    } elsif ($selector =~ m!^tag/([^/]*)$!) {
       $self->serve_tag($1);
     } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?$!) {
       $self->log(3, "Serve Gemini page $selector");
       $self->serve_gemini($1, $2);
     } elsif ($selector =~ m!^raw/([^/]*)(?:/(\d+))?$!) {
       $self->log(3, "Serve raw page $selector");
-      $self->serve_raw_page($1, $2);
+      $self->serve_raw($1, $2);
     } else {
       $self->log(3, "Unknown $selector");
       print "40 " . (ValidId($url) || 'Cause unknown') . "\r\n";
