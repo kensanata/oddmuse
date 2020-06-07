@@ -88,7 +88,6 @@ use 5.26.0;
 use base qw(Net::Server::Fork); # any personality will do
 use List::Util qw(first);
 use MIME::Base64;
-use Text::Wrap;
 use Pod::Text;
 use Socket;
 
@@ -96,7 +95,7 @@ our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q, %Page,
 $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern, $CommentsPrefix,
 $EditAllowed, $NoEditFile, $SiteName, $ScriptName, $Now, %RecentVisitors,
 $SurgeProtectionTime, $SurgeProtectionViews, $SurgeProtection, @UploadTypes,
-$UploadAllowed, $FullUrlPattern, $FreeLinkPattern);
+$UploadAllowed, $FullUrlPattern, $FreeLinkPattern, @QuestionaskerQuestions);
 
 # Help
 if ($ARGV[0] eq '--help') {
@@ -366,12 +365,10 @@ sub serve_rc {
       say "";
     },
     sub {
-        my($id, $ts, $author_host, $username, $summary, $minor, $revision,
-	   $languages, $cluster, $last) = @_;
-	$self->print_link(normal_to_free($id), free_to_normal($id));
-	for my $line (split(/\n/, wrap('    ', '  ', $summary))) {
-	  say $line;
-	}
+      my($id, $ts, $author_host, $username, $summary, $minor, $revision,
+	 $languages, $cluster, $last) = @_;
+      $self->print_link(normal_to_free($id), free_to_normal($id));
+      say $summary if $summary;
     });
 }
 
@@ -448,16 +445,21 @@ sub gemini_link {
   return "=> $url $text";
 }
 
+# All I have to do now is to transform the wiki text into Gemini format: Each
+# line is a paragraph. A list item starts with an asterisk and a space. A link
+# is a line consisting of "=>", space, URL, space, and some text.
 sub serve_gemini_page {
   my $self = shift;
   my $id = shift;
   my $page = shift;
   my $text = $page->{text};
-  my @blocks = split(/\n\n+/, $text);
+  my @blocks = split(/\n\n+|\n+(?=\* )/, $text);
   for my $block (@blocks) {
     my @links;
+    $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, "=> $2 $1"); $1/mge;
     $block =~ s/\[([^]]+)\]\(([^) ]+)\)/push(@links, $self->gemini_link($2, $1)); $1/mge;
     $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
+    $block =~ s/\[\[in-reply-to:$FullUrlPattern\|([^]]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
     $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/mge;
     $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/mge;
     $block =~ s/\[\[image:([^]|]+)\]\]/push(@links, $self->gemini_link($1, "$1 (image)")); "$1"/mge;
@@ -466,7 +468,7 @@ sub serve_gemini_page {
     $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$4 (follow-up)")); "$2"/mge;
     $block =~ s/\[\[$FreeLinkPattern\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
     $block =~ s/\[\[$FreeLinkPattern\]\]/push(@links, $self->gemini_link($1)); $1/mge;
-    $block = fill('', '', $block) if $block =~ /^\w/; # not a list, quote, etc
+    $block =~ s/\s+/ /g unless $block =~ m/^```/;
     $block .= join("\n", "", @links);
   }
   $text = join("\n\n", @blocks);
@@ -478,6 +480,7 @@ sub serve_gemini_page {
       my $original = $1;
       # sometimes we are on a comment page and cannot derive the original
       push(@links, $self->gemini_link($original, "Back to the original page")) if $original;
+      push(@links, $self->gemini_link("do/comment/$id", "Leave a comment"));
     } else {
       my $comments = free_to_normal($CommentsPrefix . $id);
       push(@links, $self->gemini_link($comments, "Comments on this page"));
@@ -505,11 +508,11 @@ sub serve_gemini {
 }
 
 sub newest_first {
-  my ($comment_a, $image_a, $article_a) = $a =~ /^($CommentsPrefix|Image_(\d+)_for_)?(\d\d\d\d-\d\d-\d\d.*)/;
-  my ($comment_b, $image_b, $article_b) = $b =~ /^($CommentsPrefix|Image_(\d+)_for_)?(\d\d\d\d-\d\d-\d\d.*)/;
+  my ($comment_a, $image_a, $date_a, $article_a) = $a =~ /^($CommentsPrefix|Image_(\d+)_for_)?(\d\d\d\d-\d\d-\d\d_?)?(.*)/;
+  my ($comment_b, $image_b, $date_b, $article_b) = $b =~ /^($CommentsPrefix|Image_(\d+)_for_)?(\d\d\d\d-\d\d-\d\d_?)?(.*)/;
   if ($article_a and $article_a eq $article_b) {
     # one of them must be a comment or an image
-    return ($comment_a cmp $comment_b) || ($image_a <=> $image_b);
+    return ($date_b cmp $date_a) || ($comment_a cmp $comment_b) || ($image_a <=> $image_b);
   } elsif ($article_a or $article_b) {
     return $article_b cmp $article_a;
   } else {
@@ -557,7 +560,42 @@ sub write {
   if ($error) {
     print "59 Unable to save $id: $error\r\n";
   } else {
-    print "31 " . $self->base() . $id . "\r\n";
+    print "31 " . $self->base() . UrlEncode($id) . "\r\n";
+  }
+}
+
+sub write_comment {
+  my $self = shift;
+  my $id = shift;
+  my $n = shift;
+  my $a = shift;
+  my $c = shift;
+  my $error;
+  if (not $id) {
+    print "59 The URL lacks a page name\r\n";
+    return;
+  }
+  if ($error = ValidId($id)) {
+    print "59 $id is not a valid page name: $error\r\n";
+    return;
+  }
+  if (not $c) {
+    print "59 The comment is empty\r\n";
+    return;
+  }
+  SetParam("title", $id);
+  SetParam("question_num", $n);
+  SetParam("answer", $a);
+  SetParam("aftertext", $c);
+  eval {
+    local *ReBrowsePage = sub {};
+    local *ReportError = sub { $error = shift };
+    DoPost($id);
+  };
+  if ($error) {
+    print "59 Unable to save comment on $id: $error\r\n";
+  } else {
+    print "31 " . $self->base() . UrlEncode($id) . "\r\n";
   }
 }
 
@@ -568,8 +606,8 @@ sub write_page {
     print "59 The URL lacks a page name\r\n";
     return;
   }
-  if ($id !~ m!^[^/]*$!) {
-    print "59 This is not a valid page name: $id\r\n";
+  if (my $error = ValidId($id)) {
+    print "59 $id is not a valid page name: $error\r\n";
     return;
   }
   my $token = <STDIN>;
@@ -667,14 +705,14 @@ sub process_request {
     $url .= '/' if $url =~ m!^[^/]+://[^/]+$!; # add missing trailing slash
     my $selector = $url;
     $selector =~ s/^$base_re//;
-    $selector = FreeToNormal(UrlDecode($selector));
+    $selector = UrlDecode($selector);
     $self->log(3, "Looking at $url / $selector");
     if ($url =~ m"^gemini\+write://" and $selector !~ /^raw\//) {
       $self->log(3, "Cannot write $url");
       print "59 This server only allows writing of raw pages\r\n";
     } elsif ($url =~ m"^gemini\+write://") {
       $selector =~ s/^raw\///;
-      $self->write_page($selector);
+      $self->write_page(FreeToNormal($selector));
     } elsif ($url !~ m"^gemini://") {
       $self->log(3, "Cannot serve $url");
       print "53 This server only serves the gemini schema\r\n";
@@ -690,15 +728,40 @@ sub process_request {
     } elsif ($selector eq "do/match") {
       print "10 Find page by name (Perl regexp)\r\n";
     } elsif (substr($selector, 0, 9) eq "do/match?") {
-      $self->serve_match(substr($selector, 9));
+      $self->serve_match(FreeToNormal(substr($selector, 9))); # no spaces in page titles
     } elsif ($selector eq "do/search") {
       print "10 Find page by content (Perl regexp, use tag:foo to search for tags)\r\n";
     } elsif (substr($selector, 0, 10) eq "do/search?") {
-      $self->serve_search(substr($selector, 10));
+      $self->serve_search(substr($selector, 10)); # search terms include spaces
     } elsif ($selector eq "do/new") {
       print "10 New page\r\n";
     } elsif (substr($selector, 0, 7) eq "do/new?") {
-      print "30 $base" . "raw/" . (substr($selector, 7)) . "\r\n";
+      print "30 $base" . "raw/" . UrlEncode(substr($selector, 7)) . "\r\n";
+    } elsif (my ($id) = $selector =~ m!do/comment/([^/?]*)$!) {
+      my $n = int(rand(scalar(@QuestionaskerQuestions)));
+      print "30 $base" . "do/comment/" . UrlEncode($id) . "/$n\r\n";
+    } elsif (my ($id, $n) = $selector =~ m!do/comment/([^/?]*)/(\d+)$!) {
+      my $q = $QuestionaskerQuestions[$n][0];
+      print "10 $q\r\n";
+    } elsif (my ($id, $n, $a) = $selector =~ m!do/comment/([^/?]*)/(\d+)\?([^/?]*)$!) {
+      if ($QuestionaskerQuestions[$n][1]($a)) {
+	print "30 $base" . "do/comment/" . UrlEncode($id) . "/$n/" . UrlEncode($a) . "\r\n";
+      } else {
+	print "59 You did not answer correctly.\r\n";
+      }
+    } elsif (my ($id, $n, $a) = $selector =~ m!do/comment/([^/?]*)/(\d+)/([^/?]*)$!) {
+      if ($QuestionaskerQuestions[$n][1]($a)) {
+	print "10 Comment\r\n";
+      } else {
+	print "59 You did not answer correctly.\r\n";
+      }
+    } elsif ($selector =~ m!do/comment/([^/?]*)/(\d+)/([^/?]*)\?([^/?]*)$!) {
+      my ($id, $n, $a, $c) = ($1, $2, $3, $4);
+      if ($QuestionaskerQuestions[$n][1]($a)) {
+	$self->write_comment(FreeToNormal($id), $n, $a, NormalToFree($c));
+      } else {
+	print "59 You did not answer correctly.\r\n";
+      }
     } elsif ($selector eq "do/tags") {
       $self->serve_tags();
     } elsif ($selector eq "do/rc") {
@@ -711,13 +774,13 @@ sub process_request {
       $self->serve_tag($1);
     } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?$!) {
       $self->log(3, "Serve Gemini page $selector");
-      $self->serve_gemini($1, $2);
+      $self->serve_gemini(UrlEncode($1), $2);
     } elsif ($selector =~ m!^raw/([^/]*)(?:/(\d+))?$!) {
       $self->log(3, "Serve raw page $selector");
-      $self->serve_raw($1, $2);
+      $self->serve_raw(UrlEncode($1), $2);
     } else {
       $self->log(3, "Unknown $selector");
-      print "40 " . (ValidId($url) || 'Cause unknown') . "\r\n";
+      print "40 " . (ValidId(FreeToNormal($selector)) || 'Cause unknown') . "\r\n";
     }
 
     $self->log(4, "Done");
