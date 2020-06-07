@@ -560,7 +560,7 @@ sub write {
   if ($error) {
     print "59 Unable to save $id: $error\r\n";
   } else {
-    print "31 " . $self->base() . UrlEncode($id) . "\r\n";
+    print "30 " . $self->base() . UrlEncode($id) . "\r\n";
   }
 }
 
@@ -595,7 +595,7 @@ sub write_comment {
   if ($error) {
     print "59 Unable to save comment on $id: $error\r\n";
   } else {
-    print "31 " . $self->base() . UrlEncode($id) . "\r\n";
+    print "30 " . $self->base() . UrlEncode($id) . "\r\n";
   }
 }
 
