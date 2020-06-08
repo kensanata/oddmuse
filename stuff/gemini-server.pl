@@ -453,7 +453,7 @@ sub serve_gemini_page {
   my $id = shift;
   my $page = shift;
   my $text = $page->{text};
-  my @blocks = split(/\n\n+|\n+(?=\* )/, $text);
+  my @blocks = split(/\n\n+/, $text);
   for my $block (@blocks) {
     my @links;
     $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, "=> $2 $1"); $1/mge;
@@ -462,14 +462,18 @@ sub serve_gemini_page {
     $block =~ s/\[\[in-reply-to:$FullUrlPattern\|([^]]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
     $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/mge;
     $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/mge;
+    $block =~ s/<journal search tag:(\S+)>\n*/push(@links, $self->gemini_link("tag\/$1", "Explore the $1 tag")); ""/mge;
     $block =~ s/\[\[image:([^]|]+)\]\]/push(@links, $self->gemini_link($1, "$1 (image)")); "$1"/mge;
     $block =~ s/\[\[image:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)")); "$2"/mge;
     $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$2 (follow-up)")); "$2"/mge;
     $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$4 (follow-up)")); "$2"/mge;
     $block =~ s/\[\[$FreeLinkPattern\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
     $block =~ s/\[\[$FreeLinkPattern\]\]/push(@links, $self->gemini_link($1)); $1/mge;
-    $block =~ s/\s+/ /g unless $block =~ m/^```/;
-    $block .= join("\n", "", @links);
+    $block =~ s/\s+/ /g unless $block =~ m/^(?:```|\* )/; # unwrap
+    $block =~ s/^\s+//; # trim
+    $block =~ s/\s+$//; # trim
+    $block .= "\n" if $block and @links; # no empty line if the block was all links
+    $block .= join("\n", @links);
   }
   $text = join("\n\n", @blocks);
   $text =~ s/^Tags: .*/Tags:/m;
@@ -560,7 +564,7 @@ sub write {
   if ($error) {
     print "59 Unable to save $id: $error\r\n";
   } else {
-    print "30 " . $self->base() . UrlEncode($id) . "\r\n";
+    print "31 " . $self->base() . UrlEncode($id) . "\r\n";
   }
 }
 
@@ -595,7 +599,7 @@ sub write_comment {
   if ($error) {
     print "59 Unable to save comment on $id: $error\r\n";
   } else {
-    print "30 " . $self->base() . UrlEncode($id) . "\r\n";
+    print "31 " . $self->base() . UrlEncode($id) . "\r\n";
   }
 }
 
