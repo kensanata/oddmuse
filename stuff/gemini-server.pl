@@ -456,10 +456,11 @@ sub serve_gemini_page {
   my @blocks = split(/\n\n+/, $text);
   for my $block (@blocks) {
     my @links;
+    # remember not to pass full URLs to gemini_link!
     $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, "=> $2 $1"); $1/mge;
     $block =~ s/\[([^]]+)\]\(([^) ]+)\)/push(@links, $self->gemini_link($2, $1)); $1/mge;
-    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
-    $block =~ s/\[\[in-reply-to:$FullUrlPattern\|([^]]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
+    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, "=> $1 $2"); $2/mge;
+    $block =~ s/\[\[in-reply-to:$FullUrlPattern\|([^]]+)\]\]/push(@links, "=> $1 $2"); $2/mge;
     $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/mge;
     $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/mge;
     $block =~ s/<journal search tag:(\S+)>\n*/push(@links, $self->gemini_link("tag\/$1", "Explore the $1 tag")); ""/mge;
@@ -551,6 +552,7 @@ sub write {
   my $id = shift;
   my $token = shift;
   my $data = shift;
+  $self->log(3, "Writing $id");
   SetParam("title", $id);
   SetParam("text", $data);
   SetParam("answer", $token);
@@ -564,6 +566,7 @@ sub write {
   if ($error) {
     print "59 Unable to save $id: $error\r\n";
   } else {
+    $self->log(3, "Wrote $id");
     print "31 " . $self->base() . UrlEncode($id) . "\r\n";
   }
 }
@@ -644,10 +647,12 @@ sub write_page {
     return;
   }
   if ($type ne "text/plain") {
+    $self->log(3, "Writing $type to $id, $actual bytes");
     $self->write($id, $token, "#FILE $type\n" . encode_base64($data));
     return;
   } elsif (utf8::decode($data)) {
-    $self->write($id, $token, decode_utf8($data));
+    $self->log(3, "Writing $type to $id, $actual bytes");
+    $self->write($id, $token, $data);
     return;
   } else {
     print "59 The text is invalid UTF-8\r\n";
@@ -776,12 +781,15 @@ sub process_request {
       $self->serve_rc(1);
     } elsif ($selector =~ m!^tag/([^/]*)$!) {
       $self->serve_tag($1);
+    } elsif ($selector =~ m!^([^/]*\.txt)$!) {
+      $self->log(3, "Serve $selector raw");
+      $self->serve_raw(FreeToNormal($1));
     } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?$!) {
       $self->log(3, "Serve Gemini page $selector");
-      $self->serve_gemini(UrlEncode($1), $2);
+      $self->serve_gemini(FreeToNormal($1), $2);
     } elsif ($selector =~ m!^raw/([^/]*)(?:/(\d+))?$!) {
       $self->log(3, "Serve raw page $selector");
-      $self->serve_raw(UrlEncode($1), $2);
+      $self->serve_raw(FreeToNormal($1), $2);
     } else {
       $self->log(3, "Unknown $selector");
       print "40 " . (ValidId(FreeToNormal($selector)) || 'Cause unknown') . "\r\n";
