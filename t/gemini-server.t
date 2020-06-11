@@ -33,6 +33,7 @@ AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 our($CommentsPrefix);
 $CommentsPrefix = 'Comments_on_';
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments_on_';\n");
+AppendStringToFile($ConfigFile, "\@QuestionaskerQuestions = (['Who rules in Rivendell?' => sub { shift =~ /^Elrond/i }]);\n");
 
 my $host = "127.0.0.1";
 my $port = random_port();
@@ -186,14 +187,39 @@ Keyboard clicking, then it stops.
 Rain falls and I think
 EOT
 
-$page = query_gemini("$write\/raw/Haiku", "\ntext/plain\n76\n$haiku");
-like($page, qr/^31 $base\/Haiku\r$/, "Write Haiku");
+$page = query_gemini("$write/raw/Haiku", "\ntext/plain\n76\n$haiku");
+like($page, qr/^30 $base\/Haiku\r$/, "Write Haiku");
 
 my $haiku_re = $haiku;
 $haiku_re =~ s/\s+/ /g; # lines get wrapped
 $haiku_re =~ s/\s+$//g;
 $haiku_re = quotemeta($haiku_re);
-$page = query_gemini("$base\/Haiku");
+$page = query_gemini("$base/Haiku");
 like($page, qr/^$haiku_re/m, "Haiku saved");
+
+# comment
+
+like($page, qr/^=> $base\/Comments_on_Haiku Comments on this page\r$/m, "Comment page link");
+
+$page = query_gemini("$base/Comments_on_Haiku");
+like($page, qr/^=> $base\/do\/comment\/Comments_on_Haiku Leave a comment\r$/m, "Leave comment link");
+
+$page = query_gemini("$base/do/comment/Comments_on_Haiku");
+like($page, qr/^30 $base\/do\/comment\/Comments_on_Haiku\/0\r$/, "Redirect to a question");
+
+$page = query_gemini("$base/do/comment/Comments_on_Haiku/0");
+like($page, qr/^10 Who rules in Rivendell\?\r$/, "Ask security question");
+
+$page = query_gemini("$base/do/comment/Comments_on_Haiku/0?elrond");
+like($page, qr/^30 $base\/do\/comment\/Comments_on_Haiku\/0\/elrond\r$/, "Redirect to comment prompt");
+
+$page = query_gemini("$base/do/comment/Comments_on_Haiku/0/elrond");
+like($page, qr/^10 Comment\r$/, "Ask for comment");
+
+$page = query_gemini("$base/do/comment/Comments_on_Haiku/0/elrond?Give%20me%20the%20ring!");
+like($page, qr/^30 $base\/Comments_on_Haiku\r$/, "Redirect back to the main page");
+
+$page = query_gemini("$base/Comments_on_Haiku");
+like($page, qr/^Give me the ring!\n\n-- Anonymous/m, "Comment saved");
 
 done_testing();
