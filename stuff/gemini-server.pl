@@ -86,7 +86,7 @@ use utf8;
 use strict;
 use 5.26.0;
 use base qw(Net::Server::Fork); # any personality will do
-use List::Util qw(first);
+use List::Util qw(first min);
 use MIME::Base64;
 use Pod::Text;
 use Socket;
@@ -110,7 +110,9 @@ for (grep(/--wiki_(key|cert)_file=/, @ARGV)) {
   $args{SSL_cert_file} = $1 if /--wiki_cert_file=(.*)/;
   $args{SSL_key_file} = $1 if /--wiki_key_file=(.*)/;
 }
-if (not $args{SSL_cert_file} or not $args{SSL_key_file}) {
+if (not @ARGV) {
+  return 1;
+} elsif (not $args{SSL_cert_file} or not $args{SSL_key_file}) {
   die "I must have both --wiki_key_file and --wiki_cert_file\n";
 } else {
   OddMuse->run(%args);
@@ -253,7 +255,7 @@ sub serve_main_menu {
   say "Blog:";
   my @pages = sort { $b cmp $a } grep(/^\d\d\d\d-\d\d-\d\d/, @IndexList);
   # we should check for pages marked for deletion!
-  for my $id (@pages[0..9]) {
+  for my $id (@pages[0..min($#pages, 9)]) {
     $self->print_link(normal_to_free($id), free_to_normal($id));
   }
   $self->print_link("More...", "do/more");
@@ -345,15 +347,15 @@ sub serve_tags {
 
 sub serve_rc {
   my $self = shift;
-  my $showedit = $ShowEdits = shift;
+  $ShowEdits = shift;
   $self->log(3, "Serving recent changes"
-	     . ($showedit ? " including minor changes" : ""));
+	     . ($ShowEdits ? " including minor changes" : ""));
   $self->success();
   say "Recent Changes";
-  if ($showedit) {
+  if ($ShowEdits) {
     $self->print_link("Skip minor edits", "do/rc");
   } else {
-    $self->print_link("Show minor edits", "do/rc/showedits");
+    $self->print_link("Show minor edits", "do/rc/minor");
   }
   $self->print_link("Show RSS", "do/rss");
 
@@ -442,7 +444,7 @@ sub gemini_link {
   $id = FreeToNormal($id);
   $text =~ s/\s+/ /g;
   my $url = $self->link($id);
-  return "=> $url $text";
+  return "=> $url $text\r"; # sadly, \r is required for link lines
 }
 
 # All I have to do now is to transform the wiki text into Gemini format: Each
@@ -457,10 +459,10 @@ sub serve_gemini_page {
   for my $block (@blocks) {
     my @links;
     # remember not to pass full URLs to gemini_link!
-    $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, "=> $2 $1"); $1/mge;
+    $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, "=> $2 $1\r"); $1/mge;
     $block =~ s/\[([^]]+)\]\(([^) ]+)\)/push(@links, $self->gemini_link($2, $1)); $1/mge;
-    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, "=> $1 $2"); $2/mge;
-    $block =~ s/\[\[in-reply-to:$FullUrlPattern\|([^]]+)\]\]/push(@links, "=> $1 $2"); $2/mge;
+    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, "=> $1 $2\r"); $2/mge;
+    $block =~ s/\[\[in-reply-to:$FullUrlPattern\|([^]]+)\]\]/push(@links, "=> $1 $2\r"); $2/mge;
     $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/mge;
     $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/mge;
     $block =~ s/<journal search tag:(\S+)>\n*/push(@links, $self->gemini_link("tag\/$1", "Explore the $1 tag")); ""/mge;
@@ -513,16 +515,20 @@ sub serve_gemini {
 }
 
 sub newest_first {
-  my ($comment_a, $image_a, $date_a, $article_a) = $a =~ /^($CommentsPrefix|Image_(\d+)_for_)?(\d\d\d\d-\d\d-\d\d_?)?(.*)/;
-  my ($comment_b, $image_b, $date_b, $article_b) = $b =~ /^($CommentsPrefix|Image_(\d+)_for_)?(\d\d\d\d-\d\d-\d\d_?)?(.*)/;
-  if ($article_a and $article_a eq $article_b) {
-    # one of them must be a comment or an image
-    return ($date_b cmp $date_a) || ($comment_a cmp $comment_b) || ($image_a <=> $image_b);
-  } elsif ($article_a or $article_b) {
-    return $article_b cmp $article_a;
-  } else {
-    return $a cmp $b;
-  }
+  my ($comment_a, $image_a, $date_a, $article_a) = $a =~ /^($CommentsPrefix|Image_(\d+)_for_)?(\d\d\d\d-\d\d(?:-\d\d)?_?)?(.*)/;
+  my ($comment_b, $image_b, $date_b, $article_b) = $b =~ /^($CommentsPrefix)?(?:Image_(\d+)_for_)?(\d\d\d\d-\d\d(?:-\d\d)?_?)?(.*)/;
+  # warn ""
+  #     . ", date: ($date_b cmp $date_a) = "  . ($date_b cmp $date_a)
+  #     . ", article: ($article_a cmp $article_b) = " . ($article_a cmp $article_b)
+  #     . ", image: ($image_a <=> $image_b) = " . ($image_a <=> $image_b)
+  #     . ", comment: ($comment_b cmp $comment_a) = " . ($comment_b cmp $comment_a)
+  #     . "\n";
+  return (($date_b cmp $date_a)
+	  || ($article_a cmp $article_b)
+	  || ($image_a <=> $image_b)
+	  || ($comment_a cmp $comment_b)
+	  # this last one should be unnecessary
+	  || ($a cmp $b));
 }
 
 sub serve_tag_list {
@@ -540,7 +546,7 @@ sub serve_tag {
   $self->success();
   $self->log(3, "Serving tag " . UrlEncode($tag));
   if ($IndexHash{$tag}) {
-    print("This page is about the tag $tag.\r\n");
+    print("This page is about the tag $tag.\n");
     $self->print_link(normal_to_free($tag), free_to_normal($tag));
     print("\r\n");
   }
@@ -777,7 +783,7 @@ sub process_request {
       $self->serve_rc(0);
     } elsif ($selector eq "do/rss") {
       $self->serve_rss(0);
-    } elsif ($selector eq "do/rc/showedits") {
+    } elsif ($selector eq "do/rc/minor") {
       $self->serve_rc(1);
     } elsif ($selector =~ m!^tag/([^/]*)$!) {
       $self->serve_tag($1);
