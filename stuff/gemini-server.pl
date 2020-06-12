@@ -91,11 +91,15 @@ use MIME::Base64;
 use Pod::Text;
 use Socket;
 
-our($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q, %Page,
+# Oddmuse stuff
+our ($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q, %Page,
 $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern, $CommentsPrefix,
 $EditAllowed, $NoEditFile, $SiteName, $ScriptName, $Now, %RecentVisitors,
 $SurgeProtectionTime, $SurgeProtectionViews, $SurgeProtection, @UploadTypes,
 $UploadAllowed, $FullUrlPattern, $FreeLinkPattern, @QuestionaskerQuestions);
+
+# Gemini server stuff
+our (@extensions, @main_menu_links);
 
 # Help
 if ($ARGV[0] eq '--help') {
@@ -263,6 +267,9 @@ sub serve_main_menu {
 
   for my $id (@{$self->{server}->{wiki_pages}}) {
     $self->print_link(normal_to_free($id), free_to_normal($id));
+  }
+  for my $link (@main_menu_links) {
+    say $link;
   }
 
   $self->print_link("Recent Changes", "do/rc");
@@ -694,7 +701,19 @@ sub allow_deny_hook {
       return 0;
     }
   }
+  # gemini config file with extra code
+  do "$DataDir/gemini_config" if -r "$DataDir/gemini_config";
   return 1;
+}
+
+sub run_extensions {
+  my $self = shift;
+  my $url = shift;
+  my $selector = shift;
+  foreach my $sub (@extensions) {
+    return 1 if $sub->($self, $url, $selector);
+  }
+  return;
 }
 
 sub process_request {
@@ -796,6 +815,7 @@ sub process_request {
     } elsif ($selector =~ m!^raw/([^/]*)(?:/(\d+))?$!) {
       $self->log(3, "Serve raw page $selector");
       $self->serve_raw(FreeToNormal($1), $2);
+    } elsif ($self->run_extensions($url, $selector)) {
     } else {
       $self->log(3, "Unknown $selector");
       print "40 " . (ValidId(FreeToNormal($selector)) || 'Cause unknown') . "\r\n";
