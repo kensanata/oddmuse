@@ -87,6 +87,7 @@ use strict;
 use 5.26.0;
 use base qw(Net::Server::Fork); # any personality will do
 use List::Util qw(first min);
+use Term::ANSIColor;
 use MIME::Base64;
 use Pod::Text;
 use Socket;
@@ -444,6 +445,29 @@ sub serve_raw {
   }
 }
 
+sub serve_html {
+  my $self = shift;
+  my $id = shift;
+  my $revision = shift;
+  my $page = get_page($id, $revision);
+
+  $self->success('text/html');
+  $self->log(3, "Serving " . UrlEncode($id) . " as HTML");
+
+  my $title = normal_to_free($id);
+  print GetHtmlHeader(Ts('%s:', $SiteName) . ' ' . UnWiki($title), $id);
+  print GetHeaderDiv($id, $title);
+  print $q->start_div({-class=>'wrapper'});
+
+  if ($revision) {
+    # no locking of the file, no updating of the cache
+    PrintWikiToHTML($page->{text});
+  } else {
+    PrintPageHtml();
+  }
+  PrintFooter($id, $revision);
+}
+
 sub gemini_link {
   my $self = shift;
   my $id = shift;
@@ -462,24 +486,36 @@ sub serve_gemini_page {
   my $id = shift;
   my $page = shift;
   my $text = $page->{text};
+  # escape the preformatted blocks
+  my $ref = 0;
+  my @escaped;
+  # newline magic: the escaped block does not include the newline; it is
+  # retained in $text so that the following rules still deal with newlines
+  # correctly; when we replace the escaped blocks back in, they'll be without
+  # the trailing newline and fit right in.
+  $text =~ s/^(```.*?\n```)\n/push(@escaped, $1); "\x03" . $ref++ . "\x04\n"/mesg;
+  $self->log(4, "Escaped $ref code blocks");
   my @blocks = split(/\n\n+/, $text);
   for my $block (@blocks) {
     my @links;
     # remember not to pass full URLs to gemini_link!
-    $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, "=> $2 $1\r"); $1/mge;
-    $block =~ s/\[([^]]+)\]\(([^) ]+)\)/push(@links, $self->gemini_link($2, $1)); $1/mge;
-    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, "=> $1 $2\r"); $2/mge;
-    $block =~ s/\[\[in-reply-to:$FullUrlPattern\|([^]]+)\]\]/push(@links, "=> $1 $2\r"); $2/mge;
-    $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/mge;
-    $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/mge;
-    $block =~ s/<journal search tag:(\S+)>\n*/push(@links, $self->gemini_link("tag\/$1", "Explore the $1 tag")); ""/mge;
-    $block =~ s/\[\[image:([^]|]+)\]\]/push(@links, $self->gemini_link($1, "$1 (image)")); "$1"/mge;
-    $block =~ s/\[\[image:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)")); "$2"/mge;
-    $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$2 (follow-up)")); "$2"/mge;
-    $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$4 (follow-up)")); "$2"/mge;
-    $block =~ s/\[\[$FreeLinkPattern\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/mge;
-    $block =~ s/\[\[$FreeLinkPattern\]\]/push(@links, $self->gemini_link($1)); $1/mge;
-    $block =~ s/\s+/ /g unless $block =~ m/^(?:```|\* )/; # unwrap
+    $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, "=> $2 $1\r"); $1/ge;
+    $block =~ s/\[([^]]+)\]\(([^) ]+)\)/push(@links, $self->gemini_link($2, $1)); $1/ge;
+    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, "=> $1 $2\r"); $2/ge;
+    $block =~ s/\[\[in-reply-to:$FullUrlPattern\|([^]]+)\]\]/push(@links, "=> $1 $2\r"); $2/ge;
+    $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/ge;
+    $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/ge;
+    $block =~ s/<journal search tag:(\S+)>\n*/push(@links, $self->gemini_link("tag\/$1", "Explore the $1 tag")); ""/ge;
+    $block =~ s/\[\[image:([^]|]+)\]\]/push(@links, $self->gemini_link($1, "$1 (image)")); "$1"/ge;
+    $block =~ s/\[\[image:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)")); "$2"/ge;
+    $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$2 (follow-up)")); "$2"/ge;
+    $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$4 (follow-up)")); "$2"/ge;
+    $block =~ s/\[\[$FreeLinkPattern\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/ge;
+    $block =~ s/\[\[$FreeLinkPattern\]\]/push(@links, $self->gemini_link($1)); $1/ge;
+    $block =~ s/\[color=([^]]+)\]/color($1)/ge;
+    $block =~ s/\[\/color\]/color("reset")/ge;
+    $block =~ s/^((?:> .*\n?)+)$/join(" ", split("\n> ", $1))/ge; # unwrap quotes
+    $block =~ s/\s+/ /g; # unwrap lines
     $block =~ s/^\s+//; # trim
     $block =~ s/\s+$//; # trim
     $block .= "\n" if $block and @links; # no empty line if the block was all links
@@ -487,6 +523,7 @@ sub serve_gemini_page {
   }
   $text = join("\n\n", @blocks);
   $text =~ s/^Tags: .*/Tags:/m;
+  $text =~ s/\x03(\d+)\x04/$escaped[$1]/ge;
   # Footer
   my @links;
   if ($CommentsPattern) {
@@ -501,6 +538,7 @@ sub serve_gemini_page {
     }
   }
   push(@links, $self->gemini_link("raw/$id", "Raw text"));
+  push(@links, $self->gemini_link("html/$id", "HTML"));
   $text .= join("\n", "\n\nMore:", @links) if @links;
   # Serve
   $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text)
@@ -815,6 +853,8 @@ sub process_request {
     } elsif ($selector =~ m!^raw/([^/]*)(?:/(\d+))?$!) {
       $self->log(3, "Serve raw page $selector");
       $self->serve_raw(FreeToNormal($1), $2);
+    } elsif ($selector =~ m!^html/([^/]*)(?:/(\d+))?$!) {
+      $self->serve_html(FreeToNormal($1), $2);
     } elsif ($self->run_extensions($url, $selector)) {
     } else {
       $self->log(3, "Unknown $selector");
