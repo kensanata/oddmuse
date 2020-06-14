@@ -233,7 +233,7 @@ sub base_re {
   my $self = shift;
   my $host = $self->host();
   my $port = $self->port();
-  return "gemini(\\+write)?://$host:$port/";
+  return "(gemini|titan)://$host:$port/";
 }
 
 sub link {
@@ -660,6 +660,7 @@ sub write_comment {
 sub write_page {
   my $self = shift;
   my $id = shift;
+  my $params = shift;
   if (not $id) {
     print "59 The URL lacks a page name\r\n";
     return;
@@ -668,12 +669,9 @@ sub write_page {
     print "59 $id is not a valid page name: $error\r\n";
     return;
   }
-  my $token = <STDIN>;
-  chomp $token;
-  # the token is going to be checked by the question-asker extension, or maybe
-  # it's a password...
-  my $type = <STDIN>;
-  chomp $type;
+  my $token = $params->{token};
+  # The token is going to be checked by the wiki, if at all.
+  my $type = $params->{mime};
   if (not $type) {
     print "59 Uploads require a MIME type\r\n";
     return;
@@ -681,8 +679,7 @@ sub write_page {
     print "59 This wiki does not allow $type\r\n";
     return;
   }
-  my $length = <STDIN>;
-  chomp $length;
+  my $length = $params->{size};
   if ($length > $MaxPost) {
     print "59 This wiki does not allow more than $MaxPost bytes\r\n";
     return;
@@ -779,12 +776,16 @@ sub process_request {
     $selector =~ s/^$base_re//;
     $selector = UrlDecode($selector);
     $self->log(3, "Looking at $url / $selector");
-    if ($url =~ m"^gemini\+write://" and $selector !~ /^raw\//) {
+    if ($url =~ m"^titan://" and $selector !~ /^raw\//) {
       $self->log(3, "Cannot write $url");
       print "59 This server only allows writing of raw pages\r\n";
-    } elsif ($url =~ m"^gemini\+write://") {
-      $selector =~ s/^raw\///;
-      $self->write_page(FreeToNormal($selector));
+    } elsif ($url =~ m"^titan://") {
+      if ($selector !~ m"^raw/([^/;=&]+(?:;\w+=[^;=&]+)+)") {
+	print "59 The selector $selector is malformed.\r\n";
+      } else {
+	my ($id, %params) = split(/[;=&]/, $1);
+	$self->write_page(FreeToNormal($id), \%params);
+      }
     } elsif ($url !~ m"^gemini://") {
       $self->log(3, "Cannot serve $url");
       print "53 This server only serves the gemini schema\r\n";

@@ -179,7 +179,7 @@ like($page, qr/$re/s, "minor rc in the right order");
 
 # upload text
 
-my $write = "gemini+write://$host:$port";
+my $titan = "titan://$host:$port";
 
 my $haiku = <<EOT;
 Quiet disk ratling
@@ -187,8 +187,8 @@ Keyboard clicking, then it stops.
 Rain falls and I think
 EOT
 
-$page = query_gemini("$write/raw/Haiku", "\ntext/plain\n76\n$haiku");
-like($page, qr/^30 $base\/Haiku\r$/, "Write Haiku");
+$page = query_gemini("$titan/raw/Haiku;size=76;mime=text/plain", $haiku);
+like($page, qr/^30 $base\/Haiku\r$/, "Titan Haiku");
 
 my $haiku_re = $haiku;
 $haiku_re =~ s/\s+/ /g; # lines get wrapped
