@@ -839,7 +839,9 @@ sub process_request {
     $selector =~ s/^$base_re//;
     $selector = UrlDecode($selector);
     $self->log(3, "Looking at $url / $selector");
-    if ($url =~ m"^titan://" and $selector !~ /^raw\//) {
+    if ($self->run_extensions($url, $selector)) {
+      # config file goes first
+    } elsif ($url =~ m"^titan://" and $selector !~ /^raw\//) {
       $self->log(3, "Cannot write $url");
       print "59 This server only allows writing of raw pages\r\n";
     } elsif ($url =~ m"^titan://") {
@@ -920,7 +922,6 @@ sub process_request {
       $self->serve_raw(free_to_normal($1), $2);
     } elsif ($selector =~ m!^html/([^/]*)(?:/(\d+))?$!) {
       $self->serve_html(free_to_normal($1), $2);
-    } elsif ($self->run_extensions($url, $selector)) {
     } else {
       $self->log(3, "Unknown $selector");
       print "40 " . (ValidId(free_to_normal($selector)) || 'Cause unknown') . "\r\n";
