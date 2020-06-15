@@ -132,11 +132,22 @@ like($page, qr/^Tags:$/m, "Tags footer");
 like($page, qr/^Tags:$/m, "Tags footer");
 like($page, qr/=> $base\/tag\/Friends Friends\r$/m, "Tag link");
 like($page, qr/^=> $base\/raw\/Alex Raw text\r$/m, "Raw text link");
+like($page, qr/^=> $base\/history\/Alex History\r$/m, "History");
 like($page, qr/^=> $base\/Comments_on_Alex Comments on this page\r$/m, "Comment link");
 
 # plain text
 $page = query_gemini("$base\/raw\/Alex");
 like($page, qr/^My best friend is \[\[Berta\]\]\.$/m, "Raw text");
+
+# history
+$page = query_gemini("$base/history/Friends");
+like($page, qr/^=> $base\/Friends\/1 Friends \(1\)/m, "Revision 1 is listed");
+like($page, qr/^=> $base\/Friends\/2 Friends \(2\)/m, "Revision 2 is listed");
+like($page, qr/^=> $base\/Friends Friends \(current\)/m, "Current revision is listed");
+$page = query_gemini("$base/Friends/1");
+like($page, qr/^Some friends\.$/m, "Revision 1 content");
+$page = query_gemini("$base/Friends/2");
+like($page, qr/^News about friends\.$/m, "Revision 2 content");
 
 # tags
 $page = query_gemini("$base\/tag\/Friends");

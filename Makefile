@@ -67,3 +67,9 @@ development:
 	morbo --listen http://*:8080 \
 	--watch wiki.pl --watch test-data/config --watch test-data/modules/ \
 	stuff/mojolicious-app.pl
+
+%.pem:
+	openssl req -new -x509 -days 365 -nodes -out cert.pem -keyout key.pem
+
+gemini: cert.pem key.pem
+	perl stuff/gemini-server.pl --wiki_cert_file=cert.pem --wiki_key_file=key.pem

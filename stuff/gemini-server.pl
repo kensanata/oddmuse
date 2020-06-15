@@ -468,14 +468,62 @@ sub serve_html {
   PrintFooter($id, $revision);
 }
 
+sub serve_history {
+  my $self = shift;
+  my $id = shift;
+  my $title = normal_to_free($id);
+  $self->success();
+  $self->log(3, "Serve history for $id");
+  say "Page history for $title";
+  OpenPage($id);
+  $self->print_link("$title (current)", $id);
+  say(CalcTime($Page{ts})
+      . " by " . GetAuthor($Page{username})
+      . ($Page{summary} ? ": $Page{summary}" : "")
+      . ($Page{minor} ? " (minor)" : ""));
+  foreach my $revision (GetKeepRevisions($OpenPageName)) {
+    my $keep = GetKeptRevision($revision);
+    $self->print_link("$title ($keep->{revision})",
+		      "$id/$keep->{revision}");
+    say(CalcTime($keep->{ts})
+	. " by " . GetAuthor($keep->{username})
+	. ($keep->{summary} ? ": $keep->{summary}" : "")
+	. ($keep->{minor} ? " (minor)" : ""));
+  }
+}
+
 sub gemini_link {
   my $self = shift;
   my $id = shift;
-  my $text = shift || NormalToFree($id);
-  $id = FreeToNormal($id);
+  my $text = shift || normal_to_free($id);
+  $id = free_to_normal($id);
   $text =~ s/\s+/ /g;
   my $url = $self->link($id);
   return "=> $url $text\r"; # sadly, \r is required for link lines
+}
+
+sub footer {
+  my $self = shift;
+  my $id = shift;
+  my $page = shift;
+  my $revision = shift;
+  my @links;
+  if ($CommentsPattern) {
+    if ($id =~ /$CommentsPattern/) {
+      my $original = $1;
+      # sometimes we are on a comment page and cannot derive the original
+      push(@links, $self->gemini_link($original, "Back to the original page")) if $original;
+      push(@links, $self->gemini_link("do/comment/$id", "Leave a comment"));
+    } else {
+      my $comments = free_to_normal($CommentsPrefix . $id);
+      push(@links, $self->gemini_link($comments, "Comments on this page"));
+    }
+  }
+  push(@links, $self->gemini_link("history/$id", "History"));
+  push(@links, $self->gemini_link("raw/$id/$revision", "Raw text"));
+  push(@links, $self->gemini_link("html/$id/$revision", "HTML"));
+  return join("\n", "\n\nMore:", @links) if @links;
+  return "";
 }
 
 # All I have to do now is to transform the wiki text into Gemini format: Each
@@ -485,7 +533,9 @@ sub serve_gemini_page {
   my $self = shift;
   my $id = shift;
   my $page = shift;
+  my $revision = shift;
   my $text = $page->{text};
+  $self->log(3, "Serve Gemini page $id");
   # escape the preformatted blocks
   my $ref = 0;
   my @escaped;
@@ -524,22 +574,7 @@ sub serve_gemini_page {
   $text = join("\n\n", @blocks);
   $text =~ s/^Tags: .*/Tags:/m;
   $text =~ s/\x03(\d+)\x04/$escaped[$1]/ge;
-  # Footer
-  my @links;
-  if ($CommentsPattern) {
-    if ($id =~ /$CommentsPattern/) {
-      my $original = $1;
-      # sometimes we are on a comment page and cannot derive the original
-      push(@links, $self->gemini_link($original, "Back to the original page")) if $original;
-      push(@links, $self->gemini_link("do/comment/$id", "Leave a comment"));
-    } else {
-      my $comments = free_to_normal($CommentsPrefix . $id);
-      push(@links, $self->gemini_link($comments, "Comments on this page"));
-    }
-  }
-  push(@links, $self->gemini_link("raw/$id", "Raw text"));
-  push(@links, $self->gemini_link("html/$id", "HTML"));
-  $text .= join("\n", "\n\nMore:", @links) if @links;
+  $text .= $self->footer($id, $page, $revision);
   # Serve
   $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text)
 	     . " bytes of text");
@@ -555,7 +590,7 @@ sub serve_gemini {
   if (my ($type) = TextIsFile($page->{text})) {
     $self->serve_file_page($id, $type, $page);
   } else {
-    $self->serve_gemini_page($id, $page);
+    $self->serve_gemini_page($id, $page, $revision);
   }
 }
 
@@ -784,7 +819,7 @@ sub process_request {
 	print "59 The selector $selector is malformed.\r\n";
       } else {
 	my ($id, %params) = split(/[;=&]/, $1);
-	$self->write_page(FreeToNormal($id), \%params);
+	$self->write_page(free_to_normal($id), \%params);
       }
     } elsif ($url !~ m"^gemini://") {
       $self->log(3, "Cannot serve $url");
@@ -801,7 +836,7 @@ sub process_request {
     } elsif ($selector eq "do/match") {
       print "10 Find page by name (Perl regexp)\r\n";
     } elsif (substr($selector, 0, 9) eq "do/match?") {
-      $self->serve_match(FreeToNormal(substr($selector, 9))); # no spaces in page titles
+      $self->serve_match(free_to_normal(substr($selector, 9))); # no spaces in page titles
     } elsif ($selector eq "do/search") {
       print "10 Find page by content (Perl regexp, use tag:foo to search for tags)\r\n";
     } elsif (substr($selector, 0, 10) eq "do/search?") {
@@ -831,7 +866,7 @@ sub process_request {
     } elsif ($selector =~ m!do/comment/([^/?]*)/(\d+)/([^/?]*)\?([^/?]*)$!) {
       my ($id, $n, $a, $c) = ($1, $2, $3, $4);
       if ($QuestionaskerQuestions[$n][1]($a)) {
-	$self->write_comment(FreeToNormal($id), $n, $a, NormalToFree($c));
+	$self->write_comment(free_to_normal($id), $n, $a, normal_to_free($c));
       } else {
 	print "59 You did not answer correctly.\r\n";
       }
@@ -846,22 +881,20 @@ sub process_request {
     } elsif ($selector =~ m!^tag/([^/]*)$!) {
       $self->serve_tag($1);
     } elsif ($selector =~ m!^([^/]*\.txt)$!) {
-      $self->log(3, "Serve $selector raw");
-      $self->serve_raw(FreeToNormal($1));
+      $self->serve_raw(free_to_normal($1));
     } elsif ($selector =~ m!^([^/]*)(?:/(\d+))?$!) {
-      $self->log(3, "Serve Gemini page $selector");
-      $self->serve_gemini(FreeToNormal($1), $2);
+      $self->serve_gemini(free_to_normal($1), $2);
+    } elsif ($selector =~ m!^history/([^/]*)$!) {
+      $self->serve_history(free_to_normal($1));
     } elsif ($selector =~ m!^raw/([^/]*)(?:/(\d+))?$!) {
-      $self->log(3, "Serve raw page $selector");
-      $self->serve_raw(FreeToNormal($1), $2);
+      $self->serve_raw(free_to_normal($1), $2);
     } elsif ($selector =~ m!^html/([^/]*)(?:/(\d+))?$!) {
-      $self->serve_html(FreeToNormal($1), $2);
+      $self->serve_html(free_to_normal($1), $2);
     } elsif ($self->run_extensions($url, $selector)) {
     } else {
       $self->log(3, "Unknown $selector");
-      print "40 " . (ValidId(FreeToNormal($selector)) || 'Cause unknown') . "\r\n";
+      print "40 " . (ValidId(free_to_normal($selector)) || 'Cause unknown') . "\r\n";
     }
-
     $self->log(4, "Done");
   }
 }
