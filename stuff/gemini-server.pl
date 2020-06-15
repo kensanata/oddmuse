@@ -312,7 +312,7 @@ sub serve_match {
     return;
   }
   $self->success();
-  $self->log(3, "Serving pages matching " . UrlEncode($match));
+  $self->log(3, "Serving pages matching $match");
   say "# Search for $match";
   say "Use a regular expression to match page titles.";
   say "Spaces in page titles are underlines, '_'.";
@@ -329,7 +329,7 @@ sub serve_search {
     return;
   }
   $self->success();
-  $self->log(3, "Serving search result for " . UrlEncode($str));
+  $self->log(3, "Serving search result for $str");
   say "# Search for $str";
   say "Use regular expressions separated by spaces.";
   SearchTitleAndBody($str, sub {
@@ -428,7 +428,7 @@ sub serve_raw_page {
   my $id = shift;
   my $page = shift;
   my $text = $page->{text};
-  $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text) . " bytes of text");
+  $self->log(3, "Serving the diff of $id");
   $self->success('text/markdown; charset=UTF-8');
   print $text;
 }
@@ -445,6 +445,35 @@ sub serve_raw {
   }
 }
 
+sub serve_diff {
+  my $self = shift;
+  my $id = shift;
+  my $revision = shift;
+  my $title = normal_to_free($id);
+  $self->log(3, "Serving the diff of $id");
+  $self->success();
+  say "# Differences for $title";
+  say "Showing the differences between revision $revision and the current revision of $title.";
+  # Order is important because $new is a reference to %Page!
+  my $new = get_page($id);
+  my $old = get_page($id, $revision);
+  my $new_type = TextIsFile($new->{text});
+  my $old_type = TextIsFile($old->{text});
+  if ($old_type) {
+    say "Revision $revision is a $old_type file.";
+    $self->print_link("Show revision $revision", "$id/$revision");
+  }
+  if ($new_type) {
+    say "The current version is a $new_type file.";
+    $self->print_link("Show the current revision", $id);
+  }
+  if (not $old_type and not $new_type) {
+    say "```";
+    say DoDiff($old->{text}, $new->{text});
+    say "```";
+  }
+}
+
 sub serve_html {
   my $self = shift;
   my $id = shift;
@@ -452,7 +481,7 @@ sub serve_html {
   my $page = get_page($id, $revision);
 
   $self->success('text/html');
-  $self->log(3, "Serving " . UrlEncode($id) . " as HTML");
+  $self->log(3, "Serving $id as HTML");
 
   my $title = normal_to_free($id);
   print GetHtmlHeader(Ts('%s:', $SiteName) . ' ' . UnWiki($title), $id);
@@ -474,7 +503,7 @@ sub serve_history {
   my $title = normal_to_free($id);
   $self->success();
   $self->log(3, "Serve history for $id");
-  say "Page history for $title";
+  say "# Page history for $title";
   OpenPage($id);
   $self->print_link("$title (current)", $id);
   say(CalcTime($Page{ts})
@@ -483,8 +512,8 @@ sub serve_history {
       . ($Page{minor} ? " (minor)" : ""));
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my $keep = GetKeptRevision($revision);
-    $self->print_link("$title ($keep->{revision})",
-		      "$id/$keep->{revision}");
+    $self->print_link("$title ($keep->{revision})", "$id/$keep->{revision}");
+    $self->print_link("Diff between revision $keep->{revision} and the current one", "diff/$id/$keep->{revision}");
     say(CalcTime($keep->{ts})
 	. " by " . GetAuthor($keep->{username})
 	. ($keep->{summary} ? ": $keep->{summary}" : "")
@@ -576,8 +605,7 @@ sub serve_gemini_page {
   $text =~ s/\x03(\d+)\x04/$escaped[$1]/ge;
   $text .= $self->footer($id, $page, $revision);
   # Serve
-  $self->log(3, "Serving " . UrlEncode($id) . " as " . length($text)
-	     . " bytes of text");
+  $self->log(3, "Serving $id as " . length($text) . " bytes of text");
   $self->success();
   print $text;
 }
@@ -624,7 +652,7 @@ sub serve_tag {
   my $self = shift;
   my $tag = shift;
   $self->success();
-  $self->log(3, "Serving tag " . UrlEncode($tag));
+  $self->log(3, "Serving tag $tag");
   if ($IndexHash{$tag}) {
     print("This page is about the tag $tag.\n");
     $self->print_link(normal_to_free($tag), free_to_normal($tag));
@@ -886,6 +914,8 @@ sub process_request {
       $self->serve_gemini(free_to_normal($1), $2);
     } elsif ($selector =~ m!^history/([^/]*)$!) {
       $self->serve_history(free_to_normal($1));
+    } elsif ($selector =~ m!^diff/([^/]*)(?:/(\d+))?$!) {
+      $self->serve_diff(free_to_normal($1), $2);
     } elsif ($selector =~ m!^raw/([^/]*)(?:/(\d+))?$!) {
       $self->serve_raw(free_to_normal($1), $2);
     } elsif ($selector =~ m!^html/([^/]*)(?:/(\d+))?$!) {

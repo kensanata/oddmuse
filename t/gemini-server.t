@@ -143,11 +143,19 @@ like($page, qr/^My best friend is \[\[Berta\]\]\.$/m, "Raw text");
 $page = query_gemini("$base/history/Friends");
 like($page, qr/^=> $base\/Friends\/1 Friends \(1\)/m, "Revision 1 is listed");
 like($page, qr/^=> $base\/Friends\/2 Friends \(2\)/m, "Revision 2 is listed");
+like($page, qr/^=> $base\/diff\/Friends\/1 Diff between revision 1 and the current one/m, "Diff 1 link");
+like($page, qr/^=> $base\/diff\/Friends\/2 Diff between revision 2 and the current one/m, "Diff 2 link");
 like($page, qr/^=> $base\/Friends Friends \(current\)/m, "Current revision is listed");
 $page = query_gemini("$base/Friends/1");
 like($page, qr/^Some friends\.$/m, "Revision 1 content");
 $page = query_gemini("$base/Friends/2");
 like($page, qr/^News about friends\.$/m, "Revision 2 content");
+
+#diffs
+$page = query_gemini("$base/diff/Friends/1");
+like($page, qr/^< Some friends\.\n-+\n> News about friends:\n> \n> <journal search tag:friends>\n$/m, "Diff 1 content");
+$page = query_gemini("$base/diff/Friends/2");
+like($page, qr/^< News about friends\.\n-+\n> News about friends:\n> \n> <journal search tag:friends>\n$/m, "Diff 1 content");
 
 # tags
 $page = query_gemini("$base\/tag\/Friends");
