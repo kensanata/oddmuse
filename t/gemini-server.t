@@ -26,9 +26,15 @@ require './stuff/gemini-server.pl';
 
 add_module('tags.pl');
 
-# enable uploads
+# enable uploads and filtering by language
 our($ConfigFile);
-AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
+AppendStringToFile($ConfigFile, <<'EOT');
+$UploadAllowed = 1;
+%Languages = (
+  'de' => '\b(der|die|das|und|oder)\b',
+  'en' => '\b(i|he|she|it|we|they|this|that|a|is|was)\b', );
+EOT
+
 # enable comments
 our($CommentsPrefix);
 $CommentsPrefix = 'Comments_on_';
@@ -134,6 +140,10 @@ like($page, qr/=> $base\/tag\/Friends Friends\r$/m, "Tag link");
 like($page, qr/^=> $base\/raw\/Alex Raw text\r$/m, "Raw text link");
 like($page, qr/^=> $base\/history\/Alex History\r$/m, "History");
 like($page, qr/^=> $base\/Comments_on_Alex Comments on this page\r$/m, "Comment link");
+
+# language tag
+$page = query_gemini("$base\/2017-12-25");
+like($page, qr/^20 text\/gemini; charset=UTF-8; lang=en\r\n/, "Result 20 with MIME type and language");
 
 # plain text
 $page = query_gemini("$base\/raw\/Alex");

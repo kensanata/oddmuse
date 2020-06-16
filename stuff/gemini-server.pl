@@ -193,7 +193,12 @@ sub NewGeminiFiltered {
 sub success {
   my $self = shift;
   my $type = shift || 'text/gemini; charset=UTF-8';
-  print "20 $type\r\n"
+  my $lang = shift;
+  if ($lang) {
+    print "20 $type; lang=$lang\r\n";
+  } else {
+    print "20 $type\r\n";
+  }
 }
 
 sub normal_to_free {
@@ -429,7 +434,7 @@ sub serve_raw_page {
   my $page = shift;
   my $text = $page->{text};
   $self->log(3, "Serving the diff of $id");
-  $self->success('text/markdown; charset=UTF-8');
+  $self->success('text/markdown; charset=UTF-8', $page->{languages});
   print $text;
 }
 
@@ -606,7 +611,7 @@ sub serve_gemini_page {
   $text .= $self->footer($id, $page, $revision);
   # Serve
   $self->log(3, "Serving $id as " . length($text) . " bytes of text");
-  $self->success();
+  $self->success(undef, $page->{languages});
   print $text;
 }
 
