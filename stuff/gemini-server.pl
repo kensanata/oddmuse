@@ -785,6 +785,8 @@ sub allow_deny_hook {
     local $SIG{__WARN__} = sub {}; # sooooorryy!! 😭
     Init();
   }
+  # gemini config file with extra code
+  do "$DataDir/gemini_config" if -r "$DataDir/gemini_config";
   # don't do surge protection if we're testing
   return 1 unless $SurgeProtection;
   # get the client IP number
@@ -804,8 +806,6 @@ sub allow_deny_hook {
       return 0;
     }
   }
-  # gemini config file with extra code
-  do "$DataDir/gemini_config" if -r "$DataDir/gemini_config";
   return 1;
 }
 

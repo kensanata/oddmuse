@@ -41,6 +41,28 @@ $CommentsPrefix = 'Comments_on_';
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments_on_';\n");
 AppendStringToFile($ConfigFile, "\@QuestionaskerQuestions = (['Who rules in Rivendell?' => sub { shift =~ /^Elrond/i }]);\n");
 
+# write a gemini-only extension
+our($DataDir);
+WriteStringToFile("$DataDir/gemini_config", <<'EOT');
+package OddMuse;
+use Modern::Perl;
+our (@extensions, @main_menu_links);
+push(@extensions, \&serve_cert);
+sub serve_cert {
+  my $self = shift;
+  my $url = shift;
+  my $selector = shift;
+  my $base = $self->base();
+  if ($selector =~ m!^do/test!) {
+    say "20 text/plain\r";
+    say "Test";
+    return 1;
+  }
+  return;
+}
+1;
+EOT
+
 my $host = "127.0.0.1";
 my $port = random_port();
 my $pid = fork();
@@ -52,7 +74,6 @@ END {
   }
 }
 
-our ($DataDir);
 if (!defined $pid) {
   die "Cannot fork: $!";
 } elsif ($pid == 0) {
@@ -109,6 +130,8 @@ sub query_gemini {
   my $socket = IO::Socket::SSL->new(
     PeerHost => "localhost",
     PeerService => $port,
+    SSL_cert_file => 'cert.pem',
+    SSL_key_file => 'key.pem',
     SSL_verify_mode => SSL_VERIFY_NONE)
       or die "Cannot construct client socket: $@";
 
@@ -250,5 +273,10 @@ like($page, qr/^30 $base\/Comments_on_Haiku\r$/, "Redirect back to the main page
 
 $page = query_gemini("$base/Comments_on_Haiku");
 like($page, qr/^Give me the ring!\n\n-- Anonymous/m, "Comment saved");
+
+# extension
+
+$page = query_gemini("$base/do/test");
+like($page, qr/^Test\n/m, "Extension runs");
 
 done_testing();
