@@ -256,6 +256,17 @@ sub print_link {
   print "=> $url $title\r\n";
 }
 
+sub gemini_link {
+  my $self = shift;
+  my $id = shift;
+  my $text = shift || normal_to_free($id);
+  $id = free_to_normal($id);
+  $text =~ s/\s+/ /g;
+  return "=> $id $text\r" if $id =~ /^$FullUrlPattern$/;
+  my $url = $self->link($id);
+  return "=> $url $text\r"; # sadly, \r is required for link lines
+}
+
 sub serve_main_menu {
   my $self = shift;
   $self->log(3, "Serving main menu");
@@ -434,7 +445,7 @@ sub serve_raw_page {
   my $page = shift;
   my $text = $page->{text};
   $self->log(3, "Serving the diff of $id");
-  $self->success('text/markdown; charset=UTF-8', $page->{languages});
+  $self->success('text/plain; charset=UTF-8', $page->{languages});
   print $text;
 }
 
@@ -526,16 +537,6 @@ sub serve_history {
   }
 }
 
-sub gemini_link {
-  my $self = shift;
-  my $id = shift;
-  my $text = shift || normal_to_free($id);
-  $id = free_to_normal($id);
-  $text =~ s/\s+/ /g;
-  my $url = $self->link($id);
-  return "=> $url $text\r"; # sadly, \r is required for link lines
-}
-
 sub footer {
   my $self = shift;
   my $id = shift;
@@ -579,14 +580,13 @@ sub serve_gemini_page {
   # the trailing newline and fit right in.
   $text =~ s/^(```.*?\n```)\n/push(@escaped, $1); "\x03" . $ref++ . "\x04\n"/mesg;
   $self->log(4, "Escaped $ref code blocks");
-  my @blocks = split(/\n\n+/, $text);
+  my @blocks = split(/\n\n+|\\\\|\n(?=\*)/, $text);
   for my $block (@blocks) {
     my @links;
-    # remember not to pass full URLs to gemini_link!
-    $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, "=> $2 $1\r"); $1/ge;
+    $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, $self->gemini_link($2, $1)); $1/ge;
     $block =~ s/\[([^]]+)\]\(([^) ]+)\)/push(@links, $self->gemini_link($2, $1)); $1/ge;
-    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, "=> $1 $2\r"); $2/ge;
-    $block =~ s/\[\[in-reply-to:$FullUrlPattern\|([^]]+)\]\]/push(@links, "=> $1 $2\r"); $2/ge;
+    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, $self->gemini_link($1, $2)); $2/ge;
+    $block =~ s/\[\[([a-z\/-]+):$FullUrlPattern\|([^]]+)\]\]/push(@links, $self->gemini_link($2, $3)); "｢$3｣"/ge;
     $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/ge;
     $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/ge;
     $block =~ s/<journal search tag:(\S+)>\n*/push(@links, $self->gemini_link("tag\/$1", "Explore the $1 tag")); ""/ge;
@@ -598,6 +598,8 @@ sub serve_gemini_page {
     $block =~ s/\[\[$FreeLinkPattern\]\]/push(@links, $self->gemini_link($1)); $1/ge;
     $block =~ s/\[color=([^]]+)\]/color($1)/ge;
     $block =~ s/\[\/color\]/color("reset")/ge;
+    $block =~ s/<[a-z]+(?:\s+[a-z-]+="[^"]+")>//ge;
+    $block =~ s/<\/[a-z]+>//ge;
     $block =~ s/^((?:> .*\n?)+)$/join(" ", split("\n> ", $1))/ge; # unwrap quotes
     $block =~ s/\s+/ /g; # unwrap lines
     $block =~ s/^\s+//; # trim
