@@ -20,6 +20,8 @@ use Test::More;
 use IO::Socket::SSL;
 use utf8; # tests contain UTF-8 characters and it matters
 use Modern::Perl;
+use XML::RSS;
+use XML::LibXML;
 
 require './t/test.pl';
 require './stuff/gemini-server.pl';
@@ -156,13 +158,13 @@ unlike($page, qr/^=> .*\/$/m, "No empty links in the menu");
 $page = query_gemini("$base/Alex");
 
 like($page, qr/^My best friend is Berta\.$/m, "Local free link (text)");
-like($page, qr/=> $base\/Berta Berta\r$/m, "Local free link (link)");
+like($page, qr/=> $base\/Berta Berta$/m, "Local free link (link)");
 like($page, qr/^Tags:$/m, "Tags footer");
 like($page, qr/^Tags:$/m, "Tags footer");
-like($page, qr/=> $base\/tag\/Friends Friends\r$/m, "Tag link");
-like($page, qr/^=> $base\/raw\/Alex Raw text\r$/m, "Raw text link");
-like($page, qr/^=> $base\/history\/Alex History\r$/m, "History");
-like($page, qr/^=> $base\/Comments_on_Alex Comments on this page\r$/m, "Comment link");
+like($page, qr/=> $base\/tag\/Friends Friends$/m, "Tag link");
+like($page, qr/^=> $base\/raw\/Alex Raw text$/m, "Raw text link");
+like($page, qr/^=> $base\/history\/Alex History$/m, "History");
+like($page, qr/^=> $base\/Comments_on_Alex Comments on this page$/m, "Comment link");
 
 # language tag
 $page = query_gemini("$base\/2017-12-25");
@@ -194,7 +196,7 @@ like($page, qr/^< News about friends\.\n-+\n> News about friends:\n> \n> <journa
 $page = query_gemini("$base\/tag\/Friends");
 like($page, qr/^This page is about the tag Friends\.$/m, "tag menu intro");
 for my $item(qw(Friends Alex Berta Chris)) {
-  like($page, qr/^=> $base\/$item $item\r$/m, "tag menu contains $item");
+  like($page, qr/^=> $base\/$item $item$/m, "tag menu contains $item");
 }
 
 # tags
@@ -205,7 +207,7 @@ like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s,
 # match
 $page = query_gemini("$base\/do/match?2017");
 for my $item(qw(2017-12-25 2017-12-26 2017-12-27)) {
-  like($page, qr/^=> $base\/$item $item\r$/m, "match menu contains $item");
+  like($page, qr/^=> $base\/$item $item$/m, "match menu contains $item");
 }
 like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s,
      "match menu sorted newest first");
@@ -213,7 +215,7 @@ like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s,
 # search
 $page = query_gemini("$base\/do/search?tag:day");
 for my $item(qw(2017-12-25 2017-12-26 2017-12-27)) {
-  like($page, qr/^=> $base\/$item $item\r/m, "search menu contains $item");
+  like($page, qr/^=> $base\/$item $item/m, "search menu contains $item");
 }
 like($page, qr/2017-12-27.*2017-12-26.*2017-12-25/s,
      "search menu sorted newest first");
@@ -228,6 +230,18 @@ $page = query_gemini("$base\/do/rc/minor");
 
 $re = join(".*", "Friends", "2017-12-27", "2017-12-26", "2017-12-25");
 like($page, qr/$re/s, "minor rc in the right order");
+
+# rss
+my $rss = new XML::RSS;
+$page = query_gemini("$base\/do/rss");
+ok($page =~ s!^20 application/rss\+xml\r\n!!, "RSS header OK");
+ok($rss->parse($page), "RSS parse OK");
+
+# atom
+$page = query_gemini("$base\/do/atom");
+ok($page =~ s!^20 application/atom\+xml\r\n!!, "Atom header OK");
+# $rss->parse($page) results in warnings that I can't get rid of
+ok(XML::LibXML->load_xml(string => $page), "Atom parse OK");
 
 # upload text
 
@@ -251,10 +265,10 @@ like($page, qr/^$haiku_re/m, "Haiku saved");
 
 # comment
 
-like($page, qr/^=> $base\/Comments_on_Haiku Comments on this page\r$/m, "Comment page link");
+like($page, qr/^=> $base\/Comments_on_Haiku Comments on this page$/m, "Comment page link");
 
 $page = query_gemini("$base/Comments_on_Haiku");
-like($page, qr/^=> $base\/do\/comment\/Comments_on_Haiku Leave a comment\r$/m, "Leave comment link");
+like($page, qr/^=> $base\/do\/comment\/Comments_on_Haiku Leave a comment$/m, "Leave comment link");
 
 $page = query_gemini("$base/do/comment/Comments_on_Haiku");
 like($page, qr/^30 $base\/do\/comment\/Comments_on_Haiku\/0\r$/, "Redirect to a question");

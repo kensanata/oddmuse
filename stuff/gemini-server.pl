@@ -92,12 +92,13 @@ use MIME::Base64;
 use Pod::Text;
 use Socket;
 
-# Oddmuse stuff
 our ($RunCGI, $DataDir, %IndexHash, @IndexList, $IndexFile, $TagFile, $q, %Page,
-$OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern, $CommentsPrefix,
-$EditAllowed, $NoEditFile, $SiteName, $ScriptName, $Now, %RecentVisitors,
-$SurgeProtectionTime, $SurgeProtectionViews, $SurgeProtection, @UploadTypes,
-$UploadAllowed, $FullUrlPattern, $FreeLinkPattern, @QuestionaskerQuestions);
+     $OpenPageName, $MaxPost, $ShowEdits, %Locks, $CommentsPattern,
+     $CommentsPrefix, $EditAllowed, $NoEditFile, $SiteName, $ScriptName, $Now,
+     %RecentVisitors, $SurgeProtectionTime, $SurgeProtectionViews,
+     $SurgeProtection, @UploadTypes, $UploadAllowed, $FullUrlPattern,
+     $FreeLinkPattern, @QuestionaskerQuestions, $SiteDescription, $HomePage,
+     $LastUpdate, $RssExclude, $RssStyleSheet, $RssRights, $RssLicense);
 
 # Gemini server stuff
 our (@extensions, @main_menu_links);
@@ -253,7 +254,7 @@ sub print_link {
   my $title = shift;
   my $id = shift;
   my $url = $self->link($id);
-  print "=> $url $title\r\n";
+  print "=> $url $title\n";
 }
 
 sub gemini_link {
@@ -262,9 +263,9 @@ sub gemini_link {
   my $text = shift || normal_to_free($id);
   $id = free_to_normal($id);
   $text =~ s/\s+/ /g;
-  return "=> $id $text\r" if $id =~ /^$FullUrlPattern$/;
+  return "=> $id $text" if $id =~ /^$FullUrlPattern$/;
   my $url = $self->link($id);
-  return "=> $url $text\r"; # sadly, \r is required for link lines
+  return "=> $url $text";
 }
 
 sub serve_main_menu {
@@ -382,7 +383,7 @@ sub serve_rc {
     $self->print_link("Show minor edits", "do/rc/minor");
   }
   $self->print_link("Show RSS", "do/rss");
-
+  $self->print_link("Show Atom", "do/atom");
   ProcessRcLines(
     sub {
       my $date = shift;
@@ -402,12 +403,140 @@ sub serve_rss {
   my $self = shift;
   $self->log(3, "Serving Gemini RSS");
   $self->success("application/rss+xml");
-  my $rss = GetRcRss();
-  # $rss =~ s!$ScriptName\?action=rss!${gemini}1do/rss!g;
-  # $rss =~ s!$ScriptName\?action=history;id=([^[:space:]<]*)!${gemini}1$1/history!g;
-  # $rss =~ s!$ScriptName/([^[:space:]<]*)!${gemini}0$1!g;
-  $rss =~ s!<wiki:diff>.*</wiki:diff>\n!!g;
-  print $rss;
+  my $host = $self->host();
+  my $port = $self->port();
+  local $ScriptName = "gemini://$host:$port"; # no slash at the end
+  my $date = TimeToRFC822($LastUpdate);
+  my %excluded = ();
+  if (GetParam("exclude", 1)) {
+    foreach (split(/\n/, GetPageContent($RssExclude))) {
+      if (/^ ([^ ]+)[ \t]*$/) { # only read lines with one word after one space
+	$excluded{$1} = 1;
+      }
+    }
+  }
+  print qq{<?xml version="1.0" encoding="UTF-8"?>\n};
+  if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
+    print qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet"?>\n};
+  } elsif ($RssStyleSheet) {
+    print qq{<?xml-stylesheet type="text/css" href="$RssStyleSheet"?>\n};
+  }
+  print qq{<rss version="2.0"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:cc="http://web.resource.org/cc/"
+  xmlns:atom="http://www.w3.org/2005/Atom">\n};
+  print qq"<channel>\n";
+  print qq"<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n";
+  my $title = QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
+  print "<title>$title</title>\n";
+  print "<link>$ScriptName/do/rss</link>\n";
+  print qq{<atom:link href="$ScriptName/do/rss" rel="self" type="application/rss+xml"/>\n};
+  print "<description>" . QuoteHtml($SiteDescription) . "</description>\n" if $SiteDescription;
+  print "<pubDate>$date</pubDate>\n";
+  print "<lastBuildDate>$date</lastBuildDate>\n";
+  print "<generator>Oddmuse</generator>\n";
+  print "<copyright>$RssRights</copyright>\n" if $RssRights;
+  if ($RssLicense) {
+    print join('', map {"<cc:license>" . QuoteHtml($_) . "</cc:license>\n"}
+		 (ref $RssLicense eq 'ARRAY' ? @$RssLicense : $RssLicense))
+  }
+  my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
+  my $count = 0;
+  ProcessRcLines(sub {}, sub {
+    my ($id, $ts, $host, $username, $summary, $minor, $revision,
+	$languages, $cluster, $last) = @_;
+    my $id = shift;
+    return if $excluded{$id} or $count++ >= $limit;
+    OpenPage($id);
+    $summary = $self->gemini_text($Page{text});
+    my $date = TimeToRFC822($ts);
+    $username = QuoteHtml($username);
+    $summary = QuoteHtml($summary);
+    print "<item>\n";
+    my $name = ItemName($id);
+    print "<title>$name</title>\n";
+    my $link = ScriptUrl(UrlEncode($id));
+    print "<link>$link</link>\n";
+    print "<guid>$link</guid>\n";
+    print "<description>$summary</description>\n" if $summary;
+    print "<pubDate>$date</pubDate>\n";
+    print "<comments>" . ScriptUrl($CommentsPrefix . UrlEncode($id)) . "</comments>\n"
+	if $CommentsPattern and $id !~ /$CommentsPattern/;
+    print "<dc:contributor>$username</dc:contributor>\n" if $username;
+    print "</item>\n";
+		 });
+  print "</channel>\n</rss>\n";
+}
+
+sub serve_atom {
+  my $self = shift;
+  $self->log(3, "Serving Gemini Atom");
+  $self->success("application/atom+xml");
+  my $host = $self->host();
+  my $port = $self->port();
+  local $ScriptName = "gemini://$host:$port"; # no slash at the end
+  my %excluded = ();
+  if (GetParam("exclude", 1)) {
+    foreach (split(/\n/, GetPageContent($RssExclude))) {
+      if (/^ ([^ ]+)[ \t]*$/) { # only read lines with one word after one space
+	$excluded{$1} = 1;
+      }
+    }
+  }
+  print qq{<?xml version="1.0" encoding="UTF-8"?>\n};
+  if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
+    print qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet"?>\n};
+  } elsif ($RssStyleSheet) {
+    print qq{<?xml-stylesheet type="text/css" href="$RssStyleSheet"?>\n};
+  }
+  say "<feed xmlns=\"http://www.w3.org/2005/Atom\">";
+  my $title = QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
+  say "<title>$title</title>";
+  say "<link href=\"$ScriptName/\"/>";
+  say "<link rel=\"self\" type=\"application/atom+xml\" href=\"gemini://$host:$port/do/atom\"/>";
+  say "<id>$ScriptName/do/atom</id>";
+  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($LastUpdate); # 2003-12-13T18:30:02Z
+  say "<updated>"
+      . sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year + 1900, $mon, $mday, $hour, $min, $sec)
+      . "</updated>";
+  say "<generator uri=\"https://oddmuse.org/\" version=\"1.0\">Oddmuse</generator>";
+  my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
+  my $count = 0;
+  ProcessRcLines(sub {}, sub {
+    my ($id, $ts, $host, $username, $summary, $minor, $revision,
+	$languages, $cluster, $last) = @_;
+    my $id = shift;
+    return if $excluded{$id} or $count++ >= $limit;
+    my $name = ItemName($id);
+    OpenPage($id);
+    $summary = $self->gemini_text($Page{text});
+    my $date = TimeToRFC822($ts);
+    $username = QuoteHtml($username);
+    $summary = QuoteHtml($summary);
+    print "<entry>\n";
+    my $name = ItemName($id);
+    print "<title>$name</title>\n";
+    my $link = ScriptUrl(UrlEncode($id));
+    print "<link href=\"$link\"/>\n";
+    print "<id>$link</id>\n";
+    print "<summary>$summary</summary>\n" if $summary;
+    ($sec, $min, $hour, $mday, $mon, $year) = gmtime($ts); # 2003-12-13T18:30:02Z
+    print "<updated>"
+	. sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year + 1900, $mon, $mday, $hour, $min, $sec)
+	. "</updated>\n";
+    print "<author><name>$username</name></author>\n" if $username;
+    print "</entry>\n";
+		 });
+  print "</feed>\n";
+}
+
+sub atom {
+  my $self = shift;
+  my $space = shift;
+  my $schema = shift;
+  my $name = $self->{server}->{wiki_main_page} || "Gemini Wiki";
+  my $host = $self->host();
+  my $port = $self->port();
 }
 
 sub get_page {
@@ -495,15 +624,12 @@ sub serve_html {
   my $id = shift;
   my $revision = shift;
   my $page = get_page($id, $revision);
-
   $self->success('text/html');
   $self->log(3, "Serving $id as HTML");
-
   my $title = normal_to_free($id);
   print GetHtmlHeader(Ts('%s:', $SiteName) . ' ' . UnWiki($title), $id);
   print GetHeaderDiv($id, $title);
   print $q->start_div({-class=>'wrapper'});
-
   if ($revision) {
     # no locking of the file, no updating of the cache
     PrintWikiToHTML($page->{text});
@@ -557,20 +683,13 @@ sub footer {
   push(@links, $self->gemini_link("history/$id", "History"));
   push(@links, $self->gemini_link("raw/$id/$revision", "Raw text"));
   push(@links, $self->gemini_link("html/$id/$revision", "HTML"));
-  return join("\n", "\n\nMore:", @links) if @links;
+  return join("\n", "\n\nMore:", @links, "") if @links;
   return "";
 }
 
-# All I have to do now is to transform the wiki text into Gemini format: Each
-# line is a paragraph. A list item starts with an asterisk and a space. A link
-# is a line consisting of "=>", space, URL, space, and some text.
-sub serve_gemini_page {
+sub gemini_text {
   my $self = shift;
-  my $id = shift;
-  my $page = shift;
-  my $revision = shift;
-  my $text = $page->{text};
-  $self->log(3, "Serve Gemini page $id");
+  my $text = shift;
   # escape the preformatted blocks
   my $ref = 0;
   my @escaped;
@@ -610,11 +729,21 @@ sub serve_gemini_page {
   $text = join("\n\n", @blocks);
   $text =~ s/^Tags: .*/Tags:/m;
   $text =~ s/\x03(\d+)\x04/$escaped[$1]/ge;
-  $text .= $self->footer($id, $page, $revision);
-  # Serve
-  $self->log(3, "Serving $id as " . length($text) . " bytes of text");
+  return $text;
+}
+
+# All I have to do now is to transform the wiki text into Gemini format: Each
+# line is a paragraph. A list item starts with an asterisk and a space. A link
+# is a line consisting of "=>", space, URL, space, and some text.
+sub serve_gemini_page {
+  my $self = shift;
+  my $id = shift;
+  my $page = shift;
+  my $revision = shift;
+  $self->log(3, "Serve Gemini page $id");
   $self->success(undef, $page->{languages});
-  print $text;
+  print $self->gemini_text($page->{text});
+  print $self->footer($id, $page, $revision);
 }
 
 sub serve_gemini {
@@ -649,7 +778,7 @@ sub newest_first {
 sub serve_tag_list {
   my $self = shift;
   my $tag = shift;
-  print("Search result for tag $tag:\r\n");
+  print("Search result for tag $tag:\n");
   for my $id (sort newest_first TagFind($tag)) {
     $self->print_link(normal_to_free($id), free_to_normal($id));
   }
@@ -663,7 +792,7 @@ sub serve_tag {
   if ($IndexHash{$tag}) {
     print("This page is about the tag $tag.\n");
     $self->print_link(normal_to_free($tag), free_to_normal($tag));
-    print("\r\n");
+    print("\n");
   }
   $self->serve_tag_list($tag);
 }
@@ -912,7 +1041,9 @@ sub process_request {
     } elsif ($selector eq "do/rc") {
       $self->serve_rc(0);
     } elsif ($selector eq "do/rss") {
-      $self->serve_rss(0);
+      $self->serve_rss();
+    } elsif ($selector eq "do/atom") {
+      $self->serve_atom();
     } elsif ($selector eq "do/rc/minor") {
       $self->serve_rc(1);
     } elsif ($selector =~ m!^tag/([^/]*)$!) {
