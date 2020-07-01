@@ -231,17 +231,52 @@ $page = query_gemini("$base\/do/rc/minor");
 $re = join(".*", "Friends", "2017-12-27", "2017-12-26", "2017-12-25");
 like($page, qr/$re/s, "minor rc in the right order");
 
-# rss
-my $rss = new XML::RSS;
+# feeds
+my $xpc = XML::LibXML::XPathContext->new;
+$xpc->registerNs('atom', 'http://www.w3.org/2005/Atom');
+
+# rss with regular pages
+my $feed = new XML::RSS;
 $page = query_gemini("$base\/do/rss");
 ok($page =~ s!^20 application/rss\+xml\r\n!!, "RSS header OK");
-ok($rss->parse($page), "RSS parse OK");
+ok($feed->parse($page), "RSS parse OK");
+for my $item(qw(Alex Berta Chris 2017-12-25 2017-12-26 2017-12-27)) {
+  ok(grep(/$item/, map { $_->{title} } @{$feed->{items}}), "$item found in RSS feed");
+}
 
-# atom
+# atom with regular pages
 $page = query_gemini("$base\/do/atom");
 ok($page =~ s!^20 application/atom\+xml\r\n!!, "Atom header OK");
-# $rss->parse($page) results in warnings that I can't get rid of
-ok(XML::LibXML->load_xml(string => $page), "Atom parse OK");
+# $feed->parse($page) results in warnings that I can't get rid of
+ok(my $doc = XML::LibXML->load_xml(string => $page), "Atom parse OK");
+for my $item(qw(Alex Berta Chris 2017-12-25 2017-12-26 2017-12-27)) {
+  ok($xpc->find("//atom:entry/atom:title[text()='$item']", $doc), "$item found in Atom feed");
+}
+
+add_module('journal-rss.pl');
+
+# rss with just the journal
+$page = query_gemini("$base\/do/rss");
+ok($page =~ s!^20 application/rss\+xml\r\n!!, "RSS header OK");
+ok($feed->parse($page), "RSS parse OK");
+for my $item(qw(2017-12-25 2017-12-26 2017-12-27)) {
+  ok(grep(/$item/, map { $_->{title} } @{$feed->{items}}), "$item found in RSS feed");
+}
+for my $item(qw(Alex Berta Chris)) {
+  ok(!grep(/$item/, map { $_->{title} } @{$feed->{items}}), "$item not found in RSS feed");
+}
+
+# atom with just the journal
+$page = query_gemini("$base\/do/atom");
+ok($page =~ s!^20 application/atom\+xml\r\n!!, "Atom header OK");
+# $feed->parse($page) results in warnings that I can't get rid of
+ok($doc = XML::LibXML->load_xml(string => $page), "Atom parse OK");
+for my $item(qw(2017-12-25 2017-12-26 2017-12-27)) {
+  ok($xpc->find("//atom:entry/atom:title[text()='$item']", $doc), "$item found in Atom feed");
+}
+for my $item(qw(Alex Berta Chris)) {
+  ok(!$xpc->find("//atom:entry/atom:title[text()='$item']", $doc), "$item not found in Atom feed");
+}
 
 # upload text
 

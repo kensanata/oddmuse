@@ -403,24 +403,15 @@ sub serve_rss {
   my $self = shift;
   $self->log(3, "Serving Gemini RSS");
   $self->success("application/rss+xml");
-  my $host = $self->host();
-  my $port = $self->port();
-  local $ScriptName = "gemini://$host:$port"; # no slash at the end
-  my $date = TimeToRFC822($LastUpdate);
-  my %excluded = ();
-  if (GetParam("exclude", 1)) {
-    foreach (split(/\n/, GetPageContent($RssExclude))) {
-      if (/^ ([^ ]+)[ \t]*$/) { # only read lines with one word after one space
-	$excluded{$1} = 1;
-      }
-    }
-  }
   print qq{<?xml version="1.0" encoding="UTF-8"?>\n};
   if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
     print qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet"?>\n};
   } elsif ($RssStyleSheet) {
     print qq{<?xml-stylesheet type="text/css" href="$RssStyleSheet"?>\n};
   }
+  my $host = $self->host();
+  my $port = $self->port();
+  local $ScriptName = "gemini://$host:$port"; # no slash at the end
   print qq{<rss version="2.0"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:cc="http://web.resource.org/cc/"
@@ -432,6 +423,7 @@ sub serve_rss {
   print "<link>$ScriptName/do/rss</link>\n";
   print qq{<atom:link href="$ScriptName/do/rss" rel="self" type="application/rss+xml"/>\n};
   print "<description>" . QuoteHtml($SiteDescription) . "</description>\n" if $SiteDescription;
+  my $date = TimeToRFC822($LastUpdate);
   print "<pubDate>$date</pubDate>\n";
   print "<lastBuildDate>$date</lastBuildDate>\n";
   print "<generator>Oddmuse</generator>\n";
@@ -440,31 +432,27 @@ sub serve_rss {
     print join('', map {"<cc:license>" . QuoteHtml($_) . "</cc:license>\n"}
 		 (ref $RssLicense eq 'ARRAY' ? @$RssLicense : $RssLicense))
   }
-  my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
-  my $count = 0;
+  local *GetRcLines = defined &JournalRssGetRcLines ? \&JournalRssGetRcLines : \&GetRcLines; # with journal-rss module
   ProcessRcLines(sub {}, sub {
     my ($id, $ts, $host, $username, $summary, $minor, $revision,
 	$languages, $cluster, $last) = @_;
-    my $id = shift;
-    return if $excluded{$id} or $count++ >= $limit;
-    OpenPage($id);
-    $summary = $self->gemini_text($Page{text});
-    my $date = TimeToRFC822($ts);
-    $username = QuoteHtml($username);
-    $summary = QuoteHtml($summary);
     print "<item>\n";
     my $name = ItemName($id);
     print "<title>$name</title>\n";
     my $link = ScriptUrl(UrlEncode($id));
     print "<link>$link</link>\n";
     print "<guid>$link</guid>\n";
+    OpenPage($id);
+    $summary = $self->gemini_text($Page{text}); # full text
+    $summary = QuoteHtml($summary);
     print "<description>$summary</description>\n" if $summary;
+    my $date = TimeToRFC822($ts);
     print "<pubDate>$date</pubDate>\n";
     print "<comments>" . ScriptUrl($CommentsPrefix . UrlEncode($id)) . "</comments>\n"
 	if $CommentsPattern and $id !~ /$CommentsPattern/;
+    $username = QuoteHtml($username);
     print "<dc:contributor>$username</dc:contributor>\n" if $username;
-    print "</item>\n";
-		 });
+    print "</item>\n"; });
   print "</channel>\n</rss>\n";
 }
 
@@ -472,23 +460,15 @@ sub serve_atom {
   my $self = shift;
   $self->log(3, "Serving Gemini Atom");
   $self->success("application/atom+xml");
-  my $host = $self->host();
-  my $port = $self->port();
-  local $ScriptName = "gemini://$host:$port"; # no slash at the end
-  my %excluded = ();
-  if (GetParam("exclude", 1)) {
-    foreach (split(/\n/, GetPageContent($RssExclude))) {
-      if (/^ ([^ ]+)[ \t]*$/) { # only read lines with one word after one space
-	$excluded{$1} = 1;
-      }
-    }
-  }
   print qq{<?xml version="1.0" encoding="UTF-8"?>\n};
   if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
     print qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet"?>\n};
   } elsif ($RssStyleSheet) {
     print qq{<?xml-stylesheet type="text/css" href="$RssStyleSheet"?>\n};
   }
+  my $host = $self->host();
+  my $port = $self->port();
+  local $ScriptName = "gemini://$host:$port"; # no slash at the end
   say "<feed xmlns=\"http://www.w3.org/2005/Atom\">";
   my $title = QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
   say "<title>$title</title>";
@@ -500,30 +480,25 @@ sub serve_atom {
       . sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year + 1900, $mon, $mday, $hour, $min, $sec)
       . "</updated>";
   say "<generator uri=\"https://oddmuse.org/\" version=\"1.0\">Oddmuse</generator>";
-  my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
-  my $count = 0;
+  local *GetRcLines = defined &JournalRssGetRcLines ? \&JournalRssGetRcLines : \&GetRcLines; # with journal-rss module
   ProcessRcLines(sub {}, sub {
     my ($id, $ts, $host, $username, $summary, $minor, $revision,
 	$languages, $cluster, $last) = @_;
-    my $id = shift;
-    return if $excluded{$id} or $count++ >= $limit;
-    my $name = ItemName($id);
-    OpenPage($id);
-    $summary = $self->gemini_text($Page{text});
-    my $date = TimeToRFC822($ts);
-    $username = QuoteHtml($username);
-    $summary = QuoteHtml($summary);
     print "<entry>\n";
     my $name = ItemName($id);
     print "<title>$name</title>\n";
     my $link = ScriptUrl(UrlEncode($id));
     print "<link href=\"$link\"/>\n";
     print "<id>$link</id>\n";
+    OpenPage($id);
+    $summary = $self->gemini_text($Page{text}); # full text feed
+    $summary = QuoteHtml($summary);
     print "<summary>$summary</summary>\n" if $summary;
     ($sec, $min, $hour, $mday, $mon, $year) = gmtime($ts); # 2003-12-13T18:30:02Z
     print "<updated>"
 	. sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year + 1900, $mon, $mday, $hour, $min, $sec)
 	. "</updated>\n";
+    $username = QuoteHtml($username);
     print "<author><name>$username</name></author>\n" if $username;
     print "</entry>\n";
 		 });
@@ -975,6 +950,7 @@ sub process_request {
     $selector =~ s/^$base_re//;
     $selector = UrlDecode($selector);
     $self->log(3, "Looking at $url / $selector");
+    my ($id, $n, $a, $c);
     if ($self->run_extensions($url, $selector)) {
       # config file goes first
     } elsif ($url =~ m"^titan://" and $selector !~ /^raw\//) {
@@ -1011,26 +987,25 @@ sub process_request {
       print "10 New page\r\n";
     } elsif (substr($selector, 0, 7) eq "do/new?") {
       print "30 $base" . "raw/" . UrlEncode(substr($selector, 7)) . "\r\n";
-    } elsif (my ($id) = $selector =~ m!do/comment/([^/?]*)$!) {
+    } elsif (($id) = $selector =~ m!do/comment/([^/?]*)$!) {
       my $n = int(rand(scalar(@QuestionaskerQuestions)));
       print "30 $base" . "do/comment/" . UrlEncode($id) . "/$n\r\n";
-    } elsif (my ($id, $n) = $selector =~ m!do/comment/([^/?]*)/(\d+)$!) {
+    } elsif (($id, $n) = $selector =~ m!do/comment/([^/?]*)/(\d+)$!) {
       my $q = $QuestionaskerQuestions[$n][0];
       print "10 $q\r\n";
-    } elsif (my ($id, $n, $a) = $selector =~ m!do/comment/([^/?]*)/(\d+)\?([^/?]*)$!) {
+    } elsif (($id, $n, $a) = $selector =~ m!do/comment/([^/?]*)/(\d+)\?([^/?]*)$!) {
       if ($QuestionaskerQuestions[$n][1]($a)) {
 	print "30 $base" . "do/comment/" . UrlEncode($id) . "/$n/" . UrlEncode($a) . "\r\n";
       } else {
 	print "59 You did not answer correctly.\r\n";
       }
-    } elsif (my ($id, $n, $a) = $selector =~ m!do/comment/([^/?]*)/(\d+)/([^/?]*)$!) {
+    } elsif (($id, $n, $a) = $selector =~ m!do/comment/([^/?]*)/(\d+)/([^/?]*)$!) {
       if ($QuestionaskerQuestions[$n][1]($a)) {
 	print "10 Comment\r\n";
       } else {
 	print "59 You did not answer correctly.\r\n";
       }
-    } elsif ($selector =~ m!do/comment/([^/?]*)/(\d+)/([^/?]*)\?([^/?]*)$!) {
-      my ($id, $n, $a, $c) = ($1, $2, $3, $4);
+    } elsif (($id, $n, $a, $c) = $selector =~ m!do/comment/([^/?]*)/(\d+)/([^/?]*)\?([^/?]*)$!) {
       if ($QuestionaskerQuestions[$n][1]($a)) {
 	$self->write_comment(free_to_normal($id), $n, $a, normal_to_free($c));
       } else {
