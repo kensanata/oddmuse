@@ -679,7 +679,7 @@ sub gemini_text {
     my @links;
     $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, $self->gemini_link($2, $1)); $1/ge;
     $block =~ s/\[([^]]+)\]\(([^) ]+)\)/push(@links, $self->gemini_link($2, $1)); $1/ge;
-    $block =~ s/\[$FullUrlPattern ([^]]+)\]/push(@links, $self->gemini_link($1, $2)); $2/ge;
+    $block =~ s/\[$FullUrlPattern\s+([^]]+)\]/push(@links, $self->gemini_link($1, $2)); $2/ge;
     $block =~ s/\[\[([a-z\/-]+):$FullUrlPattern\|([^]]+)\]\]/push(@links, $self->gemini_link($2, $3)); "｢$3｣"/ge;
     $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/ge;
     $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/ge;
