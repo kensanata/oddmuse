@@ -477,7 +477,7 @@ sub serve_atom {
   say "<id>$ScriptName/do/atom</id>";
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($LastUpdate); # 2003-12-13T18:30:02Z
   say "<updated>"
-      . sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year + 1900, $mon, $mday, $hour, $min, $sec)
+      . sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year + 1900, $mon + 1, $mday, $hour, $min, $sec)
       . "</updated>";
   say "<generator uri=\"https://oddmuse.org/\" version=\"1.0\">Oddmuse</generator>";
   local *GetRcLines = defined &JournalRssGetRcLines ? \&JournalRssGetRcLines : \&GetRcLines; # with journal-rss module
@@ -496,22 +496,13 @@ sub serve_atom {
     print "<summary>$summary</summary>\n" if $summary;
     ($sec, $min, $hour, $mday, $mon, $year) = gmtime($ts); # 2003-12-13T18:30:02Z
     print "<updated>"
-	. sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year + 1900, $mon, $mday, $hour, $min, $sec)
+	. sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", $year + 1900, $mon + 1, $mday, $hour, $min, $sec)
 	. "</updated>\n";
     $username = QuoteHtml($username);
     print "<author><name>$username</name></author>\n" if $username;
     print "</entry>\n";
 		 });
   print "</feed>\n";
-}
-
-sub atom {
-  my $self = shift;
-  my $space = shift;
-  my $schema = shift;
-  my $name = $self->{server}->{wiki_main_page} || "Gemini Wiki";
-  my $host = $self->host();
-  my $port = $self->port();
 }
 
 sub get_page {

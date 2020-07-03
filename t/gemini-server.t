@@ -265,6 +265,13 @@ for my $item(qw(2017-12-25 2017-12-26 2017-12-27)) {
 for my $item(qw(Alex Berta Chris)) {
   ok(!grep(/$item/, map { $_->{title} } @{$feed->{items}}), "$item not found in RSS feed");
 }
+my ($sec, $min, $hour, $mday, $mon, $year, $wday) = localtime;
+$year += 1900;
+# Fri, 19 Jun 2020 20:41:55 GMT
+my $today = sprintf("%s, %02d %s %d",
+		    qw(Sun Mon Tue Wed Thu Fri Sat)[$wday], $mday,
+		    qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)[$mon], $year);
+like($page, qr!<pubDate>$today \d\d:\d\d:\d\d GMT</pubDate>!, "Update timestamp for today");
 
 # atom with just the journal
 $page = query_gemini("$base\/do/atom");
@@ -277,6 +284,8 @@ for my $item(qw(2017-12-25 2017-12-26 2017-12-27)) {
 for my $item(qw(Alex Berta Chris)) {
   ok(!$xpc->find("//atom:entry/atom:title[text()='$item']", $doc), "$item not found in Atom feed");
 }
+$today = sprintf("%d-%02d-%02d", $year, $mon+1, $mday);
+like($page, qr!<updated>${today}T\d\d:\d\d:\d\dZ</updated>!, "Update timestamp for today");
 
 # upload text
 
