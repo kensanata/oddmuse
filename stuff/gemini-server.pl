@@ -665,7 +665,7 @@ sub gemini_text {
   # the trailing newline and fit right in.
   $text =~ s/^(```.*?\n```)\n/push(@escaped, $1); "\x03" . $ref++ . "\x04\n"/mesg;
   $self->log(4, "Escaped $ref code blocks");
-  my @blocks = split(/\n\n+|\\\\|\n(?=\*)/, $text);
+  my @blocks = split(/\n\n+|\\\\|\n(?=\*)|\n(?==>)/, $text);
   for my $block (@blocks) {
     my @links;
     $block =~ s/\[([^]]+)\]\($FullUrlPattern\)/push(@links, $self->gemini_link($2, $1)); $1/ge;
@@ -693,6 +693,7 @@ sub gemini_text {
     $block .= join("\n", @links);
   }
   $text = join("\n\n", @blocks);
+  $text =~ s/^(=>.*\n)\n(?==>)/$1/mg; # remove empty lines between links
   $text =~ s/^Tags: .*/Tags:/m;
   $text =~ s/\x03(\d+)\x04/$escaped[$1]/ge;
   return $text;
