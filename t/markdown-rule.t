@@ -16,7 +16,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 67;
+use Test::More tests => 68;
 
 add_module('markdown-rule.pl');
 add_module('bbcode.pl');
@@ -99,6 +99,8 @@ foo\n=\nbar
 <h2>foo ##</h2>
 bar\n##foo\nbar
 bar <h2>foo</h2><p>bar</p>
+this is #foo tag
+this is #foo tag
 ```\nfoo\n```\nbar
 <pre>foo</pre><p>bar</p>
 ```\nfoo\n```
