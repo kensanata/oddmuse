@@ -3356,6 +3356,7 @@ sub SortIndex {
 sub DoIndex {
   my $raw = GetParam('raw', 0);
   my $match = GetParam('match', '');
+  my $limit = GetParam('n', '');
   my @pages = ();
   my @menu = ($q->label({-for=>'indexmatch'}, T('Filter:')) . ' '
 	      . $q->textfield(-name=>'match', -id=>'indexmatch', -size=>20));
@@ -3368,6 +3369,7 @@ sub DoIndex {
   }
   @pages = grep /$match/i, @pages if $match;
   @pages = sort SortIndex @pages;
+  @pages = @pages[0 .. $limit - 1] if $limit;
   if ($raw) {
     print GetHttpHeader('text/plain'); # and ignore @menu
   } else {
