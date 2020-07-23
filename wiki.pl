@@ -1860,7 +1860,7 @@ sub RcTextRevision {
   $summary = GetPageContent($id) if GetParam('full', 0);
   print "\n", RcTextItem('title', NormalToFree($id)),
     RcTextItem('description', $summary),
-    RcTextItem('generator', GetAuthor($username)),
+    RcTextItem('generator', GetAuthor($username, $host)),
     RcTextItem('language', join(', ', @{$languages})), RcTextItem('link', $link),
     RcTextItem('last-modified', TimeToW3($ts)),
     RcTextItem('revision', $revision),
@@ -2216,11 +2216,16 @@ sub ScriptLinkDiff {
   return ScriptLink($action, $text, 'diff');
 }
 
-sub ColorCode {
+sub Code {
   my ($str) = @_;
   my $num = unpack("L",B::hash($str)); # 32-bit integer
   my $code = sprintf("%o", $num); # octal is 0-7
-  my @indexes = split(//, substr($code, 0, 4)); # four numbers
+  return substr($code, 0, 4); # four numbers
+}
+
+sub ColorCode {
+  my $code = Code(@_);
+  my @indexes = split(//, $code); # four numbers
   my @colors = qw/red orange yellow green blue indigo violet white/;
   return $q->span({-class => 'ip-code', -title => T('Anonymous')},
 		  join('', map { $q->span({-class => $colors[$_]}, $_) }
@@ -2228,9 +2233,10 @@ sub ColorCode {
 }
 
 sub GetAuthor {
-  my ($username) = @_;
+  my ($username, $host) = @_;
   return $username if $username;
-  return T('Anonymous');
+  return T('Anonymous') if $host eq 'Anonymous';
+  return Code($host);
 }
 
 sub GetAuthorLink {
