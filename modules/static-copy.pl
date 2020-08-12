@@ -100,7 +100,7 @@ sub StaticGetDownloadLink {
   return '[' . ($image ? 'image' : 'link') . ':' . $name . ']' unless $IndexHash{$id};
   if ($image) {
     return StaticFileName($id) if $image == 2;
-    my $result = $q->img({-src=>StaticFileName($id), -alt=>$alt, -class=>'upload'});
+    my $result = $q->img({-src=>StaticFileName($id), -alt=>$alt, -class=>'upload', -loading=>'lazy'});
     $result = ScriptLink($id, $result, 'image');
     return $result;
   } else {
@@ -198,7 +198,7 @@ EOT
     my $logo = $LogoUrl;
     $logo =~ s|.*/||;           # just the filename
     my $alt = T('[Home]');
-    $header .= $q->img({-src=>$logo, -alt=>$alt, -class=>'logo'}) if $logo;
+    $header .= $q->img({-src=>$logo, -alt=>$alt, -class=>'logo', -loading=>'lazy'}) if $logo;
   }
   # top toolbar
   local $UserGotoBar = '';      # only allow @UserGotoBarPages
@@ -317,7 +317,7 @@ sub GetDownloadLink {
       $action = $ScriptName . '?' . $action;
     }
     return $action if $image == 2;
-    my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload'});
+    my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload', -loading=>'lazy'});
     $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
     return $result;
   } else {

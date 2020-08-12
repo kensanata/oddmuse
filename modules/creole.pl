@@ -246,7 +246,8 @@ sub CreoleRule {
             $q->img({-src=> UnquoteHtml($1),
                      -alt=> UnquoteHtml($3),
                      -title=> UnquoteHtml($3),
-                     -class=> 'url outside'})));
+		     -class=> 'url outside',
+		     -loading=>'lazy'})));
   }
   # image link: [[link|{{pic}}]] and [[link|{{pic|text}}]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
@@ -257,7 +258,8 @@ sub CreoleRule {
                  $q->img({-src=> GetDownloadLink(FreeToNormal($3), 2),
                           -alt=> UnquoteHtml($text),
                           -title=> UnquoteHtml($text),
-                          -class=> 'upload'}), 'image')), $text);
+                          -class=> 'upload',
+			  -loading=>'lazy'}), 'image')), $text);
   }
   # image link: [[link|{{url}}]] and [[link|{{url|text}}]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
@@ -268,7 +270,8 @@ sub CreoleRule {
                  $q->img({-src=> UnquoteHtml($3),
                           -alt=> UnquoteHtml($text),
                           -title=> UnquoteHtml($text),
-                          -class=> 'url outside'}), 'image')), $text);
+                          -class=> 'url outside',
+			  -loading=>'lazy'}), 'image')), $text);
   }
   # image link: [[url|{{pic}}]] and [[url|{{pic|text}}]]
   elsif (m/\G(\[\[$FullUrlPattern$CreoleLinkPipePattern
@@ -279,7 +282,8 @@ sub CreoleRule {
             $q->img({-src=> GetDownloadLink(FreeToNormal($3), 2),
                      -alt=> UnquoteHtml($text),
                      -title=> UnquoteHtml($text),
-                     -class=> 'upload'}))), $text);
+                     -class=> 'upload',
+		     -loading=>'lazy'}))), $text);
   }
   # image link: [[url|{{url}}]] and [[url|{{url|text}}]]
   elsif (m/\G\[\[$FullUrlPattern$CreoleLinkPipePattern
@@ -289,7 +293,8 @@ sub CreoleRule {
             $q->img({-src=> UnquoteHtml($2),
                      -alt=> UnquoteHtml($4),
                      -title=> UnquoteHtml($4),
-                     -class=> 'url outside'})));
+                     -class=> 'url outside',
+		     -loading=>'lazy'})));
   }
   # link: [[url]] and [[url|text]]
   elsif (m/\G\[\[$FullUrlPattern$CreoleLinkTextPattern\]\]/cgs) {

@@ -1135,7 +1135,7 @@ sub GetUrl {
   }
   $url = UnquoteHtml($url); # links should be unquoted again
   if ($images and $url =~ /^(http:|https:|ftp:).+\.$ImageExtensions$/i) {
-    return $q->img({-src=>$url, -alt=>$url, -class=>$class});
+    return $q->img({-src=>$url, -alt=>$url, -class=>$class, -loading=>'lazy'});
   } else {
     return $q->a({-href=>$url, -class=>$class}, $text);
   }
@@ -1224,7 +1224,8 @@ sub GetDownloadLink {
   if ($image) {
     $action = $ScriptName . (($UsePathInfo and not $revision) ? '/' : '?') . $action;
     return $action if $image == 2;
-    my $result = $q->img({-src=>$action, -alt=>UnquoteHtml($alt), -title=>UnquoteHtml($alt), -class=>'upload'});
+    my $result = $q->img({-src=>$action, -alt=>UnquoteHtml($alt), -title=>UnquoteHtml($alt),
+			  -class=>'upload', -loading=>'lazy'});
     $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
     return $result;
   } else {

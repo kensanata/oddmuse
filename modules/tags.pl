@@ -123,7 +123,8 @@ sub TagsRule {
 			    -title=>T('Feed for this tag'),
 			    -rel=>'feed'
 			   }, $q->img({-src=>$TagFeedIcon,
-				       -alt=>T('RSS')}));
+				       -alt=>T('RSS'),
+				       -loading=>'lazy'}));
     }
     return $html;
   }

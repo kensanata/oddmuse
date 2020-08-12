@@ -95,7 +95,7 @@ sub StaticGetDownloadLink {
 	# if the page does not exist
 	return '[' . ($image ? 'image' : 'link') . ':' . $name . ']' unless $IndexHash{$id};
 	if ($image) {
-		my $result = $q->img({-src=>StaticFileName($id), -alt=>$alt, -class=>'upload'});
+		my $result = $q->img({-src=>StaticFileName($id), -alt=>$alt, -class=>'upload', -loading=>'lazy'});
 		$result = ScriptLink($id, $result, 'image');
 		return $result;
 	} else {
@@ -271,7 +271,7 @@ sub GetDownloadLink {
 		} else {
 			$action = $ScriptName . '?' . $action;
 		}
-		my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload'});
+		my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload', -loading=>'lazy'});
 		$result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
 		return $result;
 	} else {

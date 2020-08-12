@@ -43,7 +43,7 @@ sub DitaaRule {
     my $data = MIME::Base64::encode_base64($image);
     my $url = "data:image/png;base64,$data";
     return CloseHtmlEnvironments()
-      . "<div$style>" . $q->img({-src=>$url, -alt=>$map}) . "</div>";
+      . "<div$style>" . $q->img({-src=>$url, -alt=>$map, -loading=>'lazy'}) . "</div>";
   }
   return undef;
 }

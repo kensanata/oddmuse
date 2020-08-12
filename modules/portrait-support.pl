@@ -42,7 +42,7 @@ sub PortraitSupportRule {
       $PortraitSupportColorDiv = 0;
       return $html;
     } elsif ($bol && m/\Gportrait:$UrlPattern/cg) {
-      return $q->img({-src=>$1, -alt=>T("Portrait"), -class=>'portrait'});
+      return $q->img({-src=>$1, -alt=>T("Portrait"), -class=>'portrait', -loading=>'lazy'});
     } elsif ($bol && m/\G(:*)\[new(.*)\]/cg) {
       my $portrait = '';
       my $depth = length($1);
