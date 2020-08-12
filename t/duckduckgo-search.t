@@ -51,4 +51,4 @@ test_page(get_page('search=alex'),
 AppendStringToFile($ConfigFile, "\$ScriptName = 'http://emacswiki.org/';\n");
 test_page(get_page('search=alex'),
 	  'Status: 302',
-	  'Location: https://www.duckduckgo.com/\?q=alex\+site%3Aemacswiki\.org');
+	  'Location: https://duckduckgo.com/\?q=alex\+site%3Aemacswiki\.org');
