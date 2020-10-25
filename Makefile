@@ -64,9 +64,14 @@ test:
 # Spin up a quick test
 
 development:
+	@if grep --quiet 'ScriptName = "http://127.0.0.1:8080";' test-data/config; then \
+	  echo Not overwriting \$$ScriptName in test-data/config; \
+	else \
+	  echo '$ScriptName = "http://127.0.0.1:8080";' >> test-data/config; \
+	fi
 	morbo --listen http://*:8080 \
-	--watch wiki.pl --watch test-data/config --watch test-data/modules/ \
-	stuff/mojolicious-app.pl
+	  --watch wiki.pl --watch test-data/config --watch test-data/modules/ \
+	  stuff/mojolicious-app.pl
 
 %.pem:
 	openssl req -new -x509 -days 365 -nodes -out cert.pem -keyout key.pem
