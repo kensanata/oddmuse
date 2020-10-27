@@ -1,5 +1,5 @@
 #! /usr/bin/env perl
-# Copyright (C) 2001-2019
+# Copyright (C) 2001-2020
 #     Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2014-2015
 #     Alex Jakimenko <alex.jakimenko@gmail.com>
@@ -210,7 +210,7 @@ sub ReportError {   # fatal!
   my ($errmsg, $status, $log, @html) = @_;
   InitRequest(); # make sure we can report errors before InitRequest
   print GetHttpHeader('text/html', 'nocache', $status), GetHtmlHeader(T('Error')),
-    $q->start_div({class=>"error"}), $q->h1(QuoteHtml($errmsg)), @html, $q->end_div,
+    $q->start_div({class=>'error'}), $q->h1(QuoteHtml($errmsg)), @html, $q->end_div,
       $q->end_html, "\n\n"; # newlines for FCGI because of exit()
   WriteStringToFile("$TempDir/error", '<body>' . $q->h1("$status $errmsg") . $q->Dump) if $log;
   map { ReleaseLockDir($_); } keys %Locks;
@@ -450,7 +450,7 @@ sub ApplyRules {
 	  if ($type eq 'text') {
 	    print $q->pre({class=>"include $uri"}, QuoteHtml(GetRaw($uri)));
 	  } else { # never use local links for remote pages, with a starting tag
-	    print $q->start_div({class=>"include"});
+	    print $q->start_div({class=>'include'});
 	    ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
 	    print $q->end_div();
 	  }
@@ -877,17 +877,13 @@ sub PrintAllPages {
     next if $lang and @languages and not grep(/$lang/, @languages);
     next if PageMarkedForDeletion();
     next if substr($Page{text}, 0, 10) eq '#REDIRECT ';
-    print $q->start_div({-class=>'page h-entry'}),
-      $q->h1({-class => 'entry-title'},
-	     $links ? GetPageLink($id) : $q->a({-name=>$id}, UrlEncode(FreeToNormal($id))));
+    print '<article class="h-entry">', $q->h1({-class => 'p-name'},
+      $links ? GetPageLink($id) : $q->a({-name=>$id}, UrlEncode(FreeToNormal($id))));
     if ($variation ne 'titles') {
-      my $lang = (split /,/, $Page{languages})[0] || $CurrentLanguage;
-      print $q->start_div({-class=>'entry-content', -lang=>$lang});
       PrintPageHtml();
-      print $q->end_div();
       PrintPageCommentsLink($id, $comments);
     }
-    print $q->end_div();
+    print '</article>';
     $n++; # pages actually printed
   }
   return $i;
@@ -1248,11 +1244,14 @@ sub PrintCache {    # Use after OpenPage!
 
 sub PrintPageHtml {   # print an open page
   return unless GetParam('page', 1);
+  my $lang = (split /,/, $Page{languages})[0] || $CurrentLanguage;
+  print qq{<div class="e-content" lang="$lang">};
   if ($Page{blocks} and defined $Page{flags} and GetParam('cache', $UseCache) > 0) {
     PrintCache();
   } else {
     PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
   }
+  print '</div>';
 }
 
 sub PrintPageDiff {   # print diff for open page
@@ -1281,7 +1280,6 @@ sub PageHtml {
   return $error if $limit and length($diff) > $limit;
   my $lang = (split /,/, $Page{languages})[0] // $CurrentLanguage;
   my $page .= ToString \&PrintPageHtml;
-  $page = qq{<div class="page" lang="$lang">$page</div>} if $page;
   return $diff . $q->p($error) if $limit and length($diff . $page) > $limit;
   return $diff . $page;
 }
@@ -2286,12 +2284,12 @@ sub GetHeader {
 
 sub GetHeaderDiv {
   my ($id, $title, $oldId, $embed) = @_;
-  my $result .= $q->start_div({-class=>'header'});
+  my $result .= '<header>';
   if (not $embed and $LogoUrl) {
     my $url = $IndexHash{$LogoUrl} ? GetDownloadLink($LogoUrl, 2) : $LogoUrl;
     $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>T('[Home]'), -class=>'logo'}), 'logo');
   }
-  $result .= $q->start_div({-class=>'menu'});
+  $result .= '<nav>';
   if (GetParam('toplinkbar', $TopLinkBar) != 2) {
     $result .= GetGotoBar($id);
     if (%SpecialDays) {
@@ -2303,10 +2301,10 @@ sub GetHeaderDiv {
     }
   }
   $result .= GetSearchForm() if GetParam('topsearchform', $TopSearchForm) != 2;
-  $result .= $q->end_div();
+  $result .= '</nav>';
   $result .= $q->div({-class=>'message'}, $Message) if $Message;
   $result .= GetHeaderTitle($id, $title, $oldId);
-  $result .= $q->end_div();
+  $result .= '</header>';
   return $result;
 }
 
@@ -2442,9 +2440,11 @@ sub PrintFooter {
     return;
   }
   PrintMyContent($id) if defined(&PrintMyContent);
+  print '<footer>';
   foreach my $sub (@MyFooters) {
     print $sub->(@_);
   }
+  print '</footer>';
   print $q->end_html, "\n";
 }
 
@@ -2454,7 +2454,7 @@ sub WrapperEnd { # called via @MyFooters
 
 sub DefaultFooter { # called via @MyFooters
   my ($id, $rev, $comment, $page) = @_;
-  my $html = $q->start_div({-class=>'footer'}) . $q->hr();
+  my $html = $q->hr();
   $html .= GetGotoBar($id) if GetParam('toplinkbar', $TopLinkBar) != 1;
   $html .= GetFooterLinks($id, $rev);
   $html .= GetFooterTimestamp($id, $rev, $page);
@@ -2465,7 +2465,6 @@ sub DefaultFooter { # called via @MyFooters
   }
   $html .= T($FooterNote) if $FooterNote;
   $html .= $q->p(Ts('%s seconds', (time - $Now))) if GetParam('timing', 0);
-  $html .= $q->end_div();
   return $html;
 }
 
@@ -2579,9 +2578,8 @@ sub GetSearchForm {
   return $html;
 }
 
-sub GetGotoBar {    # ignore $id parameter
-  return $q->span({-class=>'gotobar bar'}, (map { GetPageLink($_) }
-					    @UserGotoBarPages), $UserGotoBar);
+sub GetGotoBar { # ignore $id parameter
+  return $q->span({-class=>'gotobar bar'}, (map { GetPageLink($_) } @UserGotoBarPages), $UserGotoBar);
 }
 
 # return list of summaries between two revisions, assuming the open page is the upper one
