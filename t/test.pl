@@ -197,16 +197,24 @@ sub test_page_negative {
 
 sub xpath_do {
   my ($check, $message, $page, @tests) = @_;
-  $page =~ s/^.*?(<html)/$1/s; # strip headers
-  $page =~ s/^.*?<\?xml.*?>\s*//s; # strip xml processing
+  $page =~ s/^(.+\r\n)*\r\n//; # strip headers
+  my $xml = $page =~ s/^.*?<\?xml.*?>\s*//s; # strip xml processing
   my $page_shown = 0;
-  my $parser = XML::LibXML->new();
+  my $parser = XML::LibXML->new(recover => 1, suppress_errors => 1); # allow HTML5 tags
   my $doc;
   my @result;
- SKIP: {
-    eval { $doc = $parser->parse_html_string($page) };
-    eval { $doc = $parser->parse_string($page) } if $@;
-    skip("Cannot parse ".name($page).": $@", $#tests + 1) if $@;
+ SKIP:
+  {
+    if ($xml) {
+      eval { $doc = $parser->parse_string($page) };
+    } else {
+      eval { $doc = $parser->parse_html_string($page) };
+    }
+    if ($@) {
+      skip("Cannot parse ".name($page).": $@", $#tests + 1);
+      return;
+    }
+    # warn "Doc: '$doc'\n";
     foreach my $test (@tests) {
       my $nodelist;
       # libxml2 is not aware of UTF8 flag

@@ -22,9 +22,9 @@ add_module('page-trail.pl');
 my $page = get_page('FirstPage');
 
 xpath_test($page,
-	   '//div[@class="header"]/div[@class="menu"]/span[@class="gotobar bar"]/following-sibling::span[@class="trail"]',
-	  '//span[@class="trail"][contains(text(),"Trail: ")]/br',
-	  '//span[@class="trail"]/a[@class="local"][@href="http://localhost/wiki.pl/FirstPage"][text()="FirstPage"]');
+	   '//header/nav/span[@class="gotobar bar"]/following-sibling::span[@class="trail"]',
+	   '//span[@class="trail"][contains(text(),"Trail: ")]/br',
+	   '//span[@class="trail"]/a[@class="local"][@href="http://localhost/wiki.pl/FirstPage"][text()="FirstPage"]');
 
 # verify cookie
 test_page($page, 'Set-Cookie: Wiki=trail%251eFirstPage');

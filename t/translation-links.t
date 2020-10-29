@@ -33,7 +33,7 @@ $page = update_page('HomePage', 'This is the homepage. [[de:HauptSeite]] [[fr:Pa
 test_page($page, 'This is the homepage.', 'fr:PagePrincipale',
 	  'action=translate;id=HomePage;missing=en', 'Add Translation');
 test_page_negative($page, 'de:HauptSeite');
-xpath_test($page, '//div[@class="footer"]/span[@class="translation bar"]/a[@class="translation de"][@href="http://localhost/wiki.pl/HauptSeite"][text()="Deutsch"]');
+xpath_test($page, '//footer/span[@class="translation bar"]/a[@class="translation de"][@href="http://localhost/wiki.pl/HauptSeite"][text()="Deutsch"]');
 
 AppendStringToFile($ConfigFile, q{
 %Languages = ('de' => '\b(der|die|das|und|oder)\b',
@@ -45,7 +45,7 @@ $Translate{en} = 'English';
 });
 
 xpath_test(update_page('HomePage', 'Simple test. [[de:HauptSeite]]'),
-	   '//div[@class="footer"]/span[@class="translation bar"]/a[@class="translation new"][text()="Add Translation"][@href="http://localhost/wiki.pl?action=translate;id=HomePage;missing=en_fr"]');
+	   '//footer/span[@class="translation bar"]/a[@class="translation new"][text()="Add Translation"][@href="http://localhost/wiki.pl?action=translate;id=HomePage;missing=en_fr"]');
 
 $page = get_page('action=translate id=HomePage missing=en_fr');
 test_page($page, 'Français', 'English');
@@ -53,7 +53,7 @@ test_page_negative($page, 'Deutsch');
 
 # the page is now autoidentified as English, therefore French is the only one that is missing!
 xpath_test(update_page('HomePage', 'The the the the test. [[de:HauptSeite]]'),
-	   '//div[@class="footer"]/span[@class="translation bar"]/a[@class="translation new"][text()="Add Translation"][@href="http://localhost/wiki.pl?action=translate;id=HomePage;missing=fr"]');
+	   '//footer/span[@class="translation bar"]/a[@class="translation new"][text()="Add Translation"][@href="http://localhost/wiki.pl?action=translate;id=HomePage;missing=fr"]');
 
 test_page(get_page('action=translate id=HomePage target=PagePrincipale translation=fr'),
 	  'Editing PagePrincipale');

@@ -161,9 +161,7 @@ our $CurrentLanguage = 'en';		# Language of error messages etc
 our $LanguageLimit     = 3;        	# Number of matches req. for each language
 our $JournalLimit    = 200;        	# how many pages can be collected in one go?
 our $PageNameLimit   = 120;        	# max length of page name in bytes
-$DocumentHeader = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN")
-  . qq( "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n)
-  . qq(<html xmlns="http://www.w3.org/1999/xhtml">);
+$DocumentHeader = "<!DOCTYPE html>\n<html>";
 our @MyFooters = (\&GetCommentForm, \&WrapperEnd, \&DefaultFooter);
 # Checkboxes at the end of the index.
 our @IndexOptions = ();
@@ -1243,7 +1241,7 @@ sub PrintCache {    # Use after OpenPage!
 }
 
 sub PrintPageHtml {   # print an open page
-  return unless GetParam('page', 1);
+  return unless GetParam('page', 1) and $Page{text};
   my $lang = (split /,/, $Page{languages})[0] || $CurrentLanguage;
   print qq{<div class="e-content" lang="$lang">};
   if ($Page{blocks} and defined $Page{flags} and GetParam('cache', $UseCache) > 0) {
@@ -2440,11 +2438,9 @@ sub PrintFooter {
     return;
   }
   PrintMyContent($id) if defined(&PrintMyContent);
-  print '<footer>';
   foreach my $sub (@MyFooters) {
     print $sub->(@_);
   }
-  print '</footer>';
   print $q->end_html, "\n";
 }
 
@@ -2465,7 +2461,7 @@ sub DefaultFooter { # called via @MyFooters
   }
   $html .= T($FooterNote) if $FooterNote;
   $html .= $q->p(Ts('%s seconds', (time - $Now))) if GetParam('timing', 0);
-  return $html;
+  return "<footer>$html</footer>";
 }
 
 sub GetFooterTimestamp {

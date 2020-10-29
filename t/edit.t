@@ -21,5 +21,5 @@ xpath_test(get_page('action=edit id=NewPage'),
 	   '//textarea[@name="text"][@id="text"][not(boolean(text()))]',
 	   '//div[@class="wrapper"]/div[@class="content edit"]',
 	   '//div[@class="content edit"]/following-sibling::div[@class="wrapper close"]',
-	   '//div[@class="wrapper"]/following-sibling::div[@class="footer"]',
+	   '//div[@class="wrapper"]/following-sibling::footer',
 	  );

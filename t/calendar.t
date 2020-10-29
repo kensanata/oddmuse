@@ -31,15 +31,15 @@ add_module('calendar.pl');
 
 test_page(update_page("with_cal", "zulu\n\ncalendar:2006\n\nwarrior\n"),
 	  '<p>zulu</p><p class="nav">',
-	  '</pre></div><p>warrior</p></div><div class="wrapper close"></div></div><div class="footer">');
+	  '</pre></div><p>warrior</p></div><div class="wrapper close"></div></div><footer>');
 
 test_page(update_page("with_cal", "zulu\n\nmonth:2006-09\n\nwarrior\n"),
 	  '<p>zulu</p><div class="cal"><div class="month"><pre>',
-	  '</pre></div></div><p>warrior</p></div><div class="wrapper close"></div></div><div class="footer">');
+	  '</pre></div></div><p>warrior</p></div><div class="wrapper close"></div></div><footer>');
 
 test_page(update_page("with_cal", "zulu\n\nmonth:+0\n\nwarrior\n"),
 	  '<p>zulu</p><div class="cal"><div class="month"><pre>',
-	  '</pre></div></div><p>warrior</p></div><div class="wrapper close"></div></div><div class="footer">');
+	  '</pre></div></div><p>warrior</p></div><div class="wrapper close"></div></div><footer>');
 
 xpath_test(get_page('action=calendar'),
 	   # yearly navigation
