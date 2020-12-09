@@ -1874,11 +1874,11 @@ sub PrintRcText { # print text rss header and call ProcessRcLines
 
 sub GetRcRss {
   my $date = TimeToRFC822($LastUpdate);
-  my %excluded = ();
+  my @excluded = ();
   if (GetParam("exclude", 1)) {
     foreach (split(/\n/, GetPageContent($RssExclude))) {
       if (/^ ([^ ]+)[ \t]*$/) { # only read lines with one word after one space
-	$excluded{$1} = 1;
+	push(@excluded, $1);
       }
     }
   }
@@ -1925,7 +1925,7 @@ sub GetRcRss {
   my $count = 0;
   ProcessRcLines(sub {}, sub {
        my $id = shift;
-       return if $excluded{$id} or ($limit ne 'all' and $count++ >= $limit);
+       return if grep { $id =~ /$_/ } @excluded or ($limit ne 'all' and $count++ >= $limit);
        $rss .= "\n" . RssItem($id, @_);
      });
   $rss .= "</channel>\n</rss>\n";
