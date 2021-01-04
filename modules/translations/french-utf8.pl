@@ -49,7 +49,7 @@ Le nom d’utilisateur ne doit pas dépasser 50 caractères : non sauvegardé
 This page contains an uploaded file:
 Cette page contient un fichier téléversé :
 No summary was provided for this file.
-
+Aucun résumé fourni pour ce fichier.
 Recursive include of %s!
 Inclusion par récursivité de %s !
 Clear Cache
@@ -95,13 +95,13 @@ Page non valide %s (ne doit pas se terminer par .lck)
 Invalid Page %s
 Page non valide %s
 There are no comments, yet. Be the first to leave a comment!
-
+Pas encore de commentaires. Soyez le premier à laisser un commentaire !
 Welcome!
-
+Bienvenue !
 This page does not exist, but you can %s.
-
+Cette page n’existe pas, mais vous pouvez %s.
 create it now
-
+la créer maintenant
 Too many redirections
 Trop de redirections
 No redirection for old revisions
@@ -113,7 +113,7 @@ SVP allez à %s.
 Updates since %s
 Mises à jour depuis %s
 up to %s
-jusqu’à
+jusqu’à %s
 Updates in the last %s days
 Mises à jour durant les derniers %s jours
 Updates in the last day
@@ -133,7 +133,7 @@ Lister seulement les modifications majeures
 Include minor changes
 Inclure les modifications mineures
 days
-
+jours
 List later changes
 Lister les modifications plus récentes
 RSS
@@ -263,9 +263,9 @@ par %s
 (diff)
 (diff)
 a
-
+a
 c
-
+c
 Edit revision %s of this page
 Modifier la version %s de cette page
 e
@@ -409,13 +409,13 @@ Vous êtes actuellement éditeur de ce site.
 You are a normal user on this site.
 Vous êtes un utilisateur normal de ce site.
 You do not have a password set.
-
+Vous n’avez pas défini de mot de passe.
 Your password does not match any of the administrator or editor passwords.
 Vote mot de passe ne correspond ni au mot de passe administrateur ni au mot de passe éditeur.
 Password:
 Mot de passe :
 Return to %s
-
+Retour à %s
 This operation is restricted to site editors only...
 Cette opération est réservée aux éditeurs du site seulement...
 This operation is restricted to administrators only...
@@ -445,7 +445,7 @@ Raison inconnue.
 %s pages found.
 %s pages trouvées.
 Preview: %s
-
+Prévisualiser: %s
 Replaced: %s
 Remplacé(e) : %s
 Search for: %s
@@ -544,7 +544,7 @@ Deleted %s
 Renaming %1 to %2.
 Renomme %1 en %2.
 The page %s does not exist
-La page %s n'existe pas
+La page %s n’existe pas
 The page %s already exists
 La page %s existe déjà
 Cannot rename %1 to %2
@@ -563,9 +563,9 @@ Renommer %s en :
 # modules/advanced-uploads.pl
 ################################################################################
 Attach file:
-
+Joindre un fichier:
 Upload
-
+Uploader
 ################################################################################
 # modules/aggregate.pl
 ################################################################################
@@ -609,7 +609,7 @@ Ban Contributors to %s
 Ban!
 
 Regular expression:
-
+Expression régulière :
 %s is banned
 
 These URLs were rolled back. Perhaps you want to add a regular expression to %s?
@@ -620,9 +620,9 @@ Consider banning the IP number as well:
 # modules/banned-regexps.pl
 ################################################################################
 Regular expression "%1" matched "%2" on this page.
-
+Expression régulière "%1" correspond à "%2" sur cette page.
 Regular expression "%s" matched on this page.
-
+Expression régulière "%s" correspond à cette page.
 ################################################################################
 # modules/big-brother.pl
 ################################################################################
@@ -724,7 +724,7 @@ Une expression régulière manque au tag de compilation.
 # modules/creationdate.pl
 ################################################################################
 Add creation date to page files
-
+Ajouter une date de création aux fichiers des pages
 ################################################################################
 # modules/css-install.pl
 ################################################################################
@@ -733,7 +733,7 @@ Installer CSS
 Copy one of the following stylesheets to %s:
 Copier une des feuilles de style suivantes sur %s.
 Reset
-
+Réinitialiser
 ################################################################################
 # modules/dates.pl
 ################################################################################
@@ -764,9 +764,9 @@ Impossible de trouver une version sans texte indésirable.
 # modules/diff.pl
 ################################################################################
 Page diff
-
+Page diff
 Diff
-
+Diff
 ################################################################################
 # modules/drafts.pl
 ################################################################################
@@ -806,11 +806,11 @@ modifications ordinaires
 # modules/edit-paragraphs.pl
 ################################################################################
 Could not identify the paragraph you were editing
-
+Impossible d'identifier le paragraphe que vous avez édité
 This is the section you edited:
-
+C’est la section que vous avez éditée :
 This is the current page:
-
+C’est la page actuelle
 ################################################################################
 # modules/find.pl
 ################################################################################
@@ -820,53 +820,53 @@ Pages correspondant aux noms :
 # modules/fix-encoding.pl
 ################################################################################
 Fix character encoding
-
+Corriger l’encodage des caractères
 Fix HTML escapes
-
+Corriger les caractères d’échappement HTML
 ################################################################################
 # modules/form_timeout.pl
 ################################################################################
 Set $FormTimeoutSalt.
-
+Définir $FormTimeoutSalt.
 Form Timeout
 
 ################################################################################
 # modules/gd_security_image.pl
 ################################################################################
 GD or Image::Magick modules not available.
-
+modules GD ou Image::Magick non disponibles.
 GD::SecurityImage module not available.
-
+module GD::SecurityImage non disponible.
 Image storing failed. (%s)
-
+Erreur d’enregistrement de l’image. (%s)
 Bad gd_security_image_id.
-
+Invalide gd_security_image_id.
 Please type the six characters from the anti-spam image
-
+Entrez les six caractères de l’image anti-spam
 Submit
-
+Soumettre
 CAPTCHA
-
+CAPTCHA
 You did not answer correctly.
 Vous n’avez pas répondu correctement.
 $GdSecurityImageFont is not set.
-
+$GdSecurityImageFont n’est pas défini.
 ################################################################################
 # modules/git-another.pl
 ################################################################################
 No summary provided
-
+Aucun résumé fourni
 ################################################################################
 # modules/git.pl
 ################################################################################
 no summary available
-
+aucun résumé disponible
 page was marked for deletion
-
+page marquée pour suppression
 Oddmuse
-
+Oddmuse
 Cleaning up git repository
-
+Nettoyage du dépôt git
 ################################################################################
 # modules/google-plus-one.pl
 ################################################################################
@@ -880,7 +880,7 @@ This page lists the twenty last diary entries and their +1 buttons.
 # modules/gravatar.pl
 ################################################################################
 Email:
-
+Courriel :
 ################################################################################
 # modules/header-and-footer-templates.pl
 ################################################################################
@@ -902,53 +902,53 @@ Index
 # modules/joiner.pl
 ################################################################################
 The username %s already exists.
-
+Le nom d’utilisateur %s existe déjà.
 The email address %s has already been used.
-
+L’adresse courriel %s a déjà été utilisée.
 Wait %s minutes before try again.
-
+Attendez %s minutes avant de réessayer.
 Registration Confirmation
-
+Confirmation de l’enregistrement
 Visit the link below to confirm registration.
-
+Visitez le lien ci-dessous pour confirmer l’enregistrement.
 Recover Account
-
+Restaurer le compte
 You can login by following the link below. Then set new password.
 
 Change Email Address
-
+Changer l’adresse courriel
 To confirm changing email address, follow the link below.
 
 To submit this form you must answer this question:
 
 Question:
-
+Question:
 CAPTCHA:
-
+CAPTCHA:
 Registration
-
+Enregistrement
 The username must be valid page name.
-
+Le nom d’utilisateur doit être un nom de page valide.
 Confirmation email will be sent to the email address.
-
+Un courriel de confirmation sera envoyé à l’adresse courriel.
 Repeat Password:
-
+Répétez le mot de passse :
 Bad email address format.
-
+Format d’adresse courriel invalide.
 Password needs to have at least %s characters.
-
+Le mot de passe doit avoir au moins %s caractères.
 Passwords differ.
-
+Mots de passe différents.
 Email Sent
-
+Courriel envoyé
 Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
-
+Courriel de confirmation envoyé à %s. Visitez le lien du courriel de confirmation d'enregistrement.
 Failed to Confirm Registration
-
+Echec de confirmation d'enregistrement.
 Invalid key.
-
+Clé non valide.
 The key expired.
-
+Clé expirée.
 Registration Confirmed
 
 Now, you can login by using username and password.
@@ -956,65 +956,65 @@ Now, you can login by using username and password.
 Forgot your password?
 Mot de passe oublié ?
 Login failed.
-
+Connexion échouée.
 You are banned.
 
 You must confirm email address.
-
+Vous devez confirmer l'adresse courriel.
 Logged in
-
+Connecté
 %s has logged in.
-
+%s est connecté
 You should set new password immediately.
-
+Vous devriez définir un nouveau mot de passe immédiatement.
 Change Password
-
+Changer le mot de passe
 Logged out
-
+Déconnecté
 %s has logged out.
-
+%s s’est déconnecté
 Account Settings
-
+Paramètres de compte
 Logout
 Se déconnecter
 Current Password:
-
+Mot de passe actuel:
 New Password:
-
+Nouveau mot de passe:
 Repeat New Password:
-
+Répétez le mot de passe:
 Password is wrong.
-
+Mot de passe incorrect.
 Password Changed
-
+Mot de passe modifié
 Your password has been changed.
 Votre mot de passe a été modifié.
 Forgot Password
-
+Mot de passe oublié
 Enter email address, and recovery login ticket will be sent.
-
+Entrez une adresse courriel, un ticket de récupération de connexion sera envoyé.
 Not found.
-
+Non trouvé.
 The mail address is not valid anymore.
-
+L’adresse courriel n’est plus valide.
 An email has been sent to %s with further instructions.
-
+Un courriel a été envoyé à %s avec les instructions complémentaires.
 New Email Address:
-
+Nouvelle adresse courriel:
 Failed to load account.
-
+Echec du chargement du compte.
 An email has been sent to %s with a login ticket.
-
+Un courriel a été envoyé à %s avec un ticket de connexion.
 Confirmation Failed
-
+Echec de confirmation
 Failed to confirm.
-
+Echec de confirmation
 Email Address Changed
-
+Adresse courriel modifiée
 Email address for %1 has been changed to %2.
-
+Adresse courriel pour %1 modifiée en %2.
 Account Management
-
+Gestion des comptes
 Ban Account
 
 Enter username of the account to ban:
@@ -1034,7 +1034,7 @@ Unban
 %s has been unbanned.
 
 Register
-
+Enregistrement
 ################################################################################
 # modules/lang.pl
 ################################################################################
@@ -1052,7 +1052,7 @@ Voir !
 ====1 person liked this====
 
 I like this!
-
+J’aime!
 ################################################################################
 # modules/link-all.pl
 ################################################################################
@@ -1091,9 +1091,9 @@ Le modèle %s est soit vide soit n'existe pas.
 # modules/localnames.pl
 ################################################################################
 Name:
-
+Nom :
 URL:
-
+URL:
 Define Local Names
 
 Define external redirect:
@@ -1106,7 +1106,7 @@ Noms locaux définis sur %1 : %2
 # modules/logbannedcontent.pl
 ################################################################################
 IP number matched %s
-
+Numéro IP correspond à %s
 ################################################################################
 # modules/login.pl
 ################################################################################
@@ -1209,8 +1209,8 @@ All mail subscriptions
 Tous les abonnements e-mail
 Subscriptions
 Abonnements
-Email: 
-
+Email:
+Courriel :
 Show
 Voir
 Subscriptions for %s:
@@ -1247,30 +1247,30 @@ Help convert %s to Markdown
 List all non-Markdown pages
 
 Converting %s
-
+Conversion de %s
 Candidates for Conversion to Markdown
 
 ################################################################################
 # modules/module-bisect.pl
 ################################################################################
 Bisect modules
-
+Modules Bisect
 Module Bisect
-
+Module Bisect
 All modules enabled now!
-
+Tous les modules activés maintenant !
 Go back
-
+Retour
 Test / Always enabled / Always disabled
 
 Start
-
+Démarrer
 Bisecting proccess is already active.
 
 Stop
-
+Stop
 It seems like module %s is causing your problem.
-
+Le module %s sembler causer votre problème.
 Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
 
 Good luck fixing your problem! ;)
@@ -1278,13 +1278,13 @@ Good luck fixing your problem! ;)
 Module count (only testable modules):
 
 Current module statuses:
-
+Statuts du module courant :
 Good
-
+Bon
 Bad
-
+Mauvais
 Enabling %s
-
+Activer %s
 ################################################################################
 # modules/module-updater.pl
 ################################################################################
@@ -1357,9 +1357,9 @@ L'extension "404 handler" nécessite une base de données de liens (links.pl).
 # modules/offline.pl
 ################################################################################
 Make available offline
-
+Rendre disponible hors ligne
 Offline
-
+Hors ligne
 You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
 
 ################################################################################
@@ -1424,25 +1424,25 @@ Portrait
 # modules/preview.pl
 ################################################################################
 Pages with changed HTML
-
+Pages avec HTML modifié
 Preview changes in HTML output
-
+Visualiser les changenements de la sortie HTML
 ################################################################################
 # modules/private-pages.pl
 ################################################################################
 This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
 
 supply the password now
-
+donner le mot de passe maintenant
 ################################################################################
 # modules/private-wiki.pl
 ################################################################################
 This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
 
 Attempt to read encrypted data without a password.
-
+Tentative de lire des données cryptés sans mot de passe.
 Cannot refresh index.
-
+Impossible de mettre à jour l'index
 ################################################################################
 # modules/publish.pl
 ################################################################################
@@ -1493,17 +1493,17 @@ Index de toutes les pages de petite taille
 # modules/sort.pl
 ################################################################################
 Sort alphabetically
-
+Trier alphabétiquement
 Sorted alphabetically
-
+Trié alphabétiquement
 Sorted by last update first
-
+Trié par dernière modification en premier
 Sort by last update
-
+Trier par dernière modification
 Sorted by creation date
-
+Trié par date de création
 Sort by creation date
-
+Trier par date de création
 ################################################################################
 # modules/static-copy.pl
 ################################################################################
@@ -1581,7 +1581,7 @@ Failed to run %1 to create thumbnail: %2
 %s ran into an error
 
 %s produced no output
-
+%s n’a produit aucun résultat
 Failed to parse %s.
 
 ################################################################################
@@ -1615,13 +1615,13 @@ Traduire %s
 Thank you for writing a translation of %s.
 Merci pour la traduction de %s.
 Please indicate what language you will be using.
-Merci d'indiquer quelle langue vous allez utiliser.
+Merci d’indiquer quelle langue vous allez utiliser.
 Language is missing
 La langue est manquante
 Suggested languages:
 Langues suggérées
 Please indicate a page name for the translation of %s.
-Indiquez s'il vous plaît un nom de page pour la traduction de %s.
+Indiquez s’il vous plaît un nom de page pour la traduction de %s.
 More help may be available here: %s.
 Plus d'aide disponible ici : %s.
 Translated page:
@@ -1647,11 +1647,11 @@ Upgrading Database
 Did the previous upgrade end with an error? A lock was left behind.
 
 Unlock wiki
-
+Déverrouiller le wiki
 Upgrade complete.
-
+Mise à jour terminée
 Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-
+Mise à jour terminée. SVP, supprimez $ModuleDir/upgade.pl maintenant.
 ################################################################################
 # modules/usemod.pl
 ################################################################################
