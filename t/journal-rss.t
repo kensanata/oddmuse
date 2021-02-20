@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2019  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2008-2021  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 43;
+use Test::More tests => 44;
 
 add_module('journal-rss.pl');
 
@@ -113,3 +113,7 @@ xpath_test(get_page('action=journal search=tag:oddmuse'),
 	   '//atom:link[@rel="self"][@href="http://localhost/wiki.pl?action=journal;search=tag%3aoddmuse"]',
 	   '//atom:link[@rel="last"][@href="http://localhost/wiki.pl?action=journal;search=tag%3aoddmuse"]',
 	   '//atom:link[@rel="previous"][@href="http://localhost/wiki.pl?action=journal;offset=10;search=tag%3aoddmuse"]');
+
+# check raw
+$page = get_page('action=journal raw=1 rsslimit=1');
+test_page($page, 'title: 2008-09-22');

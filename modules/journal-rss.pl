@@ -1,4 +1,4 @@
-# Copyright (C) 2004–2018  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004–2021  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,8 @@ use v5.10;
 
 AddModuleDescription('journal-rss.pl', 'Journal RSS Extension');
 
-our ($OpenPageName, $CollectingJournal, %Page, %Action, @MyInitVariables, $DeletedPage, %NearLinksException);
+our ($OpenPageName, $CollectingJournal, %Page, %Action, @MyInitVariables, $DeletedPage, %NearLinksException,
+    $RecentLink, $SiteName, $SiteDescription, $ScriptName, $RssRights);
 $Action{journal} = \&DoJournalRss;
 
 # Currently RSS works like RecentChanges, which is not what bloggers
@@ -34,7 +35,15 @@ sub DoJournalRss {
   local *RcPreviousAction = \&JournalRssPreviousAction;
   local *RcLastAction = \&JournalRssLastAction;
   SetParam('full', 1);
-  print GetHttpHeader('application/xml') . GetRcRss();
+  if (GetParam('raw', 0)) {
+    local $RecentLink = 0;
+    print RcTextItem('title', $SiteName),
+	RcTextItem('description', $SiteDescription), RcTextItem('link', $ScriptName),
+	RcTextItem('generator', 'Oddmuse'), RcTextItem('rights', $RssRights);
+    ProcessRcLines(sub {}, \&RcTextRevision);
+  } else {
+    print GetHttpHeader('application/xml') . GetRcRss();
+  }
 }
 
 sub JournalRssParameters {
