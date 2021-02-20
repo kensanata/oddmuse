@@ -15,7 +15,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 44;
+use Test::More tests => 45;
 
 add_module('journal-rss.pl');
 
@@ -116,4 +116,4 @@ xpath_test(get_page('action=journal search=tag:oddmuse'),
 
 # check raw
 $page = get_page('action=journal raw=1 rsslimit=1');
-test_page($page, 'title: 2008-09-22');
+test_page($page, 'generator: Oddmuse', 'title: 2008-09-22');

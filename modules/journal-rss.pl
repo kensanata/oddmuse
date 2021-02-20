@@ -19,7 +19,7 @@ use v5.10;
 AddModuleDescription('journal-rss.pl', 'Journal RSS Extension');
 
 our ($OpenPageName, $CollectingJournal, %Page, %Action, @MyInitVariables, $DeletedPage, %NearLinksException,
-    $RecentLink, $SiteName, $SiteDescription, $ScriptName, $RssRights);
+     $RecentLink, $SiteName, $SiteDescription, $ScriptName, $RssRights);
 $Action{journal} = \&DoJournalRss;
 
 # Currently RSS works like RecentChanges, which is not what bloggers
