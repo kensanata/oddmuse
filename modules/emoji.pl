@@ -48,7 +48,7 @@ sub EmojiRule {
   } elsif (/\G&gt;:-?\(/cg) {
     # 😠 1F620 ANGRY FACE
     return '&#x1F620;';
-  } elsif (/\G:-?[Ppb]/cg) {
+  } elsif (/\G:-?[Ppb]\b/cg) {
     # 😝 1F61D FACE WITH STUCK-OUT TONGUE AND TIGHTLY-CLOSED EYES
     return '&#x1F61D;';
   } elsif (/\G&lt;3/cg) {
