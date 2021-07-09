@@ -300,6 +300,8 @@ Delete
 
 Filter:
 
+Summary:
+Sammanfattning:
 Last edit
 
 revision %s
@@ -314,8 +316,6 @@ later minor edits
 
 No diff available.
 Information om ändring är inte tillgänglig.
-Summary:
-Sammanfattning:
 Old revision:
 Gammal version:
 Changed:
@@ -700,17 +700,17 @@ Klusterkarta
 Pages without a Cluster
 Sidor utan kluster
 ################################################################################
-# modules/comment-div-wrapper.pl
-################################################################################
-Comments:
-
-################################################################################
 # modules/commentcount.pl
 ################################################################################
 Comments on
 Kommentarer till
 Comment on
 Kommentar till
+################################################################################
+# modules/comment-div-wrapper.pl
+################################################################################
+Comments:
+
 ################################################################################
 # modules/compilation.pl
 ################################################################################
@@ -1205,6 +1205,8 @@ Your mail subscriptions
 
 All mail subscriptions
 
+All mail subscribers
+
 Subscriptions
 
 Email: 
@@ -1230,6 +1232,8 @@ Subscribed %s to the following pages:
 The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
+
+Unsubscribed %s from all pages.
 
 Migrating Subscriptions
 
@@ -1305,6 +1309,11 @@ You linked more than %s times to the same domain. It would seem that only a spam
 Namespaces
 
 ################################################################################
+# modules/nearlink-create.pl
+################################################################################
+ (create locally)
+
+################################################################################
 # modules/near-links.pl
 ################################################################################
 Getting page index file for %s.
@@ -1323,11 +1332,6 @@ EditNearLinks
 Redigera närlänkar
 The same page on other sites:
 Samma sida på andra siter:
-################################################################################
-# modules/nearlink-create.pl
-################################################################################
- (create locally)
-
 ################################################################################
 # modules/no-question-mark.pl
 ################################################################################
@@ -1414,6 +1418,11 @@ Klicka för att söka efter referenser till det här permanenta ankaret
 Include permanent anchors
 Med permanenta ankare
 ################################################################################
+# modules/pingback-server.pl
+################################################################################
+Only XML-RPC POST requests recognised
+
+################################################################################
 # modules/portrait-support.pl
 ################################################################################
 Portrait
@@ -1477,6 +1486,17 @@ Sidor som länkat hit
 ################################################################################
 All Referrers
 Alla som länkat hit
+################################################################################
+# modules/rename-pages.pl
+################################################################################
+Target page already exists.
+
+Source page does not exist.
+
+Copied from %s
+
+Moved to %s
+
 ################################################################################
 # modules/search-list.pl
 ################################################################################
@@ -1542,8 +1562,6 @@ Rebuilding index not done.
 (Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
-
-list tags
 
 tag cloud
 
@@ -1700,6 +1718,57 @@ Edit %s.
 # modules/weblog-4.pl
 ################################################################################
 Tags:
+
+################################################################################
+# modules/webmention.pl
+################################################################################
+Webmention module requires $CommentsPrefix to be set
+
+Webmention requires a POST request
+
+Webmention requires x-www-form-urlencoded requests
+
+Webmention must mention a specific page
+
+Webmention must mention a valid page
+
+Your IP number is blocked: %s
+
+Webmention must mention an existing page
+
+Webmention must mention source
+
+Webmention must mention target
+
+The URL is blocked: %s
+
+Webmention source cannot be verified: %1 returns %2 %3
+
+Webmention source does not link to %s
+
+Webmention for %s already exists
+
+Webmention OK!
+
+Add webmentions
+
+Webmentioning others from %s
+
+Webmention!
+
+No links found.
+
+Webmentioning somebody from %s
+
+Contacting %s
+
+Target reports an error: %s
+
+No Webmention URL found
+
+Success: %s
+
+Failure: %s
 
 #
 END_OF_TRANSLATION
