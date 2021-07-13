@@ -173,7 +173,7 @@ sub send_mail {
 				     Path => $fh,
 				     Type=> "text/html");
   if ($host) {
-    print "Sending $title to $subscriber using ${user}\@${host}\n" if $verbose;
+    print "$root\nSending $title to $subscriber using ${user}\@${host}\n" if $verbose;
     my $smtp = Net::SMTP->new($host, Debug => $debug);
     $smtp->starttls();
     # the following requires Authen::SASL!
