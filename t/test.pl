@@ -42,7 +42,7 @@ require 'wiki.pl';
 # our $ENV{PATH} is set to /bin:/usr/bin in order to find diff and
 # grep.
 if ($ENV{PERLBREW_PATH}) {
-  $ENV{PATH} = $ENV{PERLBREW_PATH} . ':' . $ENV{PATH};
+  $ENV{PATH} = join(':', split(/ /, $ENV{PERLBREW_PATH}), $ENV{PATH});
 } elsif (-f '/usr/local/bin/perl') {
   $ENV{PATH} = '/usr/local/bin:' . $ENV{PATH};
 }
