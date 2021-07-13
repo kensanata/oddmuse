@@ -37,7 +37,14 @@ sub main {
   my $big = 0;
   # include dotfiles!
   local $/ = undef;   # Read complete files
-  foreach my $file (glob("$PageDir/*.pg $PageDir/.*.pg")) {
+  say "Reading files...";
+  my @files = glob("$PageDir/*.pg $PageDir/.*.pg");
+  my $n = @files;
+  local $| = 1; # flush!
+  foreach my $file (@files) {
+    if (not --$n % 10) {
+      printf("\r%06d files to go", $n);
+    }
     next unless $file =~ m|.*/(.+)\.pg$|;
     my $page = $1;
     open(F, $file) or die "Cannot read $page file: $!";
@@ -54,6 +61,7 @@ sub main {
       $big++ if length($result{text}) > 15000;
     }
   }
+  printf("\r%06d files to go\n", 0);
   printf("Pages:    %7d\n", $pages);
   printf("Files:    %7d\n", $files);
   printf("Redirects: %6d\n", $redirects);
