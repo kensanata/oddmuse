@@ -242,10 +242,11 @@ sub get_regexp_ip {
       $regexp .= '(' . $start[$i] . '\.('
 	  . get_regexp_range($start[$i + 1], '255') . ')|'
 	  . get_regexp_range($start[$i] + 1, $end[$i + 1]) . ')';
-      $regexp .= '\.';
+      $regexp .= '\.' if $i < 3;
       last;
     } else {
-      $regexp .= '(' . get_regexp_range($start[$i], $end[$i]) . ')$';
+      $regexp .= '(' . get_regexp_range($start[$i], $end[$i]) . ')';
+      $regexp .= '\.' if $i < 3;
       last;
     }
     $regexp .= '\.' if $i < 3;
