@@ -1723,52 +1723,53 @@ Tags:
 # modules/webmention.pl
 ################################################################################
 Webmention module requires $CommentsPrefix to be set
-
+Webmention modulen kräver att $CommentsPrefix är satt
 Webmention requires a POST request
-
+Webmention kräver en POST förfrågan
 Webmention requires x-www-form-urlencoded requests
-
+Webmention kräver x-www-form-urlencoded förfrågan
 Webmention must mention a specific page
-
+Webmention måste ange en specifik sida
 Webmention must mention a valid page
-
+Webmention måste ange en giltig sida
 Your IP number is blocked: %s
-
+Ditt IP-nummer är blockerat: %s
 Webmention must mention an existing page
-
+Webmention måste ange en existerande sida
 Webmention must mention source
-
+Webmention måste ange en källa
 Webmention must mention target
-
+Webmention måste ange ett mål
 The URL is blocked: %s
-
+URL:en är blockerad: %s
 Webmention source cannot be verified: %1 returns %2 %3
-
+Webmention källan kan inte verifieras: %1 returnerar %2 %3
 Webmention source does not link to %s
-
+Webmention källan länkar inte till %s
 Webmention for %s already exists
-
+Webmention för %s finns redan
 Webmention OK!
 
 Add webmentions
-
+Lägg till webmention
+# Could not find a good translation of "Webmentioning"
 Webmentioning others from %s
-
+Webmentioning andra från %s
 Webmention!
 
 No links found.
-
+Inga länkar hittade
 Webmentioning somebody from %s
-
+Webmentioning någon från %s
 Contacting %s
-
+Kontakta %s
 Target reports an error: %s
-
+Målet rapporterar ett fel: %s
 No Webmention URL found
-
+Ingen Webmention URL hittad
 Success: %s
-
+Lyckat: %s
 Failure: %s
-
+Misslyckat: %s
 #
 END_OF_TRANSLATION
