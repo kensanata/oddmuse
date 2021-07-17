@@ -5,6 +5,7 @@
 #                    Zrajm C Akfohg <zrajm@klingonska.org>
 # Copyright (c) 2004-06 Johan Adler <alltid@nyfiken.org>
 # Copyright (c) 2004 Zrajm C Akfohg <zrajm@klingonska.org>
+# Copyright (c) 2021 Tobias Fendin
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -1506,22 +1507,22 @@ Page list for %s
 # modules/small.pl
 ################################################################################
 Index of all small pages
-
+Index av alla små sidor
 ################################################################################
 # modules/sort.pl
 ################################################################################
 Sort alphabetically
-
+Sortera alfabetiskt
 Sorted alphabetically
-
+Sorterad alfabetiskt
 Sorted by last update first
-
+Sorterad med senast uppdaterad först
 Sort by last update
-
+Sortera på uppdateringstid
 Sorted by creation date
-
+Sorterad på skapande datum
 Sort by creation date
-
+Sortera på skapande datum
 ################################################################################
 # modules/static-copy.pl
 ################################################################################
@@ -1538,33 +1539,33 @@ Editing not allowed for %s.
 # modules/svg-edit.pl
 ################################################################################
 Edit image in the browser
-
+Redigera bilden i webbläsaren
 Summary of your changes:
-
+Sammanställning av dina ändringar:
 ################################################################################
 # modules/sync.pl
 ################################################################################
 Copy to %1 succeeded: %2.
-
+Kopiering till %1 lyckades: %2.
 Copy to %1 failed: %2.
-
+Kopiering till %1 misslyckades: %2.
 ################################################################################
 # modules/tags.pl
 ################################################################################
 Tag
-
+Tagg
 Feed for this tag
-
+Flöde för denna tagg
 Tag Cloud
-
+Taggmoln
 Rebuilding index not done.
-
+Ombyggnad av index inte klart.
 (Rebuilding the index can only be done once every 12 hours.)
-
+(Ombyggnad av indexet kan endast göras var 12:e timme.)
 Rebuild tag index
-
+Bygg om tagg index
 tag cloud
-
+taggmoln
 ################################################################################
 # modules/templates.pl
 ################################################################################
@@ -1574,41 +1575,41 @@ Eller använd en av följande mallar:
 # modules/throttle.pl
 ################################################################################
 Too many instances.  Only %s allowed.
-
+För många instanser. Endast %s tillåtna.
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
-
+Vänligen försök senare. Kanske pågår ett underhåll eller så har någon gjort en lång sökning. Dessvärre har denna sida begränsade resurser, så vi ber dig ha tålamod.
 ################################################################################
 # modules/thumbs.pl
 ################################################################################
 thumb
 
 Error creating thumbnail from nonexisting page %s.
-
+Misslyckades med att skapa miniatyr av en icke existerande sida %s.
 Can not create thumbnail for file type %s.
-
+Kan inte skapa miniatyr för filtypen %s.
 Can not create thumbnail for a text document
-
+Kan inte skapa en miniatyr av ett textdokument
 Can not create path for thumbnail - %s
-
+Kan inte skapa sökväg för miniatyr - %s
 Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
+Kan inte öppna %s för skrivning före skapande av miniatyrbilden. Kontrollera skrivrättigheter.
 Failed to run %1 to create thumbnail: %2
-
+Kunde inte köra %1 för att skapa miniatyren: %2
 %s ran into an error
-
+%s misslyckades
 %s produced no output
-
+%s producerade ingen utdata
 Failed to parse %s.
-
+Misslyckades med att tolka %s.
 ################################################################################
 # modules/timezone.pl
 ################################################################################
 Timezone
-
+Tidszon
 Pick your timezone:
-
+Välj din tidszon:
 Set
-
+Sätt
 ################################################################################
 # modules/toc-headers.pl
 ################################################################################
@@ -1618,7 +1619,7 @@ Innehåll
 # modules/today.pl
 ################################################################################
 Create a new page for today
-
+Skapa en ny sida för idag
 ################################################################################
 # modules/translation-links.pl
 ################################################################################
@@ -1659,15 +1660,15 @@ Sidan finns inte.
 # modules/upgrade.pl
 ################################################################################
 Upgrading Database
-
+Uppgradering av databas
 Did the previous upgrade end with an error? A lock was left behind.
-
+Misslyckades den senaste uppgraderingen med ett fel? Ett lås finns kvar.
 Unlock wiki
-
+Lås upp wiki
 Upgrade complete.
-
+Uppgradering klar.
 Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-
+Uppgradering klar. Vänlingen ta bort $ModuleDir/upgade.pl nu.
 ################################################################################
 # modules/usemod.pl
 ################################################################################
@@ -1694,7 +1695,7 @@ Wanted Pages
 # modules/webapp.pl
 ################################################################################
 Web application for offline browsing
-
+Webbapplikation för off-line visning
 ################################################################################
 # modules/webdav.pl
 ################################################################################
@@ -1709,15 +1710,16 @@ Blogg
 # modules/weblog-3.pl
 ################################################################################
 Matching pages:
-
+Matchande sidor:
 New
-
+Nytt
 Edit %s.
-
+Redigera %s.
 ################################################################################
 # modules/weblog-4.pl
 ################################################################################
 Tags:
+Taggar:
 
 ################################################################################
 # modules/webmention.pl
