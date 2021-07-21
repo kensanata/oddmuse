@@ -64,13 +64,11 @@ sub RegexpNewBannedContent {
   my $str = shift;
   # check whether Banned Content complains
   my $rule = RegexpOldBannedContent($str, @_);
-  # remove URLs as they have been checked by $BannedContent
-  $str =~ s/$FullUrlPattern//g;
   if (not $rule) {
     foreach (split(/\n/, GetPageContent($BannedRegexps))) {
       next unless m/^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$/;
       my ($regexp, $comment, $re) = ($1, $4, undef);
-      eval { $re = qr/$regexp/i; };
+      eval { $re = qr/($regexp)/i; };
       if (defined($re) && $str =~ $re) {
 	my $group1 = $1;
 	my $explanation = ($group1
