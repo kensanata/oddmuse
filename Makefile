@@ -3,7 +3,7 @@
 # subdirectory.
 
 VERSION_NO=$(shell git describe --tags)
-TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
+TRANSLATIONS=$(wildcard modules/translations/*-utf8.pl)
 MODULES=$(sort $(wildcard modules/*.pl))
 BUILD=build/wiki.pl $(foreach file, $(notdir $(MODULES)) $(notdir $(TRANSLATIONS)), build/$(file))
 

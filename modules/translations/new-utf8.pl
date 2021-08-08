@@ -1201,6 +1201,8 @@ Your mail subscriptions
 
 All mail subscriptions
 
+All mail subscribers
+
 Subscriptions
 
 Email: 
@@ -1226,6 +1228,8 @@ Subscribed %s to the following pages:
 The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
+
+Unsubscribed %s from all pages.
 
 Migrating Subscriptions
 
@@ -1714,6 +1718,8 @@ Tags:
 ################################################################################
 # modules/webmention.pl
 ################################################################################
+Webmention module requires $CommentsPrefix to be set
+
 Webmention requires a POST request
 
 Webmention requires x-www-form-urlencoded requests
@@ -1739,6 +1745,26 @@ Webmention source does not link to %s
 Webmention for %s already exists
 
 Webmention OK!
+
+Add webmentions
+
+Webmentioning others from %s
+
+Webmention!
+
+No links found.
+
+Webmentioning somebody from %s
+
+Contacting %s
+
+Target reports an error: %s
+
+No Webmention URL found
+
+Success: %s
+
+Failure: %s
 
 #
 END_OF_TRANSLATION
