@@ -41,16 +41,25 @@ be changed using the C<$NamespacesSelf> option.
 AddModuleDescription('namespaces.pl', 'Namespaces Extension');
 
 use File::Glob ':glob';
+use List::Util qw(none);
 
-our ($q, %Action, %Page, @IndexList, $Now, %InterSite, $SiteName, $ScriptName, $UsePathInfo, $DataDir, $HomePage, @MyInitVariables, @MyAdminCode, $FullUrl, $LinkPattern, $InterSitePattern, $FreeLinks, $FreeLinkPattern, $InterLinkPattern, $FreeInterLinkPattern, $UrlProtocols, $WikiLinks, $FS, $RcFile, $RcOldFile, $RcDefault, $PageDir, $KeepDir, $LockDir, $TempDir, $IndexFile, $VisitorFile, $NoEditFile, $WikiDescription, $LastUpdate, $StaticDir, $StaticUrl, $InterWikiMoniker, $RefererDir, $PermanentAnchorsFile);
-our ($NamespacesMain, $NamespacesSelf, $NamespaceCurrent,
-	    $NamespaceRoot, $NamespaceSlashing, @NamespaceParameters,
-	    %Namespaces);
+our ($q, %Action, %Page, @IndexList, $Now, %InterSite, $SiteName, $ScriptName,
+$UsePathInfo, $DataDir, $HomePage, @MyInitVariables, @MyAdminCode, $FullUrl,
+$LinkPattern, $InterSitePattern, $FreeLinks, $FreeLinkPattern, $BannedContent,
+$BannedHosts, $InterLinkPattern, $FreeInterLinkPattern, $UrlProtocols,
+$WikiLinks, $FS, $RcFile, $RcOldFile, $RcDefault, $PageDir, $KeepDir, $LockDir,
+$TempDir, $IndexFile, $VisitorFile, $NoEditFile, $WikiDescription, $LastUpdate,
+$StaticDir, $StaticUrl, $InterWikiMoniker, $RefererDir, $PermanentAnchorsFile);
+
+our ($NamespacesMain, $NamespacesSelf, $NamespaceCurrent, $NamespaceRoot,
+     $NamespaceSlashing, @NamespaceParameters, %Namespaces, @NamespaceIgnored);
 
 $NamespacesMain = 'Main'; # to get back to the main namespace
 $NamespacesSelf = 'Self'; # for your own namespace
 $NamespaceCurrent = '';   # the current namespace, if any
 $NamespaceRoot = '';      # the original $ScriptName
+
+@NamespaceIgnored = ($BannedContent, $BannedHosts);
 
 =head2 Configuration
 
@@ -112,9 +121,11 @@ sub NamespacesInitVariables {
   $NamespaceRoot = $ScriptName; # $ScriptName may be changed below
   $NamespaceCurrent = '';
   my $ns = GetNamespace();
+  my $id = GetId();
   if ($ns
       and $ns ne $NamespacesMain
-      and $ns ne $NamespacesSelf) {
+      and $ns ne $NamespacesSelf
+      and (not $id or none { $_ eq $id } @NamespaceIgnored)) {
     $NamespaceCurrent = $ns;
     # Change some stuff from the original InitVariables call:
     $SiteName   .= ' ' . $NamespaceCurrent;
