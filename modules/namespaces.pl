@@ -42,10 +42,18 @@ AddModuleDescription('namespaces.pl', 'Namespaces Extension');
 
 use File::Glob ':glob';
 
-our ($q, %Action, %Page, @IndexList, $Now, %InterSite, $SiteName, $ScriptName, $UsePathInfo, $DataDir, $HomePage, @MyInitVariables, @MyAdminCode, $FullUrl, $LinkPattern, $InterSitePattern, $FreeLinks, $FreeLinkPattern, $InterLinkPattern, $FreeInterLinkPattern, $UrlProtocols, $WikiLinks, $FS, $RcFile, $RcOldFile, $RcDefault, $PageDir, $KeepDir, $LockDir, $TempDir, $IndexFile, $VisitorFile, $NoEditFile, $WikiDescription, $LastUpdate, $StaticDir, $StaticUrl, $InterWikiMoniker, $RefererDir, $PermanentAnchorsFile);
+our ($q, %Action, %Page, @IndexList, $Now, %InterSite, $SiteName, $ScriptName,
+$UsePathInfo, $DataDir, $HomePage, @MyInitVariables, @MyAdminCode, $FullUrl,
+$LinkPattern, $InterSitePattern, $FreeLinks, $FreeLinkPattern,
+$InterLinkPattern, $FreeInterLinkPattern, $UrlProtocols, $WikiLinks, $FS,
+$BannedContent, $BannedHosts, $RcFile, $RcOldFile, $RcDefault, $PageDir,
+$KeepDir, $LockDir, $TempDir, $IndexFile, $VisitorFile, $NoEditFile,
+$WikiDescription, $LastUpdate, $StaticDir, $StaticUrl, $InterWikiMoniker,
+$RefererDir, $PermanentAnchorsFile);
+
 our ($NamespacesMain, $NamespacesSelf, $NamespaceCurrent,
-	    $NamespaceRoot, $NamespaceSlashing, @NamespaceParameters,
-	    %Namespaces);
+     $NamespaceRoot, $NamespaceSlashing, @NamespaceParameters,
+     %Namespaces, $NamespacesRootDataDir);
 
 $NamespacesMain = 'Main'; # to get back to the main namespace
 $NamespacesSelf = 'Self'; # for your own namespace
@@ -110,6 +118,7 @@ sub NamespacesInitVariables {
     }
   }
   $NamespaceRoot = $ScriptName; # $ScriptName may be changed below
+  $NamespacesRootDataDir = $DataDir; # $DataDir may be chanegd below
   $NamespaceCurrent = '';
   my $ns = GetNamespace();
   if ($ns
@@ -160,6 +169,54 @@ sub NamespaceRequiredByParameter {
   foreach my $key (@NamespaceParameters) {
     return 1 if $q->param($key);
   }
+}
+
+=head Spam fighting
+
+We want to share C<BannedContent> and C<BannedHosts> between all the wiki
+namespaces. Therefore, we need to handle a number of cases:
+
+C<UserIsBanned> uses C<GetPageContent($BannedHosts)> and C<BannedContent> uses
+C<GetPageContent($BannedContent)>, therefore C<GetPageContent> is going to get
+modified.
+
+C<DoBanHosts> in F<ban-contributors.pl> uses C<DoPost($BannedContent)> and
+C<DoPost($BannedHosts)>, therefore C<DoPost> is going to get modified.
+
+=cut
+
+*OldNamespaceGetPageContent = \&GetPageContent;
+*GetPageContent = \&NewNamespaceGetPageContent;
+
+sub NewNamespaceGetPageContent {
+  my ($id) = @_;
+  if ($NamespaceCurrent and ($id eq $BannedContent or $id eq $BannedHosts)) {
+    local $PageDir = "$NamespacesRootDataDir/page";
+    # we cannot use ReadFileOrDie because our $IndexHash{$id} does not reflect the existence of the root file
+    my ($status, $data) = ReadFile(GetPageFile($id));
+    return ParseData($data)->{text} if $status;
+    return '';
+  }
+  return OldNamespaceGetPageContent(@_);
+}
+
+*OldNamespaceDoPost = \&DoPost;
+*DoPost = \&NewNamespaceDoPost;
+
+sub NewNamespaceDoPost {
+  my ($id) = @_;
+  if ($NamespaceCurrent and ($id eq $BannedContent or $id eq $BannedHosts)) {
+    local $DataDir     = $NamespacesRootDataDir;
+    local $PageDir     = "$DataDir/page";
+    local $KeepDir     = "$DataDir/keep";
+    local $LockDir     = "$TempDir/lock";
+    local $NoEditFile  = "$DataDir/noedit";
+    local $RcFile      = "$DataDir/rc.log";
+    local $RcOldFile   = "$DataDir/oldrc.log";
+    local $IndexFile   = "$DataDir/pageidx";
+    return OldNamespaceDoPost(@_);
+  }
+  return OldNamespaceDoPost(@_);
 }
 
 =head2 RecentChanges
