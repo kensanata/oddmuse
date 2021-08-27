@@ -14,7 +14,7 @@
 
 require './t/test.pl';
 package OddMuse;
-use Test::More tests => 87;
+use Test::More tests => 82;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('namespaces.pl');
@@ -202,13 +202,3 @@ test_page(update_page('Bond', 'My name is Bond', '007 ns', undef, undef,
 test_page(get_page('action=browse id=Bond ns=007'),
 	  '<title>Wiki 007: Bond</title>',
 	  '<p>My name is Bond</p>');
-
-# BannedHosts are shared! Editing the BannedHosts in a namespace and testing it without one.
-
-test_page(update_page('BannedHosts', '^127\.0\.0\.1', 'ban myself', undef, 1, 'ns=007', 'username=James'),
-	  '<title>Wiki: Banned Hosts</title>',
-	  quotemeta('^127\.0\.0\.1'));
-test_page(get_page('BannedHosts'), quotemeta('^127\.0\.0\.1'));
-test_page(update_page('Mr._Q', 'Hello'), 'This page does not exist');
-update_page('BannedHosts', '', 'unban myself', undef, 1);
-test_page(update_page('Mr._Q', 'Hello'), 'Hello');
