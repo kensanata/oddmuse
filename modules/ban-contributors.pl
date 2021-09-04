@@ -180,34 +180,50 @@ sub get_range {
 sub get_groups {
   my ($from, $to) = @_;
   my @groups;
-  if ($from < 10) {
-    my $to = $to >= 10 ? 9 : $to;
+  if ($from == $to) {
+    return [$from, $to];
+  }
+  # ones up to the nearest ten
+  if ($from < $to and ($from % 10 or $from < 10)) {
+    # from 5-7: as is
+    # from 5-17: 5 + 9 - 5 = 9 thus 5-9, set $from to 10
+    my $to2 = int($to/10) > int($from/10) ? $from + 9 - $from % 10 : $to;
+    push(@groups, [$from, $to2]);
+    $from = $to2 + 1;
+  }
+  # tens up to the nearest hundred
+  if ($from < $to and $from % 100) {
+    # 10-17: as is
+    # 10-82: 10 to 79, set $from to 80 (8*10-1)
+    # 10-182: 10 to 99, set $from to 100 (10+99=10=99)
+    # 110-182: 110 to 179, set $from to 180 (170)
+    # 110-222: 110 to 199, set $from to 200 (110+99-10 = 199)
+    my $to2 = int($to/100) > int($from/100) ? $from + 99 - $from % 100
+	: int($to/10) > int($from/10) ? int($to / 10) * 10 - 1
+	: $to;
+    push(@groups, [$from, $to2]);
+    $from = $to2 + 1;
+  }
+  # up to the next hundred
+  if (int($to/100) > int($from/100)) {
+    # from 100 to 223: set $from to 200 (2*100-1)
+    my $to2 = int($to/100) * 100 - 1;
+    push(@groups, [$from, $to2]);
+    $from = $to2 + 1;
+  }
+  # up to the next ten
+  if (int($to/10) > int($from/10)) {
+    # 10 to 17: skip
+    # 100 to 143: set $from to 140 (14*10-1)
+    my $to2 = int($to / 10) * 10 - 1;
+    push(@groups, [$from, $to2]);
+    $from = $to2 + 1;
+  }
+  # up to the next one
+  if ($from <= $to) {
     push(@groups, [$from, $to]);
-    $from = $to + 1;
   }
-  while ($from < $to) {
-    my $to = int($from/100) < int($to/100) ? $from + 99 - $from % 100 : $to;
-    if ($from % 10) {
-      push(@groups, [$from, $from + 9 - $from % 10]);
-      $from += 10 - $from % 10;
-    }
-    if (int($from/10) < int($to/10)) {
-      if ($to % 10 == 9) {
-	push(@groups, [$from, $to]);
-	$from = 1 + $to;
-      } else {
-	push(@groups, [$from, $to - 1 - $to % 10]);
-	$from = $to - $to % 10;
-      }
-    } else {
-      push(@groups, [$from - $from % 10, $to]);
-      last;
-    }
-    if ($to % 10 != 9) {
-      push(@groups, [$from, $to]);
-      $from = 1 + $to; # jump from 99 to 100
-    }
-  }
+  # warn join("; ", map { "@$_" } @groups);
   return \@groups;
 }
 
@@ -235,25 +251,38 @@ sub get_regexp_ip {
   my $regexp = "^";
   for my $i (0 .. 3) {
     if ($start[$i] eq $end[$i]) {
+      # if the byte is the same, use it as is
       $regexp .= $start[$i];
-    } elsif ($start[$i] eq '0' and $end[$i] eq '255') {
-      last;
-    } elsif ($start[$i + 1] > 0) {
-      $regexp .= '(' . $start[$i] . '\.('
-	  . get_regexp_range($start[$i + 1], '255') . ')|'
-	  . get_regexp_range($start[$i] + 1, $end[$i + 1]) . ')';
       $regexp .= '\.' if $i < 3;
+    } elsif ($start[$i] == 0 and $end[$i] == 255) {
+      # the starting byte is 0 and the end byte is 255, then anything goes:
+      # we're done, e.g. 185.244.214.0 - 185.244.214.255 results in 185\.244\.214\.
       last;
-    } else {
+    } elsif ($start[$i + 1] == 0 and $end[$i + 1] == 255) {
+      # if we're here, we already know that the start byte and the end byte are
+      # not the same; if the next bytes are from 0 to 255, we know that
+      # everything else doesn't matter, e.g. 42.118.48.0 - 42.118.63.255
       $regexp .= '(' . get_regexp_range($start[$i], $end[$i]) . ')';
       $regexp .= '\.' if $i < 3;
       last;
+    } elsif ($end[$i] - $start[$i] == 1 and $start[$i + 1] > 0 and $end[$i + 1] < 255) {
+      # if we're here, we already know that the start byte and the end byte are
+      # not the same; if the starting byte of the next (!) byte is bigger than
+      # zero, then we need groups: in the case 77.56.180.0 - 77.57.70.255 for
+      # example,
+      $regexp .= '(' . $start[$i] . '\.(' . get_regexp_range($start[$i + 1], 255) . ')|'
+		   . $end[$i] . '\.(' . get_regexp_range(0, $end[$i + 1]) . ')';
+      $regexp .= '\.' if $i < 3;
+      last;
+    } else {
+      warn "Unhandled regexp: $from - $to ($i)";
+      $regexp .= 'XXX';
+      $regexp .= '\.' if $i < 3;
+      last;
     }
-    $regexp .= '\.' if $i < 3;
   }
   return $regexp;
 }
 
 # this is required in case we concatenate other modules to this one
 package OddMuse;
-
