@@ -1,4 +1,4 @@
-# Copyright (C) 2013-2016  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2013-2021  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -257,6 +257,10 @@ sub get_regexp_ip {
     } elsif ($start[$i] == 0 and $end[$i] == 255) {
       # the starting byte is 0 and the end byte is 255, then anything goes:
       # we're done, e.g. 185.244.214.0 - 185.244.214.255 results in 185\.244\.214\.
+      last;
+    } elsif ($i == 3 and $start[$i] != $end[$i]) {
+      # example 45.87.2.128 - 45.87.2.255: the last bytes differ
+      $regexp .= '(' . get_regexp_range($start[$i], $end[$i]) . ')';
       last;
     } elsif ($start[$i + 1] == 0 and $end[$i + 1] == 255) {
       # if we're here, we already know that the start byte and the end byte are
