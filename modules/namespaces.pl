@@ -49,7 +49,7 @@ $InterLinkPattern, $FreeInterLinkPattern, $UrlProtocols, $WikiLinks, $FS,
 $BannedContent, $BannedHosts, $RcFile, $RcOldFile, $RcDefault, $PageDir,
 $KeepDir, $LockDir, $TempDir, $IndexFile, $VisitorFile, $NoEditFile,
 $WikiDescription, $LastUpdate, $StaticDir, $StaticUrl, $InterWikiMoniker,
-$RefererDir, $PermanentAnchorsFile);
+$RefererDir, $PermanentAnchorsFile, @IndexList, %IndexHash);
 
 our ($NamespacesMain, $NamespacesSelf, $NamespaceCurrent,
      $NamespaceRoot, $NamespaceSlashing, @NamespaceParameters,
@@ -214,6 +214,8 @@ sub NewNamespaceDoPost {
     local $RcFile      = "$DataDir/rc.log";
     local $RcOldFile   = "$DataDir/oldrc.log";
     local $IndexFile   = "$DataDir/pageidx";
+    @IndexList = %IndexHash = ();
+    AllPagesList(); # reload from new pageidx
     return OldNamespaceDoPost(@_);
   }
   return OldNamespaceDoPost(@_);
