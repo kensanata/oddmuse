@@ -78,10 +78,9 @@ test_page($page, 'Rolling back changes', 'These URLs were rolled back',
 	  'doxycycline');
 test_page_negative($page, 'amoxil');
 
-# 127.0.0.1 has no inetnum
 test_page(get_page("action=ban id=Test"),
 	  'Ban Contributors to Test',
-	  quotemeta('127.0.0.1 () [ - ]'));
+	  quotemeta('127.0.0.1 () [127.0.0.0 - 127.255.255.255]'));
 
 SKIP: {
   skip "Net::Whois::Parser doesn't always return the same result", 4;

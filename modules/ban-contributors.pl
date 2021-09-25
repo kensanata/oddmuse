@@ -96,16 +96,20 @@ sub DoBanHosts {
       if (IsItBanned($_, \@regexps)) {
 	print $q->p(Ts("%s is banned", $name));
       } else {
-	my ($start, $end) = BanContributors::get_range($_);
-	$range = "[$start - $end]";
-	$name .= " " . $range;
-	print GetFormStart(undef, 'get', 'ban'),
-	  GetHiddenValue('action', 'ban'),
-	  GetHiddenValue('id', $id),
-	  GetHiddenValue('range', $range),
-	  GetHiddenValue('regexp', BanContributors::get_regexp_ip($start, $end)),
-	  GetHiddenValue('recent_edit', 'on'),
-	  $q->p($name, $q->submit(T('Ban!'))), $q->end_form();
+	my @pairs = BanContributors::get_range($_);
+	while (@pairs) {
+	  my $start = shift(@pairs);
+	  my $end = shift(@pairs);
+	  $range = "[$start - $end]";
+	  $name .= " " . $range;
+	  print GetFormStart(undef, 'get', 'ban'),
+	      GetHiddenValue('action', 'ban'),
+	      GetHiddenValue('id', $id),
+	      GetHiddenValue('range', $range),
+	      GetHiddenValue('regexp', BanContributors::get_regexp_ip($start, $end)),
+	      GetHiddenValue('recent_edit', 'on'),
+	      $q->p($name, $q->submit(T('Ban!'))), $q->end_form();
+	}
       }
     }
   }
@@ -171,10 +175,18 @@ use Net::Whois::Parser qw/parse_whois/;
 sub get_range {
   my $ip = shift;
   my $response = parse_whois(domain => $ip);
-  my ($start, $end);
   my $re = '(?:[0-9]{1,3}\.){3}[0-9]{1,3}';
-  my ($start, $end) = $response->{inetnum} =~ /($re) *- *($re)/;
-  return $start, $end;
+  # Just try all the keys and see whether there is a range match.
+  for (keys %$response) {
+    my @result;
+    $_ = $response->{$_};
+    for (ref eq 'ARRAY' ? @$_ : $_) {
+      push(@result, $1, $2) if /($re) *- *($re)/;
+    }
+    return @result if @result;
+  }
+  # Fallback
+  return $ip, $ip;
 }
 
 sub get_groups {
