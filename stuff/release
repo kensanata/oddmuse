@@ -33,7 +33,7 @@ EOT
 
 my $min = version->parse(shift || "2.3.0");
 
-my @tags = grep { /(\d+\.\d+\.\d+)/ and version->parse($1) >= $min } 
+my @tags = grep { /(\d+\.\d+\.\d+)/ and version->parse($1) >= $min }
            split(/\n/, qx{git tag --list});
 
 unless (@tags) {
@@ -47,7 +47,7 @@ for my $tag (@tags) {
     next;
   }
   print "Preparing $tag\n";
-  
+
   system("git", "checkout", $tag) == 0
       or die "Failed to git checkout $tag\n";
   system("make", "prepare") == 0
@@ -62,5 +62,5 @@ for my $tag (@tags) {
       or die "Failed to remove the directory oddmuse-$tag\n";
 }
 
-system("git", "checkout", "master") == 0
-    or die "Failed to git checkout master\n";
+system("git", "checkout", "main") == 0
+    or die "Failed to git checkout main\n";
