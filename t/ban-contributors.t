@@ -15,6 +15,7 @@
 require './t/test.pl';
 package OddMuse;
 use Test::More;
+use Net::IP;
 
 add_module('ban-contributors.pl');
 
@@ -42,6 +43,13 @@ is(BanContributors::get_regexp_ip('77.56.180.0', '77.57.70.255'),
 is(BanContributors::get_regexp_ip('45.87.2.128', '45.87.2.255'),
    '^45\.87\.2\.(12[8-9]|1[3-9][0-9]|2[0-4][0-9]|25[0-5])',
    '45.87.2.128 - 45.87.2.255');
+
+# 191.101.0.0/16
+# verify that Net::IP works as intended
+my $ip = Net::IP->new('191.101.0.0/16');
+ok($ip, 'Net::IP parsed CIDR');
+is($ip->ip, '191.101.0.0', 'First IP in range');
+is($ip->last_ip, '191.101.255.255', 'Last IP in range');
 
 $localhost = '127.0.0.1';
 $ENV{'REMOTE_ADDR'} = $localhost;
