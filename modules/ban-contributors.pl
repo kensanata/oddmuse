@@ -171,6 +171,7 @@ sub NewBanContributorsWriteRcLog {
 
 package BanContributors;
 use Net::Whois::Parser qw/parse_whois/;
+use Net::IP;
 
 sub get_range {
   my $ip = shift;
@@ -181,7 +182,8 @@ sub get_range {
     my @result;
     $_ = $response->{$_};
     for (ref eq 'ARRAY' ? @$_ : $_) {
-      push(@result, $1, $2) if /($re) *- *($re)/;
+      $ip = Net::IP->new($_);
+      push(@result, $ip->ip, $ip->last_ip) if $ip;
     }
     return @result if @result;
   }
