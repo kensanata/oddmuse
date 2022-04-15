@@ -126,7 +126,7 @@ sub NamespacesInitVariables {
       and $ns ne $NamespacesSelf) {
     $NamespaceCurrent = $ns;
     # Change some stuff from the original InitVariables call:
-    $SiteName   .= ' ' . $NamespaceCurrent;
+    $SiteName   .= ' ' . NormalToFree($NamespaceCurrent);
     $InterWikiMoniker = $NamespaceCurrent;
     $DataDir    .= '/' . $NamespaceCurrent;
     $PageDir     = "$DataDir/page";
