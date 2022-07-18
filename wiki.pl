@@ -1313,7 +1313,7 @@ sub GetId {
       SetParam($p, 1);    # script/p/q -> p=1
     }
   }
-  return $id;
+  return FreeToNormal($id);
 }
 
 sub DoBrowseRequest {
