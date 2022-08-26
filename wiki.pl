@@ -514,7 +514,7 @@ sub ApplyRules {
 	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
       } elsif (m/\G&amp;([A-Za-z]+|#[0-9]+|#x[A-Za-f0-9]+);/cg) { # entity references
 	Clean("&$1;");
-      } elsif (m/\G\s+/cg) {
+      } elsif (m/\G[ \t\r\n]+/cg) { # don't use \s because we want to honor NO-BREAK SPACE etc
 	Clean(' ');
       } elsif (m/\G([A-Za-z\x{0080}-\x{fffd}]+([ \t]+[a-z\x{0080}-\x{fffd}]+)*[ \t]+)/cg
 	       or m/\G([A-Za-z\x{0080}-\x{fffd}]+)/cg or m/\G(\S)/cg) {
