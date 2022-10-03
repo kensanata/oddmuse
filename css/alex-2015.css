@@ -1,5 +1,7 @@
 /* This file is in the public domain. */
 
+@import "common.css";
+
 body, rss {
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     font-style: normal;
