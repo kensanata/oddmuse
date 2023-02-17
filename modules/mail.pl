@@ -505,9 +505,9 @@ sub MailUnsubscribe {
 
 =head1 Migrate
 
-The mailmigrate action will migrate your subscription list from the
-old format to the new format. This is necessary because these days
-because the keys and values of the DB_File are URL encoded.
+The mailmigrate action will migrate your subscription list from the old format
+to the new format. This is necessary because these days the keys and values of
+the DB_File are URL encoded.
 
 =cut
 
