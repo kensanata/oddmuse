@@ -203,6 +203,15 @@ sub MarkdownRule {
     $params{-title} = $title if $title;
     return $q->a(\%params, $text);
   }
+  # link: [an example](#foo "Title")
+  elsif (m/\G\[((?:[^]\n]+\n?)+)\]\((#\S)+(\s+"(.+?)")?\)/cg) {
+    my ($text, $url, $title) = ($1, $2, $4);
+    my %params;
+    $params{-href} = $url;
+    $params{-class} = "named-anchor";
+    $params{-title} = $title if $title;
+    return $q->a(\%params, $text);
+  }
   # setext headers (must come after block quotes)
   elsif ($bol and m/\G((\s*\n)*(.+?)[ \t]*\n(-+|=+)[ \t]*\n)/cg) {
     return CloseHtmlEnvironments()
