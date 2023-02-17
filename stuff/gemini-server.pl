@@ -675,10 +675,10 @@ sub gemini_text {
     $block =~ s/\[\[tag:([^]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $1)); $1/ge;
     $block =~ s/\[\[tag:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link("tag\/$1", $2)); $2/ge;
     $block =~ s/<journal search tag:(\S+)>\n*/push(@links, $self->gemini_link("tag\/$1", "Explore the $1 tag")); ""/ge;
-    $block =~ s/\[\[image:([^]|]+)\]\]/push(@links, $self->gemini_link($1, "$1 (image)")); "$1"/ge;
-    $block =~ s/\[\[image:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)")); "$2"/ge;
-    $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$2 (follow-up)")); "$2"/ge;
-    $block =~ s/\[\[image:([^]|]+)\|([^\]|]*)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$4 (follow-up)")); "$2"/ge;
+    $block =~ s/\[\[image(?:\/right)?:([^]|]+)\]\]/push(@links, $self->gemini_link($1, "$1 (image)")); "$1"/ge;
+    $block =~ s/\[\[image(?:\/right)?:([^]|]+)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)")); "$2"/ge;
+    $block =~ s/\[\[image(?:\/right)?:([^]|]+)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$2 (follow-up)")); "$2"/ge;
+    $block =~ s/\[\[image(?:\/right)?:([^]|]+)\|([^\]|]*)\|([^\]|]*)\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, "$2 (image)"), $self->gemini_link($3, "$4 (follow-up)")); "$2"/ge;
     $block =~ s/\[\[$FreeLinkPattern\|([^\]|]+)\]\]/push(@links, $self->gemini_link($1, $2)); $2/ge;
     $block =~ s/\[\[$FreeLinkPattern\]\]/push(@links, $self->gemini_link($1)); $1/ge;
     $block =~ s/\[color=([^]]+)\]/color($1)/ge;
