@@ -129,8 +129,8 @@ test_page(update_page('Testing', 'This is spam.'), 'This page does not exist');
 test_page(update_page('Spam', 'Trying again.'), 'This page does not exist');
 test_page(get_page('action=translate id=Spam target=Harmless translation=en'),
 	  'Edit Denied',
-	  'Regular expression "spam" matched on this page');
+	  'Regular expression "spam" matched "Spam" on this page');
 test_page(get_page('Spam'), 'This page does not exist');
 test_page(get_page('action=translate id=Harmless target=Spam translation=en'),
 	  'Edit Denied',
-	  'Regular expression "spam" matched on this page');
+	  'Regular expression "spam" matched "Spam" on this page');
