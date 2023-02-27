@@ -31,6 +31,7 @@ sub DoJournalRss {
   local $CollectingJournal = 1;
   # Fake the result of GetRcLines()
   local *GetRcLines = \&JournalRssGetRcLines;
+  local *RcSelfWebsite = \&JournalRssSelfWebsite;
   local *RcSelfAction = \&JournalRssSelfAction;
   local *RcPreviousAction = \&JournalRssPreviousAction;
   local *RcLastAction = \&JournalRssLastAction;
@@ -52,6 +53,15 @@ sub JournalRssParameters {
     my $val = GetParam($_, '');
     $more .= ";$_=" . UrlEncode($val) if $val;
   }
+  return $more;
+}
+
+sub JournalRssSelfWebsite {
+  my $more = '';
+  my $search = GetParam('rcfilteronly', '');
+  $more .= ";search=" . UrlEncode($search) if $search;
+  my $match = GetParam('match', '');
+  $more .= ";match=" . UrlEncode($match) if $match;
   return $more;
 }
 

@@ -1712,6 +1712,11 @@ sub RcOtherParameters {
   return $more;
 }
 
+sub RcSelfWebsite {
+  my $action = 'rc';
+  return "action=$action" . RcOtherParameters(qw(from upto days));
+}
+
 sub RcSelfAction {
   my $action = GetParam('action', 'rc');
   return "action=$action" . RcOtherParameters(qw(from upto days));
@@ -1898,7 +1903,7 @@ sub GetRcRss {
 };
   my $title = QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
   $rss .= "<title>$title</title>\n";
-  $rss .= "<link>$ScriptName?" . RcSelfAction() . "</link>\n";
+  $rss .= "<link>$ScriptName?" . RcSelfWebsite() . "</link>\n";
   $rss .= qq{<atom:link href="$ScriptName?} . RcSelfAction() . qq{" rel="self" type="application/rss+xml" />\n};
   $rss .= qq{<atom:link href="$ScriptName?} . RcPreviousAction() . qq{" rel="previous" type="application/rss+xml" />\n};
   $rss .= qq{<atom:link href="$ScriptName?} . RcLastAction() . qq{" rel="last" type="application/rss+xml" />\n};
@@ -1918,7 +1923,7 @@ sub GetRcRss {
     $rss .= "<image>\n";
     $rss .= "<url>$RssImageUrl</url>\n";
     $rss .= "<title>$title</title>\n";    # the same as the channel
-    $rss .= "<link>$ScriptName?" . RcSelfAction() . "</link>\n"; # the same as the channel
+    $rss .= "<link>$ScriptName?" . RcSelfWebsite() . "</link>\n"; # the same as the channel
     $rss .= "</image>\n";
   }
   my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
