@@ -2557,11 +2557,13 @@ sub GetFormStart {
 }
 
 sub GetSearchForm {
-  my $html = GetFormStart(undef, 'get', 'search') . $q->start_p;
+  my $html = GetFormStart(undef, 'get', 'search');
+  my $replacing = GetParam('search') ne '' and UserIsAdmin();
+  $html .= $q->start_p({-class => $replacing ? 'replace' : 'search'});
   $html .= $q->span({-class=>'search'},
                     $q->label({-for=>'search'}, T('Search:')) . ' '
                     . $q->textfield(-name=>'search', -id=>'search', -size=>15, -accesskey=>T('f'))) . ' ';
-  if (GetParam('search') ne '' and UserIsAdmin()) { # see DoBrowseRequest
+  if ($replacing) { # see DoBrowseRequest
     $html .= $q->span({-class=>'replace'},
                       $q->label({-for=>'replace'}, T('Replace:')) . ' '
                       . $q->textfield(-name=>'replace', -id=>'replace', -size=>20)) . ' '
