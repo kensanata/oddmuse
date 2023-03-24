@@ -2558,8 +2558,8 @@ sub GetFormStart {
 
 sub GetSearchForm {
   my $html = GetFormStart(undef, 'get', 'search');
-  my $replacing = GetParam('search') ne '' and UserIsAdmin();
-  $html .= $q->start_p({-class => $replacing ? 'replace' : 'search'});
+  my $replacing = (GetParam('search') ne '' and UserIsAdmin());
+  $html .= $q->start_p({-class => ($replacing ? 'replace' : 'search')});
   $html .= $q->span({-class=>'search'},
                     $q->label({-for=>'search'}, T('Search:')) . ' '
                     . $q->textfield(-name=>'search', -id=>'search', -size=>15, -accesskey=>T('f'))) . ' ';
