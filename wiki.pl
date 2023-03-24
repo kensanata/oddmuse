@@ -2558,22 +2558,27 @@ sub GetFormStart {
 
 sub GetSearchForm {
   my $html = GetFormStart(undef, 'get', 'search') . $q->start_p;
-  $html .= $q->label({-for=>'search'}, T('Search:')) . ' '
-      . $q->textfield(-name=>'search', -id=>'search', -size=>15, -accesskey=>T('f')) . ' ';
+  $html .= $q->span({-class=>'search'},
+                    $q->label({-for=>'search'}, T('Search:')) . ' '
+                    . $q->textfield(-name=>'search', -id=>'search', -size=>15, -accesskey=>T('f'))) . ' ';
   if (GetParam('search') ne '' and UserIsAdmin()) { # see DoBrowseRequest
-    $html .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
-	. $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
-        . $q->label({-for=>'delete', -title=>'If you want to replace matches with the empty string'}, T('Delete')) . ' '
-	. $q->input({-type=>'checkbox', -name=>'delete'})
-	. $q->submit('preview', T('Preview'));
+    $html .= $q->span({-class=>'replace'},
+                      $q->label({-for=>'replace'}, T('Replace:')) . ' '
+                      . $q->textfield(-name=>'replace', -id=>'replace', -size=>20)) . ' '
+        . $q->span({-class=>'delete'},
+                   $q->label({-for=>'delete', -title=>'If you want to replace matches with the empty string'}, T('Delete')) . ' '
+                   . $q->input({-type=>'checkbox', -name=>'delete'})) . ' '
+	. $q->submit('preview', T('Preview')) . ' ';
   }
   if (GetParam('matchingpages', $MatchingPages)) {
-    $html .= $q->label({-for=>'matchingpage'}, T('Filter:')) . ' '
-	. $q->textfield(-name=>'match', -id=>'matchingpage', -size=>15) . ' ';
+    $html .= $q->span({-class=>'match'},
+                      $q->label({-for=>'matchingpage'}, T('Filter:')) . ' '
+                      . $q->textfield(-name=>'match', -id=>'matchingpage', -size=>15)) . ' ';
   }
   if (%Languages) {
-    $html .= $q->label({-for=>'searchlang'}, T('Language:')) . ' '
-	. $q->textfield(-name=>'lang', -id=>'searchlang', -size=>5, -default=>GetParam('lang', '')) . ' ';
+    $html .= $q->span({-class=>'lang'},
+                      $q->label({-for=>'searchlang'}, T('Language:')) . ' '
+                      . $q->textfield(-name=>'lang', -id=>'searchlang', -size=>5, -default=>GetParam('lang', ''))) . ' ';
   }
   $html .= $q->submit('dosearch', T('Go!')) . $q->end_p . $q->end_form;
   return $html;
