@@ -65,6 +65,7 @@ sub RenamePageMenu {
 	 . GetHiddenValue('id', $id)
 	 . $q->textfield(-name=>'to', -size=>20)
 	 . ' '
-	 . $q->submit('Do it'));
+	 . $q->submit('Do it')
+         . $q->end_form());
   }
 }
