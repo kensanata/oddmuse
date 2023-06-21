@@ -85,7 +85,9 @@ versions of Oddmuse.</p>
 <ul>
 % for my $tarball (@$tarballs) {
 <li>
+% if ($tarball ne 'latest') {
 <a href="https://oddmuse.org/releases/<%= $tarball %>.tar.gz"><%= $tarball %>.tar.gz</a>
+% }
 (files for <%= link_to release => {tarball => $tarball} => begin %>\
 <%= $tarball =%><%= end %>)
 </li>
