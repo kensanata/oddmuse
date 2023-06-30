@@ -1557,8 +1557,13 @@ sub StripRollbacks {
 	    $i--; # quickly skip all these lines
 	    $ts = $result[$i][0];
 	  }
-	  splice(@result, $i + 1, $end - $i);
-	  $i++; # compensate $i-- in for loop
+          if ($i) {
+            splice(@result, $i + 1, $end - $i);
+            $i++; # compensate $i-- in for loop
+          } else {
+            # everything up to beginning has to go (including the rollback marker)
+            splice(@result, $i, $end + 1);
+          }
 	}
       } elsif ($rollback{$id} and $ts > $rollback{$id}) {
 	splice(@result, $i, 1); # strip rolled back single pages
