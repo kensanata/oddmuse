@@ -110,7 +110,9 @@ sub NewNetworkBlockerDelayRequired {
   # If $ip is a name and not an IP number, parsing fails. In this case, run the
   # regular code.
   my $ob = new Net::IP($ip);
-  return OldNetworkBlockerDelayRequired($ip) unless $ob and NetworkBlockerRead();
+  return OldNetworkBlockerDelayRequired($ip) unless $ob;
+  # Read the file. If the file does not exist, no problem.
+  NetworkBlockerRead();
   # See if the current IP number is one of the blocked CIDR ranges.
   for my $cidr (keys %NetworkBlockerList) {
     # Perhaps this CIDR block can be expired.
