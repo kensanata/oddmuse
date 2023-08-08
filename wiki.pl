@@ -39,7 +39,7 @@ use B;
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
-use List::Util qw(all);
+use List::Util qw(all max);
 use Encode qw(encode_utf8 decode_utf8);
 use sigtrap 'handler' => \&HandleSignals, 'normal-signals', 'error-signals';
 local $| = 1; # Do not buffer output (localized for mod_perl)
@@ -1544,35 +1544,32 @@ sub LatestChanges {
 sub StripRollbacks {
   my @result = @_;
   if (not (GetParam('all', $ShowAll) or GetParam('rollback', $ShowRollbacks))) { # strip rollbacks
-    my (%rollback);
+    my (%rollback); # used for single-page rollbacks
     for (my $i = $#result; $i >= 0; $i--) {
       # some fields have a different meaning if looking at rollbacks
       my ($ts, $id, $target_ts, $target_id) = @{$result[$i]};
+      # if this is a rollback marker
       if ($id eq '[[rollback]]') {
+        # if this is a single page rollback marker, strip it
 	if ($target_id) {
-	  $rollback{$target_id} = $target_ts; # single page rollback
-	  splice(@result, $i, 1);             # strip marker
-	} else {
-	  my $end = $i;
-	  while ($ts > $target_ts and $i > 0) {
-	    $i--; # quickly skip all these lines
-	    $ts = $result[$i][0];
-	  }
-          if ($i) {
-            splice(@result, $i + 1, $end - $i);
-            $i++; # compensate $i-- in for loop
-          } else {
-            # everything up to beginning has to go (including the rollback marker)
-            splice(@result, $i, $end + 1);
+          # if this page is not already being rolled back, remember the target
+          # id and target ts so that those lines can be stripped below
+          if (not $rollback{$target_id} or $target_ts < $rollback{$target_id}) {
+            $rollback{$target_id} = $target_ts;
           }
+          # the marker is always stripped
+	  splice(@result, $i, 1);
+	} else {
+          # if this is a global rollback, things are different: we're going to
+          # find the correct timestamp and strip all of those lines immediately
+	  my $end = $i;
+	  $i-- while $i > 0 and $target_ts < $result[$i-1][0];
+          # splice the lines found
+          splice(@result, $i, $end - $i + 1);
 	}
       } elsif ($rollback{$id} and $ts > $rollback{$id}) {
 	splice(@result, $i, 1); # strip rolled back single pages
       }
-    }
-  } else {		  # just strip the marker left by DoRollback()
-    for (my $i = $#result; $i >= 0; $i--) {
-      splice(@result, $i, 1) if $result[$i][1] eq '[[rollback]]'; # id
     }
   }
   return @result;
