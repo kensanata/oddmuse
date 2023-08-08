@@ -112,9 +112,7 @@ sub DoCollect {
   my $search = GetParam('search', '');
   ReportError(T('The match parameter is missing.')) unless $match or $search;
   print GetHeader('', Ts('Page Collection for %s', $match||$search), '');
-  my @pages = (grep(/$match/, $search
-		    ? SearchTitleAndBody($search)
-		    : AllPagesList()));
+  my @pages = Matched($match, $search ? SearchTitleAndBody($search) : AllPagesList());
   if (!$CollectingJournal) {
     $CollectingJournal = 1;
     # Now save information required for saving the cache of the current page.

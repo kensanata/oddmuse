@@ -39,6 +39,7 @@ use B;
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
+use List::Util qw(all);
 use Encode qw(encode_utf8 decode_utf8);
 use sigtrap 'handler' => \&HandleSignals, 'normal-signals', 'error-signals';
 local $| = 1; # Do not buffer output (localized for mod_perl)
@@ -3373,7 +3374,6 @@ sub SortIndex {
 
 sub DoIndex {
   my $raw = GetParam('raw', 0);
-  my $match = GetParam('match', '');
   my $limit = GetParam('n', '');
   my @pages = ();
   my @menu = ($q->label({-for=>'indexmatch'}, T('Filter:')) . ' '
@@ -3385,7 +3385,7 @@ sub DoIndex {
     push(@pages, $sub->()) if $value;
     push(@menu, $q->checkbox(-name=>$option, -checked=>$value, -label=>$text));
   }
-  @pages = grep /$match/i, @pages if $match;
+  @pages = Matched(GetParam('match', ''), @pages);
   @pages = sort SortIndex @pages;
   @pages = @pages[0 .. $limit - 1] if $limit;
   if ($raw) {
@@ -3558,11 +3558,23 @@ sub SearchTitleAndBody {
   return @found;
 }
 
-sub Filtered { # this is overwriten in extensions such as tags.pl
+# Filter the pages to be searched for $string. The default implementation
+# ignores $string and uses $match instead, just in case the user used both
+# search and match parameters. This is overwritten in extensions such as tags.pl
+# which extract tags from $string and use that to filter the pages.
+sub Filtered {
   my ($string, @pages) = @_;
-  my $match = GetParam('match', '');
-  @pages = grep /$match/i, @pages if $match;
-  return @pages;
+  return Matched(GetParam('match', ''), @pages);
+}
+
+sub Matched { # strictly for page titles
+  my ($string, @pages) = @_;
+  return @pages unless $string;
+  my @terms = grep { $_ } split(/[ _]+/, $string);
+  return grep {
+    my $id = $_;
+    all { $id =~ /$_/i } @terms;
+  } @pages;
 }
 
 sub SearchString {

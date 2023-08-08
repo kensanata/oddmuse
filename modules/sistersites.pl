@@ -36,8 +36,7 @@ sub SisterPages {
   push(@pages, AllPagesList()) if GetParam('pages', 1);
   push(@pages, keys %PermanentAnchors) if GetParam('permanentanchors', 1);
   push(@pages, keys %NearSource) if GetParam('near', 0);
-  my $match = GetParam('match', '');
-  @pages = grep /$match/i, @pages if $match;
+  @pages = Matched(GetParam('match', ''), @pages);
   @pages = sort @pages;
   return @pages;
 }

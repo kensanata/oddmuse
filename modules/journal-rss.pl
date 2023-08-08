@@ -86,7 +86,7 @@ sub JournalRssGetRcLines {
   my $reverse = GetParam('reverse', 0);
   my $monthly = GetParam('monthly', 0);
   my $offset = GetParam('offset', 0);
-  my @pages = sort JournalSort (grep(/$match/, $search ? SearchTitleAndBody($search) : AllPagesList()));
+  my @pages = sort JournalSort (Matched($match, $search ? SearchTitleAndBody($search) : AllPagesList()));
   if ($monthly and not $match) {
     my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday) = gmtime();
     $match = '^' . sprintf("%04d-%02d", $year+1900, $mon+1) . '-\d\d';

@@ -1,5 +1,5 @@
 # -*- mode: perl -*-
-# Copyright (C) 2017–2021  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2023  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Affero General Public License as published by the Free
@@ -48,15 +48,20 @@ variable:
 
 =cut
 
-package OddMuse;
-use Modern::Perl;
+use strict;
+use v5.10;
 use Net::IP qw(:PROC);
 use Net::DNS qw(rr);
 
+AddModuleDescription('network-blocker.pl', 'Network Blocker Extension');
+
 our ($Now, $DataDir, $SurgeProtectionViews, $SurgeProtectionTime);
 
-*OldNetworkBlockerDelayRequired = \&DelayRequired;
-*DelayRequired = \&NewNetworkBlockerDelayRequired;
+{
+  no warnings 'redefine';
+  *OldNetworkBlockerDelayRequired = \&DelayRequired;
+  *DelayRequired = \&NewNetworkBlockerDelayRequired;
+}
 
 # Block for at least this many seconds.
 my $NetworkBlockerMinimumPeriod = 30;
@@ -128,6 +133,7 @@ sub NewNetworkBlockerDelayRequired {
       next;
     }
     # If the CIDR overlaps with the remote IP number, it's a block.
+    warn "Checking whether $ip is in $cidr\n";
     my $overlap = $range->overlaps($ob);
     # $IP_PARTIAL_OVERLAP (ranges overlap) $IP_NO_OVERLAP (no overlap)
     # $IP_A_IN_B_OVERLAP (range2 contains range1) $IP_B_IN_A_OVERLAP (range1
@@ -150,6 +156,7 @@ sub NewNetworkBlockerDelayRequired {
   }
   # If the CIDR isn't blocked, let's see if Surge Protection wants to block it.
   my $result = OldNetworkBlockerDelayRequired($ip);
+  warn "$ip was blocked\n" if $result;
   # If the IP is to be blocked, determine its CIDRs and put them on a list. Sadly,
   # routeviews does not support IPv6 at the moment!
   if ($result and not ip_is_ipv6($ip) and not $NetworkBlockerCandidates{$ip}) {
@@ -161,6 +168,7 @@ sub NewNetworkBlockerDelayRequired {
       my @data = $rr->txtdata;
       push(@candidates, join("/", @data[1..2]));
     }
+    warn "$ip is in @candidates\n";
     $NetworkBlockerCandidates{$ip} = [$Now, @candidates];
     # Expire any of the other candidates
     for my $other_ip (keys %NetworkBlockerCandidates) {

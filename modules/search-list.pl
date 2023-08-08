@@ -36,18 +36,12 @@ sub SearchListRule {
       $term = GetId();
     }
     local ($OpenPageName, %Page);
-    my %hash = ();
+    my @found;
     if ($variation eq 'list') {
-      foreach my $id (SearchTitleAndBody($term)) {
-        $hash{$id} = 1 unless $id eq $original; # skip the page with the query
-      }
+      @found = grep { $_ ne $original } SearchTitleAndBody($term);
+    } elsif ($variation eq 'titlelist') {
+      @found = grep { $_ ne $original } Matched($term, AllPagesList());
     }
-    if ($variation eq 'titlelist') {
-      foreach my $id (grep(/$term/, AllPagesList())) {
-        $hash{$id} = 1 unless $id eq $original; # skip the page with the query
-      }
-    }
-    my @found = keys %hash;
     if (defined &PageSort) {
       @found = sort PageSort @found;
     } else {
@@ -63,32 +57,24 @@ sub SearchListRule {
   return;
 }
 
-
 # Add a new action list
 
 $Action{list} = \&DoList;
 
 sub DoList {
-my $id = shift;
-my $match = GetParam('match', '');
-my $search = GetParam('search', '');
+  my $id = shift;
+  my $match = GetParam('match', '');
+  my $search = GetParam('search', '');
   ReportError(T('The search parameter is missing.')) unless $match or $search;
   print GetHeader('', Ts('Page list for %s', $match||$search), '');
   local (%Page, $OpenPageName);
-    my %hash = ();
-    foreach my $id (grep(/$match/, $search
-                    ? SearchTitleAndBody($search)
-                    : AllPagesList()))  {
-      $hash{$id} = 1;
-    }
-    my @found = keys %hash;
-    if (defined &PageSort) {
-      @found = sort PageSort @found;
-    } else {
-      @found = sort(@found);
-    }
-    @found = map { $q->li(GetPageLink($_)) } @found;
-    print $q->start_div({-class=>'search list'}),
-      $q->ul(@found), $q->end_div;
+  my @found = Matched($match, $search ? SearchTitleAndBody($search) : AllPagesList());
+  if (defined &PageSort) {
+    @found = sort PageSort @found;
+  } else {
+    @found = sort(@found);
+  }
+  @found = map { $q->li(GetPageLink($_)) } @found;
+  print $q->start_div({-class=>'search list'}), $q->ul(@found), $q->end_div;
   PrintFooter();
 }
