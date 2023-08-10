@@ -1,4 +1,4 @@
-# Copyright (C) 2006–2021  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2023  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -33,8 +33,7 @@ alarm 0;
 test_page($page, '2023-05-29 Net news');
 test_page_negative($page, 'rollback');
 
-# Reproduce a follow-up bug from namespaces.t. First, rolling back just Test
-# works as intended.
+# Reproduce a follow-up bug. First, rolling back just Test works as intended.
 WriteStringToFile($RcFile, <<'EOT');
 1691499987Testham127.0.0.1Berta1
 1691499988Mustuff127.0.0.1Chris1

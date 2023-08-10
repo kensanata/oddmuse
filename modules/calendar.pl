@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004–2023  Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2006  Ingo Belka
 #
 # This program is free software; you can redistribute it and/or modify

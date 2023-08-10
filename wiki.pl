@@ -1,5 +1,5 @@
 #! /usr/bin/env perl
-# Copyright (C) 2001-2020
+# Copyright (C) 2001-2023
 #     Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2014-2015
 #     Alex Jakimenko <alex.jakimenko@gmail.com>
