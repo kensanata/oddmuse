@@ -1571,6 +1571,10 @@ sub StripRollbacks {
 	splice(@result, $i, 1); # strip rolled back single pages
       }
     }
+  } else { # if rollbacks are not not shown, just strip the markers
+    for (my $i = $#result; $i >= 0; $i--) {
+      splice(@result, $i, 1) if $result[$i][1] eq '[[rollback]]'; # id
+    }
   }
   return @result;
 }
