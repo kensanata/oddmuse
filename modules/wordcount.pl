@@ -57,3 +57,5 @@ sub WordcountAddScript {
 	}
 	</script>";
 }
+
+$EditNote = "Words: <span id='textWordCount'></span>" . $EditNote;
