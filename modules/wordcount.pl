@@ -23,7 +23,7 @@
 use strict;
 use v5.10;
 
-our (@MyInitVariables, $HtmlHeaders);
+our (@MyInitVariables, $HtmlHeaders, $EditNote);
 
 AddModuleDescription('wordcount.pl', 'Word Count Extension');
 
