@@ -137,13 +137,13 @@ EOT
 
 xpath_run_tests(split(/\n/,<<'EOT'));
 [example](http://example.com/)
-//a[@class="url http"][@href="http://example.com/"][text()="example"]
+//a[@class="url"][@href="http://example.com/"][text()="example"]
 [an example](http://example.com/)
-//a[@class="url http"][@href="http://example.com/"][text()="an example"]
+//a[@class="url"][@href="http://example.com/"][text()="an example"]
 [an example](http://example.com/ "Title")
-//a[@class="url http"][@href="http://example.com/"][@title="Title"][text()="an example"]
+//a[@class="url"][@href="http://example.com/"][@title="Title"][text()="an example"]
 [an\nexample](http://example.com/)
-//a[@class="url http"][@href="http://example.com/"][text()="an\nexample"]
+//a[@class="url"][@href="http://example.com/"][text()="an\nexample"]
 \n[an\n\nexample](http://example.com/)
 //p[text()="[an"]/following-sibling::p//text()[contains(string(),"example](")]
 EOT

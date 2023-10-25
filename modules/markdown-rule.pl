@@ -194,12 +194,11 @@ sub MarkdownRule {
     return OpenHtmlEnvironment('pre',1) . $str; # always level 1
   }
   # link: [an example](http://example.com/ "Title")
-  elsif (m/\G\[((?:[^]\n]+\n?)+)\]\($FullUrlPattern(\s+"(.+?)")?\)/cg) {
+  elsif (m/\G\[((?:[^]\n]+\n?)+)\]\((\S+)(\s+"(.+?)")?\)/cg) {
     my ($text, $url, $title) = ($1, $2, $4);
-    $url =~ /^($UrlProtocols)/;
     my %params;
     $params{-href} = $url;
-    $params{-class} = "url $1";
+    $params{-class} = "url";
     $params{-title} = $title if $title;
     return $q->a(\%params, $text);
   }
