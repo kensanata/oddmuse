@@ -1667,15 +1667,7 @@ Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
 ################################################################################
 # modules/usemod.pl
 ################################################################################
-http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
-
-http://www.amazon.com/exec/obidos/ISBN=%s
-
-alternate
-
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
-search
+https://en.wikipedia.org/wiki/Special:BookSources/%s
 
 ################################################################################
 # modules/wanted.pl
