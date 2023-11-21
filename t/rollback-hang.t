@@ -42,7 +42,7 @@ WriteStringToFile($RcFile, <<'EOT');
 1691499990[[rollback]]1691499987Test
 EOT
 
-my $feed = get_page('action=rc raw=1');
+my $feed = get_page('action=rc raw=1 from=1691499900'); # need from or the result is empty
 test_page($feed, 'title: Test');
 
 # Rolling back all of the wiki doesn't work.
@@ -54,5 +54,5 @@ WriteStringToFile($RcFile, <<'EOT');
 1691499990[[rollback]]1691499987
 EOT
 
-$feed = get_page('action=rc raw=1');
+$feed = get_page('action=rc raw=1 from=1691499900'); # need from or the result is empty
 test_page($feed, 'title: Test');
