@@ -213,13 +213,8 @@ sub ISBN {
   $num =~ s/[- ]//g;
   my $len = length($num);
   return "ISBN $rawnum" unless $len == 10 or $len == 13 or $len = 14; # be prepared for 2007-01-01
-  my $first  = $q->a({-href => Ts('http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s', $num)},
+  my $html = $q->a({-href => Ts("https://en.wikipedia.org/wiki/Special:BookSources/%s", $num)},
       "ISBN " . $rawprint);
-  my $second = $q->a({-href => Ts('http://www.amazon.com/exec/obidos/ISBN=%s', $num)},
-      T('alternate'));
-  my $third  = $q->a({-href => Ts('http://www.pricescan.com/books/BookDetail.asp?isbn=%s', $num)},
-      T('search'));
-  my $html = "$first ($second, $third)";
   $html .= ' '  if ($rawnum =~ / $/);  # Add space if old ISBN had space.
   return $html;
 }
