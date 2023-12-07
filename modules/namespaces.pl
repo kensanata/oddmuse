@@ -55,6 +55,8 @@ our ($NamespacesMain, $NamespacesSelf, $NamespaceCurrent,
      $NamespaceRoot, $NamespaceSlashing, @NamespaceParameters,
      %Namespaces, $NamespacesRootDataDir);
 
+our ($OriginalSiteName, $OriginalInterWikiMoniker, $OriginalDataDir, $OriginalScriptName, $OriginalFullUrl, $OriginalStaticDir, $OriginalStaticUrl, $OriginalWikiDescription);
+
 $NamespacesMain = 'Main'; # to get back to the main namespace
 $NamespacesSelf = 'Self'; # for your own namespace
 $NamespaceCurrent = '';   # the current namespace, if any
@@ -104,6 +106,23 @@ sub GetNamespace {
 }
 
 sub NamespacesInitVariables {
+  $OriginalSiteName //= $SiteName;
+  $SiteName = $OriginalSiteName;
+  $OriginalInterWikiMoniker //= $InterWikiMoniker;
+  $InterWikiMoniker = $OriginalInterWikiMoniker;
+  $OriginalDataDir //= $DataDir;
+  $DataDir = $OriginalDataDir;
+  $OriginalScriptName //= $ScriptName;
+  $ScriptName = $OriginalScriptName;
+  $OriginalFullUrl //= $FullUrl;
+  $FullUrl = $OriginalFullUrl;
+  $OriginalStaticDir //= $StaticDir;
+  $StaticDir = $OriginalStaticDir;
+  $OriginalStaticUrl //= $StaticUrl;
+  $StaticUrl = $OriginalStaticUrl;
+  $OriginalWikiDescription //= $WikiDescription;
+  $WikiDescription = $OriginalWikiDescription;
+
   %Namespaces = ();
   # Do this before changing the $DataDir and $ScriptName
   if ($UsePathInfo) {
@@ -129,20 +148,24 @@ sub NamespacesInitVariables {
     $SiteName   .= ' ' . NormalToFree($NamespaceCurrent);
     $InterWikiMoniker = $NamespaceCurrent;
     $DataDir    .= '/' . $NamespaceCurrent;
-    $PageDir     = "$DataDir/page";
-    $KeepDir     = "$DataDir/keep";
-    $RefererDir  = "$DataDir/referer";
-    $TempDir     = "$DataDir/temp";
-    $LockDir     = "$TempDir/lock";
-    $NoEditFile  = "$DataDir/noedit";
-    $RcFile      = "$DataDir/rc.log";
-    $RcOldFile   = "$DataDir/oldrc.log";
-    $IndexFile   = "$DataDir/pageidx";
-    $VisitorFile = "$DataDir/visitors.log";
-    $PermanentAnchorsFile = "$DataDir/permanentanchors";
-    # $ConfigFile -- shared
-    # $ModuleDir -- shared
-    # $NearDir -- shared
+  }
+  $PageDir     = "$DataDir/page";
+  $KeepDir     = "$DataDir/keep";
+  $RefererDir  = "$DataDir/referer";
+  $TempDir     = "$DataDir/temp";
+  $LockDir     = "$TempDir/lock";
+  $NoEditFile  = "$DataDir/noedit";
+  $RcFile      = "$DataDir/rc.log";
+  $RcOldFile   = "$DataDir/oldrc.log";
+  $IndexFile   = "$DataDir/pageidx";
+  $VisitorFile = "$DataDir/visitors.log";
+  $PermanentAnchorsFile = "$DataDir/permanentanchors";
+  # $ConfigFile -- shared
+  # $ModuleDir -- shared
+  # $NearDir -- shared
+  if ($ns
+      and $ns ne $NamespacesMain
+      and $ns ne $NamespacesSelf) {
     $ScriptName .= '/' . UrlEncode($NamespaceCurrent);
     $FullUrl .= '/' . UrlEncode($NamespaceCurrent);
     $StaticDir .= '/' . $NamespaceCurrent; # from static-copy.pl
