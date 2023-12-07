@@ -1,3 +1,5 @@
+@import "common.css";
+
 html, body { font:"lucida", sans-serif; color:#000; background:#fefefe }
 h1 { font-weight:bold; font-size:x-large; border-bottom:solid;
      margin-top:3ex; margin-bottom:3ex; }

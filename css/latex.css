@@ -5,6 +5,8 @@
  * Licensed under MIT (https://github.com/vincentdoerig/latex-css/blob/master/LICENSE)
 */
 
+@import "common.css";
+
 @font-face {
   font-family: 'Latin Modern';
   font-style: normal;
@@ -422,4 +424,3 @@ div.diff div.new {
 div.content blockquote {
     font-style: italic;
 }
-

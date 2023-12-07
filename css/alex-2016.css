@@ -1,4 +1,7 @@
 /* This file is in the public domain. */
+
+@import "common.css";
+
 html{ text-align: center; }
 
 body, rss {

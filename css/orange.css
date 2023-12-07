@@ -2,6 +2,8 @@
    modified by alex@emacswiki.org
  */
 
+@import "common.css";
+
 a:active {
 	color: #ffffff
 }

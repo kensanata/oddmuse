@@ -1,5 +1,8 @@
 /* Public Domain
    Written by Alex Schroeder and Evgkeni Sampelnikof */
+
+@import "common.css";
+
 textarea { width:100%; }
 h1 a { color: inherit }
 div.journal h1 { font-size:large; }

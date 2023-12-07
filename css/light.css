@@ -8,6 +8,8 @@
 
    @import url(https://fonts.googleapis.com/css?family=Noticia+Text:400,400italic,700italic,700&subset=latin,latin-ext); */
 
+@import "common.css";
+
 body {
 	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
 	font-size: 14pt;

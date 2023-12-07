@@ -1,3 +1,5 @@
+@import "common.css";
+
 div.diff { padding-left:5%; padding-right:5% }
 div.old { background-color:#FFFFAF }
 div.new { background-color:#CFFFCF}

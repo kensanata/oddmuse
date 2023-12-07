@@ -1,3 +1,5 @@
+@import "common.css";
+
 /* use a traditional typesetting style */
 p, dd { text-align:justify; }
 p { margin-top:0; margin-bottom:0; }

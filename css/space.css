@@ -7,6 +7,8 @@
        you are asking the wrong question.
 */
 
+@import "common.css";
+
 body {
   margin: 12px;
   background: #002;

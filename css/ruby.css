@@ -2,6 +2,8 @@
    http://repose.cx/core.css
    It was in turn based on http://www.fantasy-coders.de/ruby/rubyStyle.css */
 
+@import "common.css";
+
 img.logo { float: right; clear: right; border-style:none; }
 div.diff { padding-left:5%; padding-right:5% }
 div.old { background-color:#FFFFAF }
