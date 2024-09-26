@@ -5,6 +5,8 @@
    This file is in the public domain.
 */
 
+@import "common.css";
+
 body {
 	font-family: "Times New Roman",Georgia,Times;
 	color: black;

@@ -1,6 +1,8 @@
 /* Adapted for Oddmuse by Alex Schroeder <alex@emacswiki.org> */
 /* Based on the dusty brown theme for wordpress by Noufal Ibrahim <nkv at hcoop dot net> */
 
+@import "common.css";
+
 body {
     border: solid 2px #565;
     border-top: solid 3px #565;

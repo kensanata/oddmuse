@@ -1,4 +1,7 @@
 /* This file is in the public domain. */
+
+@import "common.css";
+
 html{ text-align: center; }
 
 body, rss {
@@ -240,49 +243,6 @@ div.rc li + li {
 div.rc li strong, table.history strong, strong.description {
     font-family: inherit;
     font-weight: inherit;
-}
-.red {
-    background: red;
-    color: red;
-}
-
-.orange {
-    background: orange;
-    color: orange;
-}
-
-.yellow {
-    background: yellow;
-    color: yellow;
-}
-
-.green {
-    background: green;
-    color: green;
-}
-
-.blue {
-    background: blue;
-    color: blue;
-}
-
-.indigo {
-    background: indigo;
-    color: indigo;
-}
-
-.violet {
-    background: violet;
-    color: violet;
-}
-
-.white {
-    background: white;
-    color: white;
-}
-
-.ip-code {
-    border: 1px solid #666;
 }
 
 /* Diff */

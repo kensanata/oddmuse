@@ -5,6 +5,8 @@ This file is in the public domain.
 
 */
 
+@import "common.css";
+
 html, body { /* hue 84 */
     /* Default color for text. It doesn't appear that many places,
        but you'll see it in Recent Changes summary comments, and
