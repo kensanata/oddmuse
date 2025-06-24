@@ -392,7 +392,7 @@ sub InitLinkPatterns {
   my $EndChars = '[-a-zA-Z0-9/@=+$_~*]'; # no punctuation at the end of the url.
   $UrlPattern = "((?:$UrlProtocols):$UrlChars+$EndChars)";
   $FullUrlPattern="((?:$UrlProtocols):$UrlChars+)"; # when used in square brackets
-  $ImageExtensions = '(gif|jpg|jpeg|png|bmp|svg)';
+  $ImageExtensions = '(gif|jpg|jpeg|png|bmp|svg|webp)';
 }
 
 sub Clean {
