@@ -39,7 +39,6 @@ use B;
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
-use List::Util qw(all max);
 use Encode qw(encode_utf8 decode_utf8);
 use sigtrap 'handler' => \&HandleSignals, 'normal-signals', 'error-signals';
 local $| = 1; # Do not buffer output (localized for mod_perl)
@@ -3574,7 +3573,8 @@ sub Matched { # strictly for page titles
   my @terms = grep { $_ } split(/[ _]+/, $string);
   return grep {
     my $id = $_;
-    all { $id =~ /$_/i } @terms;
+    for (@terms) { return unless $id =~ /$_/i }
+    return $id;
   } @pages;
 }
 
