@@ -1,32 +1,51 @@
 /* Authors: Murray Altheim (2004), Alex Schroeder (2004, 2005, 2006,
-   2009), Bayle Shanks (2006), Lion Kimbro (2006).
+   2009, 2020), Bayle Shanks (2006), Lion Kimbro (2006).
 
 This file is in the public domain.
 
 */
 
-html, body { /* hue 84 */
+html {
+    /* background-color:#becc92; */
+    background-color:#def4b5;
+    text-align: center;
+}
+
+body { /* hue 84 */
     /* Default color for text. It doesn't appear that many places,
        but you'll see it in Recent Changes summary comments, and
        you'll see it in the languages at the bottom of the place;
        It seeps out, here and there. */
     color:#000;
     /* This is the main light green background color. */
-    background-color:#def4b5;
     margin:0;
     padding:0;
+    font-size: 14pt;
+    max-width: 80ex;
+    display: inline-block;
+    text-align: left;
 }
- 
-/* This is not used in all that many places. */
-body.gray {
-    background-color:#d5e0c5;
-}
- 
-/* The next section includes some funky selectors.
-   See http://www.w3.org/TR/REC-CSS2/selector.html for more. */
 
-div.content, div.rc, body > form, div.footnotes, div.edit text {
-    margin: 1em;
+.wrapper {
+    padding: 1ex;
+}
+
+.languages {
+    display: none;
+}
+
+@media only screen and (max-width: 1200px) {
+    body {
+	padding: 5pt;
+	font-size: 15pt;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    body {
+	padding: 3pt;
+	font-size: 18pt;
+    }
 }
 
 /* The following statement hides the result count at the end
@@ -70,53 +89,16 @@ body.arrows a.near:before, body.arrows a.outside:before { content:"\2197"; }
 body.arrows a.near, body.arrows a.outside { text-decoration:none; }
 
 /* add every specific a here */
-div.header h1 a:hover, h1 a:hover, h2 a:hover, h3 a:hover { color: #fbb; }
+header h1 a:hover, h1 a:hover, h2 a:hover, h3 a:hover { color: #fbb; }
+header h1 a:visited { color: #fff; }
 a.definition:hover, a.near:hover, a:hover { color:#f00; }
 
 dl.irc dt { width:20ex; float:left; text-align:right; clear:left; }
 dl.irc dt span.time { float:left; }
 dl.irc dd { margin-left:22ex; }
 
-div.header {
-    background-color: #becc92;
-    margin:                  0;
-    padding:                 0;
-    height: 6em;
-}
-
-div.sidebar {
-    float:    right;
-    width:    15%;
-    padding:  0 0.5em 0 1em;
-    margin:   1em 0 1em 5em;
-    font-size: x-small;
-    border:   3px solid #000;
-    text-align:  left;
-    background-color: #dea;
-}
-
-div.sidebar h2 {
-    font-weight: bold;
-    font-size:   small;
-    color:       #000;
-    background-color: #dea;
-    padding:     0;
-    margin-right: 7%;
-    border-bottom: 1px solid #ab7;
-}
-
-div.sidebar ul, div.sidebar li {
-    display:block;
-    margin:0;
-    padding:0;
-}
-
-div.sidebar a:before {
-    content:"";
-}
-
-div.sidebar a {
-    font-weight: normal;
+header {
+    margin: 0;
 }
 
 h3 {
@@ -128,52 +110,49 @@ h3 {
     padding:0.3ex;
 }
 
-div.header span.gotobar {
+header span.gotobar {
     display:block;
     padding:1ex;
 }
-div.message {
-    position: absolute;
-    top: 1.5em;
-    left:0;
-    right:0;
-    z-index: 5;
-}
-div.message p {
-    display:inline;
-}
-div.message, div.question {
-    background-color:#fee;
-    color:#f00;
-    border:solid #f00;
-    font-weight:bold;
-    padding:0.1em 0 0.1em 1em;
+.message p, div.question {
+    font-size: smaller;
+    margin: 0;
+    padding: 0 0 0.5ex 1ex;
 }
 
-div.header h1 {
-    position:   absolute;
-    top: 1.5em;
-    left:0;
-    right:0;
+header h1 {
     background-color:#517005;
     font-family: "Tahoma", "Arial", "Helvetica", sans-serif;
-    font-size:xx-large;
-    border-bottom:2px dotted #87a036;
-    margin-top: 0;
-    padding: 0.125em 0.5em;
+    font-size: xx-large;
+    margin: 0;
+    padding: 0.1em 0.5ex;
 }
 
-div.header h1 a {
+header h1 a {
     text-decoration:none; 
     color: #ffffff;
 }
 
-img.logo { 
-    position:absolute;
-    top:1ex;
-    right:1ex;
+img.logo {
+    float: right;
+    height: 4em;
     border:none;
-    z-index:10;
+}
+
+@media only screen and (max-width: 1200px) {
+    img.logo {
+	height: 3em;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    img.logo {
+	height: 2em;
+    }
+}
+
+.fit {
+    max-width: 100%;
 }
 
 .right {
@@ -182,6 +161,7 @@ img.logo {
 
 .left {
     float:left;
+    margin-right: 8px;
 }
 
 .top {
@@ -221,7 +201,7 @@ a.small img {
 
 h1 {
     font-weight:bold;
-    font-size:larger;
+    font-size:150%;
     clear:left;
     color:#fff;
     background:#69aa00;
@@ -237,17 +217,23 @@ span.specialdays {
 
 h2 {
     font-weight:bold;
-    font-size:larger;
+    font-size:130%;
     color:#fff;
     background:#69aa00;
     padding:0.7ex;
+    clear:left;
 }
-h2 a, div.journal h1 a {
+/* Links in page titles */
+h1 a, h2 a, div.journal h1 a {
     text-decoration:none; color:#fff;
 }
 h3 {
-    font-weight:bold; font-size:medium; clear:left;
-    color:#fff; background:#84d600; padding:0.7ex;
+    font-weight:bold;
+    font-size: 110%;
+    clear:left;
+    color:#fff;
+    background:#84d600;
+    padding:0.7ex;
 }
 h3 a, div.journal h2 a {
     text-decoration:none; color:#fff;
@@ -277,8 +263,8 @@ div.footnotes hr + p {
     font-weight:bold;
 }
 
-div.footer {
-    background-color:#becc92;
+footer {
+    background-color: #cd9;
     border-bottom:solid;
     clear:    both;
     margin:  3em 0 0 0;
@@ -287,12 +273,88 @@ div.footer {
     color:black;
 }
 
-div.footer hr {
+footer hr {
     display:none;
 }
 
+/* License, definitions, near links */
+.note, .more {
+    font-size: 80%;
+}
+.more {
+    margin: 1ex;
+    margin-bottom: 3em;
+}
+div.near, div.definition {
+    display: none;
+}
+#toggle_more:checked ~ div.near, #toggle_more:checked ~ div.definition {
+    display: block;
+}
+
+/* Recent Changes */
+
 div.rc { margin-top:4ex; }
 div.rc hr { display:none; }
+
+div.rc {
+    overflow: hidden;
+}
+div.rc li + li {
+    margin-top: 1em;
+}
+div.rc li strong, table.history strong, strong.description {
+    font-family: inherit;
+    font-weight: inherit;
+}
+
+/* Colour flags for anonymous edits */
+
+.red {
+    background: red;
+    color: red;
+}
+
+.orange {
+    background: orange;
+    color: orange;
+}
+
+.yellow {
+    background: yellow;
+    color: yellow;
+}
+
+.green {
+    background: green;
+    color: green;
+}
+
+.blue {
+    background: blue;
+    color: blue;
+}
+
+.indigo {
+    background: indigo;
+    color: indigo;
+}
+
+.violet {
+    background: violet;
+    color: violet;
+}
+
+.white {
+    background: white;
+    color: white;
+}
+
+.ip-code {
+    border: 1px solid #666;
+}
+
+/* Diff */
 
 div.old { background-color:#ffd; }
 div.new { background-color:#dfd; }
@@ -306,6 +368,9 @@ div.diff {
 div.diff + hr {
     display: none;
 }
+
+/* Referrers */
+
 div.refer {
     padding-left:5%;
     padding-right:5%;
@@ -313,10 +378,9 @@ div.refer {
 div.refer hr {
     display: none;
 }
-div.rss { background-color:#ce9; }
-body.gray div.rss {
-    background-color:#dec;
-}
+
+/* Sister Sites */
+
 div.sister {
     float:left;
     margin-right:1ex;
@@ -326,7 +390,9 @@ div.sister p { padding:1ex; margin:0; }
 div.sister hr { display:none; }
 div.near, div.definition { padding:1ex; margin:0; }
 div.near p, div.definition p { margin: 0; }
-div.footer + hr { display:none; }
+footer + hr { display:none; }
+
+/* Headers in Journal Pages (e.g. Blog) */
 
 div.journal hr { display:none; }
 div.journal h1, div.journal h2, div.journal h3, div.journal h4 {
@@ -343,23 +409,65 @@ div.include {
 span.description { font-weight:bold; }
 span.new { display:inline; font-weight:bold; }
 
-table.user { border-collapse:collapse; border:thin dotted; padding:1ex;
-    margin-bottom:1ex; width:inherit; margin:0 5%; }
-table.user tr td { padding: 0.5ex 1em; border: thin dotted; text-align:left; }
+/* Tables in wiki content */
+
+table.user {
+    border-collapse:collapse;
+    border: none;
+    padding:1ex;
+    margin-bottom:1ex;
+    width:inherit;
+    margin:0 5%;
+    background-color: #efd;
+}
+/* table.user .even { */
+/*     background-color: #efd; */
+/* } */
+/* table.user .odd { */
+/*     background-color: #efe; */
+/* } */
+/* table.user .first { */
+/*     background-color: #eff; */
+/* } */
+table.user td, table.user th {
+    padding: 0.5ex 1em;
+    border: none;
+    text-align:left;
+}
+table.user th {
+    padding: 1ex 1em;
+    text-align: center;
+}
+
+/* Tables in page history */
 
 table.history td[colspan="3"] {
     padding: 1em 0;
 }
 
+/* Lists (definitions list being used by IRC logs?) */
+
 dt { font-weight:bold; }
-dd, li {
+dd {
     margin-bottom: 0.5ex;
     margin-left: 2em;
 }
+li {
+    margin-bottom: 0.5ex;
+    margin-left: 0;
+}
 dl, ol, ul { margin-left:0em; }
 
-textarea#text { width:75%; height:70%; }
-textarea#summary { width:75%; height:10%; }
+/* textarea, summary */
+
+textarea {
+    box-sizing: border-box;
+    width:100%;
+    padding:5pt;
+    font-size: inherit;
+}
+textarea#text { height:70%; min-height: 20ex; }
+textarea#summary { height:10%; min-height: 2ex; }
 
 /* links to change from text to file and back */
 
@@ -375,12 +483,11 @@ form.edit a.svg, form.edit a.upload {
 /* images */
 
 img { border:0; }
-pre, img.upload {
-    border: #777 1px solid; padding: 0.5em;
-    margin-left: 1em; margin-right: 2em;
+pre, img.portrait, img.upload {
+    border: #777 1px solid; padding: 8px;
     white-space: pre;
     background-color: #fff; color: black;
-    overflow: hidden;
+    overflow: scroll;
 }
 a.smiley img.upload {
     border:none;
@@ -388,32 +495,21 @@ a.smiley img.upload {
     padding:0;
     background-color:inherit;
 }
+
+.color { min-height: 60px; }
 img.portrait {
-    float:left; clear:left;
-    background-color:#fff;
-    border:#999 1px solid;
-    padding:10px;
-    margin:10px;
+    float: left;
+    margin-right: 8px;
 }
-div.portrait {
-    float:left; clear:left;
-    font-size:xx-small;
-    padding-left:10px;
-}
-div.portrait img.portrait {
-    float:none;
-    margin:10px 10px 0 0;
-}
-div.portrait a {
-    text-decoration:none;
-    color:#999;
-}
-div.color {
-    clear: left;
-    min-height:105px;
-    margin: 0;
-    padding: 0;
-}
+div.portrait br { display: none }
+div.portrait, div.portrait p { display: inline}
+div.portrait p:after { content: ": " }
+div.color > p:first-of-type { display: inline }
+div.color { padding: 1ex 0.5ex 1em 0.5ex; }
+
+.half img { max-width: 50%; }
+
+/* indentation */
 div.one {
     background-color: #efb;
 }
@@ -434,101 +530,6 @@ hr {
     clear: left;
 }
 
-div.month {
-    float:left;
-    margin:3ex;
-    height:15ex;
-}
-div.month pre {
-    background-color:inherit;
-    border:none;
-    padding:0;
-    margin:0;
-}
-div.month a.edit { 
-    font-weight:normal;
-    color:#000;
-}
-
-rss {
-    color:#000;
-    margin:0;
-    padding:0;
-    background-color:#def4b5;
-}
-docs {
-    position: absolute;
-    top:0;
-    left:0;
-    right:0;
-    font-size: xx-large;
-    height: 1.5em;
-    color: #becc92; /* invisible */
-    background-color: #becc92;
-}
-
-channel * {
-    display: block;
-}
-
-/* if IE can't parse this, no problem */
-channel > title {
-    font-family: "Tahoma", "Arial", "Helvetica", sans-serif;
-}
-    
-title {
-    background-color:#517005;
-    font-size:xx-large;
-    font-weight:bold;
-    margin-top: 1.5em;
-    padding: 0.125em 0.5em;
-    border-bottom:2px dotted #87a036;
-    color:#fff;
-}
-item title {
-    background-color:#69aa00;
-    font-size: medium;
-    margin: 0 0 0 1em;
-    padding:0.7ex 0.5em;
-}
-
-copyright {
-    font-size: smaller;
-    margin: 1em 4em;
-}
-channel > link:before {
-    font-size: x-large;
-    display: block;
-    margin: 1em;
-    padding: 0.5em;
-    content: "This is an RSS feed, designed to be read in a feed reader.";
-    color: red;
-    border: 1px solid red;
-}
-link, license {
-    font-size: smaller;
-    margin: 1em 2em;
-}
-username, description, generator, interwiki { margin: 1em; }
-username:before { content: "Last edited by "; }
-username:after { content: "."; }
-generator:before { content: "Feed generated by "; }
-generator:after { content: "."; }
-channel description {
-        font-weight: bold;
-}
-item description {
-    font-style: italic;
-    font-weight: normal;
-    margin: 1em;
-}
-language,
-pubDate, lastBuildDate, ttl, guid, category, comments,
-image title, image link,
-status, version, diff, history, importance {
-        display: none;
-}
-
 /* 
 
 == Printing ==
@@ -542,10 +543,10 @@ when the page is printed (or during print preview).  More information:
 
 @media print {
     /* When printing, turn off a bunch of stuff. */
-    div.header span.gotobar,
+    header span.gotobar,
     span.specialdays,
     div.refer,
-    div.footer,
+    footer,
     div.near,
     div.definition,
     div.sister,
@@ -592,19 +593,16 @@ span[lang=pt], .pt { background-color:#bfb; }
 span[lang=es], .es { background-color:#fec; }
 span[lang=sv], .sv { background-color:#adf; }
 
-body.simple div.footer p.note,
-body.simple div.footer span.gotobar + br,
-body.simple div.footer span.gotobar,
+body.simple footer p.note,
+body.simple footer span.gotobar + br,
+body.simple footer span.gotobar,
 body.simple div.sister,
 body.simple div.near,
 body.simple div.definition,
 body.simple div.languages { display:none; }
 
 body.explicit a.near[title=MeatBall]:before { content:"MeatBall:"; }
-body.explicit a.near[title=WikiFeatures]:before { content:"WikiFeatures:"; }
-body.explicit a.near[title=CraoWiki]:before { content:"CraoWiki:"; }
-body.explicit a.near[title=InterWiki]:before { content:"InterWiki:"; }
-body.explicit a.near[title=OpenMeatballWiki]:before { content:"OpenMeatballWiki:"; }
+body.explicit a.near[title=Wiki]:before { content:"Wiki:"; }
 
 body.nolang span[lang] { background-color:inherit; }
 
