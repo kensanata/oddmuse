@@ -32,8 +32,26 @@ sub PostNewGetSearchForm {
   return $html;
 }
 
-# Disable Recent Changes menu
-sub RcHeader {}
+# Disable links in the Recent Changes menu
+
+*PostOldRcHeader=*RcHeader;
+*RcHeader=*PostNewRcHeader;
+
+sub PostNewRcHeader {
+  my ($from, $upto, $html) = (GetParam('from', 0), GetParam('upto', 0), '');
+  my $days = GetParam('days') + 0 || $RcDefault; # force numeric $days
+  my $all = GetParam('all', $ShowAll);
+  if ($from) {
+    $html .= $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))) . ' '
+		    . ($upto ? Ts('up to %s', TimeToText($upto)) : ''));
+  } else {
+    $html .= $q->h2((GetParam('days', $RcDefault) != 1)
+		    ? Ts('Updates in the last %s days', $days)
+		    : Ts('Updates in the last day'));
+  }
+  $html .= $q->p({-class => 'documentation'}, T('Using the ｢rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.')) if UserIsAdmin() and $all;
+  return $html;
+}
 
 # Change Recent Changes filter form to represent all options.
 *PostOldGetFilterForm=*GetFilterForm;
