@@ -65,8 +65,10 @@ sub PostNewGetFilterForm {
   }
   $form .= $q->br() . $q->submit('dofilter', T('Go!')) . $q->end_form;
   $form .= GetFormStart(undef, 'post', 'later');
-  $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1, $all && '-checked'});
-  $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1, $showedit && '-checked'});
+  $form .= $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
+  $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if $all;
+  $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if $showedit;
+  $form .= $q->input({-type=>'hidden', -name=>'from', -value=>$LastUpdate+1});
   $form .= $q->p(T('List later changes') . ' ' . $q->submit('dofilter', T('Go!')));
   $form .= $q->end_form;
   $form .= $q->p({-class => 'documentation'}, T('Using the ｢rollback｣ button on this page will reset the wiki to that particular point in time, undoing any later changes to all of the pages.')) if UserIsAdmin() and $all;
