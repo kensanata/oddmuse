@@ -60,7 +60,7 @@ sub PostNewGetFilterForm {
     $form .= $q->textfield(-name=>'lang', -id=>'rclang', -size=>20,
                            -default=>GetParam('lang', ''));
   }
-  $form .= $q->submit('dofilter', T('Go!')) . $q->end_form;
+  $form .= $q->br() . $q->submit('dofilter', T('Go!')) . $q->end_form;
   $form .= GetFormStart(undef, 'post', 'later');
   $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1,-checked=>GetParam('all', $ShowAll)});
   $form .= $q->input({-type=>'hidden', -name=>'showedits', -value=>1, -checked=>GetParam('showedits', $ShowEdits)});
