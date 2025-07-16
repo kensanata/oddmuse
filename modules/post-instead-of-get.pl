@@ -18,11 +18,12 @@ use v5.10;
 
 AddModuleDescription('post-instead-of-get.pl', 'POST instead of GET extension');
 
-our ($q, $Now, $LastUpdate, @RcDays, $RcDefault, $ShowRollbacks, $ShowAll, $ShowEdits, %Languages);
+our ($q, $Now, $LastUpdate, %Action, @RcDays, $RcDefault, $ShowRollbacks, $ShowAll, $ShowEdits, %Languages);
 
 # You should install nosearch.pl, too.
 
 # Change the search from GET to POST
+
 *PostOldGetSearchForm=*GetSearchForm;
 *GetSearchForm=*PostNewGetSearchForm;
 
@@ -30,6 +31,20 @@ sub PostNewGetSearchForm {
   my $html = PostOldGetSearchForm(@_);
   $html =~ s/method="get"/method="post"/;
   return $html;
+}
+
+# Change the index filter from GET to POST
+
+*PostOldDoIndex=*DoIndex;
+*DoIndex=*PostNewDoIndex;
+# Update action hash as well!
+$Action{index} = \&DoIndex;
+
+sub PostNewDoIndex {
+  # Must capture the output.
+  my $html = ToString(\&PostOldDoIndex);
+  $html =~ s/method="get"/method="post"/;
+  print $html;
 }
 
 # Disable links in the Recent Changes menu
