@@ -18,7 +18,7 @@ use v5.10;
 
 AddModuleDescription('post-instead-of-get.pl', 'POST instead of GET extension');
 
-our ($q, $LastUpdate, @RcDays, $RcDefault, $ShowRollbacks, $ShowAll, $ShowEdits, %Languages);
+our ($q, $Now, $LastUpdate, @RcDays, $RcDefault, $ShowRollbacks, $ShowAll, $ShowEdits, %Languages);
 
 # You should install nosearch.pl, too.
 
@@ -53,7 +53,35 @@ sub PostNewRcHeader {
   return $html;
 }
 
+# Change the More... link
+
+*PostOldRcHtml=*RcHtml;
+*RcHtml=*PostNewRcHtml;
+
+sub PostNewRcHtml {
+  my $html = PostOldRcHtml(@_);
+  # Based on RcPreviousAction
+  my $form = GetFormStart(undef, 'post', 'more');
+  my $interval = GetParam('days', $RcDefault) * 86400;
+  # use delta between from and upto, or use days, whichever is available
+  my $to = GetParam('from', GetParam('upto', $Now - $interval));
+  my $from = $to - (GetParam('upto') ? GetParam('upto') - GetParam('from') : $interval);
+  $form .= $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
+  $form .= $q->input({-type=>'hidden', -name=>'from', -value=>$from});
+  $form .= $q->input({-type=>'hidden', -name=>'upto', -value=>$to});
+  # Based on RcOtherParameters
+  foreach (qw(days page diff full all showedit rollback rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly match lang followup)) {
+    my $val = GetParam($_, '');
+    $form .= $q->input({-type=>'hidden', -name=>$_, -value=>$val}) if $val;
+  }
+  $form .= $q->submit('more', T('More...'));
+  $form .= $q->end_form();
+  $html =~ s/<p class="more">.*?<\/p>//;
+  return $html . $form;
+}
+
 # Change Recent Changes filter form to represent all options.
+
 *PostOldGetFilterForm=*GetFilterForm;
 *GetFilterForm=*PostNewGetFilterForm;
 
