@@ -153,7 +153,7 @@ Setelah:
 Language:
 Bahasa:
 Go!
-Cari!
+Mulai!
 (minor)
 (suntingan remeh-temeh)
 rollback
@@ -163,7 +163,7 @@ baru
 All changes for %s
 Semua perubahan untuk %s
 This page is too big to send over RSS.
-laman ini terlalu besar untuk dikirim lewat RSS.
+Laman ini terlalu besar untuk dikirim lewat RSS.
 History of %s
 Riwayat %s
 Using the ｢rollback｣ button on this page will reset the page to that particular point in time, undoing any later changes to this page.
@@ -249,7 +249,7 @@ Basis data disimpan di direktori sementara %s
 %s seconds
 %s detik
 Last edited
-Terakhir disunting
+Terakhir diubah
 Edited
 Telah disunting
 by %s
